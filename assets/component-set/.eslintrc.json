@@ -1,0 +1,28 @@
+{
+  "extends": ["airbnb", "prettier", "prettier/react"],
+  "plugins": ["prettier"],
+  "env": {
+    "browser": true,
+    "jasmine": true
+  },
+  "rules": {
+    "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
+    "react/jsx-no-undef": [2, { "allowGlobals": true }],
+    "no-restricted-globals": 0,
+    "prettier/prettier": [
+      "error",
+      { "singleQuote": true, "trailingComma": "all" }
+    ]
+  },
+  "globals": {
+    "B": "readonly",
+    "classes": "readonly",
+    "options": "readonly",
+    "children": "readonly",
+    "state": "readonly",
+    "setState": "readonly",
+    "React": "readonly",
+    "useRouter": "readonly",
+    "useState": "readonly"
+  }
+}

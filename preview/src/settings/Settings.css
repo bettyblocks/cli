@@ -1,0 +1,15 @@
+.settings__title {
+  padding: 0 2rem;
+  font-size: 1.25rem;
+}
+
+.settings {
+  padding: 0 2rem;
+  list-style: none;
+}
+
+.setting {
+  padding: 0;
+  margin: 0 0 .5rem;
+}
+

@@ -1,0 +1,26 @@
+{
+  "name": "component-set",
+  "version": "1.0.0",
+  "main": "dist/templates.json",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "@betty-blocks/cli": "^22.0.0",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "17.1.0",
+    "eslint-config-prettier": "^3.3.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-react": "^7.11.1",
+    "prettier": "^1.15.3",
+    "nodemon": "^1.19.1"
+  },
+  "scripts": {
+    "start": "bb components serve",
+    "build": "bb components build",
+    "dev": "nodemon --watch src --exec 'yarn build && yarn start'",
+    "lint": "eslint --ext js ./src"
+  },
+  "files": ["dist"]
+}
