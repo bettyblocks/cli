@@ -1,0 +1,7 @@
+language: node_js
+node_js: 12.7.0
+
+script:
+  - "yarn build"
+  - "yarn lint"
+  - "yarn test"
