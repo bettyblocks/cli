@@ -7,11 +7,15 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "commit": "commit",
     "dev": "./node_modules/.bin/tsc-watch -p tsconfig.build.json",
-    "lint": "eslint './src/**/*.{js,jsx,ts,tsx}'",
+    "lint": "tslint --project . && echo \"tslint: no lint errors\"",
     "test": "jest"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-angular": "^8.2.0",
+    "@commitlint/prompt-cli": "^8.2.0",
     "@types/app-root-path": "^1.2.4",
     "@types/babel__generator": "^7.0.2",
     "@types/babel__traverse": "^7.0.7",
@@ -19,10 +23,14 @@
     "@types/jest": "^24.0.17",
     "@types/node": "^12.6.8",
     "app-root-path": "^2.2.1",
+    "husky": "^3.0.5",
     "jest": "^24.8.0",
+    "semantic-release": "^15.13.24",
     "ts-jest": "^24.0.2",
     "tsc": "^1.20150623.0",
     "tsc-watch": "^2.2.1",
+    "tslint": "^5.18.0",
+    "tslint-config-airbnb": "^5.11.1",
     "typescript": "^3.5.3"
   },
   "dependencies": {

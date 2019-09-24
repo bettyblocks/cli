@@ -1,0 +1,27 @@
+language: node_js
+node_js: 12.7.0
+
+jobs:
+  include:
+    - stage: quality
+      script:
+        - commitlint --from=master
+      if: type = pull_request
+      name: "Commit lint"
+    - script:
+        - yarn build
+        - yarn lint
+      name: "Lint"
+    - script:
+        - yarn build
+        - yarn test
+      name: "Test"
+    - stage: publish
+      script: skip
+      if: branch = master AND type = push
+      deploy:
+        provider: script
+        skip_cleanup: true
+        script:
+          - yarn build
+          - npx semantic-release
