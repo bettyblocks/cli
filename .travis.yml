@@ -18,10 +18,11 @@ jobs:
       name: "Test"
     - stage: publish
       script: skip
-      if: branch = master AND type = push
+      if: branch = master AND type != pull_request
       deploy:
         provider: script
         skip_cleanup: true
         script:
-          - yarn build
-          - npx semantic-release
+          - yarn build && npx semantic-release
+        on:
+          branch: master
