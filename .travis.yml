@@ -2,6 +2,8 @@ language: node_js
 node_js: 12.7.0
 
 script:
+  - "commitlint --from=master"
+  - "echo $TRAVIS_PULL_REQUEST_BRANCH"
   - "yarn build"
   - "yarn lint"
   - "yarn test"
