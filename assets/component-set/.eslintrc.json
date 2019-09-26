@@ -22,6 +22,10 @@
     "state": "readonly",
     "setState": "readonly",
     "React": "readonly",
+    "useCallback": "readonly",
+    "useEffect": "readonly",
+    "useReducer": "readonly",
+    "useRef": "readonly",
     "useRouter": "readonly",
     "useState": "readonly"
   }
