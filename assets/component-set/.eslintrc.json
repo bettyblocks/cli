@@ -19,6 +19,8 @@
     "classes": "readonly",
     "options": "readonly",
     "children": "readonly",
+    "index": "readonly",
+    "parent": "readonly",
     "state": "readonly",
     "setState": "readonly",
     "React": "readonly",
