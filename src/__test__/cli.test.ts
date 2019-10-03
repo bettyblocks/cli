@@ -99,7 +99,7 @@ describe('BB CLI - build', () => {
     );
 
     await expect(execute(`${BB} components build test-05`)).rejects.toThrow(
-      /required properties are misising from your component/,
+      /required properties are missing from your component/,
     );
   });
 });
