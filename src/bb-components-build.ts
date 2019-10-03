@@ -45,7 +45,6 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
   );
 
   const output: ComponentProps[] = await Promise.all(promises);
-  // validateDuplicatenNames, validateComponentStructure
   validateDuplicateNames(output);
   validateComponentStructure(output);
 
@@ -112,8 +111,8 @@ const buildPartials: (rootDir: string) => Promise<void> = async (
 };
 
 (async () => {
-  await buildComponents(rootDir);
+  await buildComponents(rootDir).catch(error => console.log(error));
   await buildPrefabs(rootDir).catch(error => console.log(error));
-  await buildPartials(rootDir);
+  await buildPartials(rootDir).catch(error => console.log(error));
   console.info('Built component set.');
 })();

@@ -18,7 +18,24 @@ export const prefabSchema = Joi.object({
   name: Joi.string().required(),
   icon: Joi.string().required(),
   category: Joi.string(),
-  structure: Joi.array().required(),
+  structure: Joi.array()
+    .required()
+    .items(Joi.object()),
+});
+
+export const prefabStructureSchema = Joi.object({
+  name: Joi.string(),
+  options: Joi.object(),
+  descendants: Joi.array(),
+  // .items(prefabStructureSchema)
+});
+
+export const prefabOptionsStructureSchema = Joi.object({
+  value: Joi.string(),
+  label: Joi.string(),
+  key: Joi.string(),
+  type: Joi.string(),
+  configuration: Joi.object(),
 });
 
 export const partialSchema = Joi.object({
