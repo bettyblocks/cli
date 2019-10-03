@@ -109,7 +109,12 @@ const buildPartials: (rootDir: string) => Promise<void> = async (
 };
 
 (async () => {
-  await buildComponents(rootDir);
-  await buildPrefabs(rootDir);
-  await buildPartials(rootDir);
+  try {
+    await buildComponents(rootDir);
+    await buildPrefabs(rootDir);
+    await buildPartials(rootDir);
+    console.info('Success');
+  } catch ({ message }) {
+    console.error(message);
+  }
 })();
