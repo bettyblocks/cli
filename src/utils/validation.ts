@@ -1,53 +1,9 @@
-import { ComponentProps, PrefabProps, PartialProps } from '../types';
-import Joi, { ValidationErrorItem } from '@hapi/joi';
-
-export const componentSchema = Joi.object({
-  name: Joi.string().required(),
-  icon: Joi.string(),
-  category: Joi.string(),
-  type: Joi.string().required(),
-  allowedTypes: Joi.array()
-    .items(Joi.string())
-    .required(),
-  orientation: Joi.string().required(),
-  jsx: Joi.any().required(),
-  styles: Joi.any().required(),
-});
-
-export const prefabSchema = Joi.object({
-  name: Joi.string().required(),
-  icon: Joi.string().required(),
-  category: Joi.string(),
-  structure: Joi.array()
-    .required()
-    .items(Joi.object()),
-});
-
-export const prefabStructureSchema = Joi.object({
-  name: Joi.string(),
-  options: Joi.object(),
-  descendants: Joi.array(),
-  // .items(prefabStructureSchema)
-});
-
-export const prefabOptionsStructureSchema = Joi.object({
-  value: Joi.string(),
-  label: Joi.string(),
-  key: Joi.string(),
-  type: Joi.string(),
-  configuration: Joi.object(),
-});
-
-export const partialSchema = Joi.object({
-  name: Joi.string().required(),
-  icon: Joi.string().required(),
-  category: Joi.string(),
-  structure: Joi.array(),
-});
+import { Component, Prefab } from '../types';
+import { ObjectSchema } from '@hapi/joi';
 
 export const validateDuplicateNames: (
-  components: (ComponentProps | PrefabProps)[],
-) => void = (components: (ComponentProps | PrefabProps)[]): void => {
+  components: (Component | Prefab)[],
+) => void = (components: (Component | Prefab)[]): void => {
   const names: { [name: string]: number } = components.reduce(
     (acc: { [name: string]: number }, { name }: { name: string }) => ({
       ...acc,
@@ -55,52 +11,31 @@ export const validateDuplicateNames: (
     }),
     {},
   );
+
   const duplicateNames = Object.keys(names).filter(
     (name: string): boolean => names[name] > 1,
   );
+
   if (duplicateNames.length !== 0) {
     throw new Error(
       ` The following component(s) have duplicate name(s): ${duplicateNames}`,
     );
   }
 };
-export const validatePrefabStructure = (prefabs: PrefabProps[]) => {
-  prefabs.forEach((prefab: PrefabProps) => {
-    const { error } = prefabSchema.validate(prefab);
-    if (typeof error !== 'undefined') {
-      const { details } = error;
-      const { name } = prefab;
-      details.forEach(detail => {
-        throw new Error(`Prefab: "${name}" has an error: "${detail.message}"`);
-      });
-    }
-  });
-};
 
-export const validateComponentStructure = (components: ComponentProps[]) => {
-  components.forEach((component: ComponentProps) => {
-    const { error } = componentSchema.validate(component);
-    if (typeof error !== 'undefined') {
-      const { details } = error;
-      const { name } = component;
-      details.forEach(detail => {
-        throw new Error(
-          `Component: "${name}" has an error: "${detail.message}"`,
-        );
-      });
-    }
-  });
-};
+export const validate = <T extends { name: string }>(
+  typeName: string,
+  schema: ObjectSchema,
+  list: T[],
+): void => {
+  list.forEach((item: T) => {
+    const { error } = schema.validate(item);
 
-export const validatePartialStructure = (partial: PartialProps[]) => {
-  partial.forEach((partial: PartialProps) => {
-    const { error } = partialSchema.validate(partial);
     if (typeof error !== 'undefined') {
-      const { details } = error;
-      const { name } = partial;
-      details.forEach((detail: ValidationErrorItem) => {
-        throw new Error(`Partial: "${name}" has an error: "${detail.message}"`);
-      });
+      const { name } = item;
+      const { message } = error;
+
+      throw new Error(`Build error in ${typeName} ${name}: ${message}`);
     }
   });
 };
