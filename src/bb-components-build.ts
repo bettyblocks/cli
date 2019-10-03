@@ -3,12 +3,17 @@
 // tslint:disable:function-name
 import program, { CommanderStatic } from 'commander';
 import { promises, outputJson, pathExists } from 'fs-extra';
-import { ComponentProps, PrefabProps } from './types';
-import { getDuplicateNames, checkRequiredProps } from './utils/validation';
+import { ComponentProps, PrefabProps, PartialProps } from './types';
+import {
+  validatePartialStructure,
+  validateComponentStructure,
+  validatePrefabStructure,
+  validateDuplicateNames,
+} from './utils/validation';
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
 
-const { mkdir, readdir, readFile } = promises;
+const { mkdir, readFile } = promises;
 
 program
   .usage('[path]')
@@ -17,28 +22,6 @@ program
 
 const { args }: CommanderStatic = program;
 const rootDir: string = args.length === 0 ? '.' : args[0];
-
-const validate = (
-  components: (ComponentProps | PrefabProps)[],
-  type: string,
-): void | Error => {
-  const missingRequiredProps = checkRequiredProps(components, type);
-
-  if (missingRequiredProps.length !== 0) {
-    throw new Error(
-      `The following required properties are misising from your ${type}:` +
-        `\n\n\t${missingRequiredProps.join('\n\t')}`,
-    );
-  }
-
-  const duplicateNames: string[] = getDuplicateNames(components);
-
-  if (duplicateNames.length !== 0) {
-    throw new Error(
-      `The following ${type}(s) have duplicate name(s): ${duplicateNames}`,
-    );
-  }
-};
 
 const buildComponents: (rootDir: string) => Promise<void> = async (
   rootDir: string,
@@ -62,7 +45,9 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
   );
 
   const output: ComponentProps[] = await Promise.all(promises);
-  validate(output, 'component');
+  // validateDuplicatenNames, validateComponentStructure
+  validateDuplicateNames(output);
+  validateComponentStructure(output);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/templates.json`, output);
@@ -90,8 +75,9 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
   );
 
   const output: PrefabProps[] = await Promise.all(promises);
-  validate(output, 'prefab');
 
+  validateDuplicateNames(output);
+  validatePrefabStructure(output);
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/prefabs.json`, output);
 };
@@ -117,20 +103,17 @@ const buildPartials: (rootDir: string) => Promise<void> = async (
     },
   );
 
-  const output: PrefabProps[] = await Promise.all(promises);
-  validate(output, 'partial');
+  const output: PartialProps[] = await Promise.all(promises);
+  validateDuplicateNames(output);
+  validatePartialStructure(output);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/partials.json`, output);
 };
 
-Promise.all([
-  buildComponents(rootDir),
-  buildPrefabs(rootDir),
-  buildPartials(rootDir),
-])
-  .then(() => console.info('Built component set.'))
-  .catch(({ message }) => {
-    console.error(message);
-    process.exit(1);
-  });
+(async () => {
+  await buildComponents(rootDir);
+  await buildPrefabs(rootDir).catch(error => console.log(error));
+  await buildPartials(rootDir);
+  console.info('Built component set.');
+})();

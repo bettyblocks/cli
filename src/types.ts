@@ -13,3 +13,10 @@ export type PrefabProps = {
   category: string;
   structure: [];
 };
+
+export type PartialProps = {
+  name: string;
+  icon: string;
+  category: string;
+  structure: [];
+};

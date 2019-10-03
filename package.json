@@ -6,8 +6,8 @@
   "author": "Niek Nijland <niek.nijland@bettyblocks.com>",
   "license": "UNLICENSED",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/bettyblocks/cli"
+    "type": "git",
+    "url": "https://github.com/bettyblocks/cli"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -24,6 +24,7 @@
     "@types/babel__generator": "^7.0.2",
     "@types/babel__traverse": "^7.0.7",
     "@types/fs-extra": "^8.0.0",
+    "@types/hapi__joi": "^15.0.4",
     "@types/jest": "^24.0.17",
     "@types/node": "^12.6.8",
     "app-root-path": "^2.2.1",
@@ -43,6 +44,7 @@
     "@babel/parser": "^7.5.5",
     "@babel/traverse": "^7.5.5",
     "@babel/types": "^7.5.5",
+    "@hapi/joi": "^16.1.4",
     "commander": "^2.20.0",
     "fs-extra": "^8.1.0",
     "serve": "^11.1.0"
