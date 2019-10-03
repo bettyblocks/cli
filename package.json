@@ -14,7 +14,7 @@
     "commit": "commit",
     "dev": "./node_modules/.bin/tsc-watch -p tsconfig.build.json",
     "lint": "tslint --project . && echo \"tslint: no lint errors\"",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
@@ -52,10 +52,7 @@
   "bin": {
     "bb": "./build/bb.js"
   },
-  "files": [
-    "assets/",
-    "build/"
-  ],
+  "files": ["assets/", "build/"],
   "jest": {
     "transform": {
       "^.+\\.(js|jsx|ts|tsx)?$": "ts-jest"
