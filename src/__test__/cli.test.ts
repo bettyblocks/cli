@@ -73,7 +73,7 @@ describe('BB CLI - build', () => {
     await execute(`echo '${component}' > test-03/src/components/sameName.js`);
 
     await expect(execute(`${BB} components build test-03`)).rejects.toThrow(
-      /have duplicate name/,
+      /duplicate name/,
     );
   });
 
