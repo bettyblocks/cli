@@ -1,15 +1,14 @@
 // tslint:disable:no-console
 // tslint:disable:no-new-func
-// tslint:disable:function-name
 import program, { CommanderStatic } from 'commander';
 import { promises, outputJson, pathExists } from 'fs-extra';
-import { ComponentProps, PrefabProps, PartialProps } from './types';
-import {
-  validatePartialStructure,
-  validateComponentStructure,
-  validatePrefabStructure,
-  validateDuplicateNames,
-} from './utils/validation';
+import { Component, Prefab, Partial } from './types';
+import { validateDuplicateNames } from './utils/validation';
+
+import { validateSchema as validateComponentSchema } from './validations/component';
+import { validateSchema as validatePrefabSchema } from './validations/prefab';
+import { validateSchema as validatePartialSchema } from './validations/partial';
+
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
 
@@ -36,17 +35,18 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
 
   const componentFiles: string[] = await readScripts(srcDir);
 
-  const promises = componentFiles.map(
-    async (file: string): Promise<ComponentProps> => {
-      const code = await readFile(`${srcDir}/${file}`, 'utf-8');
+  const promises = componentFiles.map(async (file: string): Promise<
+    Component
+  > => {
+    const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
-      return Function(`return ${transpile(code)}`)();
-    },
-  );
+    return Function(`return ${transpile(code)}`)();
+  });
 
-  const output: ComponentProps[] = await Promise.all(promises);
+  const output: Component[] = await Promise.all(promises);
+
   validateDuplicateNames(output);
-  validateComponentStructure(output);
+  validateComponentSchema(output);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/templates.json`, output);
@@ -65,18 +65,17 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
   const prefabFiles: string[] = await readScripts(srcDir);
 
-  const promises = prefabFiles.map(
-    async (file: string): Promise<PrefabProps> => {
-      const code = await readFile(`${srcDir}/${file}`, 'utf-8');
+  const promises = prefabFiles.map(async (file: string): Promise<Prefab> => {
+    const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
-      return Function(`return ${code}`)();
-    },
-  );
+    return Function(`return ${code}`)();
+  });
 
-  const output: PrefabProps[] = await Promise.all(promises);
+  const output: Prefab[] = await Promise.all(promises);
 
   validateDuplicateNames(output);
-  validatePrefabStructure(output);
+  validatePrefabSchema(output);
+
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/prefabs.json`, output);
 };
@@ -94,25 +93,23 @@ const buildPartials: (rootDir: string) => Promise<void> = async (
 
   const partialFiles: string[] = await readScripts(srcDir);
 
-  const promises = partialFiles.map(
-    async (file: string): Promise<PrefabProps> => {
-      const code = await readFile(`${srcDir}/${file}`, 'utf-8');
+  const promises = partialFiles.map(async (file: string): Promise<Prefab> => {
+    const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
-      return Function(`return ${code}`)();
-    },
-  );
+    return Function(`return ${code}`)();
+  });
 
-  const output: PartialProps[] = await Promise.all(promises);
+  const output: Partial[] = await Promise.all(promises);
+
   validateDuplicateNames(output);
-  validatePartialStructure(output);
+  validatePartialSchema(output);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/partials.json`, output);
 };
 
 (async () => {
-  await buildComponents(rootDir).catch(error => console.log(error));
-  await buildPrefabs(rootDir).catch(error => console.log(error));
-  await buildPartials(rootDir).catch(error => console.log(error));
-  console.info('Built component set.');
+  await buildComponents(rootDir);
+  await buildPrefabs(rootDir);
+  await buildPartials(rootDir);
 })();

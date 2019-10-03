@@ -29,7 +29,8 @@
     "strict-comparisons": true,
     "static-this": true,
     "no-string-literal": true,
-    "no-floating-promises": true
+    "no-floating-promises": true,
+    "no-floating-promises": false
   },
   "rulesDirectory": []
 }
