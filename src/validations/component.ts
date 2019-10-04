@@ -5,7 +5,7 @@ import { Component } from '../types';
 export const schema = Joi.object({
   name: Joi.string().required(),
   icon: Joi.string(),
-  category: Joi.string(),
+  category: Joi.string(), // DEPRECATED
   type: Joi.string().required(),
   allowedTypes: Joi.array()
     .items(Joi.string())
