@@ -18,6 +18,7 @@ jobs:
       name: "Test"
     - stage: publish
       script: skip
+      name: "Release"
       if: branch = master AND type != pull_request
       deploy:
         provider: script
