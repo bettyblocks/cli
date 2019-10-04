@@ -1,27 +1,4 @@
-import { Component, Prefab } from '../types';
 import { ObjectSchema } from '@hapi/joi';
-
-export const validateDuplicateNames: (
-  components: (Component | Prefab)[],
-) => void = (components: (Component | Prefab)[]): void => {
-  const names: { [name: string]: number } = components.reduce(
-    (acc: { [name: string]: number }, { name }: { name: string }) => ({
-      ...acc,
-      [name]: acc[name] + 1 || 1,
-    }),
-    {},
-  );
-
-  const duplicateNames = Object.keys(names).filter(
-    (name: string): boolean => names[name] > 1,
-  );
-
-  if (duplicateNames.length !== 0) {
-    throw new Error(
-      ` The following component(s) have duplicate name(s): ${duplicateNames}`,
-    );
-  }
-};
 
 export const validate = <T extends { name: string }>(
   typeName: string,
@@ -38,4 +15,17 @@ export const validate = <T extends { name: string }>(
       throw new Error(`Build error in ${typeName} ${name}: ${message}`);
     }
   });
+};
+
+export const validateDuplicateNames = <T extends { name: string }>(
+  typeName: string,
+  list: T[],
+): void => {
+  list.reduce((acc: string[], { name }) => {
+    if (acc.includes(name)) {
+      throw new Error(`You have two ${typeName}s with the name: ${name}`);
+    }
+
+    return [...acc, name];
+  }, []);
 };

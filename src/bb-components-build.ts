@@ -1,7 +1,6 @@
 import program, { CommanderStatic } from 'commander';
 import { promises, outputJson, pathExists } from 'fs-extra';
 import { Component, Prefab } from './types';
-import { validateDuplicateNames } from './utils/validation';
 import checkUpdateAvailable from './utils/checkUpdateAvailable';
 
 import { validateSchema as validateComponentSchema } from './validations/component';
@@ -43,7 +42,7 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
 
   const output: Component[] = await Promise.all(promises);
 
-  validateDuplicateNames(output);
+  // validateDuplicateNames(output);
   validateComponentSchema(output);
 
   await mkdir(distDir, { recursive: true });
@@ -73,7 +72,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
   const output: Prefab[] = await Promise.all(promises);
 
-  validateDuplicateNames(output);
+  // validateDuplicateNames(output);
   validatePrefabSchema(output);
 
   await mkdir(distDir, { recursive: true });
