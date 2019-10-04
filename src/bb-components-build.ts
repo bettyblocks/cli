@@ -2,6 +2,7 @@ import program, { CommanderStatic } from 'commander';
 import { promises, outputJson, pathExists } from 'fs-extra';
 import { Component, Prefab } from './types';
 import { validateDuplicateNames } from './utils/validation';
+import checkUpdateAvailable from './utils/checkUpdateAvailable';
 
 import { validateSchema as validateComponentSchema } from './validations/component';
 import { validateSchema as validatePrefabSchema } from './validations/prefab';
@@ -81,6 +82,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
 (async (): Promise<void> => {
   try {
+    await checkUpdateAvailable();
     await buildComponents(rootDir);
     await buildPrefabs(rootDir);
     console.info('Success');
