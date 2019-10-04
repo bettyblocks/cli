@@ -108,7 +108,7 @@ const buildPartials: (rootDir: string) => Promise<void> = async (
   await outputJson(`${distDir}/partials.json`, output);
 };
 
-(async () => {
+(async (): Promise<void> => {
   try {
     await buildComponents(rootDir);
     await buildPrefabs(rootDir);
