@@ -13,7 +13,10 @@
     "build": "tsc -p tsconfig.build.json",
     "commit": "commit",
     "dev": "./node_modules/.bin/tsc-watch -p tsconfig.build.json",
-    "lint": "tslint --project . && echo \"tslint: no lint errors\"",
+    "lint": "eslint \"src/**\"",
+    "prettier:base": "prettier --parser typescript --single-quote",
+    "prettier:check": "yarn prettier:base --list-different \"src/**/*.{ts,tsx}\"",
+    "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\"",
     "test": "jest --passWithNoTests"
   },
   "devDependencies": {
@@ -27,15 +30,16 @@
     "@types/hapi__joi": "^15.0.4",
     "@types/jest": "^24.0.17",
     "@types/node": "^12.6.8",
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
     "app-root-path": "^2.2.1",
+    "eslint": "^6.5.1",
     "husky": "^3.0.5",
     "jest": "^24.8.0",
+    "prettier": "^1.18.2",
     "semantic-release": "^15.13.24",
     "ts-jest": "^24.0.2",
-    "tsc": "^1.20150623.0",
     "tsc-watch": "^2.2.1",
-    "tslint": "^5.18.0",
-    "tslint-config-airbnb": "^5.11.1",
     "typescript": "^3.5.3"
   },
   "dependencies": {
@@ -52,7 +56,10 @@
   "bin": {
     "bb": "./build/bb.js"
   },
-  "files": ["assets/", "build/"],
+  "files": [
+    "assets/",
+    "build/"
+  ],
   "jest": {
     "transform": {
       "^.+\\.(js|jsx|ts|tsx)?$": "ts-jest"

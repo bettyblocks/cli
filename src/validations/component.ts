@@ -15,5 +15,5 @@ export const schema = Joi.object({
   styles: Joi.any().required(),
 });
 
-export const validateSchema = (components: Component[]) =>
+export const validateSchema = (components: Component[]): void =>
   utils.validate('component', schema, components);

@@ -23,9 +23,7 @@ export const logUploadError = (error: RestError): void => {
   switch (error.body.code) {
     case 'AuthenticationFailed':
       console.error(
-        `Code: ${
-          error.body.code
-        }\nMessage: Make sure your azure blob account and key are correct`,
+        `Code: ${error.body.code}\nMessage: Make sure your azure blob account and key are correct`,
       );
       break;
     default:
