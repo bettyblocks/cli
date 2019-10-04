@@ -19,7 +19,7 @@
   "scripts": {
     "start": "bb components serve",
     "build": "bb components build",
-    "dev": "nodemon --watch src --exec 'yarn build && yarn start'",
+    "dev": "nodemon --watch src --exec \"bb components build && bb components serve\"",
     "lint": "eslint --ext js ./src"
   },
   "files": ["dist"]
