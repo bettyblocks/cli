@@ -42,7 +42,6 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
 
   const output: Component[] = await Promise.all(promises);
 
-  // validateDuplicateNames(output);
   validateComponentSchema(output);
 
   await mkdir(distDir, { recursive: true });
@@ -72,7 +71,6 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
   const output: Prefab[] = await Promise.all(promises);
 
-  // validateDuplicateNames(output);
   validatePrefabSchema(output);
 
   await mkdir(distDir, { recursive: true });
