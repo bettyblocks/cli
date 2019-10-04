@@ -21,13 +21,13 @@ interface BlockBlobUploadResponseExtended extends BlockBlobUploadResponse {
 
 const getServiceUrl = (): ServiceURL => {
   const sharedKeyCredential = new SharedKeyCredential(
-    <string>AZURE_BLOB_ACCOUNT,
-    <string>AZURE_BLOB_ACCOUNT_KEY,
+    AZURE_BLOB_ACCOUNT as string,
+    AZURE_BLOB_ACCOUNT_KEY as string,
   );
 
   const pipeline = StorageURL.newPipeline(sharedKeyCredential);
 
-  const url = `https://${<string>AZURE_BLOB_ACCOUNT}.blob.core.windows.net`;
+  const url = `https://${AZURE_BLOB_ACCOUNT as string}.blob.core.windows.net`;
 
   return new ServiceURL(url, pipeline);
 };

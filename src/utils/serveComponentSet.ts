@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 import handler from 'serve-handler';
 
-export default (rootDir: string, dirName: string, port: number) => {
+export default (rootDir: string, dirName: string, port: number): void => {
   const server = createServer((response, request) =>
     handler(response, request, {
       public: `${rootDir}/dist`,

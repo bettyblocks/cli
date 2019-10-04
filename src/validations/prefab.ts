@@ -16,23 +16,12 @@ const componentRefSchema = Joi.object({
     )
     .required(),
   descendants: Joi.array()
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     .items(Joi.custom(validateComponentRef))
     .required(),
 });
 
-const schema = Joi.object({
-  name: Joi.string().required(),
-  icon: Joi.string().required(),
-  category: Joi.string().required(),
-  structure: Joi.array()
-    .items(validateComponentRef)
-    .required(),
-});
-
-export const validateSchema = (prefabs: Prefab[]) =>
-  utils.validate('prefab', schema, prefabs);
-
-function validateComponentRef(prefab: Prefab) {
+function validateComponentRef(prefab: Prefab): Prefab {
   const { error } = componentRefSchema.validate(prefab);
 
   if (typeof error !== 'undefined') {
@@ -44,3 +33,15 @@ function validateComponentRef(prefab: Prefab) {
 
   return prefab;
 }
+
+const schema = Joi.object({
+  name: Joi.string().required(),
+  icon: Joi.string().required(),
+  category: Joi.string().required(),
+  structure: Joi.array()
+    .items(validateComponentRef)
+    .required(),
+});
+
+export const validateSchema = (prefabs: Prefab[]): void =>
+  utils.validate('prefab', schema, prefabs);

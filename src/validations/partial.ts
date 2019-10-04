@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi';
 import * as utils from '../utils/validation';
-import { Partial } from '../types';
+import { Prefab as Partial } from '../types';
 
 const schema = Joi.object({
   name: Joi.string().required(),
@@ -9,5 +9,5 @@ const schema = Joi.object({
   structure: Joi.array(),
 });
 
-export const validateSchema = (partials: Partial[]) =>
+export const validateSchema = (partials: Partial[]): void =>
   utils.validate('partial', schema, partials);

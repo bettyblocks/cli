@@ -1,8 +1,6 @@
-// tslint:disable:no-console
-// tslint:disable:no-new-func
 import program, { CommanderStatic } from 'commander';
 import { promises, outputJson, pathExists } from 'fs-extra';
-import { Component, Prefab, Partial } from './types';
+import { Component, Prefab } from './types';
 import { validateDuplicateNames } from './utils/validation';
 
 import { validateSchema as validateComponentSchema } from './validations/component';
@@ -35,13 +33,13 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
 
   const componentFiles: string[] = await readScripts(srcDir);
 
-  const promises = componentFiles.map(async (file: string): Promise<
-    Component
-  > => {
-    const code = await readFile(`${srcDir}/${file}`, 'utf-8');
+  const promises = componentFiles.map(
+    async (file: string): Promise<Component> => {
+      const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
-    return Function(`return ${transpile(code)}`)();
-  });
+      return Function(`return ${transpile(code)}`)();
+    },
+  );
 
   const output: Component[] = await Promise.all(promises);
 
@@ -65,11 +63,13 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
   const prefabFiles: string[] = await readScripts(srcDir);
 
-  const promises = prefabFiles.map(async (file: string): Promise<Prefab> => {
-    const code = await readFile(`${srcDir}/${file}`, 'utf-8');
+  const promises = prefabFiles.map(
+    async (file: string): Promise<Prefab> => {
+      const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
-    return Function(`return ${code}`)();
-  });
+      return Function(`return ${code}`)();
+    },
+  );
 
   const output: Prefab[] = await Promise.all(promises);
 
@@ -93,13 +93,15 @@ const buildPartials: (rootDir: string) => Promise<void> = async (
 
   const partialFiles: string[] = await readScripts(srcDir);
 
-  const promises = partialFiles.map(async (file: string): Promise<Prefab> => {
-    const code = await readFile(`${srcDir}/${file}`, 'utf-8');
+  const promises = partialFiles.map(
+    async (file: string): Promise<Prefab> => {
+      const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
-    return Function(`return ${code}`)();
-  });
+      return Function(`return ${code}`)();
+    },
+  );
 
-  const output: Partial[] = await Promise.all(promises);
+  const output: Prefab[] = await Promise.all(promises);
 
   validateDuplicateNames(output);
   validatePartialSchema(output);

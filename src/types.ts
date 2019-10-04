@@ -27,5 +27,3 @@ export interface Prefab {
   category: string;
   structure: ComponentRef[];
 }
-
-export interface Partial extends Prefab {}
