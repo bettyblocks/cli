@@ -44,7 +44,7 @@ function validateComponentRef(prefab: Prefab): Prefab {
   return prefab;
 }
 
-export const validateSchema = (prefabs: Prefab[]) => {
-  utils.validate('prefab', schema, prefabs);
-  utils.validateDuplicateNames('prefab', prefabs);
+export const validate = (prefabs: Prefab[]): void => {
+  utils.validate(schema, prefabs);
+  utils.findDuplicates(prefabs);
 };

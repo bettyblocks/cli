@@ -1,10 +1,15 @@
+export enum Orientation {
+  Vertical = 'VERTICAL',
+  Horizontal = 'HORIZONTAL',
+}
+
 export interface Component {
   name: string;
   type: string;
-  allowedTypes: [];
-  orientation: string;
+  allowedTypes: string[];
+  orientation: Orientation;
   jsx: string;
-  style: string;
+  styles: string;
 }
 
 export interface Option {
