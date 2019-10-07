@@ -1,7 +1,6 @@
 import { ObjectSchema } from '@hapi/joi';
 
 export const validate = <T extends { name: string }>(
-  typeName: string,
   schema: ObjectSchema,
   list: T[],
 ): void => {
@@ -9,21 +8,15 @@ export const validate = <T extends { name: string }>(
     const { error } = schema.validate(item);
 
     if (typeof error !== 'undefined') {
-      const { name } = item;
-      const { message } = error;
-
-      throw new Error(`Build error in ${typeName} ${name}: ${message}`);
+      throw error;
     }
   });
 };
 
-export const validateDuplicateNames = <T extends { name: string }>(
-  typeName: string,
-  list: T[],
-): void => {
+export const findDuplicates = <T extends { name: string }>(list: T[]): void => {
   list.reduce((acc: string[], { name }) => {
     if (acc.includes(name)) {
-      throw new Error(`You have two ${typeName}s with the name: ${name}`);
+      throw new Error(`Duplicate name "${name}" found`);
     }
 
     return [...acc, name];

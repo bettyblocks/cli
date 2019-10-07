@@ -15,7 +15,7 @@ export const schema = Joi.object({
   styles: Joi.any().required(),
 });
 
-export const validateSchema = (components: Component[]): void => {
-  utils.validate('component', schema, components);
-  utils.validateDuplicateNames('component', components);
+export const validate = (components: Component[]): void => {
+  utils.validate(schema, components);
+  utils.findDuplicates(components);
 };

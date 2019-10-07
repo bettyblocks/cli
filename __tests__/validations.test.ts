@@ -1,36 +1,69 @@
-import { validateSchema as validateComponent } from '../src/validations/component';
-import { validateSchema as validatePrefab } from '../src/validations/prefab';
-import { Component, Prefab } from '../src/types';
+import { validate as validateComponent } from '../src/validations/component';
+import { validate as validatePrefab } from '../src/validations/prefab';
+import { Component, Prefab, Orientation } from '../src/types';
 
-test('Check whether the component has the right structure', () => {
-  const components: unknown[] = [
+const { Vertical } = Orientation;
+
+test('Throw when one of the components is invalid', () => {
+  const components: { name: string }[] = [
     {
-      name: 'Blaat',
-      icon: 'icon',
-      category: 'category',
-      type: 'type',
-      allowedTypes: 'allowedTypes',
-      orientation: 'orientation',
-      jsx: 'jsx',
-      styles: 'styles',
-    },
-  ];
-
-  expect(() => validateComponent(components as Component[]));
-});
-
-test('Check whether the component has the right structure and throw an error', () => {
-  const components: unknown[] = [
-    {
-      name: 'name',
+      name: 'HelloWorld',
     },
   ];
 
   expect(() => validateComponent(components as Component[])).toThrow();
 });
 
-test('Check whether the prefab has the right structure', () => {
-  const prefab: unknown[] = [
+test('Throw when two components have the same name', () => {
+  const components: Component[] = [
+    {
+      name: 'HelloWorld',
+      type: 'ROW',
+      allowedTypes: ['COLUMN'],
+      orientation: Vertical,
+      jsx: 'jsx',
+      styles: 'styles',
+    },
+    {
+      name: 'HelloWorld',
+      type: 'ROW',
+      allowedTypes: ['COLUMN'],
+      orientation: Vertical,
+      jsx: 'jsx',
+      styles: 'styles',
+    },
+  ];
+
+  expect(() => validateComponent(components as Component[])).toThrow();
+});
+
+test("Don't throw when all components are valid", () => {
+  const components: Component[] = [
+    {
+      name: 'HelloWorld',
+      type: 'ROW',
+      allowedTypes: ['COLUMN'],
+      orientation: Vertical,
+      jsx: 'jsx',
+      styles: 'styles',
+    },
+  ];
+
+  expect(() => validateComponent(components)).not.toThrow();
+});
+
+test('Throw when one of the prefabs is invalid', () => {
+  const prefab: { name: string }[] = [
+    {
+      name: 'Component Name',
+    },
+  ];
+
+  expect(() => validatePrefab(prefab as Prefab[])).toThrow();
+});
+
+test("Don't throw when all prefabs are valid", () => {
+  const prefab: Prefab[] = [
     {
       name: 'Component Name',
       icon: 'prefab icon',
@@ -39,17 +72,5 @@ test('Check whether the prefab has the right structure', () => {
     },
   ];
 
-  expect(() => validatePrefab(prefab as Prefab[]));
-});
-
-test('Check whether the prefab has the right structure and throw an error', () => {
-  const prefab: unknown[] = [
-    {
-      name: 'Component Name',
-    },
-  ];
-
-  expect(() => {
-    validatePrefab(prefab as Prefab[]);
-  }).toThrow();
+  expect(() => validatePrefab(prefab));
 });

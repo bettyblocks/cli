@@ -3,8 +3,8 @@ import { promises, outputJson, pathExists } from 'fs-extra';
 import { Component, Prefab } from './types';
 import checkUpdateAvailable from './utils/checkUpdateAvailable';
 
-import { validateSchema as validateComponentSchema } from './validations/component';
-import { validateSchema as validatePrefabSchema } from './validations/prefab';
+import { validate as validateComponent } from './validations/component';
+import { validate as validatePrefab } from './validations/prefab';
 
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
@@ -42,7 +42,7 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
 
   const output: Component[] = await Promise.all(promises);
 
-  validateComponentSchema(output);
+  validateComponent(output);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/templates.json`, output);
@@ -71,7 +71,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
   const output: Prefab[] = await Promise.all(promises);
 
-  validatePrefabSchema(output);
+  validatePrefab(output);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/prefabs.json`, output);
