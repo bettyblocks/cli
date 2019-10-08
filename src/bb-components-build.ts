@@ -16,9 +16,6 @@ program
   .name('bb components build')
   .parse(process.argv);
 
-const { args }: CommanderStatic = program;
-const rootDir: string = args.length === 0 ? '.' : args[0];
-
 const buildComponents: (rootDir: string) => Promise<void> = async (
   rootDir: string,
 ): Promise<void> => {
@@ -27,12 +24,12 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
   const exists = await pathExists(srcDir);
 
   if (!exists) {
-    return await outputJson(`${distDir}/templates.json`, []);
+    return outputJson(`${distDir}/templates.json`, []);
   }
 
   const componentFiles: string[] = await readScripts(srcDir);
 
-  const promises = componentFiles.map(
+  const components = componentFiles.map(
     async (file: string): Promise<Component> => {
       const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
@@ -40,7 +37,7 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
     },
   );
 
-  const output: Component[] = await Promise.all(promises);
+  const output: Component[] = await Promise.all(components);
 
   validateComponent(output);
 
@@ -56,12 +53,12 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
   const exists = await pathExists(srcDir);
 
   if (!exists) {
-    return await outputJson(`${distDir}/prefabs.json`, []);
+    return outputJson(`${distDir}/prefabs.json`, []);
   }
 
   const prefabFiles: string[] = await readScripts(srcDir);
 
-  const promises = prefabFiles.map(
+  const prefabs = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
       const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
@@ -69,7 +66,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
     },
   );
 
-  const output: Prefab[] = await Promise.all(promises);
+  const output: Prefab[] = await Promise.all(prefabs);
 
   validatePrefab(output);
 
@@ -78,6 +75,9 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 };
 
 (async (): Promise<void> => {
+  const { args }: CommanderStatic = program;
+  const rootDir: string = args.length === 0 ? '.' : args[0];
+
   try {
     await checkUpdateAvailable();
     await buildComponents(rootDir);
