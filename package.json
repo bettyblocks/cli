@@ -61,7 +61,8 @@
     "node-fetch": "^2.6.0",
     "prettier": "^1.18.2",
     "semver": "^6.3.0",
-    "serve": "^11.1.0"
+    "serve": "^11.1.0",
+    "serve-handler": "^6.1.2"
   },
   "bin": {
     "bb": "./build/bb.js"
