@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-"@azure/ms-rest-js@^2.0.0":
+"@azure/ms-rest-js@^2.0.0", "@azure/ms-rest-js@^2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@azure/ms-rest-js/-/ms-rest-js-2.0.4.tgz#1a1e0e3b2315619d675ebc04c4e8e0d98ce8aa2b"
   integrity sha512-nSOPt6st0RtxclYBQV65qXZpvMDqiDQssktvB/SMTAJ5bIytSPtBmlttTTigO5qHvwQcfzzpQE0sMceK+dJ/IQ==
