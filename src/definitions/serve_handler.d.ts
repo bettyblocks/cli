@@ -1,1 +1,0 @@
-declare module 'serve-handler';
