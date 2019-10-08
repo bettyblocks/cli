@@ -1,4 +1,5 @@
 import Joi from '@hapi/joi';
+
 import * as utils from '../utils/validation';
 import { Component } from '../types';
 
@@ -15,7 +16,7 @@ export const schema = Joi.object({
   styles: Joi.any().required(),
 });
 
-export const validate = (components: Component[]): void => {
+export default (components: Component[]): void => {
   utils.validate(schema, components);
   utils.findDuplicates(components);
 };

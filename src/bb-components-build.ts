@@ -3,9 +3,8 @@ import { promises, outputJson, pathExists } from 'fs-extra';
 import { Component, Prefab } from './types';
 import checkUpdateAvailable from './utils/checkUpdateAvailable';
 
-import { validate as validateComponent } from './validations/component';
-import { validate as validatePrefab } from './validations/prefab';
-
+import validateComponent from './validations/component';
+import validatePrefab from './validations/prefab';
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
 
@@ -33,6 +32,7 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
     async (file: string): Promise<Component> => {
       const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
+      // eslint-disable-next-line no-new-func
       return Function(`return ${transpile(code)}`)();
     },
   );
@@ -62,6 +62,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
     async (file: string): Promise<Prefab> => {
       const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
+      // eslint-disable-next-line no-new-func
       return Function(`return ${code}`)();
     },
   );

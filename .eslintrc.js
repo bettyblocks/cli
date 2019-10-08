@@ -9,6 +9,14 @@ module.exports = {
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     'prettier/prettier': ['error', { singleQuote: true }],
+    'no-console': 0,
+  },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
   },
   parser: '@typescript-eslint/parser',
 };

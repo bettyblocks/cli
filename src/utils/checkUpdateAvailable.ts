@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import semver from 'semver';
 import fetch from 'node-fetch';
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version, name } = require('../../package.json');
 
@@ -9,6 +10,7 @@ export default async (): Promise<void> => {
     const res = await fetch(
       'https://api.github.com/repos/bettyblocks/cli/releases/latest',
     );
+
     const data = await res.json();
     const upstreamVersion = data.tag_name.substring(1);
 
@@ -19,5 +21,7 @@ export default async (): Promise<void> => {
         )} to ${chalk.greenBright(upstreamVersion)}.`,
       );
     }
-  } catch {}
+  } catch {
+    // Fail silently!
+  }
 };

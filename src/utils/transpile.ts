@@ -15,6 +15,8 @@ export default (code: string): string | void => {
         if (['jsx', 'styles'].includes(path.node.key.name)) {
           const value: string = generate(path.node.value).code;
 
+          // Reassigningment is how this kind of traversal works
+          // eslint-disable-next-line no-param-reassign
           path.node.value = stringLiteral(value);
         }
       },

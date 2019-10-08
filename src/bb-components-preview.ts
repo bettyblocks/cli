@@ -1,8 +1,9 @@
 import program, { CommanderStatic } from 'commander';
 import { createServer } from 'http';
 import handler from 'serve-handler';
-import serveComponentSet from './utils/serveComponentSet';
 import { resolve, sep } from 'path';
+
+import serveComponentSet from './utils/serveComponentSet';
 
 program
   .usage('[path]')
@@ -29,13 +30,13 @@ const dirName = resolve(rootDir)
   .split(sep)
   .slice(-1)[0];
 
-componentSetPort = isNaN(componentSetPort)
+componentSetPort = Number.isNaN(componentSetPort)
   ? 5001
   : parseInt(componentSetPort, 10);
 
 serveComponentSet(rootDir, dirName, componentSetPort);
 
-previewPort = isNaN(previewPort) ? 3003 : parseInt(previewPort, 10);
+previewPort = Number.isNaN(previewPort) ? 3003 : parseInt(previewPort, 10);
 
 const previewServer = createServer((response, request) =>
   handler(response, request, {

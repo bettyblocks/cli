@@ -1,5 +1,6 @@
 import program from 'commander';
 import { readJsonSync } from 'fs-extra';
+
 import uploadBlob from './utils/uploadBlob';
 import { logIOError, logUploadError } from './utils/logErrors';
 
