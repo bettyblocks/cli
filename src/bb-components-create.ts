@@ -25,7 +25,7 @@ if (existsSync(dest)) {
 }
 
 copy(path.join(__dirname, '../assets/component-set'), dest)
-  .then(() => {
+  .then((): void => {
     moveSync(`${dest}/__package.json`, `${dest}/package.json`);
     console.log(`Component set succesfully created in directory '${dest}'.`);
   })

@@ -11,8 +11,8 @@ export default async (): Promise<void> => {
       'https://api.github.com/repos/bettyblocks/cli/releases/latest',
     );
 
-    const data = await res.json();
-    const upstreamVersion = data.tag_name.substring(1);
+    const { tag_name: tagName } = await res.json();
+    const upstreamVersion: string = tagName.substring(1);
 
     if (semver.lt(version, upstreamVersion)) {
       console.log(

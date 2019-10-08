@@ -20,7 +20,7 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
 ): Promise<void> => {
   const srcDir = `${rootDir}/src/components`;
   const distDir = `${rootDir}/dist`;
-  const exists = await pathExists(srcDir);
+  const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
     return outputJson(`${distDir}/templates.json`, []);
@@ -28,7 +28,7 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
 
   const componentFiles: string[] = await readScripts(srcDir);
 
-  const components = componentFiles.map(
+  const components: Array<Promise<Component>> = componentFiles.map(
     async (file: string): Promise<Component> => {
       const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
@@ -50,7 +50,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 ): Promise<void> => {
   const srcDir = `${rootDir}/src/prefabs`;
   const distDir = `${rootDir}/dist`;
-  const exists = await pathExists(srcDir);
+  const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
     return outputJson(`${distDir}/prefabs.json`, []);
@@ -58,7 +58,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
   const prefabFiles: string[] = await readScripts(srcDir);
 
-  const prefabs = prefabFiles.map(
+  const prefabs: Array<Promise<Prefab>> = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
       const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 

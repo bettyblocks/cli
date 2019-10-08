@@ -29,8 +29,8 @@ program
     'publish <--bucket> [path]',
     'publish the component set from a specific path, defaults to CWD',
   )
-  .on('command:*', command => {
-    if (!availableCommands.includes(command[0])) {
+  .on('command:*', ([command]: string[]): void => {
+    if (!availableCommands.includes(command)) {
       console.error('Invalid command: %s\n', program.args.join(' '));
       program.outputHelp();
       process.exit(1);
