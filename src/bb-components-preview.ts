@@ -4,6 +4,7 @@ import handler from 'serve-handler';
 import { resolve, sep } from 'path';
 
 import serveComponentSet from './utils/serveComponentSet';
+import { parseDir, parsePort } from './utils/arguments';
 
 program
   .usage('[path]')
@@ -24,21 +25,17 @@ const {
   component_set_port: componentSetPortRaw,
 }: CommanderStatic = program;
 
-const rootDir: string = args.length === 0 ? '.' : args[0];
+const rootDir: string = parseDir(args);
 
 const dirName: string = resolve(rootDir)
   .split(sep)
   .slice(-1)[0];
 
-const componentSetPort: number = Number.isNaN(componentSetPortRaw)
-  ? 5001
-  : parseInt(componentSetPortRaw, 10);
+const componentSetPort: number = parsePort(componentSetPortRaw, 5001);
 
 serveComponentSet(rootDir, dirName, componentSetPort);
 
-const previewPort: number = Number.isNaN(previewPortRaw)
-  ? 3003
-  : parseInt(previewPortRaw, 10);
+const previewPort: number = parsePort(previewPortRaw, 3003);
 
 const previewServer: Server = createServer(
   (response, request): Promise<void> =>

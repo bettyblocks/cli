@@ -7,6 +7,7 @@ import validateComponent from './validations/component';
 import validatePrefab from './validations/prefab';
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
+import { parseDir } from './utils/arguments';
 
 const { mkdir, readFile } = promises;
 
@@ -77,7 +78,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
 (async (): Promise<void> => {
   const { args }: CommanderStatic = program;
-  const rootDir: string = args.length === 0 ? '.' : args[0];
+  const rootDir: string = parseDir(args);
 
   try {
     await checkUpdateAvailable();

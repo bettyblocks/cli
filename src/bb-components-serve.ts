@@ -2,6 +2,7 @@ import program, { CommanderStatic } from 'commander';
 import { resolve, sep } from 'path';
 
 import serveComponentSet from './utils/serveComponentSet';
+import { parseDir, parsePort } from './utils/arguments';
 
 program
   .usage('[path]')
@@ -10,8 +11,8 @@ program
   .parse(process.argv);
 
 const { args, port: portRaw }: CommanderStatic = program;
-const rootDir: string = args.length === 0 ? '.' : args[0];
-const port: number = Number.isNaN(portRaw) ? 5001 : parseInt(portRaw, 10);
+const rootDir: string = parseDir(args);
+const port: number = parsePort(portRaw, 5001);
 
 const dirName: string = resolve(rootDir)
   .split(sep)
