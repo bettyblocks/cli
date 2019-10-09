@@ -6,6 +6,7 @@ import {
   ServiceURL,
   SharedKeyCredential,
   StorageURL,
+  Pipeline,
 } from '@azure/storage-blob';
 
 import {
@@ -20,12 +21,12 @@ interface BlockBlobUploadResponseExtended extends BlockBlobUploadResponse {
 }
 
 const getServiceUrl = (): ServiceURL => {
-  const sharedKeyCredential = new SharedKeyCredential(
+  const sharedKeyCredential: SharedKeyCredential = new SharedKeyCredential(
     AZURE_BLOB_ACCOUNT as string,
     AZURE_BLOB_ACCOUNT_KEY as string,
   );
 
-  const pipeline = StorageURL.newPipeline(sharedKeyCredential);
+  const pipeline: Pipeline = StorageURL.newPipeline(sharedKeyCredential);
 
   const url = `https://${AZURE_BLOB_ACCOUNT as string}.blob.core.windows.net`;
 
