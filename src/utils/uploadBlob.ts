@@ -16,7 +16,8 @@ import {
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
-interface BlockBlobUploadResponseExtended extends BlockBlobUploadResponse {
+export interface BlockBlobUploadResponseExtended
+  extends BlockBlobUploadResponse {
   url: string;
 }
 

@@ -1,9 +1,9 @@
 import program from 'commander';
-import { readJsonSync } from 'fs-extra';
-import { RestError } from '@azure/ms-rest-js';
+import { readJSON } from 'fs-extra';
 
-import uploadBlob from './utils/uploadBlob';
-import { logIOError, logUploadError } from './utils/logErrors';
+import uploadBlob, {
+  BlockBlobUploadResponseExtended,
+} from './utils/uploadBlob';
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
@@ -15,7 +15,7 @@ program
 
 const { args, bucket: name } = program;
 
-const path: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
+const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 
 if (!AZURE_BLOB_ACCOUNT) {
   throw Error('$AZURE_BLOB_ACCOUNT is required');
@@ -29,28 +29,58 @@ if (!name || !name.length) {
   throw Error('-b or --bucket [name] is required');
 }
 
-try {
-  const templates = readJsonSync(`${path}/templates.json`);
-  const prefabs = readJsonSync(`${path}/prefabs.json`);
-  const partials = readJsonSync(`${path}/partials.json`);
+const read: (fileName: string) => Promise<unknown> = (
+  fileName: string,
+): Promise<unknown> => {
+  try {
+    return readJSON(`${distDir}/${fileName}`);
+  } catch (error) {
+    console.error('There was an error trying to publish your component set');
 
-  Promise.all([
-    uploadBlob(name, 'templates.json', JSON.stringify(templates)),
-    uploadBlob(name, 'prefabs.json', JSON.stringify(prefabs)),
-    uploadBlob(name, 'partials.json', JSON.stringify(partials)),
-  ])
-    .then(([{ url }]: { url: string }[]): void =>
-      console.log(
-        `Upload succesfully.\n
+    const { code, message } = error;
+
+    throw Error(code === 'ENOENT' ? message : error);
+  }
+};
+
+const publish: (
+  fileName: string,
+) => Promise<BlockBlobUploadResponseExtended> = async (
+  fileName: string,
+): Promise<BlockBlobUploadResponseExtended> => {
+  const objects = await read(fileName);
+
+  try {
+    return uploadBlob(name, fileName, JSON.stringify(objects));
+  } catch (error) {
+    console.error('There was an error trying to publish your component set');
+
+    const { body, message } = error;
+
+    if (!body) {
+      throw Error(message);
+    }
+
+    const { code, message: bodyMessage } = body;
+
+    throw Error(
+      `Code: ${code}\nMessage: ${
+        code === 'AuthenticationFailed'
+          ? 'Make sure your azure blob account and key are correct'
+          : bodyMessage
+      }`,
+    );
+  }
+};
+
+(async (): Promise<void> => {
+  const [{ url }] = await Promise.all(
+    ['partials.json', 'prefabs.json', 'templates.json'].map(publish),
+  );
+
+  console.log(
+    `Upload succesfully.\n
 Use the following URL in the Page Builder to start working with your component set:\n
 ${url}`,
-      ),
-    )
-    .catch((error: RestError): void => {
-      logUploadError(error);
-      process.exit(1);
-    });
-} catch (error) {
-  logIOError(error);
-  process.exit(1);
-}
+  );
+})();
