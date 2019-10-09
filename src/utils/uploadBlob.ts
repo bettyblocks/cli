@@ -67,7 +67,7 @@ const getBlockURL = async (
     }
   }
 
-  const blobURL = BlobURL.fromContainerURL(url, name);
+  const blobURL: BlobURL = BlobURL.fromContainerURL(url, name);
 
   return BlockBlobURL.fromBlobURL(blobURL);
 };
@@ -88,9 +88,9 @@ export default async (
   blobName: string,
   blobContent: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
-  const serviceURL = await getServiceUrl();
+  const serviceURL = getServiceUrl();
   await setCorsRules(serviceURL);
-  const containerURL = await getContainerURL(serviceURL, blobContainerName);
+  const containerURL = getContainerURL(serviceURL, blobContainerName);
   const blockURL = await getBlockURL(containerURL, blobName);
   const uploadResponse = await upload(blockURL, blobContent);
 
