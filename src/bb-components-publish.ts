@@ -7,6 +7,14 @@ import uploadBlob, {
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
+if (!AZURE_BLOB_ACCOUNT) {
+  throw Error('$AZURE_BLOB_ACCOUNT is required');
+}
+
+if (!AZURE_BLOB_ACCOUNT_KEY) {
+  throw Error('$AZURE_BLOB_ACCOUNT_KEY is required');
+}
+
 program
   .usage('[options] <path>')
   .name('bb components publish')
@@ -16,14 +24,6 @@ program
 const { args, bucket: name } = program;
 
 const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
-
-if (!AZURE_BLOB_ACCOUNT) {
-  throw Error('$AZURE_BLOB_ACCOUNT is required');
-}
-
-if (!AZURE_BLOB_ACCOUNT_KEY) {
-  throw Error('$AZURE_BLOB_ACCOUNT_KEY is required');
-}
 
 if (!name || !name.length) {
   throw Error('-b or --bucket [name] is required');
