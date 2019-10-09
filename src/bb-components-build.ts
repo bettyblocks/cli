@@ -44,6 +44,8 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/templates.json`, output);
+
+  return Promise.resolve();
 };
 
 const buildPrefabs: (rootDir: string) => Promise<void> = async (
@@ -74,6 +76,8 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/prefabs.json`, output);
+
+  return Promise.resolve();
 };
 
 (async (): Promise<void> => {
@@ -82,8 +86,12 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 
   try {
     await checkUpdateAvailable();
-    await buildComponents(rootDir);
-    await buildPrefabs(rootDir);
+
+    await Promise.all([
+      (): Promise<void> => buildComponents(rootDir),
+      (): Promise<void> => buildPrefabs(rootDir),
+    ]);
+
     console.info('Success');
   } catch ({ message }) {
     console.error(message);
