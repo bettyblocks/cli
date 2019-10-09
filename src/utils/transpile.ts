@@ -18,17 +18,12 @@ const generateInnerCode: (ast: File) => void = (ast: File): void => {
   });
 };
 
-export default (code: string): string | void => {
-  try {
-    const ast: File = parse(code, {
-      plugins: ['jsx'],
-    });
+export default (code: string): string => {
+  const ast: File = parse(code, {
+    plugins: ['jsx'],
+  });
 
-    generateInnerCode(ast);
+  generateInnerCode(ast);
 
-    return generate(ast).code;
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
+  return generate(ast).code;
 };
