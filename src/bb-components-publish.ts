@@ -22,16 +22,13 @@ program
   .parse(process.argv);
 
 const { args, bucket: name } = program;
-
 const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 
 if (!name || !name.length) {
   throw Error('-b or --bucket [name] is required');
 }
 
-const read: (fileName: string) => Promise<unknown> = (
-  fileName: string,
-): Promise<unknown> => {
+const read = (fileName: string): Promise<unknown> => {
   try {
     return readJSON(`${distDir}/${fileName}`);
   } catch (error) {
@@ -43,13 +40,10 @@ const read: (fileName: string) => Promise<unknown> = (
   }
 };
 
-const publish: (
-  fileName: string,
-) => Promise<BlockBlobUploadResponseExtended> = async (
+const upload = async (
+  objects: unknown,
   fileName: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
-  const objects = await read(fileName);
-
   try {
     return uploadBlob(name, fileName, JSON.stringify(objects));
   } catch (error) {
@@ -71,6 +65,13 @@ const publish: (
       }`,
     );
   }
+};
+
+const publish = async (
+  fileName: string,
+): Promise<BlockBlobUploadResponseExtended> => {
+  const objects = await read(fileName);
+  return upload(objects, fileName);
 };
 
 (async (): Promise<void> => {
