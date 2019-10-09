@@ -16,19 +16,19 @@ if (args.length === 0) {
 const dest: string = args[0];
 
 if (existsSync(dest)) {
-  console.error(
-    `Could not create component set: directory already exists.`,
-    dest,
+  throw Error(
+    `Could not create component set: directory (${dest}) already exists.`,
   );
-
-  process.exit(1);
 }
 
-copy(path.join(__dirname, '../assets/component-set'), dest)
-  .then((): void => {
+(async (): Promise<void> => {
+  try {
+    await copy(path.join(__dirname, '../assets/component-set'), dest);
     moveSync(`${dest}/__package.json`, `${dest}/package.json`);
     console.log(`Component set succesfully created in directory '${dest}'.`);
-  })
-  .catch(({ message }: Error): void =>
-    console.error(`Could not create component set: ${message}.`, dest),
-  );
+  } catch ({ message }) {
+    throw Error(
+      `Could not create component set in directory ${dest}: ${message}.`,
+    );
+  }
+})();
