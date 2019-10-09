@@ -18,18 +18,15 @@ const { args, bucket: name } = program;
 const path: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 
 if (!AZURE_BLOB_ACCOUNT) {
-  console.error('$AZURE_BLOB_ACCOUNT is required');
-  process.exit(1);
+  throw Error('$AZURE_BLOB_ACCOUNT is required');
 }
 
 if (!AZURE_BLOB_ACCOUNT_KEY) {
-  console.error('$AZURE_BLOB_ACCOUNT_KEY is required');
-  process.exit(1);
+  throw Error('$AZURE_BLOB_ACCOUNT_KEY is required');
 }
 
 if (!name || !name.length) {
-  console.error('-b or --bucket [name] is required');
-  process.exit(1);
+  throw Error('-b or --bucket [name] is required');
 }
 
 try {
