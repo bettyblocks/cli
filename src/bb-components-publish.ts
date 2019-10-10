@@ -71,6 +71,7 @@ const publish = async (
   fileName: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
   const objects = await read(fileName);
+
   return upload(objects, fileName);
 };
 

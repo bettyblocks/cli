@@ -1,7 +1,7 @@
 import program, { CommanderStatic } from 'commander';
 import { createServer, Server } from 'http';
 import handler from 'serve-handler';
-import { resolve, sep } from 'path';
+import { basename } from 'path';
 
 import serveComponentSet from './utils/serveComponentSet';
 import { parseDir, parsePort } from './utils/arguments';
@@ -26,11 +26,7 @@ const {
 }: CommanderStatic = program;
 
 const rootDir: string = parseDir(args);
-
-const dirName: string = resolve(rootDir)
-  .split(sep)
-  .slice(-1)[0];
-
+const dirName: string = basename(rootDir);
 const componentSetPort: number = parsePort(componentSetPortRaw, 5001);
 
 serveComponentSet(rootDir, dirName, componentSetPort);
