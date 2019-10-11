@@ -12,7 +12,7 @@ import {
 import {
   ServiceSetPropertiesResponse,
   BlockBlobUploadResponse,
-} from '@azure/storage-blob/typings/src/generated/src/models';
+} from '@azure/storage-blob/src/generated/src/models';
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
