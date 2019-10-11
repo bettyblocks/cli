@@ -27,6 +27,11 @@ export default async (): Promise<void> => {
   }
 
   const { tag_name: tagName } = await res.json();
+
+  if (!tagName) {
+    return;
+  }
+
   const upstreamVersion: string = tagName.substring(1);
 
   if (semver.lt(localVersion, upstreamVersion)) {
