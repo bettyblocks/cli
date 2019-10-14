@@ -8,6 +8,7 @@ import validatePrefab from './validations/prefab';
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
 import { parseDir } from './utils/arguments';
+import { checkNameReferences } from './utils/validation';
 
 const { mkdir, readFile } = promises;
 
@@ -16,15 +17,14 @@ program
   .name('bb components build')
   .parse(process.argv);
 
-const buildComponents: (rootDir: string) => Promise<void> = async (
+const readComponents: (rootDir: string) => Promise<Component[]> = async (
   rootDir: string,
-): Promise<void> => {
+): Promise<Component[]> => {
   const srcDir = `${rootDir}/src/components`;
-  const distDir = `${rootDir}/dist`;
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    return outputJson(`${distDir}/templates.json`, []);
+    throw new Error('Components folder not found');
   }
 
   const componentFiles: string[] = await readScripts(srcDir);
@@ -38,25 +38,31 @@ const buildComponents: (rootDir: string) => Promise<void> = async (
     },
   );
 
-  const output: Component[] = await Promise.all(components);
+  return Promise.all(components);
+};
 
-  validateComponent(output);
+const buildComponents: (
+  rootDir: string,
+  components: Component[],
+) => Promise<void> = async (rootDir: string, components: Component[]) => {
+  const distDir = `${rootDir}/dist`;
+
+  validateComponent(components);
 
   await mkdir(distDir, { recursive: true });
-  await outputJson(`${distDir}/templates.json`, output);
+  await outputJson(`${distDir}/templates.json`, components);
 
   return Promise.resolve();
 };
 
-const buildPrefabs: (rootDir: string) => Promise<void> = async (
+const readPrefabs: (rootDir: string) => Promise<Prefab[]> = async (
   rootDir: string,
-): Promise<void> => {
+): Promise<Prefab[]> => {
   const srcDir = `${rootDir}/src/prefabs`;
-  const distDir = `${rootDir}/dist`;
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    return outputJson(`${distDir}/prefabs.json`, []);
+    throw new Error('Prefabs folder not found');
   }
 
   const prefabFiles: string[] = await readScripts(srcDir);
@@ -70,12 +76,18 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
     },
   );
 
-  const output: Prefab[] = await Promise.all(prefabs);
+  return Promise.all(prefabs);
+};
 
-  validatePrefab(output);
+const buildPrefabs: (
+  rootDir: string,
+  prefabs: Prefab[],
+) => Promise<void> = async (rootDir: string, prefabs: Prefab[]) => {
+  validatePrefab(prefabs);
+  const distDir = `${rootDir}/dist`;
 
   await mkdir(distDir, { recursive: true });
-  await outputJson(`${distDir}/prefabs.json`, output);
+  await outputJson(`${distDir}/prefabs.json`, prefabs);
 
   return Promise.resolve();
 };
@@ -87,7 +99,17 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
   try {
     await checkUpdateAvailable();
 
-    await Promise.all([buildComponents(rootDir), buildPrefabs(rootDir)]);
+    const [prefabs, components] = await Promise.all([
+      readPrefabs(rootDir),
+      readComponents(rootDir),
+    ]);
+
+    checkNameReferences(prefabs, components);
+
+    await Promise.all([
+      buildComponents(rootDir, components),
+      buildPrefabs(rootDir, prefabs),
+    ]);
 
     console.info('Success');
   } catch ({ message }) {
