@@ -1,3 +1,10 @@
+## [22.27.1](https://github.com/bettyblocks/cli/compare/v22.27.0...v22.27.1) (2019-10-14)
+
+
+### Bug Fixes
+
+* async build step ([b6c338f](https://github.com/bettyblocks/cli/commit/b6c338f))
+
 # Change Log
 
 All notable changes to this project will be documented in this file.
