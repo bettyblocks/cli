@@ -1,3 +1,10 @@
+## [22.28.1](https://github.com/bettyblocks/cli/compare/v22.28.0...v22.28.1) (2019-10-14)
+
+
+### Bug Fixes
+
+* version command ([b8543f0](https://github.com/bettyblocks/cli/commit/b8543f0))
+
 # [22.28.0](https://github.com/bettyblocks/cli/compare/v22.27.1...v22.28.0) (2019-10-14)
 
 
