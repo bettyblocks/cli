@@ -8,6 +8,7 @@ import validatePrefab from './validations/prefab';
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
 import { parseDir } from './utils/arguments';
+import { checkNameReferences } from './utils/validation';
 
 const { mkdir, readFile } = promises;
 
@@ -102,6 +103,8 @@ const buildPrefabs: (
       readPrefabs(rootDir),
       readComponents(rootDir),
     ]);
+
+    checkNameReferences(prefabs, components);
 
     await Promise.all([
       buildComponents(rootDir, components),
