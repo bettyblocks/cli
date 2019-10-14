@@ -1,3 +1,10 @@
+# [22.28.0](https://github.com/bettyblocks/cli/compare/v22.27.1...v22.28.0) (2019-10-14)
+
+
+### Features
+
+* add component ref name reference check ([2376a00](https://github.com/bettyblocks/cli/commit/2376a00))
+
 ## [22.27.1](https://github.com/bettyblocks/cli/compare/v22.27.0...v22.27.1) (2019-10-14)
 
 
