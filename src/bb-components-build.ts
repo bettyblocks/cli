@@ -87,10 +87,7 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
   try {
     await checkUpdateAvailable();
 
-    await Promise.all([
-      (): Promise<void> => buildComponents(rootDir),
-      (): Promise<void> => buildPrefabs(rootDir),
-    ]);
+    await Promise.all([buildComponents(rootDir), buildPrefabs(rootDir)]);
 
     console.info('Success');
   } catch ({ message }) {
