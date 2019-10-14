@@ -8,8 +8,8 @@ program
   .description('The Betty Blocks CLI')
   .version('1.0.0')
   .command('components <cmd>', 'manage your component sets')
-  .on('command:*', command => {
-    if (!availableCommands.includes(command[0])) {
+  .on('command:*', ([command]: string[]): void => {
+    if (!availableCommands.includes(command)) {
       console.error('Invalid command: %s\n', program.args.join(' '));
       program.outputHelp();
       process.exit(1);

@@ -1,4 +1,5 @@
 import { promises } from 'fs-extra';
+
 const { readdir } = promises;
 
 export default async (dir: string): Promise<string[]> => {

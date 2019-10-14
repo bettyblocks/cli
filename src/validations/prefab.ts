@@ -1,4 +1,7 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import Joi from '@hapi/joi';
+
 import * as utils from '../utils/validation';
 import { Prefab } from '../types';
 
@@ -16,18 +19,7 @@ const componentRefSchema = Joi.object({
     )
     .required(),
   descendants: Joi.array()
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     .items(Joi.custom(validateComponentRef))
-    .required(),
-});
-
-const schema = Joi.object({
-  name: Joi.string().required(),
-  icon: Joi.string().required(),
-  category: Joi.string().required(),
-  structure: Joi.array()
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-    .items(validateComponentRef)
     .required(),
 });
 
@@ -44,7 +36,17 @@ function validateComponentRef(prefab: Prefab): Prefab {
   return prefab;
 }
 
-export const validate = (prefabs: Prefab[]): void => {
+const schema = Joi.object({
+  name: Joi.string().required(),
+  icon: Joi.string().required(),
+  category: Joi.string().required(),
+  structure: Joi.array()
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    .items(validateComponentRef)
+    .required(),
+});
+
+export default (prefabs: Prefab[]): void => {
   utils.validate(schema, prefabs);
   utils.findDuplicates(prefabs);
 };

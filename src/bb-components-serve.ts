@@ -1,6 +1,8 @@
 import program, { CommanderStatic } from 'commander';
+import { basename } from 'path';
+
 import serveComponentSet from './utils/serveComponentSet';
-import { resolve, sep } from 'path';
+import { parseDir, parsePort } from './utils/arguments';
 
 program
   .usage('[path]')
@@ -8,14 +10,9 @@ program
   .option('-p, --port [port]', 'Serve on a custom port. Defaults to 5001.')
   .parse(process.argv);
 
-const { args }: CommanderStatic = program;
-const rootDir: string = args.length === 0 ? '.' : args[0];
-let { port } = program;
-
-port = isNaN(port) ? 5001 : parseInt(port, 10);
-
-const dirName = resolve(rootDir)
-  .split(sep)
-  .slice(-1)[0];
+const { args, port: portRaw }: CommanderStatic = program;
+const rootDir: string = parseDir(args);
+const port: number = parsePort(portRaw, 5001);
+const dirName: string = basename(rootDir);
 
 serveComponentSet(rootDir, dirName, port);

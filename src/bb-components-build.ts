@@ -3,11 +3,11 @@ import { promises, outputJson, pathExists } from 'fs-extra';
 import { Component, Prefab } from './types';
 import checkUpdateAvailable from './utils/checkUpdateAvailable';
 
-import { validate as validateComponent } from './validations/component';
-import { validate as validatePrefab } from './validations/prefab';
-
+import validateComponent from './validations/component';
+import validatePrefab from './validations/prefab';
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
+import { parseDir } from './utils/arguments';
 
 const { mkdir, readFile } = promises;
 
@@ -16,36 +16,36 @@ program
   .name('bb components build')
   .parse(process.argv);
 
-const { args }: CommanderStatic = program;
-const rootDir: string = args.length === 0 ? '.' : args[0];
-
 const buildComponents: (rootDir: string) => Promise<void> = async (
   rootDir: string,
 ): Promise<void> => {
   const srcDir = `${rootDir}/src/components`;
   const distDir = `${rootDir}/dist`;
-  const exists = await pathExists(srcDir);
+  const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    return await outputJson(`${distDir}/templates.json`, []);
+    return outputJson(`${distDir}/templates.json`, []);
   }
 
   const componentFiles: string[] = await readScripts(srcDir);
 
-  const promises = componentFiles.map(
+  const components: Array<Promise<Component>> = componentFiles.map(
     async (file: string): Promise<Component> => {
       const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
+      // eslint-disable-next-line no-new-func
       return Function(`return ${transpile(code)}`)();
     },
   );
 
-  const output: Component[] = await Promise.all(promises);
+  const output: Component[] = await Promise.all(components);
 
   validateComponent(output);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/templates.json`, output);
+
+  return Promise.resolve();
 };
 
 const buildPrefabs: (rootDir: string) => Promise<void> = async (
@@ -53,35 +53,45 @@ const buildPrefabs: (rootDir: string) => Promise<void> = async (
 ): Promise<void> => {
   const srcDir = `${rootDir}/src/prefabs`;
   const distDir = `${rootDir}/dist`;
-  const exists = await pathExists(srcDir);
+  const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    return await outputJson(`${distDir}/prefabs.json`, []);
+    return outputJson(`${distDir}/prefabs.json`, []);
   }
 
   const prefabFiles: string[] = await readScripts(srcDir);
 
-  const promises = prefabFiles.map(
+  const prefabs: Array<Promise<Prefab>> = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
       const code = await readFile(`${srcDir}/${file}`, 'utf-8');
 
+      // eslint-disable-next-line no-new-func
       return Function(`return ${code}`)();
     },
   );
 
-  const output: Prefab[] = await Promise.all(promises);
+  const output: Prefab[] = await Promise.all(prefabs);
 
   validatePrefab(output);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/prefabs.json`, output);
+
+  return Promise.resolve();
 };
 
 (async (): Promise<void> => {
+  const { args }: CommanderStatic = program;
+  const rootDir: string = parseDir(args);
+
   try {
     await checkUpdateAvailable();
-    await buildComponents(rootDir);
-    await buildPrefabs(rootDir);
+
+    await Promise.all([
+      (): Promise<void> => buildComponents(rootDir),
+      (): Promise<void> => buildPrefabs(rootDir),
+    ]);
+
     console.info('Success');
   } catch ({ message }) {
     console.error(message);

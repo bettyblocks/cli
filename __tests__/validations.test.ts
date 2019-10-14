@@ -1,5 +1,5 @@
-import { validate as validateComponent } from '../src/validations/component';
-import { validate as validatePrefab } from '../src/validations/prefab';
+import validateComponent from '../src/validations/component';
+import validatePrefab from '../src/validations/prefab';
 import { Component, Prefab, Orientation } from '../src/types';
 
 const { Vertical } = Orientation;

@@ -1,8 +1,9 @@
-import Joi from '@hapi/joi';
+import Joi, { ObjectSchema } from '@hapi/joi';
+
 import * as utils from '../utils/validation';
 import { Component } from '../types';
 
-export const schema = Joi.object({
+export const schema: ObjectSchema = Joi.object({
   name: Joi.string().required(),
   icon: Joi.string(),
   category: Joi.string(), // DEPRECATED
@@ -15,7 +16,7 @@ export const schema = Joi.object({
   styles: Joi.any().required(),
 });
 
-export const validate = (components: Component[]): void => {
+export default (components: Component[]): void => {
   utils.validate(schema, components);
   utils.findDuplicates(components);
 };

@@ -6,26 +6,28 @@ import {
   ServiceURL,
   SharedKeyCredential,
   StorageURL,
+  Pipeline,
 } from '@azure/storage-blob';
 
 import {
-  BlockBlobUploadResponse,
   ServiceSetPropertiesResponse,
-} from '@azure/storage-blob/typings/src/generated/src/models';
+  BlockBlobUploadResponse,
+} from '@azure/storage-blob/src/generated/src/models';
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
-interface BlockBlobUploadResponseExtended extends BlockBlobUploadResponse {
+export interface BlockBlobUploadResponseExtended
+  extends BlockBlobUploadResponse {
   url: string;
 }
 
 const getServiceUrl = (): ServiceURL => {
-  const sharedKeyCredential = new SharedKeyCredential(
+  const sharedKeyCredential: SharedKeyCredential = new SharedKeyCredential(
     AZURE_BLOB_ACCOUNT as string,
     AZURE_BLOB_ACCOUNT_KEY as string,
   );
 
-  const pipeline = StorageURL.newPipeline(sharedKeyCredential);
+  const pipeline: Pipeline = StorageURL.newPipeline(sharedKeyCredential);
 
   const url = `https://${AZURE_BLOB_ACCOUNT as string}.blob.core.windows.net`;
 
@@ -67,7 +69,7 @@ const getBlockURL = async (
     }
   }
 
-  const blobURL = BlobURL.fromContainerURL(url, name);
+  const blobURL: BlobURL = BlobURL.fromContainerURL(url, name);
 
   return BlockBlobURL.fromBlobURL(blobURL);
 };
@@ -88,9 +90,9 @@ export default async (
   blobName: string,
   blobContent: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
-  const serviceURL = await getServiceUrl();
+  const serviceURL = getServiceUrl();
   await setCorsRules(serviceURL);
-  const containerURL = await getContainerURL(serviceURL, blobContainerName);
+  const containerURL = getContainerURL(serviceURL, blobContainerName);
   const blockURL = await getBlockURL(containerURL, blobName);
   const uploadResponse = await upload(blockURL, blobContent);
 

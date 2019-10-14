@@ -1,8 +1,10 @@
 import program, { CommanderStatic } from 'commander';
-import { createServer } from 'http';
+import { createServer, Server } from 'http';
 import handler from 'serve-handler';
+import { basename } from 'path';
+
 import serveComponentSet from './utils/serveComponentSet';
-import { resolve, sep } from 'path';
+import { parseDir, parsePort } from './utils/arguments';
 
 program
   .usage('[path]')
@@ -17,33 +19,28 @@ program
   )
   .parse(process.argv);
 
-const { args }: CommanderStatic = program;
-const rootDir: string = args.length === 0 ? '.' : args[0];
+const {
+  args,
+  preview_port: previewPortRaw,
+  component_set_port: componentSetPortRaw,
+}: CommanderStatic = program;
 
-let {
-  preview_port: previewPort,
-  component_set_port: componentSetPort,
-} = program;
-
-const dirName = resolve(rootDir)
-  .split(sep)
-  .slice(-1)[0];
-
-componentSetPort = isNaN(componentSetPort)
-  ? 5001
-  : parseInt(componentSetPort, 10);
+const rootDir: string = parseDir(args);
+const dirName: string = basename(rootDir);
+const componentSetPort: number = parsePort(componentSetPortRaw, 5001);
 
 serveComponentSet(rootDir, dirName, componentSetPort);
 
-previewPort = isNaN(previewPort) ? 3003 : parseInt(previewPort, 10);
+const previewPort: number = parsePort(previewPortRaw, 3003);
 
-const previewServer = createServer((response, request) =>
-  handler(response, request, {
-    public: './preview/build',
-  }),
+const previewServer: Server = createServer(
+  (response, request): Promise<void> =>
+    handler(response, request, {
+      public: './preview/build',
+    }),
 );
 
-previewServer.listen(previewPort, () => {
+previewServer.listen(previewPort, (): void => {
   console.info(
     `Serving preview of "${dirName}" Component Set at http://localhost:${previewPort}`,
   );
