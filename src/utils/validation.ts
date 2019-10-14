@@ -24,34 +24,24 @@ export const findDuplicates = <T extends { name: string }>(list: T[]): void => {
   }, []);
 };
 
-const getComponentRefNames = (structure: ComponentRef[]): string[] =>
-  structure.reduce(
-    (acc: string[], { name, descendants }: ComponentRef): string[] => [
-      ...acc,
-      name,
-      ...getComponentRefNames(descendants),
-    ],
-    [],
-  );
+const checkComponentRefNames = (names: Set<string>) => ({
+  name,
+  descendants,
+}: ComponentRef): void => {
+  if (!names.has(name)) {
+    throw new Error(`"${name}" references to non existing component`);
+  }
+
+  descendants.forEach(checkComponentRefNames(names));
+};
 
 export const checkNameReferences = (
   prefabs: Prefab[],
   components: Component[],
 ): void => {
-  const componentNames = new Set(components.map(component => component.name));
-  const prefabNames = new Set(
-    prefabs.reduce(
-      (acc: string[], { structure }: Prefab): string[] => [
-        ...acc,
-        ...getComponentRefNames(structure),
-      ],
-      [],
-    ),
-  );
+  const componentNames = new Set(components.map(({ name }) => name));
 
-  prefabNames.forEach(name => {
-    if (!componentNames.has(name)) {
-      throw new Error(`"${name}" references to non existing component`);
-    }
+  prefabs.forEach(({ structure }) => {
+    structure.forEach(checkComponentRefNames(componentNames));
   });
 };
