@@ -1,7 +1,13 @@
 // eslint-disable-next-line import/prefer-default-export
-export enum Orientation {
-  Vertical = 'VERTICAL',
-  Horizontal = 'HORIZONTAL',
+export type Category = DefaultCategory | string;
+
+export enum DefaultCategory {
+  Content = 'CONTENT',
+  Data = 'DATA',
+  Form = 'FORM',
+  Layout = 'LAYOUT',
+  Navigation = 'NAVIGATION',
+  Table = 'TABLE',
 }
 
 export interface Component {
@@ -11,6 +17,12 @@ export interface Component {
   orientation: Orientation;
   jsx: string;
   styles: string;
+}
+
+export interface ComponentReference {
+  name: string;
+  options: Option[];
+  descendants: ComponentReference[];
 }
 
 export enum Icon {
@@ -97,15 +109,14 @@ export interface Option {
   configuration?: unknown;
 }
 
-export interface ComponentReference {
-  name: string;
-  options: Option[];
-  descendants: ComponentReference[];
+export enum Orientation {
+  Vertical = 'VERTICAL',
+  Horizontal = 'HORIZONTAL',
 }
 
 export interface Prefab {
   name: string;
   icon: Icon;
-  category: string;
+  category: Category;
   structure: ComponentReference[];
 }
