@@ -1,3 +1,10 @@
+## [22.28.2](https://github.com/bettyblocks/cli/compare/v22.28.1...v22.28.2) (2019-10-17)
+
+
+### Bug Fixes
+
+* add cache-control header to dev server ([e336411](https://github.com/bettyblocks/cli/commit/e336411)), closes [#32](https://github.com/bettyblocks/cli/issues/32)
+
 ## [22.28.1](https://github.com/bettyblocks/cli/compare/v22.28.0...v22.28.1) (2019-10-14)
 
 
