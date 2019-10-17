@@ -31,7 +31,7 @@ const readComponents: (rootDir: string) => Promise<Component[]> = async (
 
   const components: Array<Promise<Component>> = componentFiles.map(
     async (file: string): Promise<Component> => {
-      const code = await readFile(`${srcDir}/${file}`, 'utf-8');
+      const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
 
       // eslint-disable-next-line no-new-func
       return Function(`return ${transpile(code)}`)();
@@ -69,7 +69,7 @@ const readPrefabs: (rootDir: string) => Promise<Prefab[]> = async (
 
   const prefabs: Array<Promise<Prefab>> = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
-      const code = await readFile(`${srcDir}/${file}`, 'utf-8');
+      const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
 
       // eslint-disable-next-line no-new-func
       return Function(`return ${code}`)();
@@ -99,7 +99,7 @@ const buildPrefabs: (
   try {
     await checkUpdateAvailable();
 
-    const [prefabs, components] = await Promise.all([
+    const [prefabs, components]: [Prefab[], Component[]] = await Promise.all([
       readPrefabs(rootDir),
       readComponents(rootDir),
     ]);

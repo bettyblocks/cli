@@ -1,4 +1,4 @@
-import program from 'commander';
+import program, { CommanderStatic } from 'commander';
 import { existsSync, copy, moveSync } from 'fs-extra';
 import path from 'path';
 
@@ -7,7 +7,7 @@ program
   .name('bb components create')
   .parse(process.argv);
 
-const { args } = program;
+const { args }: CommanderStatic = program;
 
 if (args.length === 0) {
   program.help();

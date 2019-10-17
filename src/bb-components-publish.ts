@@ -1,4 +1,4 @@
-import program from 'commander';
+import program, { CommanderStatic } from 'commander';
 import { readJSON } from 'fs-extra';
 
 import uploadBlob, {
@@ -21,7 +21,7 @@ program
   .option('-b, --bucket [name]', 'the component set name')
   .parse(process.argv);
 
-const { args, bucket: name } = program;
+const { args, bucket: name }: CommanderStatic = program;
 const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 
 if (!name || !name.length) {
