@@ -15,7 +15,7 @@ export interface Component {
   type: string;
   allowedTypes: string[];
   orientation: Orientation;
-  jsx: string;
+  jsx: JSX.Element;
   styles: string;
 }
 
