@@ -7,6 +7,7 @@ import {
   SharedKeyCredential,
   StorageURL,
   Pipeline,
+  RestError,
 } from '@azure/storage-blob';
 
 import {
@@ -62,7 +63,7 @@ const getBlockURL = async (
   try {
     await url.create(Aborter.none, { access: 'blob' });
   } catch (error) {
-    const { statusCode } = error;
+    const { statusCode }: RestError = error;
 
     if (statusCode !== 409) {
       throw error;

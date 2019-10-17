@@ -1,4 +1,4 @@
-import { ObjectSchema } from '@hapi/joi';
+import { ObjectSchema, ValidationResult } from '@hapi/joi';
 import { Component, ComponentReference, Prefab } from '../types';
 
 export const validate = <T extends { name: string }>(
@@ -6,7 +6,7 @@ export const validate = <T extends { name: string }>(
   list: T[],
 ): void => {
   list.forEach((item: T): void => {
-    const { error } = schema.validate(item);
+    const { error }: ValidationResult = schema.validate(item);
 
     if (typeof error !== 'undefined') {
       throw error;
@@ -39,9 +39,11 @@ export const checkNameReferences = (
   prefabs: Prefab[],
   components: Component[],
 ): void => {
-  const componentNames = new Set(components.map(({ name }) => name));
+  const componentNames: Set<string> = new Set(
+    components.map(({ name }: Component): string => name),
+  );
 
-  prefabs.forEach(({ structure }) => {
+  prefabs.forEach(({ structure }: Prefab): void => {
     structure.forEach(checkComponentReferenceNames(componentNames));
   });
 };
