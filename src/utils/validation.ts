@@ -1,5 +1,5 @@
 import { ObjectSchema } from '@hapi/joi';
-import { Component, ComponentRef, Prefab } from '../types';
+import { Component, ComponentReference, Prefab } from '../types';
 
 export const validate = <T extends { name: string }>(
   schema: ObjectSchema,
@@ -24,15 +24,15 @@ export const findDuplicates = <T extends { name: string }>(list: T[]): void => {
   }, []);
 };
 
-const checkComponentRefNames = (names: Set<string>) => ({
+const checkComponentReferenceNames = (names: Set<string>) => ({
   name,
   descendants,
-}: ComponentRef): void => {
+}: ComponentReference): void => {
   if (!names.has(name)) {
     throw new Error(`"${name}" references to non existing component`);
   }
 
-  descendants.forEach(checkComponentRefNames(names));
+  descendants.forEach(checkComponentReferenceNames(names));
 };
 
 export const checkNameReferences = (
@@ -42,6 +42,6 @@ export const checkNameReferences = (
   const componentNames = new Set(components.map(({ name }) => name));
 
   prefabs.forEach(({ structure }) => {
-    structure.forEach(checkComponentRefNames(componentNames));
+    structure.forEach(checkComponentReferenceNames(componentNames));
   });
 };

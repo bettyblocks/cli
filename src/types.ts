@@ -97,15 +97,15 @@ export interface Option {
   configuration?: unknown;
 }
 
-export interface ComponentRef {
+export interface ComponentReference {
   name: string;
   options: Option[];
-  descendants: ComponentRef[];
+  descendants: ComponentReference[];
 }
 
 export interface Prefab {
   name: string;
   icon: Icon;
   category: string;
-  structure: ComponentRef[];
+  structure: ComponentReference[];
 }
