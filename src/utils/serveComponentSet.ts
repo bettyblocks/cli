@@ -18,6 +18,10 @@ export default (
                 key: 'Access-Control-Allow-Origin',
                 value: '*',
               },
+              {
+                key: 'Cache-Control',
+                value: 'no-cache ',
+              },
             ],
           },
         ],
