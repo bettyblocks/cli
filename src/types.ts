@@ -13,7 +13,7 @@ export interface Component {
   styles: string;
 }
 
-enum Icon {
+export enum Icon {
   AccordionIcon = 'AccordionIcon',
   AccordionItemIcon = 'AccordionItemIcon',
   AlertIcon = 'AlertIcon',
