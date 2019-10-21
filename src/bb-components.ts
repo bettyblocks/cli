@@ -1,5 +1,12 @@
+/* npm dependencies */
+
 import program from 'commander';
+
+/* internal dependencies */
+
 import { CommandComponents } from './types';
+
+/* setup */
 
 const availableCommands: CommandComponents[] = [
   'create',
@@ -9,6 +16,8 @@ const availableCommands: CommandComponents[] = [
   'preview',
   'help',
 ];
+
+/* process arguments */
 
 program
   .usage(`<${availableCommands.join('|')}>`)

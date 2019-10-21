@@ -1,9 +1,13 @@
+/* npm dependencies */
+
 import program, { CommanderStatic } from 'commander';
 import { readJSON } from 'fs-extra';
 
 import uploadBlob, {
   BlockBlobUploadResponseExtended,
 } from './utils/uploadBlob';
+
+/* setup */
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
@@ -14,6 +18,8 @@ if (typeof AZURE_BLOB_ACCOUNT !== 'string') {
 if (typeof AZURE_BLOB_ACCOUNT_KEY !== 'string') {
   throw new Error('$AZURE_BLOB_ACCOUNT_KEY is required');
 }
+
+/* process arguments */
 
 program
   .usage('[options] [path]')
@@ -27,6 +33,8 @@ const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 if (!name || !name.length) {
   throw new Error('-b or --bucket [name] is required');
 }
+
+/* execute command */
 
 const read = async (fileName: string): Promise<void> => {
   try {

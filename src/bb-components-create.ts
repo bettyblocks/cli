@@ -1,6 +1,10 @@
+/* npm dependencies */
+
 import program, { CommanderStatic } from 'commander';
 import { existsSync, copy, moveSync } from 'fs-extra';
 import path from 'path';
+
+/* process arguments */
 
 program
   .usage('[path]')
@@ -14,6 +18,8 @@ if (args.length === 0) {
 }
 
 const dest: string = args[0];
+
+/* execute command */
 
 if (existsSync(dest)) {
   throw Error(
