@@ -59,8 +59,6 @@ const buildComponents: (components: Component[]) => Promise<void> = async (
 ) => {
   const distDir = `${rootDir}/dist`;
 
-  validateComponents(components);
-
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/templates.json`, components);
 
@@ -92,7 +90,6 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
 const buildPrefabs: (prefabs: Prefab[]) => Promise<void> = async (
   prefabs: Prefab[],
 ) => {
-  validatePrefabs(prefabs);
   const distDir = `${rootDir}/dist`;
 
   await mkdir(distDir, { recursive: true });
@@ -111,6 +108,11 @@ const buildPrefabs: (prefabs: Prefab[]) => Promise<void> = async (
     ]);
 
     checkNameReferences(prefabs, components);
+
+    await Promise.all([
+      validateComponents(components),
+      validatePrefabs(prefabs),
+    ]);
 
     await Promise.all([buildComponents(components), buildPrefabs(prefabs)]);
 
