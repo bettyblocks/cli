@@ -55,14 +55,6 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
   return Promise.all(components);
 };
 
-const buildComponents: (components: Component[]) => Promise<void> = async (
-  components: Component[],
-) => {
-  await outputJson(`${distDir}/templates.json`, components);
-
-  return Promise.resolve();
-};
-
 const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const srcDir = `${rootDir}/src/prefabs`;
   const exists: boolean = await pathExists(srcDir);
@@ -85,14 +77,6 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   return Promise.all(prefabs);
 };
 
-const buildPrefabs: (prefabs: Prefab[]) => Promise<void> = async (
-  prefabs: Prefab[],
-) => {
-  await outputJson(`${distDir}/prefabs.json`, prefabs);
-
-  return Promise.resolve();
-};
-
 (async (): Promise<void> => {
   try {
     await checkUpdateAvailable();
@@ -110,7 +94,11 @@ const buildPrefabs: (prefabs: Prefab[]) => Promise<void> = async (
     ]);
 
     await mkdir(distDir, { recursive: true });
-    await Promise.all([buildComponents(components), buildPrefabs(prefabs)]);
+
+    await Promise.all([
+      outputJson(`${distDir}/prefabs.json`, prefabs),
+      outputJson(`${distDir}/templates.json`, components),
+    ]);
 
     console.info('Success');
   } catch ({ message }) {
