@@ -19,7 +19,7 @@ test('Throw when two components have the same name', () => {
       type: 'ROW',
       allowedTypes: ['COLUMN'],
       orientation: 'VERTICAL',
-      jsx: <div>jsx</div>,
+      jsx: '<div>jsx</div>',
       styles: 'styles',
     },
     {
@@ -27,7 +27,7 @@ test('Throw when two components have the same name', () => {
       type: 'ROW',
       allowedTypes: ['COLUMN'],
       orientation: 'VERTICAL',
-      jsx: <div>jsx</div>,
+      jsx: '<div>jsx</div>',
       styles: 'styles',
     },
   ];
@@ -42,7 +42,7 @@ test("Don't throw when all components are valid", () => {
       type: 'ROW',
       allowedTypes: ['COLUMN'],
       orientation: 'VERTICAL',
-      jsx: <div>jsx</div>,
+      jsx: '<div>jsx</div>',
       styles: 'styles',
     },
   ];

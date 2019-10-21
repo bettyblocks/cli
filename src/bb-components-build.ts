@@ -113,6 +113,6 @@ const buildPrefabs: (
 
     console.info('Success');
   } catch ({ message }) {
-    console.error(message);
+    throw new Error(message);
   }
 })();
