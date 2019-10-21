@@ -7,16 +7,16 @@ import uploadBlob, {
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
-if (!AZURE_BLOB_ACCOUNT) {
-  throw Error('$AZURE_BLOB_ACCOUNT is required');
+if (typeof AZURE_BLOB_ACCOUNT !== 'string') {
+  throw new Error('$AZURE_BLOB_ACCOUNT is required');
 }
 
-if (!AZURE_BLOB_ACCOUNT_KEY) {
-  throw Error('$AZURE_BLOB_ACCOUNT_KEY is required');
+if (typeof AZURE_BLOB_ACCOUNT_KEY !== 'string') {
+  throw new Error('$AZURE_BLOB_ACCOUNT_KEY is required');
 }
 
 program
-  .usage('[options] <path>')
+  .usage('[options] [path]')
   .name('bb components publish')
   .option('-b, --bucket [name]', 'the component set name')
   .parse(process.argv);
@@ -25,18 +25,21 @@ const { args, bucket: name }: CommanderStatic = program;
 const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 
 if (!name || !name.length) {
-  throw Error('-b or --bucket [name] is required');
+  throw new Error('-b or --bucket [name] is required');
 }
 
-const read = (fileName: string): Promise<unknown> => {
+const read = async (fileName: string): Promise<void> => {
   try {
     return readJSON(`${distDir}/${fileName}`);
   } catch (error) {
-    console.error('There was an error trying to publish your component set');
+    const { code, message }: Error & { code: 'ENOENT' | string } = error;
 
-    const { code, message } = error;
-
-    throw Error(code === 'ENOENT' ? message : error);
+    throw new Error(
+      [
+        'There was an error trying to publish your component set',
+        code === 'ENOENT' ? message : error,
+      ].join('\n'),
+    );
   }
 };
 
@@ -47,29 +50,30 @@ const upload = async (
   try {
     return uploadBlob(name, fileName, JSON.stringify(objects));
   } catch (error) {
-    console.error('There was an error trying to publish your component set');
-
+    const defaultMessage =
+      'There was an error trying to publish your component set';
     const { body, message } = error;
 
     if (!body) {
-      throw Error(message);
+      throw new Error([defaultMessage, message].join('\n'));
     }
 
     const { code, message: bodyMessage } = body;
 
-    throw Error(
-      `Code: ${code}\nMessage: ${
-        code === 'AuthenticationFailed'
-          ? 'Make sure your azure blob account and key are correct'
-          : bodyMessage
-      }`,
-    );
+    const extraMessage =
+      code === 'AuthenticationFailed'
+        ? 'Make sure your azure blob account and key are correct'
+        : bodyMessage;
+
+    throw new Error([defaultMessage, extraMessage].join('\n'));
   }
 };
 
 const publish = async (
   fileName: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
+  console.log(`Publishing ${fileName}.`);
+
   const objects = await read(fileName);
 
   return upload(objects, fileName);
