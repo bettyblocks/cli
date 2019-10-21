@@ -1,25 +1,38 @@
+/* npm dependencies */
+
 import program, { CommanderStatic } from 'commander';
 import { promises, outputJson, pathExists } from 'fs-extra';
 import { Component, Prefab } from './types';
-import checkUpdateAvailable from './utils/checkUpdateAvailable';
 
-import validateComponent from './validations/component';
-import validatePrefab from './validations/prefab';
+/* internal dependencies */
+
+import validateComponents from './validations/component';
+import validatePrefabs from './validations/prefab';
 import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
 import { parseDir } from './utils/arguments';
 import { checkNameReferences } from './utils/validation';
+import checkUpdateAvailable from './utils/checkUpdateAvailable';
+
+/* npm dependencies */
 
 const { mkdir, readFile } = promises;
+
+/* process arguments */
 
 program
   .usage('[path]')
   .name('bb components build')
   .parse(process.argv);
 
-const readComponents: (rootDir: string) => Promise<Component[]> = async (
-  rootDir: string,
-): Promise<Component[]> => {
+const { args }: CommanderStatic = program;
+const rootDir: string = parseDir(args);
+
+/* execute command */
+
+const readComponents: () => Promise<Component[]> = async (): Promise<
+  Component[]
+> => {
   const srcDir = `${rootDir}/src/components`;
   const exists: boolean = await pathExists(srcDir);
 
@@ -41,13 +54,12 @@ const readComponents: (rootDir: string) => Promise<Component[]> = async (
   return Promise.all(components);
 };
 
-const buildComponents: (
-  rootDir: string,
+const buildComponents: (components: Component[]) => Promise<void> = async (
   components: Component[],
-) => Promise<void> = async (rootDir: string, components: Component[]) => {
+) => {
   const distDir = `${rootDir}/dist`;
 
-  validateComponent(components);
+  validateComponents(components);
 
   await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/templates.json`, components);
@@ -55,9 +67,7 @@ const buildComponents: (
   return Promise.resolve();
 };
 
-const readPrefabs: (rootDir: string) => Promise<Prefab[]> = async (
-  rootDir: string,
-): Promise<Prefab[]> => {
+const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const srcDir = `${rootDir}/src/prefabs`;
   const exists: boolean = await pathExists(srcDir);
 
@@ -79,11 +89,10 @@ const readPrefabs: (rootDir: string) => Promise<Prefab[]> = async (
   return Promise.all(prefabs);
 };
 
-const buildPrefabs: (
-  rootDir: string,
+const buildPrefabs: (prefabs: Prefab[]) => Promise<void> = async (
   prefabs: Prefab[],
-) => Promise<void> = async (rootDir: string, prefabs: Prefab[]) => {
-  validatePrefab(prefabs);
+) => {
+  validatePrefabs(prefabs);
   const distDir = `${rootDir}/dist`;
 
   await mkdir(distDir, { recursive: true });
@@ -93,23 +102,17 @@ const buildPrefabs: (
 };
 
 (async (): Promise<void> => {
-  const { args }: CommanderStatic = program;
-  const rootDir: string = parseDir(args);
-
   try {
     await checkUpdateAvailable();
 
     const [prefabs, components]: [Prefab[], Component[]] = await Promise.all([
-      readPrefabs(rootDir),
-      readComponents(rootDir),
+      readPrefabs(),
+      readComponents(),
     ]);
 
     checkNameReferences(prefabs, components);
 
-    await Promise.all([
-      buildComponents(rootDir, components),
-      buildPrefabs(rootDir, prefabs),
-    ]);
+    await Promise.all([buildComponents(components), buildPrefabs(prefabs)]);
 
     console.info('Success');
   } catch ({ message }) {
