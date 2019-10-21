@@ -1,4 +1,4 @@
-import validateComponent from '../src/validations/component';
+import validateComponents from '../src/validations/component';
 import validatePrefab from '../src/validations/prefab';
 import { Component, Prefab } from '../src/types';
 
@@ -9,7 +9,7 @@ test('Throw when one of the components is invalid', () => {
     },
   ];
 
-  expect(() => validateComponent(components as Component[])).toThrow();
+  expect(() => validateComponents(components as Component[])).toThrow();
 });
 
 test('Throw when two components have the same name', () => {
@@ -32,7 +32,7 @@ test('Throw when two components have the same name', () => {
     },
   ];
 
-  expect(() => validateComponent(components as Component[])).toThrow();
+  expect(() => validateComponents(components as Component[])).toThrow();
 });
 
 test("Don't throw when all components are valid", () => {
@@ -47,7 +47,7 @@ test("Don't throw when all components are valid", () => {
     },
   ];
 
-  expect(() => validateComponent(components)).not.toThrow();
+  expect(() => validateComponents(components)).not.toThrow();
 });
 
 test('Throw when one of the prefabs is invalid', () => {

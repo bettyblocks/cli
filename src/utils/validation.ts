@@ -3,15 +3,13 @@ import { Component, ComponentReference, Prefab } from '../types';
 
 export const validate = <T extends { name: string }>(
   schema: ObjectSchema,
-  list: T[],
+  item: T,
 ): void => {
-  list.forEach((item: T): void => {
-    const { error }: ValidationResult = schema.validate(item);
+  const { error }: ValidationResult = schema.validate(item);
 
-    if (typeof error !== 'undefined') {
-      throw error;
-    }
-  });
+  if (typeof error !== 'undefined') {
+    throw error;
+  }
 };
 
 export const findDuplicates = <T extends { name: string }>(list: T[]): void => {
