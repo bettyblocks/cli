@@ -3,7 +3,7 @@ import { existsSync, copy, moveSync } from 'fs-extra';
 import path from 'path';
 
 program
-  .usage('<path>')
+  .usage('[path]')
   .name('bb components create')
   .parse(process.argv);
 
