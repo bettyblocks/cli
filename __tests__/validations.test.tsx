@@ -1,8 +1,6 @@
-import validateComponent from '../src/validations/component';
+import validateComponents from '../src/validations/component';
 import validatePrefab from '../src/validations/prefab';
-import { Component, Prefab, Orientation } from '../src/types';
-
-const { Vertical } = Orientation;
+import { Component, Prefab } from '../src/types';
 
 test('Throw when one of the components is invalid', () => {
   const components: { name: string }[] = [
@@ -11,7 +9,7 @@ test('Throw when one of the components is invalid', () => {
     },
   ];
 
-  expect(() => validateComponent(components as Component[])).toThrow();
+  expect(() => validateComponents(components as Component[])).toThrow();
 });
 
 test('Throw when two components have the same name', () => {
@@ -20,21 +18,21 @@ test('Throw when two components have the same name', () => {
       name: 'HelloWorld',
       type: 'ROW',
       allowedTypes: ['COLUMN'],
-      orientation: Vertical,
-      jsx: 'jsx',
+      orientation: 'VERTICAL',
+      jsx: '<div>jsx</div>',
       styles: 'styles',
     },
     {
       name: 'HelloWorld',
       type: 'ROW',
       allowedTypes: ['COLUMN'],
-      orientation: Vertical,
-      jsx: 'jsx',
+      orientation: 'VERTICAL',
+      jsx: '<div>jsx</div>',
       styles: 'styles',
     },
   ];
 
-  expect(() => validateComponent(components as Component[])).toThrow();
+  expect(() => validateComponents(components as Component[])).toThrow();
 });
 
 test("Don't throw when all components are valid", () => {
@@ -43,13 +41,13 @@ test("Don't throw when all components are valid", () => {
       name: 'HelloWorld',
       type: 'ROW',
       allowedTypes: ['COLUMN'],
-      orientation: Vertical,
-      jsx: 'jsx',
+      orientation: 'VERTICAL',
+      jsx: '<div>jsx</div>',
       styles: 'styles',
     },
   ];
 
-  expect(() => validateComponent(components)).not.toThrow();
+  expect(() => validateComponents(components)).not.toThrow();
 });
 
 test('Throw when one of the prefabs is invalid', () => {
@@ -66,7 +64,7 @@ test("Don't throw when all prefabs are valid", () => {
   const prefab: Prefab[] = [
     {
       name: 'Component Name',
-      icon: 'prefab icon',
+      icon: 'AccordionIcon',
       category: 'Content',
       structure: [],
     },

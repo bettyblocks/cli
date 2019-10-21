@@ -1,4 +1,4 @@
-import { createServer, Server } from 'http';
+import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
 import handler from 'serve-handler';
 
 export default (
@@ -7,7 +7,7 @@ export default (
   port: number,
 ): void => {
   const server: Server = createServer(
-    (response, request): Promise<void> =>
+    (response: IncomingMessage, request: ServerResponse): Promise<void> =>
       handler(response, request, {
         public: `${rootDir}/dist`,
         headers: [

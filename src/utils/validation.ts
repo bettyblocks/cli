@@ -1,17 +1,15 @@
-import { ObjectSchema } from '@hapi/joi';
-import { Component, ComponentRef, Prefab } from '../types';
+import { ObjectSchema, ValidationResult } from '@hapi/joi';
+import { Component, ComponentReference, Prefab } from '../types';
 
 export const validate = <T extends { name: string }>(
   schema: ObjectSchema,
-  list: T[],
+  item: T,
 ): void => {
-  list.forEach((item: T): void => {
-    const { error } = schema.validate(item);
+  const { error }: ValidationResult = schema.validate(item);
 
-    if (typeof error !== 'undefined') {
-      throw error;
-    }
-  });
+  if (typeof error !== 'undefined') {
+    throw error;
+  }
 };
 
 export const findDuplicates = <T extends { name: string }>(list: T[]): void => {
@@ -24,24 +22,26 @@ export const findDuplicates = <T extends { name: string }>(list: T[]): void => {
   }, []);
 };
 
-const checkComponentRefNames = (names: Set<string>) => ({
+const checkComponentReferenceNames = (names: Set<string>) => ({
   name,
   descendants,
-}: ComponentRef): void => {
+}: ComponentReference): void => {
   if (!names.has(name)) {
     throw new Error(`"${name}" references to non existing component`);
   }
 
-  descendants.forEach(checkComponentRefNames(names));
+  descendants.forEach(checkComponentReferenceNames(names));
 };
 
 export const checkNameReferences = (
   prefabs: Prefab[],
   components: Component[],
 ): void => {
-  const componentNames = new Set(components.map(({ name }) => name));
+  const componentNames: Set<string> = new Set(
+    components.map(({ name }: Component): string => name),
+  );
 
-  prefabs.forEach(({ structure }) => {
-    structure.forEach(checkComponentRefNames(componentNames));
+  prefabs.forEach(({ structure }: Prefab): void => {
+    structure.forEach(checkComponentReferenceNames(componentNames));
   });
 };

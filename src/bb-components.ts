@@ -1,6 +1,14 @@
+/* npm dependencies */
+
 import program from 'commander';
 
-const availableCommands = [
+/* internal dependencies */
+
+import { CommandComponents } from './types';
+
+/* setup */
+
+const availableCommands: CommandComponents[] = [
   'create',
   'build',
   'serve',
@@ -9,8 +17,10 @@ const availableCommands = [
   'help',
 ];
 
+/* process arguments */
+
 program
-  .usage('<create|build|serve|preview|publish>')
+  .usage(`<${availableCommands.join('|')}>`)
   .name('bb components')
   .command('create <path>', 'create a new component set at path')
   .command(
@@ -26,14 +36,13 @@ program
     'serve the component set at a specific path, defaults to CWD',
   )
   .command(
-    'publish <--bucket> [path]',
+    'publish [options] [path]',
     'publish the component set from a specific path, defaults to CWD',
   )
   .on('command:*', ([command]: string[]): void => {
-    if (!availableCommands.includes(command)) {
-      console.error('Invalid command: %s\n', program.args.join(' '));
+    if (!availableCommands.includes(command as CommandComponents)) {
+      console.error('Invalid command: %s\n', command);
       program.outputHelp();
-      process.exit(1);
     }
   })
   .parse(process.argv);

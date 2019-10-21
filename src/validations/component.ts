@@ -1,6 +1,6 @@
 import Joi, { ObjectSchema } from '@hapi/joi';
 
-import * as utils from '../utils/validation';
+import { findDuplicates, validate } from '../utils/validation';
 import { Component } from '../types';
 
 export const schema: ObjectSchema = Joi.object({
@@ -17,6 +17,9 @@ export const schema: ObjectSchema = Joi.object({
 });
 
 export default (components: Component[]): void => {
-  utils.validate(schema, components);
-  utils.findDuplicates(components);
+  components.forEach((component: Component): void => {
+    validate(schema, component);
+  });
+
+  findDuplicates(components);
 };

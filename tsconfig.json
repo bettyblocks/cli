@@ -4,6 +4,7 @@
     "outDir": "build",
     "module": "commonjs",
     "target": "es6",
+    "jsx": "preserve",
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,

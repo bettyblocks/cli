@@ -5,7 +5,7 @@ export const parsePort = (
   portRaw: string | undefined,
   defaultPort: number,
 ): number => {
-  const port = parseInt(portRaw as string, 10);
+  const port: number = parseInt(portRaw as string, 10);
 
   return Number.isNaN(port) ? defaultPort : port;
 };

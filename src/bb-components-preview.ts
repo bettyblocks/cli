@@ -1,10 +1,16 @@
+/* npm dependencies */
+
 import program, { CommanderStatic } from 'commander';
 import { createServer, Server } from 'http';
 import handler from 'serve-handler';
 import { basename } from 'path';
 
+/* internal dependencies */
+
 import serveComponentSet from './utils/serveComponentSet';
 import { parseDir, parsePort } from './utils/arguments';
+
+/* process arguments */
 
 program
   .usage('[path]')
@@ -28,10 +34,11 @@ const {
 const rootDir: string = parseDir(args);
 const dirName: string = basename(rootDir);
 const componentSetPort: number = parsePort(componentSetPortRaw, 5001);
+const previewPort: number = parsePort(previewPortRaw, 3003);
+
+/* execute command */
 
 serveComponentSet(rootDir, dirName, componentSetPort);
-
-const previewPort: number = parsePort(previewPortRaw, 3003);
 
 const previewServer: Server = createServer(
   (response, request): Promise<void> =>

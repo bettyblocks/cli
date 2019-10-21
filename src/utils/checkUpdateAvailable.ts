@@ -26,7 +26,8 @@ export default async (): Promise<void> => {
     return;
   }
 
-  const { tag_name: tagName } = await res.json();
+  // eslint-disable-next-line camelcase
+  const { tag_name: tagName }: { tag_name: string } = await res.json();
 
   if (!tagName) {
     return;
