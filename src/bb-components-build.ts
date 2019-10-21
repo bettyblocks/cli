@@ -27,6 +27,7 @@ program
 
 const { args }: CommanderStatic = program;
 const rootDir: string = parseDir(args);
+const distDir = `${rootDir}/dist`;
 
 /* execute command */
 
@@ -57,9 +58,6 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 const buildComponents: (components: Component[]) => Promise<void> = async (
   components: Component[],
 ) => {
-  const distDir = `${rootDir}/dist`;
-
-  await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/templates.json`, components);
 
   return Promise.resolve();
@@ -90,9 +88,6 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
 const buildPrefabs: (prefabs: Prefab[]) => Promise<void> = async (
   prefabs: Prefab[],
 ) => {
-  const distDir = `${rootDir}/dist`;
-
-  await mkdir(distDir, { recursive: true });
   await outputJson(`${distDir}/prefabs.json`, prefabs);
 
   return Promise.resolve();
@@ -114,6 +109,7 @@ const buildPrefabs: (prefabs: Prefab[]) => Promise<void> = async (
       validatePrefabs(prefabs),
     ]);
 
+    await mkdir(distDir, { recursive: true });
     await Promise.all([buildComponents(components), buildPrefabs(prefabs)]);
 
     console.info('Success');
