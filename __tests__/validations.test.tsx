@@ -1,8 +1,6 @@
 import validateComponent from '../src/validations/component';
 import validatePrefab from '../src/validations/prefab';
-import { Component, Prefab, Orientation } from '../src/types';
-
-const { Vertical } = Orientation;
+import { Component, Prefab } from '../src/types';
 
 test('Throw when one of the components is invalid', () => {
   const components: { name: string }[] = [
@@ -20,7 +18,7 @@ test('Throw when two components have the same name', () => {
       name: 'HelloWorld',
       type: 'ROW',
       allowedTypes: ['COLUMN'],
-      orientation: Vertical,
+      orientation: 'VERTICAL',
       jsx: <div>jsx</div>,
       styles: 'styles',
     },
@@ -28,7 +26,7 @@ test('Throw when two components have the same name', () => {
       name: 'HelloWorld',
       type: 'ROW',
       allowedTypes: ['COLUMN'],
-      orientation: Vertical,
+      orientation: 'VERTICAL',
       jsx: <div>jsx</div>,
       styles: 'styles',
     },
@@ -43,7 +41,7 @@ test("Don't throw when all components are valid", () => {
       name: 'HelloWorld',
       type: 'ROW',
       allowedTypes: ['COLUMN'],
-      orientation: Vertical,
+      orientation: 'VERTICAL',
       jsx: <div>jsx</div>,
       styles: 'styles',
     },
@@ -66,7 +64,7 @@ test("Don't throw when all prefabs are valid", () => {
   const prefab: Prefab[] = [
     {
       name: 'Component Name',
-      icon: 'prefab icon',
+      icon: 'AccordionIcon',
       category: 'Content',
       structure: [],
     },
