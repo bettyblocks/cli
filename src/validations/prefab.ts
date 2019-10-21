@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import Joi from '@hapi/joi';
 
-import * as utils from '../utils/validation';
+import { findDuplicates, validate } from '../utils/validation';
 import { Prefab } from '../types';
 
 const componentReferenceSchema = Joi.object({
@@ -47,6 +47,9 @@ const schema = Joi.object({
 });
 
 export default (prefabs: Prefab[]): void => {
-  utils.validate(schema, prefabs);
-  utils.findDuplicates(prefabs);
+  prefabs.forEach((prefab: Prefab): void => {
+    validate(schema, prefab);
+  });
+
+  findDuplicates(prefabs);
 };
