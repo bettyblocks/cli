@@ -33,7 +33,7 @@ const checkComponentReferenceNames = (
 ) => ({ name, descendants }: ComponentReference): void => {
   if (!names.has(name)) {
     throw new Error(
-      `Prefab: ${prefabName} references to non existing component "${name}"`,
+      `Prefab: ${prefabName} references to non-existing component "${name}"`,
     );
   }
 

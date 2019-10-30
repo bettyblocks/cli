@@ -89,7 +89,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   try {
     await checkUpdateAvailable();
 
-    const [prefabs, components] = await Promise.all([
+    const [prefabs, components]: [Prefab[], Component[]] = await Promise.all([
       readPrefabs(),
       readComponents(),
     ]);
