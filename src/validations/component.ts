@@ -21,5 +21,5 @@ export default (components: Component[]): void => {
     validate(schema, component);
   });
 
-  findDuplicates(components);
+  findDuplicates(components, 'component');
 };

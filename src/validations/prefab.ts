@@ -51,5 +51,5 @@ export default (prefabs: Prefab[]): void => {
     validate(schema, prefab);
   });
 
-  findDuplicates(prefabs);
+  findDuplicates(prefabs, 'prefab');
 };

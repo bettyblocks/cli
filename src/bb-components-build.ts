@@ -45,10 +45,14 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 
   const components: Array<Promise<Component>> = componentFiles.map(
     async (file: string): Promise<Component> => {
-      const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
-
-      // eslint-disable-next-line no-new-func
-      return Function(`return ${transpile(code)}`)();
+      try {
+        const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+        // eslint-disable-next-line no-new-func
+        return Function(`return ${transpile(code)}`)();
+      } catch (error) {
+        error.file = file;
+        throw error;
+      }
     },
   );
 
@@ -67,10 +71,14 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
 
   const prefabs: Array<Promise<Prefab>> = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
-      const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
-
-      // eslint-disable-next-line no-new-func
-      return Function(`return ${code}`)();
+      try {
+        const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+        // eslint-disable-next-line no-new-func
+        return Function(`return ${code}`)();
+      } catch (error) {
+        error.file = file;
+        throw error;
+      }
     },
   );
 
@@ -101,7 +109,11 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     ]);
 
     console.info('Success');
-  } catch ({ message }) {
-    throw new Error(message);
+  } catch ({ file, name, message }) {
+    if (file) {
+      console.error(`${name} in ${file}: ${message}`);
+    } else {
+      console.error(`${name}: ${message}`);
+    }
   }
 })();
