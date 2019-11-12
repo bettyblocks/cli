@@ -1,10 +1,9 @@
 /* npm dependencies */
 
+import { CommandComponents } from './types';
 import program from 'commander';
 
 /* internal dependencies */
-
-import { CommandComponents } from './types';
 
 /* setup */
 
@@ -12,6 +11,7 @@ const availableCommands: CommandComponents[] = [
   'create',
   'build',
   'serve',
+  'preview',
   'publish',
   'help',
 ];
@@ -29,6 +29,10 @@ program
   .command(
     'serve [path]',
     'serve the component set at a specific path, defaults to CWD',
+  )
+  .command(
+    'preview [options] [path]',
+    'preview the component set at a specific path, defaults to CWD',
   )
   .command(
     'publish [options] [path]',
