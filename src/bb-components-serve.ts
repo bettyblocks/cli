@@ -1,12 +1,12 @@
 /* npm dependencies */
 
+import { parseDir, parsePort } from './utils/arguments';
 import program, { CommanderStatic } from 'commander';
+
 import { basename } from 'path';
+import serveComponentSet from './utils/serveComponentSet';
 
 /* internal dependencies */
-
-import serveComponentSet from './utils/serveComponentSet';
-import { parseDir, parsePort } from './utils/arguments';
 
 /* process arguments */
 

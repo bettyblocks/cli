@@ -10,7 +10,7 @@
     "url": "https://github.com/bettyblocks/cli"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && cd ./node_modules/@betty-blocks/preview && yarn && yarn build",
     "commit": "commit",
     "dev": "./node_modules/.bin/tsc-watch -p tsconfig.build.json",
     "lint": "eslint \"src/**\"",
@@ -47,11 +47,14 @@
     "@babel/parser": "^7.5.5",
     "@babel/traverse": "^7.5.5",
     "@babel/types": "^7.5.5",
+    "@betty-blocks/preview": "^1.0.2",
     "@hapi/joi": "^16.1.4",
     "@semantic-release/changelog": "^3.0.4",
     "@semantic-release/git": "^7.0.16",
     "@types/hapi__joi": "^16.0.0",
+    "@types/jss": "^10.0.0",
     "@types/react": "^16.9.9",
+    "@types/react-jss": "^10.0.0",
     "@types/serve-handler": "^6.1.0",
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
@@ -65,6 +68,9 @@
     "semver": "^6.3.0",
     "serve": "^11.1.0",
     "serve-handler": "^6.1.2"
+  },
+  "resolutions": {
+    "@types/react": "^16.9.9"
   },
   "bin": {
     "bb": "./build/bb.js"
