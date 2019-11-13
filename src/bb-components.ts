@@ -1,7 +1,7 @@
 /* npm dependencies */
 
-import { CommandComponents } from './types';
 import program from 'commander';
+import { CommandComponents } from './types';
 
 /* internal dependencies */
 
@@ -31,7 +31,7 @@ program
     'serve the component set at a specific path, defaults to CWD',
   )
   .command(
-    'preview [options] [path]',
+    'preview [options]',
     'preview the component set at a specific path, defaults to CWD',
   )
   .command(

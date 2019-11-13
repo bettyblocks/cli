@@ -1,29 +1,21 @@
 /* npm dependencies */
 
 import program, { CommanderStatic } from 'commander';
+import { parseDir, parsePort } from './utils/arguments';
 
-import { exec } from 'child_process';
-
-/* setup */
+import servePreview from './utils/servePreview';
 
 /* process arguments */
 
 program
-  .usage('[options] [path]')
+  .usage('[path]')
   .name('bb components preview')
-  // .option('-b, --bucket [name]', 'the component set name')
+  .option('-p, --port [port]', 'Serve on a custom port. Defaults to 3001.')
   .parse(process.argv);
 
-// const { args }: CommanderStatic = program;
+const { args, port: portRaw }: CommanderStatic = program;
+const rootDir: string = parseDir(args);
+const port: number = parsePort(portRaw, 3001);
 
 /* execute command */
-
-(async (): Promise<void> => {
-  exec('ls', (err, stdout) => {
-    if (err) {
-      throw err;
-    } else {
-      console.log(stdout);
-    }
-  });
-})();
+servePreview(rootDir, port);

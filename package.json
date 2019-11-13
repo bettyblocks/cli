@@ -10,7 +10,7 @@
     "url": "https://github.com/bettyblocks/cli"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && cd ./node_modules/@betty-blocks/preview && yarn && yarn build",
+    "build": "tsc",
     "commit": "commit",
     "dev": "./node_modules/.bin/tsc-watch -p tsconfig.build.json",
     "lint": "eslint \"src/**\"",
