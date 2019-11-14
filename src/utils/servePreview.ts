@@ -1,11 +1,15 @@
 import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
 import handler from 'serve-handler';
+import path from 'path';
 
-export default (rootDir: string, port: number): void => {
+export default (port: number): void => {
   const server: Server = createServer(
     (response: IncomingMessage, request: ServerResponse): Promise<void> =>
       handler(response, request, {
-        public: `${rootDir}/node_modules/@betty-blocks/preview/build`,
+        public: path.join(
+          __dirname,
+          '../../node_modules/@betty-blocks/preview/build',
+        ),
       }),
   );
 
