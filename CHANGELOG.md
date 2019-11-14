@@ -1,3 +1,17 @@
+# [22.29.0](https://github.com/bettyblocks/cli/compare/v22.28.2...v22.29.0) (2019-11-14)
+
+
+### Bug Fixes
+
+* bump preview ([30f652c](https://github.com/bettyblocks/cli/commit/30f652c))
+* make preview work ([19c0bf7](https://github.com/bettyblocks/cli/commit/19c0bf7))
+* prepare preview ([296e387](https://github.com/bettyblocks/cli/commit/296e387))
+
+
+### Features
+
+* added preview ([315bd3e](https://github.com/bettyblocks/cli/commit/315bd3e))
+
 ## [22.28.2](https://github.com/bettyblocks/cli/compare/v22.28.1...v22.28.2) (2019-10-17)
 
 
