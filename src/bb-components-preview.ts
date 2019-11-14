@@ -1,7 +1,7 @@
 /* npm dependencies */
 
 import program, { CommanderStatic } from 'commander';
-import { parseDir, parsePort } from './utils/arguments';
+import { parsePort } from './utils/arguments';
 
 import servePreview from './utils/servePreview';
 
@@ -13,9 +13,8 @@ program
   .option('-p, --port [port]', 'Serve on a custom port. Defaults to 3001.')
   .parse(process.argv);
 
-const { args, port: portRaw }: CommanderStatic = program;
-const rootDir: string = parseDir(args);
+const { port: portRaw }: CommanderStatic = program;
 const port: number = parsePort(portRaw, 3001);
 
 /* execute command */
-servePreview(rootDir, port);
+servePreview(port);
