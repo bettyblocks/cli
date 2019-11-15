@@ -1,3 +1,10 @@
+## [22.29.1](https://github.com/bettyblocks/cli/compare/v22.29.0...v22.29.1) (2019-11-15)
+
+
+### Bug Fixes
+
+* path to preview and added preview to boilerplate ([25c93c3](https://github.com/bettyblocks/cli/commit/25c93c3))
+
 # [22.29.0](https://github.com/bettyblocks/cli/compare/v22.28.2...v22.29.0) (2019-11-14)
 
 
