@@ -8,7 +8,7 @@ export default (port: number): void => {
   const server: Server = createServer(
     (response: IncomingMessage, request: ServerResponse): Promise<void> =>
       handler(response, request, {
-        public: path.join(nodeModulesDir, '@betty-blocks/preview/build'),
+        public: path.join(nodeModulesDir, '../../preview/build'),
       }),
   );
 
