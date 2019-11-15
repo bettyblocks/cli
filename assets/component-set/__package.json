@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "private": true,
   "devDependencies": {
-    "@betty-blocks/cli": "^22.0.0",
+    "@betty-blocks/cli": "^22.29.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-config-prettier": "^3.3.0",
@@ -20,6 +20,7 @@
     "start": "bb components serve",
     "build": "bb components build",
     "dev": "nodemon --watch src --exec \"bb components build && bb components serve\"",
+    "preview": "bb components preview",
     "lint": "eslint --ext js ./src"
   },
   "files": ["dist"]

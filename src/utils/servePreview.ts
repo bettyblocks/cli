@@ -3,13 +3,12 @@ import handler from 'serve-handler';
 import path from 'path';
 
 export default (port: number): void => {
+  const nodeModulesDir = (process.mainModule as { paths: string[] }).paths[1];
+
   const server: Server = createServer(
     (response: IncomingMessage, request: ServerResponse): Promise<void> =>
       handler(response, request, {
-        public: path.join(
-          __dirname,
-          '../../node_modules/@betty-blocks/preview/build',
-        ),
+        public: path.join(nodeModulesDir, '@betty-blocks/preview/build'),
       }),
   );
 
