@@ -47,7 +47,7 @@
     "@babel/parser": "^7.5.5",
     "@babel/traverse": "^7.5.5",
     "@babel/types": "^7.5.5",
-    "@betty-blocks/preview": "^1.0.4",
+    "@betty-blocks/preview": "^1.1.1",
     "@hapi/joi": "^16.1.4",
     "@semantic-release/changelog": "^3.0.4",
     "@semantic-release/git": "^7.0.16",
