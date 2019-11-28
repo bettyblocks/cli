@@ -1,8 +1,8 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import Joi from '@hapi/joi';
+import Joi, { ValidationResult } from '@hapi/joi';
 
-import { findDuplicates, validate } from '../utils/validation';
+import { findDuplicates } from '../utils/validation';
 import { Prefab } from '../types';
 
 const componentReferenceSchema = Joi.object({
@@ -46,9 +46,17 @@ const schema = Joi.object({
     .required(),
 });
 
+const validate = <T extends { name: string }>(item: T): void => {
+  const { error }: ValidationResult = schema.validate(item);
+
+  if (typeof error !== 'undefined') {
+    throw new Error(`Property: ${error.message} at prefab: ${item.name}`);
+  }
+};
+
 export default (prefabs: Prefab[]): void => {
   prefabs.forEach((prefab: Prefab): void => {
-    validate(schema, prefab);
+    validate(prefab);
   });
 
   findDuplicates(prefabs, 'prefab');

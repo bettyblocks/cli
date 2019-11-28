@@ -4,7 +4,7 @@
   "description": "A Betty Blocks CLI",
   "main": "build/index.js",
   "author": "Niek Nijland <niek.nijland@bettyblocks.com>",
-  "license": "UNLICENSED",
+  "license": "Apache v2",
   "repository": {
     "type": "git",
     "url": "https://github.com/bettyblocks/cli"

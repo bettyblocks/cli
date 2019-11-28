@@ -1,18 +1,4 @@
-import { ObjectSchema, ValidationResult } from '@hapi/joi';
 import { Component, ComponentReference, Prefab } from '../types';
-
-export const validate = <T extends { jsx?: string; name: string }>(
-  schema: ObjectSchema,
-  item: T,
-): void => {
-  const { error }: ValidationResult = schema.validate(item);
-
-  const type = item.jsx ? 'Component' : 'Prefab';
-
-  if (typeof error !== 'undefined') {
-    throw new Error(`Property: ${error.message} at ${type}: ${item.name}`);
-  }
-};
 
 export const findDuplicates = <T extends { name: string }>(
   list: T[],

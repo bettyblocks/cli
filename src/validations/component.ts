@@ -1,9 +1,9 @@
-import Joi, { ObjectSchema } from '@hapi/joi';
+import Joi, { ObjectSchema, ValidationResult } from '@hapi/joi';
 
-import { findDuplicates, validate } from '../utils/validation';
+import { findDuplicates } from '../utils/validation';
 import { Component } from '../types';
 
-export const schema: ObjectSchema = Joi.object({
+const schema: ObjectSchema = Joi.object({
   name: Joi.string().required(),
   icon: Joi.string(),
   category: Joi.string(), // DEPRECATED
@@ -16,9 +16,17 @@ export const schema: ObjectSchema = Joi.object({
   styles: Joi.any().required(),
 });
 
+const validate = <T extends { name: string }>(item: T): void => {
+  const { error }: ValidationResult = schema.validate(item);
+
+  if (typeof error !== 'undefined') {
+    throw new Error(`Property: ${error.message} at component: ${item.name}`);
+  }
+};
+
 export default (components: Component[]): void => {
   components.forEach((component: Component): void => {
-    validate(schema, component);
+    validate(component);
   });
 
   findDuplicates(components, 'component');
