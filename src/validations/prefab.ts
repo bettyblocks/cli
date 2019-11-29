@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import Joi, { ValidationResult } from '@hapi/joi';
 
-import { findDuplicates } from '../utils/validation';
 import { Prefab } from '../types';
+import { findDuplicates } from '../utils/validation';
 
 const componentReferenceSchema = Joi.object({
   name: Joi.string().required(),
@@ -46,11 +46,11 @@ const schema = Joi.object({
     .required(),
 });
 
-const validate = <T extends { name: string }>(item: T): void => {
-  const { error }: ValidationResult = schema.validate(item);
+const validate = (prefab: Prefab): void => {
+  const { error }: ValidationResult = schema.validate(prefab);
 
   if (typeof error !== 'undefined') {
-    throw new Error(`Property: ${error.message} at prefab: ${item.name}`);
+    throw new Error(`Property: ${error.message} at prefab: ${prefab.name}`);
   }
 };
 

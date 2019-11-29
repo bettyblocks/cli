@@ -1,7 +1,7 @@
 import Joi, { ObjectSchema, ValidationResult } from '@hapi/joi';
 
-import { findDuplicates } from '../utils/validation';
 import { Component } from '../types';
+import { findDuplicates } from '../utils/validation';
 
 const schema: ObjectSchema = Joi.object({
   name: Joi.string().required(),
@@ -16,11 +16,13 @@ const schema: ObjectSchema = Joi.object({
   styles: Joi.any().required(),
 });
 
-const validate = <T extends { name: string }>(item: T): void => {
-  const { error }: ValidationResult = schema.validate(item);
+const validate = (component: Component): void => {
+  const { error }: ValidationResult = schema.validate(component);
 
   if (typeof error !== 'undefined') {
-    throw new Error(`Property: ${error.message} at component: ${item.name}`);
+    throw new Error(
+      `Property: ${error.message} at component: ${component.name}`,
+    );
   }
 };
 
