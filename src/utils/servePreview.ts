@@ -1,38 +1,30 @@
-import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
+import { existsSync } from 'fs';
+import { createServer, IncomingMessage, ServerResponse } from 'http';
+import { join } from 'path';
 import handler from 'serve-handler';
-import path from 'path';
-import fs from 'fs';
+
+const NODE_MODULES = (process.mainModule as { paths: string[] }).paths[1];
+const relativePath = (path: string): string => join(NODE_MODULES, path);
+const BUILD_PATH_NPM = relativePath('./@betty-blocks/preview/build');
+const BUILD_PATH_YARN = relativePath('../../preview/build');
+
+const startServer = (path: string, port: number): void => {
+  const server = createServer(
+    (response: IncomingMessage, request: ServerResponse): Promise<void> =>
+      handler(response, request, { public: path }),
+  );
+
+  server.listen(port, (): void => {
+    console.info(`Serving the preview at http://localhost:${port}`);
+  });
+};
 
 export default async (port: number): Promise<void> => {
-  const nodeModulesDir = (process.mainModule as { paths: string[] }).paths[1];
-  const yarnInstallDir: string = path.join(
-    nodeModulesDir,
-    '../../preview/build',
-  );
-  const npmInstallDir: string = path.join(
-    nodeModulesDir,
-    './@betty-blocks/preview/build',
-  );
-  try {
-    const dirCheckNpm: void = await fs.promises.access(
-      npmInstallDir,
-      fs.constants.F_OK,
-    );
-
-    const location: string =
-      dirCheckNpm !== undefined ? yarnInstallDir : npmInstallDir;
-
-    const server: Server = createServer(
-      (response: IncomingMessage, request: ServerResponse): Promise<void> =>
-        handler(response, request, {
-          public: location,
-        }),
-    );
-
-    server.listen(port, (): void => {
-      console.info(`Serving the preview at http://localhost:${port}`);
-    });
-  } catch {
+  if (existsSync(BUILD_PATH_NPM)) {
+    startServer(BUILD_PATH_NPM, port);
+  } else if (existsSync(BUILD_PATH_YARN)) {
+    startServer(BUILD_PATH_YARN, port);
+  } else {
     console.error(
       'Cannot find the preview directory, please try again after upgrading the CLI to the latest version.',
     );
