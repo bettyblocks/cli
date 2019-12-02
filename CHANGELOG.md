@@ -1,3 +1,10 @@
+# [22.31.0](https://github.com/bettyblocks/cli/compare/v22.30.0...v22.31.0) (2019-12-02)
+
+
+### Features
+
+* init a bundle project ([78baf18](https://github.com/bettyblocks/cli/commit/78baf18))
+
 # [22.30.0](https://github.com/bettyblocks/cli/compare/v22.29.2...v22.30.0) (2019-11-21)
 
 
