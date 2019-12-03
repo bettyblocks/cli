@@ -1,5 +1,13 @@
 # Betty Blocks Component CLI
 
+## Installation
+
+To install the CLI you will need [a recent version of Node.js](https://nodejs.org/en/).
+
+```bash
+$ npm install -g @betty-blocks/cli
+```
+
 ## Introduction
 
 Welcome to the GitHub repository for the Betty Blocks Component System command-line interface (CLI). This CLI lets you develop Component Sets for Betty Blocks, a no-code platform for business users. Not using Betty Blocks yet? Find out more at [https://www.bettyblocks.com](https://www.bettyblocks.com).
