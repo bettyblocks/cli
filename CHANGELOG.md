@@ -1,3 +1,13 @@
+## [22.31.1](https://github.com/bettyblocks/cli/compare/v22.31.0...v22.31.1) (2019-12-03)
+
+
+### Bug Fixes
+
+* directory check ([275475d](https://github.com/bettyblocks/cli/commit/275475d))
+* replace generic types with concrete types ([e91b295](https://github.com/bettyblocks/cli/commit/e91b295))
+* simplify/fix path check ([bb5b84e](https://github.com/bettyblocks/cli/commit/bb5b84e))
+* type bug in error feedback ([f787e77](https://github.com/bettyblocks/cli/commit/f787e77))
+
 # [22.31.0](https://github.com/bettyblocks/cli/compare/v22.30.0...v22.31.0) (2019-12-02)
 
 
