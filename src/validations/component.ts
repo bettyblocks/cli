@@ -5,7 +5,7 @@ import { findDuplicates } from '../utils/validation';
 
 const schema: ObjectSchema = Joi.object({
   name: Joi.string().required(),
-  icon: Joi.string(),
+  icon: Joi.string(), // DEPRECATED
   category: Joi.string(), // DEPRECATED
   type: Joi.string().required(),
   allowedTypes: Joi.array()
