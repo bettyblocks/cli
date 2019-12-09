@@ -1,3 +1,10 @@
+## [22.31.2](https://github.com/bettyblocks/cli/compare/v22.31.1...v22.31.2) (2019-12-09)
+
+
+### Bug Fixes
+
+* preview version bump ([#65](https://github.com/bettyblocks/cli/issues/65)) ([0e278b1](https://github.com/bettyblocks/cli/commit/0e278b1))
+
 ## [22.31.1](https://github.com/bettyblocks/cli/compare/v22.31.0...v22.31.1) (2019-12-03)
 
 
