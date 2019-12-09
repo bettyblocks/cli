@@ -44,7 +44,6 @@ const schema = Joi.object({
     .required(),
   category: Joi.string().required(),
   structure: Joi.array()
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     .items(validateComponentReference)
     .required(),
 });
