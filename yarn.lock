@@ -163,10 +163,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@betty-blocks/preview@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@betty-blocks/preview/-/preview-1.1.1.tgz#28eacefb93270f687a4b134587d7f13ca19899ce"
-  integrity sha512-YXkPvcSor8yRHp3U6+TSQCHipomI0/pLQVvn3V6sYIUkHpsMfe1TMJ5BPDatHh0wYAFd6F0MuPiQqFsQ9R6bWA==
+"@betty-blocks/preview@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@betty-blocks/preview/-/preview-1.1.2.tgz#cb4b37b56b8732540e4bd3462bfef00f12d42412"
+  integrity sha512-DZfScvuVXEhRXvGDFInYSvRJ51KiFuJj3eG/2Etw6JmUASoa/EVxK4N7nsHcDfAYO+UhruE2EIwYFmCzR2WiwA==
   dependencies:
     "@material-ui/core" "^4.5.2"
     "@material-ui/styles" "^4.5.2"
