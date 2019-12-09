@@ -3,6 +3,7 @@
 import Joi, { ValidationResult } from '@hapi/joi';
 
 import { Prefab } from '../types';
+import { ICONS } from './constants';
 import { findDuplicates } from '../utils/validation';
 
 const componentReferenceSchema = Joi.object({
@@ -38,7 +39,9 @@ function validateComponentReference(prefab: Prefab): Prefab {
 
 const schema = Joi.object({
   name: Joi.string().required(),
-  icon: Joi.string().required(),
+  icon: Joi.string()
+    .valid(...ICONS)
+    .required(),
   category: Joi.string().required(),
   structure: Joi.array()
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
