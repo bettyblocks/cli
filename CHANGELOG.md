@@ -1,3 +1,10 @@
+# [22.32.0](https://github.com/bettyblocks/cli/compare/v22.31.2...v22.32.0) (2019-12-10)
+
+
+### Features
+
+* validate icons with enum ([8296b97](https://github.com/bettyblocks/cli/commit/8296b97))
+
 ## [22.31.2](https://github.com/bettyblocks/cli/compare/v22.31.1...v22.31.2) (2019-12-09)
 
 
