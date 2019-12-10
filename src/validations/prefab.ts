@@ -1,3 +1,4 @@
+import { ComponentReference } from './../types';
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import Joi, { ValidationResult } from '@hapi/joi';
@@ -56,9 +57,31 @@ const validate = (prefab: Prefab): void => {
   }
 };
 
+const validateOptions = ({ structure, name }: Prefab): void => {
+  const innerValidateOptions = ({
+    options,
+    descendants,
+  }: ComponentReference): void => {
+    const keys: string[] = [];
+
+    options.forEach(({ key }) => {
+      if (keys.includes(key)) {
+        throw new Error(`Multiple refereces to key: ${key} in prefab: ${name}`);
+      }
+
+      keys.push(key);
+    });
+
+    descendants.map(innerValidateOptions);
+  };
+
+  structure.map(innerValidateOptions);
+};
+
 export default (prefabs: Prefab[]): void => {
   prefabs.forEach((prefab: Prefab): void => {
     validate(prefab);
+    validateOptions(prefab);
   });
 
   findDuplicates(prefabs, 'prefab');

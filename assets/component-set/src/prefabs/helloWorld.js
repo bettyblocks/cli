@@ -1,6 +1,6 @@
 (() => ({
   name: 'Hello world',
-  icon: 'HeadingIcon',
+  icon: 'TitleIcon',
   category: 'CONTENT',
   structure: [
     {
