@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "private": true,
   "devDependencies": {
-    "@betty-blocks/cli": "^22.29.0",
+    "@betty-blocks/cli": "^22.32.1",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-config-prettier": "^3.3.0",
