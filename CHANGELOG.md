@@ -1,3 +1,10 @@
+## [22.32.1](https://github.com/bettyblocks/cli/compare/v22.32.0...v22.32.1) (2019-12-11)
+
+
+### Bug Fixes
+
+* remove partials from publish command ([8a43171](https://github.com/bettyblocks/cli/commit/8a43171))
+
 # [22.32.0](https://github.com/bettyblocks/cli/compare/v22.31.2...v22.32.0) (2019-12-10)
 
 
