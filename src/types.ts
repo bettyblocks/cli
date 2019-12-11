@@ -9,7 +9,8 @@ export type CommandComponents =
   | 'serve'
   | 'publish'
   | 'preview'
-  | 'help';
+  | 'help'
+  | 'generate';
 
 export type CommandBundle = 'init';
 
