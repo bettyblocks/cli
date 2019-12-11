@@ -1,3 +1,10 @@
+# [22.34.0](https://github.com/bettyblocks/cli/compare/v22.33.0...v22.34.0) (2019-12-11)
+
+
+### Features
+
+* generate boilerplate components ([3e862a2](https://github.com/bettyblocks/cli/commit/3e862a2))
+
 # [22.33.0](https://github.com/bettyblocks/cli/compare/v22.32.2...v22.33.0) (2019-12-11)
 
 
