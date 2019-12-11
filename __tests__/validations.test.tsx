@@ -97,10 +97,10 @@ test('Throw when one of the prefabs options is invalid', () => {
     } as unknown) as Prefab,
   ];
 
-  expect(() => validatePrefab(prefab as Prefab[])).toThrow();
+  expect(() => validatePrefab(prefab)).toThrow();
 });
 
-test('Throw when the prefabs option type is not reffering to one the correct types', () => {
+test('Throw when the prefabs option type is not referring to one the correct types', () => {
   const prefab: Prefab[] = [
     {
       name: 'Component Name',
