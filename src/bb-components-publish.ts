@@ -89,7 +89,7 @@ const publish = async (
 
 (async (): Promise<void> => {
   const [{ url }] = await Promise.all(
-    ['partials.json', 'prefabs.json', 'templates.json'].map(publish),
+    ['prefabs.json', 'templates.json'].map(publish),
   );
 
   console.log(
