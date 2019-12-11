@@ -1,10 +1,9 @@
-import { ComponentReference } from './../types';
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import Joi, { ValidationResult } from '@hapi/joi';
 
-import { Prefab } from '../types';
-import { ICONS } from './constants';
+import { Prefab, ComponentReference } from '../types';
+import { ICONS, TYPES, CONDITION_TYPE } from './constants';
 import { findDuplicates } from '../utils/validation';
 
 const componentReferenceSchema = Joi.object({
@@ -15,8 +14,30 @@ const componentReferenceSchema = Joi.object({
         value: Joi.any().required(),
         label: Joi.string().required(),
         key: Joi.string().required(),
-        type: Joi.string().required(),
-        configuration: Joi.object(),
+        // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
+        type: Joi.string()
+          .valid(...TYPES)
+          .uppercase()
+          .required(),
+        configuration: Joi.object({
+          dependsOn: Joi.string(),
+          as: Joi.string(),
+          dataType: Joi.string(),
+          placeholder: Joi.string(),
+          condition: Joi.object({
+            // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
+            type: Joi.string().valid(...CONDITION_TYPE),
+            option: Joi.string(),
+            comparator: Joi.string(),
+            value: Joi.any(),
+          }),
+          allowedInput: Joi.array().items(
+            Joi.object({
+              name: Joi.string(),
+              value: Joi.string(),
+            }),
+          ),
+        }),
       }),
     )
     .required(),
@@ -40,6 +61,7 @@ function validateComponentReference(prefab: Prefab): Prefab {
 
 const schema = Joi.object({
   name: Joi.string().required(),
+  // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
   icon: Joi.string()
     .valid(...ICONS)
     .required(),
@@ -66,7 +88,9 @@ const validateOptions = ({ structure, name }: Prefab): void => {
 
     options.forEach(({ key }) => {
       if (keys.includes(key)) {
-        throw new Error(`Multiple refereces to key: ${key} in prefab: ${name}`);
+        throw new Error(
+          `Multiple option references to key: ${key} in prefab: ${name}`,
+        );
       }
 
       keys.push(key);

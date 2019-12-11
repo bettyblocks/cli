@@ -72,3 +72,88 @@ test("Don't throw when all prefabs are valid", () => {
 
   expect(() => validatePrefab(prefab));
 });
+
+test('Throw when one of the prefabs options is invalid', () => {
+  const prefab: Prefab[] = [
+    ({
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+              invalid: ' ',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    } as unknown) as Prefab,
+  ];
+
+  expect(() => validatePrefab(prefab as Prefab[])).toThrow();
+});
+
+test('Throw when the prefabs option type is not reffering to one the correct types', () => {
+  const prefab: Prefab[] = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'SOMETHING',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ];
+
+  expect(() => validatePrefab(prefab as Prefab[])).toThrow();
+});
+
+test('Throw when two options with the same key are being used', () => {
+  const prefab: Prefab[] = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'Option 1',
+              key: 'sameKey',
+              type: 'TEXT',
+            },
+            {
+              value: '',
+              label: 'Option 2',
+              key: 'sameKey',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ];
+
+  expect(() => validatePrefab(prefab as Prefab[])).toThrow();
+});
