@@ -14,6 +14,7 @@ const availableCommands: CommandComponents[] = [
   'preview',
   'publish',
   'help',
+  'generate',
 ];
 
 /* process arguments */
@@ -38,6 +39,7 @@ program
     'publish [options] [path]',
     'publish the component set from a specific path, defaults to CWD',
   )
+  .command('generate [name]', 'generate a component with a given name')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandComponents)) {
       console.error('Invalid command: %s\n', command);
