@@ -74,3 +74,25 @@ export const ICONS = [
   'UnorderedListIcon',
   'UrlInputIcon',
 ];
+
+export const TYPES = [
+  'TEXT',
+  'NUMBER',
+  'TOGGLE',
+  'COLOR',
+  'FONT',
+  'SIZE',
+  'SIZES',
+  'ENDPOINT',
+  'MODEL',
+  'PROPERTY',
+  'FILTER',
+  'VARIABLE',
+  'CUSTOM',
+  'MULTILINE',
+  'UNIT',
+  'DROPDOWN',
+  'BUTTONGROUP',
+];
+
+export const CONDITION_TYPE = ['SHOW', 'HIDE'];
