@@ -1,3 +1,10 @@
+## [22.32.2](https://github.com/bettyblocks/cli/compare/v22.32.1...v22.32.2) (2019-12-11)
+
+
+### Bug Fixes
+
+* change boilerplate component icon to a valid icon ([d9b80bf](https://github.com/bettyblocks/cli/commit/d9b80bf))
+
 ## [22.32.1](https://github.com/bettyblocks/cli/compare/v22.32.0...v22.32.1) (2019-12-11)
 
 
