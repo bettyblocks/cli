@@ -1,3 +1,17 @@
+# [22.33.0](https://github.com/bettyblocks/cli/compare/v22.32.2...v22.33.0) (2019-12-11)
+
+
+### Bug Fixes
+
+* huskyrc remove prettier pre-comit ([3d743f9](https://github.com/bettyblocks/cli/commit/3d743f9))
+* typo fix in test case and double type declaration in test case ([19709da](https://github.com/bettyblocks/cli/commit/19709da))
+
+
+### Features
+
+* add feedback for duplicate option keys ([8df2e91](https://github.com/bettyblocks/cli/commit/8df2e91))
+* improve CLI build step validation ([8f96d10](https://github.com/bettyblocks/cli/commit/8f96d10))
+
 ## [22.32.2](https://github.com/bettyblocks/cli/compare/v22.32.1...v22.32.2) (2019-12-11)
 
 
