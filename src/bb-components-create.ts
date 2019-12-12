@@ -1,6 +1,7 @@
 /* npm dependencies */
 
 import program, { CommanderStatic } from 'commander';
+import chalk from 'chalk';
 import { existsSync, copy, moveSync } from 'fs-extra';
 import path from 'path';
 
@@ -23,7 +24,9 @@ const dest: string = args[0];
 
 if (existsSync(dest)) {
   throw Error(
-    `Could not create component set: directory (${dest}) already exists.`,
+    chalk.red(
+      `\nCould not create component set: directory (${dest}) already exists.\n`,
+    ),
   );
 }
 
@@ -31,10 +34,16 @@ if (existsSync(dest)) {
   try {
     await copy(path.join(__dirname, '../assets/component-set'), dest);
     moveSync(`${dest}/__package.json`, `${dest}/package.json`);
-    console.log(`Component set succesfully created in directory '${dest}'.`);
+    console.log(
+      chalk.green(
+        `\nComponent set succesfully created in directory '${dest}'.\n`,
+      ),
+    );
   } catch ({ message }) {
     throw Error(
-      `Could not create component set in directory ${dest}: ${message}.`,
+      chalk.red(
+        `\nCould not create component set in directory ${dest}: ${message}.\n`,
+      ),
     );
   }
 })();

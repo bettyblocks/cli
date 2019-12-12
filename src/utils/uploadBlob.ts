@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 import {
   Aborter,
   BlobURL,
@@ -66,7 +68,7 @@ const getBlockURL = async (
     const { statusCode }: RestError = error;
 
     if (statusCode !== 409) {
-      throw error;
+      throw chalk.red(error);
     }
   }
 

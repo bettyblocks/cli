@@ -2,6 +2,7 @@
 
 import program, { CommanderStatic } from 'commander';
 import { existsSync, copy, moveSync } from 'fs-extra';
+import chalk from 'chalk';
 import path from 'path';
 
 /* internal dependencies */
@@ -25,7 +26,9 @@ const dest: string = args[0];
 
 if (existsSync(dest)) {
   throw Error(
-    `Could not initialize bundle: directory (${dest}) already exists.`,
+    chalk.red(
+      `\nCould not initialize bundle: directory (${dest}) already exists.\n`,
+    ),
   );
 }
 
@@ -33,10 +36,14 @@ if (existsSync(dest)) {
   try {
     await copy(path.join(__dirname, '../assets/bundle'), dest);
     moveSync(`${dest}/__package.json`, `${dest}/package.json`);
-    console.log(`Bundle succesfully initialized in directory '${dest}'.`);
+    console.log(
+      chalk.green(`Bundle succesfully initialized in directory '${dest}'.`),
+    );
   } catch ({ message }) {
     throw Error(
-      `Could not initialize bundle in directory ${dest}: ${message}.`,
+      chalk.red(
+        `\nCould not initialize bundle in directory ${dest}: ${message}.\n`,
+      ),
     );
   }
 })();

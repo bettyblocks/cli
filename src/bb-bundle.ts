@@ -1,6 +1,8 @@
 /* npm dependencies */
 
 import program from 'commander';
+import chalk from 'chalk';
+
 import { CommandBundle } from './types';
 
 /* internal dependencies */
@@ -17,7 +19,7 @@ program
   .command('init <path>', 'create a new vendor bundle')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandBundle)) {
-      console.error('Invalid command: %s\n', command);
+      console.error(chalk.red('\nInvalid command: %s\n'), command);
       program.outputHelp();
     }
   })

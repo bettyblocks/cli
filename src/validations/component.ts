@@ -1,4 +1,5 @@
 import Joi, { ObjectSchema, ValidationResult } from '@hapi/joi';
+import chalk from 'chalk';
 
 import { Component } from '../types';
 import { findDuplicates } from '../utils/validation';
@@ -21,7 +22,9 @@ const validate = (component: Component): void => {
 
   if (typeof error !== 'undefined') {
     throw new Error(
-      `Property: ${error.message} at component: ${component.name}`,
+      chalk.red(
+        `\nProperty: ${error.message} at component: ${component.name}\n`,
+      ),
     );
   }
 };
