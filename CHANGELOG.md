@@ -1,3 +1,10 @@
+# [22.35.0](https://github.com/bettyblocks/cli/compare/v22.34.0...v22.35.0) (2019-12-12)
+
+
+### Features
+
+* improve error feedback ([d6afb88](https://github.com/bettyblocks/cli/commit/d6afb88))
+
 # [22.34.0](https://github.com/bettyblocks/cli/compare/v22.33.0...v22.34.0) (2019-12-11)
 
 
