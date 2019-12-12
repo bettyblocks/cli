@@ -1,6 +1,7 @@
 import { existsSync } from 'fs';
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { join } from 'path';
+import chalk from 'chalk';
 import handler from 'serve-handler';
 
 const NODE_MODULES = (process.mainModule as { paths: string[] }).paths[1];
@@ -15,7 +16,9 @@ const startServer = (path: string, port: number): void => {
   );
 
   server.listen(port, (): void => {
-    console.info(`Serving the preview at http://localhost:${port}`);
+    console.info(
+      chalk.green(`Serving the preview at http://localhost:${port}`),
+    );
   });
 };
 
@@ -26,7 +29,9 @@ export default async (port: number): Promise<void> => {
     startServer(BUILD_PATH_YARN, port);
   } else {
     console.error(
-      'Cannot find the preview directory, please try again after upgrading the CLI to the latest version.',
+      chalk.red(
+        '\nCannot find the preview directory, please try again after upgrading the CLI to the latest version.\n',
+      ),
     );
   }
 };

@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+
 import { Component, ComponentReference, Prefab } from '../types';
 
 export const findDuplicates = <T extends { name: string }>(
@@ -6,7 +8,9 @@ export const findDuplicates = <T extends { name: string }>(
 ): void => {
   list.reduce((acc: string[], { name }: T): string[] => {
     if (acc.includes(name)) {
-      throw new Error(`The name "${name}" is used for multiple ${type}s`);
+      throw new Error(
+        chalk.red(`\nThe name "${name}" is used for multiple ${type}s\n`),
+      );
     }
 
     return [...acc, name];
@@ -19,7 +23,9 @@ const checkComponentReferenceNames = (
 ) => ({ name, descendants }: ComponentReference): void => {
   if (!names.has(name)) {
     throw new Error(
-      `Prefab: ${prefabName} references to non-existing component "${name}"`,
+      chalk.red(
+        `\nPrefab: ${prefabName} references to non-existing component "${name}"\n`,
+      ),
     );
   }
 

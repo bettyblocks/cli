@@ -2,6 +2,7 @@
 
 import program, { CommanderStatic } from 'commander';
 import { promises, outputJson, pathExists } from 'fs-extra';
+import chalk from 'chalk';
 import { Component, Prefab } from './types';
 
 /* internal dependencies */
@@ -38,7 +39,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error('Components folder not found');
+    throw new Error(chalk.red('\nComponents folder not found\n'));
   }
 
   const componentFiles: string[] = await readScripts(srcDir);
@@ -51,7 +52,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
         return Function(`return ${transpile(code)}`)();
       } catch (error) {
         error.file = file;
-        throw error;
+        throw chalk.red(error);
       }
     },
   );
@@ -64,7 +65,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error('Prefabs folder not found');
+    throw new Error(chalk.red('\nPrefabs folder not found\n'));
   }
 
   const prefabFiles: string[] = await readScripts(srcDir);
@@ -77,7 +78,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
         return Function(`return ${code}`)();
       } catch (error) {
         error.file = file;
-        throw error;
+        throw chalk.red(error);
       }
     },
   );
@@ -108,12 +109,12 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
       outputJson(`${distDir}/templates.json`, components),
     ]);
 
-    console.info('Success');
+    console.info(chalk.green('Success, the component set has been built'));
   } catch ({ file, name, message }) {
     if (file) {
-      console.error(`${name} in ${file}: ${message}`);
+      console.error(chalk.red(`\n${name} in ${file}: ${message}\n`));
     } else {
-      console.error(`${name}: ${message}`);
+      console.error(chalk.red(`\n${name}: ${message}\n`));
     }
   }
 })();

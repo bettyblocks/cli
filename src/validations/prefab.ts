@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import Joi, { ValidationResult } from '@hapi/joi';
+import chalk from 'chalk';
 
 import { Prefab, ComponentReference } from '../types';
 import { ICONS, TYPES, CONDITION_TYPE } from './constants';
@@ -17,7 +18,6 @@ const componentReferenceSchema = Joi.object({
         // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
         type: Joi.string()
           .valid(...TYPES)
-          .uppercase()
           .required(),
         configuration: Joi.object({
           dependsOn: Joi.string(),
@@ -53,7 +53,7 @@ function validateComponentReference(prefab: Prefab): Prefab {
     const { name } = prefab;
     const { message } = error;
 
-    throw new Error(`Build error in prefab ${name}: ${message}`);
+    throw new Error(chalk.red(`\nBuild error in prefab ${name}: ${message}\n`));
   }
 
   return prefab;
@@ -75,7 +75,9 @@ const validate = (prefab: Prefab): void => {
   const { error }: ValidationResult = schema.validate(prefab);
 
   if (typeof error !== 'undefined') {
-    throw new Error(`Property: ${error.message} at prefab: ${prefab.name}`);
+    throw new Error(
+      chalk.red(`\nProperty: ${error.message} at prefab: ${prefab.name}\n`),
+    );
   }
 };
 
@@ -89,7 +91,9 @@ const validateOptions = ({ structure, name }: Prefab): void => {
     options.forEach(({ key }) => {
       if (keys.includes(key)) {
         throw new Error(
-          `Multiple option references to key: ${key} in prefab: ${name}`,
+          chalk.red(
+            `\nMultiple option references to key: ${key} in prefab: ${name}\n`,
+          ),
         );
       }
 

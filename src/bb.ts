@@ -3,6 +3,7 @@
 /* npm dependencies */
 
 import program from 'commander';
+import chalk from 'chalk';
 
 /* internal dependencies */
 
@@ -24,7 +25,7 @@ program
   .command('bundle <cmd>', 'manage your vendor bundle')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandBB)) {
-      throw new Error(`Invalid command: ${command}`);
+      throw new Error(chalk.red(`Invalid command: ${command}`));
     }
   })
   .parse(process.argv);

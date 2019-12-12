@@ -5,7 +5,7 @@
   "license": "UNLICENSED",
   "private": true,
   "devDependencies": {
-    "@betty-blocks/cli": "^22.32.1",
+    "@betty-blocks/cli": "^22.34.0",
     "eslint": "^5.9.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-config-prettier": "^3.3.0",
@@ -14,12 +14,13 @@
     "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-react": "^7.11.1",
     "prettier": "^1.15.3",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "rimraf": "^3.0.0"
   },
   "scripts": {
     "start": "bb components serve",
     "build": "bb components build",
-    "dev": "nodemon --watch src --exec \"bb components build && bb components serve\"",
+    "dev": "nodemon --watch src --exec \"rimraf dist && bb components build && bb components serve\"",
     "preview": "bb components preview",
     "lint": "eslint --ext js ./src"
   },

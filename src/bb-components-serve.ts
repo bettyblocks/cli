@@ -1,6 +1,5 @@
 /* npm dependencies */
 
-import { basename } from 'path';
 import program, { CommanderStatic } from 'commander';
 
 import { parseDir, parsePort } from './utils/arguments';
@@ -19,8 +18,7 @@ program
 const { args, port: portRaw }: CommanderStatic = program;
 const rootDir: string = parseDir(args);
 const port: number = parsePort(portRaw, 5001);
-const dirName: string = basename(rootDir);
 
 /* execute command */
 
-serveComponentSet(rootDir, dirName, port);
+serveComponentSet(rootDir, port);

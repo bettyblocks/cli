@@ -1,6 +1,7 @@
 /* npm dependencies */
 
 import program, { CommanderStatic } from 'commander';
+import chalk from 'chalk';
 import { pathExists, outputFile } from 'fs-extra';
 
 /* internal dependencies */
@@ -26,15 +27,15 @@ const name: string = args[0];
   await checkUpdateAvailable();
 
   if (name.includes(' ')) {
-    throw new Error(`Name cannot contain spaces`);
+    throw new Error(chalk.red(`\nName cannot contain spaces\n`));
   }
 
   if (await pathExists(`src/prefabs/${name}.js`)) {
-    throw new Error(`Prefab ${name} already exists`);
+    throw new Error(chalk.red(`\nPrefab ${name} already exists\n`));
   }
 
   if (await pathExists(`src/components/${name}.js`)) {
-    throw new Error(`Component ${name} already exists`);
+    throw new Error(chalk.red(`\nComponent ${name} already exists\n`));
   }
 
   const prefab = `
