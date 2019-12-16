@@ -20,10 +20,13 @@ const componentReferenceSchema = Joi.object({
           .valid(...TYPES)
           .required(),
         configuration: Joi.object({
-          dependsOn: Joi.string(),
+          allowedInput: Joi.array().items(
+            Joi.object({
+              name: Joi.string(),
+              value: Joi.string(),
+            }),
+          ),
           as: Joi.string(),
-          dataType: Joi.string(),
-          placeholder: Joi.string(),
           condition: Joi.object({
             // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
             type: Joi.string().valid(...CONDITION_TYPE),
@@ -31,12 +34,9 @@ const componentReferenceSchema = Joi.object({
             comparator: Joi.string(),
             value: Joi.any(),
           }),
-          allowedInput: Joi.array().items(
-            Joi.object({
-              name: Joi.string(),
-              value: Joi.string(),
-            }),
-          ),
+          dataType: Joi.string(),
+          dependsOn: Joi.string(),
+          placeholder: Joi.string(),
         }),
       }),
     )
