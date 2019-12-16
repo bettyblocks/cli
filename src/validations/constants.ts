@@ -90,6 +90,7 @@ export const TYPES = [
   'SIZE',
   'SIZES',
   'TEXT',
+  'THEME',
   'TOGGLE',
   'UNIT',
   'VARIABLE',
