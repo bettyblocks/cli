@@ -4,10 +4,6 @@ import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
 import { pathExists, outputFile } from 'fs-extra';
 
-/* internal dependencies */
-
-import checkUpdateAvailable from './utils/checkUpdateAvailable';
-
 /* process arguments */
 
 program
@@ -24,8 +20,6 @@ if (args.length === 0) {
 const name: string = args[0];
 
 (async (): Promise<void> => {
-  await checkUpdateAvailable();
-
   if (name.includes(' ')) {
     throw new Error(chalk.red(`\nName cannot contain spaces\n`));
   }
@@ -69,5 +63,6 @@ const name: string = args[0];
   await Promise.all([
     outputFile(`src/prefabs/${name}.js`, prefab.trim()),
     outputFile(`src/components/${name}.js`, component.trim()),
+    console.log(chalk.green('The component has been generated')),
   ]);
 })();

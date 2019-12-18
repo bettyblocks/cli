@@ -8,6 +8,7 @@ import chalk from 'chalk';
 /* internal dependencies */
 
 import { CommandBB } from './types';
+import { checkUpdateAvailableCli } from './utils/checkUpdateAvailable';
 
 /* setup */
 
@@ -24,8 +25,9 @@ program
   .command('components <cmd>', 'manage your component sets')
   .command('bundle <cmd>', 'manage your vendor bundle')
   .on('command:*', ([command]: string[]): void => {
+    checkUpdateAvailableCli();
     if (!availableCommands.includes(command as CommandBB)) {
-      throw new Error(chalk.red(`Invalid command: ${command}`));
+      throw new Error(chalk.red(`\nInvalid command: ${command}\n`));
     }
   })
   .parse(process.argv);

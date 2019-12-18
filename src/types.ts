@@ -128,3 +128,8 @@ export interface Prefab {
   category: Category;
   structure: ComponentReference[];
 }
+
+export interface Versions {
+  remoteVersionCli: string;
+  remoteVersionPreview: string;
+}
