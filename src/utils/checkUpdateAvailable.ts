@@ -35,7 +35,7 @@ const getRemoteVersionCli = async (): Promise<string> => {
   const remoteVersionCli = output.toString().trim();
 
   if (error) {
-    throw new Error('Cannot check for the newest version at this time');
+    throw error;
   }
 
   return remoteVersionCli;
@@ -48,7 +48,7 @@ const getRemoteVersionPreview = async (): Promise<string> => {
   const remoteVersionPreview = output.toString().trim();
 
   if (error) {
-    throw new Error('Cannot check for the newest version at this time');
+    throw error;
   }
 
   return remoteVersionPreview;
