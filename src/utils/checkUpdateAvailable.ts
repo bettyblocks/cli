@@ -103,8 +103,8 @@ export const checkUpdateAvailableCli = async (): Promise<void> => {
     const { remoteVersionCli } = await readFile();
 
     logUpdateAvailable(versionCli, remoteVersionCli, 'CLI');
-  } catch (error) {
-    throw new Error(error);
+  } catch {
+    console.error('Unable to check for a new version');
   }
 };
 
@@ -118,7 +118,7 @@ export const checkUpdateAvailablePreview = async (
     const { remoteVersionPreview } = await readFile();
 
     logUpdateAvailable(localVersion, remoteVersionPreview, name);
-  } catch (error) {
-    throw new Error(error);
+  } catch {
+    console.error('Unable to check for a new version');
   }
 };
