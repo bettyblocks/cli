@@ -1,3 +1,10 @@
+## [22.36.2](https://github.com/bettyblocks/cli/compare/v22.36.1...v22.36.2) (2019-12-19)
+
+
+### Bug Fixes
+
+* property missing from prefab validation ([#81](https://github.com/bettyblocks/cli/issues/81)) ([2862ebb](https://github.com/bettyblocks/cli/commit/2862ebb))
+
 ## [22.36.1](https://github.com/bettyblocks/cli/compare/v22.36.0...v22.36.1) (2019-12-19)
 
 
