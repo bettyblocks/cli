@@ -4,7 +4,7 @@
   "description": "A Betty Blocks CLI",
   "main": "build/index.js",
   "author": "Niek Nijland <niek.nijland@bettyblocks.com>",
-  "license": "Apache v2",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/bettyblocks/cli"
@@ -40,6 +40,14 @@
     "tsc-watch": "^2.2.1",
     "typescript": "^3.5.3"
   },
+  "peerDependencies": {
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "eslint-plugin-import": "^2.18.2",
+    "semantic-release": "^15.8.0"
+  },
   "dependencies": {
     "@azure/ms-rest-js": "^2.0.4",
     "@azure/storage-blob": "^10.3.0",
@@ -52,9 +60,7 @@
     "@semantic-release/changelog": "^3.0.4",
     "@semantic-release/git": "^7.0.16",
     "@types/hapi__joi": "^16.0.0",
-    "@types/jss": "^10.0.0",
     "@types/react": "^16.9.9",
-    "@types/react-jss": "^10.0.0",
     "@types/serve-handler": "^6.1.0",
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
