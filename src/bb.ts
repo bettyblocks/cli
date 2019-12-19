@@ -25,7 +25,7 @@ program
   .command('bundle <cmd>', 'manage your vendor bundle')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandBB)) {
-      throw new Error(chalk.red(`Invalid command: ${command}`));
+      throw new Error(chalk.red(`\nInvalid command: ${command}\n`));
     }
   })
   .parse(process.argv);

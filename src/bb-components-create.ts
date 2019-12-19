@@ -2,9 +2,17 @@
 
 import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { existsSync, copy, moveSync } from 'fs-extra';
+import { existsSync, copy, move } from 'fs-extra';
 import path from 'path';
 
+const LIST = [
+  'package.json',
+  '.eslintignore',
+  '.eslintrc.json',
+  '.gitignore',
+  '.prettierignore',
+  '.prettierrc.json',
+];
 /* process arguments */
 
 program
@@ -33,7 +41,13 @@ if (existsSync(dest)) {
 (async (): Promise<void> => {
   try {
     await copy(path.join(__dirname, '../assets/component-set'), dest);
-    moveSync(`${dest}/__package.json`, `${dest}/package.json`);
+
+    Promise.all(
+      LIST.map(fileName =>
+        move(`${dest}/__${fileName}`, `${dest}/${fileName}`),
+      ),
+    );
+
     console.log(
       chalk.green(
         `\nComponent set succesfully created in directory '${dest}'.\n`,

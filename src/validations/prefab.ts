@@ -22,7 +22,7 @@ const componentReferenceSchema = Joi.object({
         configuration: Joi.object({
           allowedInput: Joi.array().items(
             Joi.object({
-              name: Joi.string(),
+              name: Joi.string().allow(''),
               value: Joi.string(),
             }),
           ),
@@ -35,9 +35,6 @@ const componentReferenceSchema = Joi.object({
             comparator: Joi.string(),
             value: Joi.any(),
           }),
-          dataType: Joi.string(),
-          dependsOn: Joi.string(),
-          placeholder: Joi.string(),
         }),
       }),
     )

@@ -13,7 +13,6 @@ import transpile from './utils/transpile';
 import readScripts from './utils/readScripts';
 import { parseDir } from './utils/arguments';
 import { checkNameReferences } from './utils/validation';
-import checkUpdateAvailable from './utils/checkUpdateAvailable';
 
 /* npm dependencies */
 
@@ -88,8 +87,6 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
 
 (async (): Promise<void> => {
   try {
-    await checkUpdateAvailable();
-
     const [prefabs, components]: [Prefab[], Component[]] = await Promise.all([
       readPrefabs(),
       readComponents(),
