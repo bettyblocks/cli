@@ -76,23 +76,24 @@ export const ICONS = [
 ];
 
 export const TYPES = [
-  'TEXT',
-  'NUMBER',
-  'TOGGLE',
+  'BUTTONGROUP',
   'COLOR',
+  'CUSTOM',
+  'DROPDOWN',
+  'ENDPOINT',
+  'FILTER',
   'FONT',
+  'MODEL',
+  'MULTILINE',
+  'NUMBER',
+  'PROPERTY',
   'SIZE',
   'SIZES',
-  'ENDPOINT',
-  'MODEL',
-  'PROPERTY',
-  'FILTER',
-  'VARIABLE',
-  'CUSTOM',
-  'MULTILINE',
+  'TEXT',
+  'THEME',
+  'TOGGLE',
   'UNIT',
-  'DROPDOWN',
-  'BUTTONGROUP',
+  'VARIABLE',
 ];
 
-export const CONDITION_TYPE = ['SHOW', 'HIDE'];
+export const CONDITION_TYPE = ['HIDE', 'SHOW'];

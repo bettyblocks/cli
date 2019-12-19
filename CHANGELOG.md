@@ -1,3 +1,10 @@
+# [22.36.0](https://github.com/bettyblocks/cli/compare/v22.35.0...v22.36.0) (2019-12-16)
+
+
+### Features
+
+* add THEME option type ([ca2b99b](https://github.com/bettyblocks/cli/commit/ca2b99b))
+
 # [22.35.0](https://github.com/bettyblocks/cli/compare/v22.34.0...v22.35.0) (2019-12-12)
 
 
