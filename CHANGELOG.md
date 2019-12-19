@@ -1,3 +1,10 @@
+## [22.36.1](https://github.com/bettyblocks/cli/compare/v22.36.0...v22.36.1) (2019-12-19)
+
+
+### Bug Fixes
+
+* resolved cli warnings while installing ([#80](https://github.com/bettyblocks/cli/issues/80)) ([61952c6](https://github.com/bettyblocks/cli/commit/61952c6))
+
 # [22.36.0](https://github.com/bettyblocks/cli/compare/v22.35.0...v22.36.0) (2019-12-16)
 
 
