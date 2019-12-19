@@ -33,7 +33,7 @@ const componentReferenceSchema = Joi.object({
           }),
           allowedInput: Joi.array().items(
             Joi.object({
-              name: Joi.string(),
+              name: Joi.string().allow(''),
               value: Joi.string(),
             }),
           ),

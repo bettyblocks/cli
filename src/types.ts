@@ -130,6 +130,6 @@ export interface Prefab {
 }
 
 export interface Versions {
-  remoteVersionCli: string;
+  remoteVersionCLI: string;
   remoteVersionPreview: string;
 }

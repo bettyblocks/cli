@@ -8,7 +8,7 @@ import chalk from 'chalk';
 
 import { Versions } from '../types';
 // eslint-disable-next-line
-const { version: versionCli } = require('../../package.json');
+const { version: versionCLI, name: nameCLI } = require('../../package.json');
 
 const execPromise = promisify(exec);
 
@@ -28,17 +28,17 @@ const logUpdateAvailable = (
   }
 };
 
-const getRemoteVersionCli = async (): Promise<string> => {
+const getRemoteVersionCLI = async (): Promise<string> => {
   const { stdout: output, stderr: error } = await execPromise(
     `npm show @betty-blocks/cli version`,
   );
-  const remoteVersionCli = output.toString().trim();
+  const remoteVersionCLI = output.toString().trim();
 
   if (error) {
     throw error;
   }
 
-  return remoteVersionCli;
+  return remoteVersionCLI;
 };
 
 const getRemoteVersionPreview = async (): Promise<string> => {
@@ -55,12 +55,12 @@ const getRemoteVersionPreview = async (): Promise<string> => {
 };
 
 const writeToFile = async (): Promise<void> => {
-  const remoteVersionCli = await getRemoteVersionCli();
+  const remoteVersionCLI = await getRemoteVersionCLI();
   const remoteVersionPreview = await getRemoteVersionPreview();
 
   await writeJson(`${TEMP_FOLDER}/versions.json`, {
     versions: {
-      remoteVersionCli,
+      remoteVersionCLI,
       remoteVersionPreview,
     },
     timestamp: Date.now(),
@@ -98,11 +98,11 @@ const readFile = async (): Promise<Versions> => {
   return remoteVersion;
 };
 
-export const checkUpdateAvailableCli = async (): Promise<void> => {
+export const checkUpdateAvailableCLI = async (): Promise<void> => {
   try {
-    const { remoteVersionCli } = await readFile();
+    const { remoteVersionCLI } = await readFile();
 
-    logUpdateAvailable(versionCli, remoteVersionCli, 'CLI');
+    logUpdateAvailable(versionCLI, remoteVersionCLI, nameCLI);
   } catch {
     console.error('Unable to check for a new version');
   }
@@ -115,8 +115,9 @@ export const checkUpdateAvailablePreview = async (
 
   try {
     const { version: localVersion, name } = await readJson(previewPkg);
-    const { remoteVersionPreview } = await readFile();
+    const { remoteVersionPreview, remoteVersionCLI } = await readFile();
 
+    logUpdateAvailable(versionCLI, remoteVersionCLI, nameCLI);
     logUpdateAvailable(localVersion, remoteVersionPreview, name);
   } catch {
     console.error('Unable to check for a new version');
