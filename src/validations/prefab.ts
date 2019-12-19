@@ -35,6 +35,9 @@ const componentReferenceSchema = Joi.object({
             comparator: Joi.string(),
             value: Joi.any(),
           }),
+          dataType: Joi.string(),
+          dependsOn: Joi.string(),
+          placeholder: Joi.string(),
         }),
       }),
     )
