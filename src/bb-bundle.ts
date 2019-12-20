@@ -6,7 +6,6 @@ import chalk from 'chalk';
 import { CommandBundle } from './types';
 
 /* internal dependencies */
-
 /* setup */
 
 const availableCommands: CommandBundle[] = ['init'];

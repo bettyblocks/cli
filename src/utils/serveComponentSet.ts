@@ -3,6 +3,8 @@ import { existsSync } from 'fs';
 import chalk from 'chalk';
 import handler from 'serve-handler';
 
+import { checkUpdateAvailableCLI } from './checkUpdateAvailable';
+
 const serveComponentSet = (rootDir: string, port: number): void => {
   const server: Server = createServer(
     (response: IncomingMessage, request: ServerResponse): Promise<void> =>
@@ -34,6 +36,7 @@ const serveComponentSet = (rootDir: string, port: number): void => {
 };
 
 export default async (rootDir: string, port: number): Promise<void> => {
+  await checkUpdateAvailableCLI();
   if (existsSync(`${rootDir}/dist`)) {
     serveComponentSet(rootDir, port);
   } else {

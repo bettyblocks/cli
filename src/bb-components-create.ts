@@ -5,6 +5,8 @@ import chalk from 'chalk';
 import { existsSync, copy, move } from 'fs-extra';
 import path from 'path';
 
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+
 const LIST = [
   'package.json',
   '.eslintignore',
@@ -39,6 +41,7 @@ if (existsSync(dest)) {
 }
 
 (async (): Promise<void> => {
+  await checkUpdateAvailableCLI();
   try {
     await copy(path.join(__dirname, '../assets/component-set'), dest);
 

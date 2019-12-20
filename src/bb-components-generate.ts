@@ -4,6 +4,7 @@ import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
 import { pathExists, outputFile } from 'fs-extra';
 
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 /* process arguments */
 
 program
@@ -20,6 +21,7 @@ if (args.length === 0) {
 const name: string = args[0];
 
 (async (): Promise<void> => {
+  await checkUpdateAvailableCLI();
   if (name.includes(' ')) {
     throw new Error(chalk.red(`\nName cannot contain spaces\n`));
   }
