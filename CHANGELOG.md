@@ -1,3 +1,10 @@
+## [22.36.3](https://github.com/bettyblocks/cli/compare/v22.36.2...v22.36.3) (2019-12-20)
+
+
+### Bug Fixes
+
+* awaiting the version check before running the command ([a6260d9](https://github.com/bettyblocks/cli/commit/a6260d9))
+
 ## [22.36.2](https://github.com/bettyblocks/cli/compare/v22.36.1...v22.36.2) (2019-12-19)
 
 
