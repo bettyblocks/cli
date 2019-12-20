@@ -7,6 +7,7 @@ import { readJSON } from 'fs-extra';
 import uploadBlob, {
   BlockBlobUploadResponseExtended,
 } from './utils/uploadBlob';
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 /* setup */
 
@@ -91,6 +92,7 @@ const publish = async (
 };
 
 (async (): Promise<void> => {
+  await checkUpdateAvailableCLI();
   const [{ url }] = await Promise.all(
     ['prefabs.json', 'templates.json'].map(publish),
   );

@@ -4,7 +4,7 @@ import program from 'commander';
 import { CommandComponents } from './types';
 
 /* internal dependencies */
-import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+
 /* setup */
 
 const availableCommands: CommandComponents[] = [
@@ -41,7 +41,6 @@ program
   )
   .command('generate [name]', 'generate a component with a given name')
   .on('command:*', ([command]: string[]): void => {
-    if (command !== 'preview') checkUpdateAvailableCLI();
     if (!availableCommands.includes(command as CommandComponents)) {
       console.error('Invalid command: %s\n', command);
       program.outputHelp();

@@ -86,7 +86,7 @@ const readFile = async (): Promise<Versions> => {
       console.log('Checking for new versions..');
       await writeToFile();
       remoteVersion = await readFile();
-      console.log('Done..');
+      console.log('Done');
     }
 
     remoteVersion = versions;
