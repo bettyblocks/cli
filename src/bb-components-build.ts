@@ -31,9 +31,9 @@ const distDir = `${rootDir}/dist`;
 
 /* execute command */
 
-const readComponents: () => Promise<Component[]> = async (): Promise<
+const readComponents: () => Promise<
   Component[]
-> => {
+> = async (): Promise<Component[]> => {
   const srcDir = `${rootDir}/src/components`;
   const exists: boolean = await pathExists(srcDir);
 
@@ -51,7 +51,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
         return Function(`return ${transpile(code)}`)();
       } catch (error) {
         error.file = file;
-        throw chalk.red(error);
+        throw error;
       }
     },
   );
@@ -77,7 +77,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
         return Function(`return ${code}`)();
       } catch (error) {
         error.file = file;
-        throw chalk.red(error);
+        throw error;
       }
     },
   );
