@@ -9,6 +9,7 @@ jobs:
       if: type = pull_request
       name: "Commit lint"
     - script:
+        - yarn prettier:write
         - yarn build
         - yarn lint
       name: "Lint"
