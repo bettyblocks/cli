@@ -10,6 +10,16 @@ module.exports = {
   rules: {
     'prettier/prettier': ['error', { singleQuote: true }],
     'no-console': 0,
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
   },
   settings: {
     'import/resolver': {

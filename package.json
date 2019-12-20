@@ -40,13 +40,6 @@
     "tsc-watch": "^2.2.1",
     "typescript": "^3.5.3"
   },
-  "peerDependencies": {
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.14.3",
-    "eslint-plugin-react-hooks": "^1.7.0",
-    "semantic-release": "^15.8.0"
-  },
   "dependencies": {
     "@azure/ms-rest-js": "^2.0.4",
     "@azure/storage-blob": "^10.3.0",
