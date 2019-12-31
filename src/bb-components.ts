@@ -23,6 +23,7 @@ program
   .usage(`<${availableCommands.join('|')}>`)
   .name('bb components')
   .command('create <path>', 'create a new component set at path')
+  .command('add <name>', 'add an external component')
   .command(
     'build [path]',
     'build the component set at a specific path, defaults to CWD',
