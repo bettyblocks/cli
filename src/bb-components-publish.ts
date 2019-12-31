@@ -1,13 +1,11 @@
 /* npm dependencies */
 
-import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
+import program, { CommanderStatic } from 'commander';
 import { readJSON } from 'fs-extra';
 
-import uploadBlob, {
-  BlockBlobUploadResponseExtended,
-} from './utils/uploadBlob';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import uploadBlob, { BlockBlobUploadResponseExtended } from './utils/uploadBlob';
 
 /* setup */
 
@@ -64,6 +62,7 @@ const upload = async (
   } catch (error) {
     const defaultMessage =
       'There was an error trying to publish your component set';
+
     const { body, message } = error;
 
     if (!body) {
@@ -93,6 +92,7 @@ const publish = async (
 
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
+
   const [{ url }] = await Promise.all(
     ['prefabs.json', 'templates.json'].map(publish),
   );

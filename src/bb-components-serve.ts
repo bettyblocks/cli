@@ -20,4 +20,5 @@ const rootDir: string = parseDir(args);
 const port: number = parsePort(portRaw, 5001);
 
 /* execute command */
+
 serveComponentSet(rootDir, port);

@@ -1,8 +1,8 @@
 /* npm dependencies */
 
-import program, { CommanderStatic } from 'commander';
-import { existsSync, copy, moveSync } from 'fs-extra';
 import chalk from 'chalk';
+import program, { CommanderStatic } from 'commander';
+import { copy, existsSync, moveSync } from 'fs-extra';
 import path from 'path';
 
 /* internal dependencies */
@@ -35,9 +35,12 @@ if (existsSync(dest)) {
 
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
+
   try {
     await copy(path.join(__dirname, '../assets/bundle'), dest);
+
     moveSync(`${dest}/__package.json`, `${dest}/package.json`);
+
     console.log(
       chalk.green(`Bundle succesfully initialized in directory '${dest}'.`),
     );

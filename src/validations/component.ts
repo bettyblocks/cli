@@ -1,5 +1,6 @@
-import Joi, { ObjectSchema, ValidationResult } from '@hapi/joi';
 import chalk from 'chalk';
+
+import Joi, { ObjectSchema, ValidationResult } from '@hapi/joi';
 
 import { Component } from '../types';
 import { findDuplicates } from '../utils/validation';

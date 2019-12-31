@@ -1,19 +1,18 @@
 /* npm dependencies */
 
-import program, { CommanderStatic } from 'commander';
-import { promises, outputJson, pathExists } from 'fs-extra';
 import chalk from 'chalk';
+import program, { CommanderStatic } from 'commander';
+import { outputJson, pathExists, promises } from 'fs-extra';
+
 import { Component, Prefab } from './types';
-
+import { parseDir } from './utils/arguments';
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import readScripts from './utils/readScripts';
+import transpile from './utils/transpile';
+import { checkNameReferences } from './utils/validation';
 /* internal dependencies */
-
 import validateComponents from './validations/component';
 import validatePrefabs from './validations/prefab';
-import transpile from './utils/transpile';
-import readScripts from './utils/readScripts';
-import { parseDir } from './utils/arguments';
-import { checkNameReferences } from './utils/validation';
-import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 /* npm dependencies */
 
@@ -32,9 +31,9 @@ const distDir = `${rootDir}/dist`;
 
 /* execute command */
 
-const readComponents: () => Promise<
+const readComponents: () => Promise<Component[]> = async (): Promise<
   Component[]
-> = async (): Promise<Component[]> => {
+> => {
   const srcDir = `${rootDir}/src/components`;
   const exists: boolean = await pathExists(srcDir);
 
@@ -48,10 +47,12 @@ const readComponents: () => Promise<
     async (file: string): Promise<Component> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+
         // eslint-disable-next-line no-new-func
         return Function(`return ${transpile(code)}`)();
       } catch (error) {
         error.file = file;
+
         throw error;
       }
     },
@@ -74,10 +75,12 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     async (file: string): Promise<Prefab> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+
         // eslint-disable-next-line no-new-func
         return Function(`return ${code}`)();
       } catch (error) {
         error.file = file;
+
         throw error;
       }
     },
@@ -88,6 +91,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
 
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
+
   try {
     const [prefabs, components]: [Prefab[], Component[]] = await Promise.all([
       readPrefabs(),

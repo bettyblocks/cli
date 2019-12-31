@@ -1,7 +1,7 @@
+import chalk from 'chalk';
 import { existsSync } from 'fs';
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { join } from 'path';
-import chalk from 'chalk';
 import handler from 'serve-handler';
 
 import { checkUpdateAvailablePreview } from './checkUpdateAvailable';
@@ -13,6 +13,7 @@ const BUILD_PATH_YARN = relativePath('../../preview/build');
 
 const startServer = (path: string, port: number): void => {
   checkUpdateAvailablePreview(path);
+
   const server = createServer(
     (response: IncomingMessage, request: ServerResponse): Promise<void> =>
       handler(response, request, { public: path }),

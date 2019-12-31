@@ -1,10 +1,11 @@
 /* npm dependencies */
 
-import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { pathExists, outputFile } from 'fs-extra';
+import program, { CommanderStatic } from 'commander';
+import { outputFile, pathExists } from 'fs-extra';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+
 /* process arguments */
 
 program
@@ -22,6 +23,7 @@ const name: string = args[0];
 
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
+
   if (name.includes(' ')) {
     throw new Error(chalk.red(`\nName cannot contain spaces\n`));
   }
@@ -65,6 +67,7 @@ const name: string = args[0];
   await Promise.all([
     outputFile(`src/prefabs/${name}.js`, prefab.trim()),
     outputFile(`src/components/${name}.js`, component.trim()),
+
     console.log(chalk.green('The component has been generated')),
   ]);
 })();

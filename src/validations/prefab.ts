@@ -1,11 +1,12 @@
 /* eslint-disable no-use-before-define */
-/* eslint-disable @typescript-eslint/no-use-before-define */
-import Joi, { ValidationResult } from '@hapi/joi';
 import chalk from 'chalk';
 
-import { Prefab, ComponentReference } from '../types';
-import { ICONS, TYPES, CONDITION_TYPE } from './constants';
+/* eslint-disable @typescript-eslint/no-use-before-define */
+import Joi, { ValidationResult } from '@hapi/joi';
+
+import { ComponentReference, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
+import { CONDITION_TYPE, ICONS, TYPES } from './constants';
 
 const componentReferenceSchema = Joi.object({
   name: Joi.string().required(),

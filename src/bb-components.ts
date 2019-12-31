@@ -4,8 +4,6 @@ import program from 'commander';
 
 import { CommandComponents } from './types';
 
-/* internal dependencies */
-
 /* setup */
 
 const availableCommands: CommandComponents[] = [

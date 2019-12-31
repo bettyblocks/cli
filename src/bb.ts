@@ -2,11 +2,10 @@
 
 /* npm dependencies */
 
-import program from 'commander';
 import chalk from 'chalk';
+import program from 'commander';
 
 /* internal dependencies */
-
 import { CommandBB } from './types';
 
 /* setup */

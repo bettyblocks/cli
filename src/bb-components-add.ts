@@ -2,7 +2,6 @@
 
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
-import { outputFile, pathExists } from 'fs-extra';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
