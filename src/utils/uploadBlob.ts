@@ -30,12 +30,12 @@ const getServiceUrl = (): ServiceURL => {
   );
 
   const pipeline: Pipeline = StorageURL.newPipeline(sharedKeyCredential);
-  const url = `https://${AZURE_BLOB_ACCOUNT as string}.blob.core.windows.net`;
+  const url = `https://${AZURE_BLOB_ACCOUNT}.blob.core.windows.net`;
 
   return new ServiceURL(url, pipeline);
 };
 
-const setCorsRules = (
+const setCORSRules = (
   serviceURL: ServiceURL,
 ): Promise<ServiceSetPropertiesResponse> =>
   serviceURL.setProperties(Aborter.none, {
@@ -93,7 +93,7 @@ export default async (
 ): Promise<BlockBlobUploadResponseExtended> => {
   const serviceURL = getServiceUrl();
 
-  await setCorsRules(serviceURL);
+  await setCORSRules(serviceURL);
 
   const containerURL = getContainerURL(serviceURL, blobContainerName);
   const { url } = containerURL;

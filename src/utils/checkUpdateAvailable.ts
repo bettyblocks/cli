@@ -8,12 +8,13 @@ import { promisify } from 'util';
 
 import { Versions } from '../types';
 
+const ONE_DAY = 86400000;
+const TEMP_FOLDER = `${tmpdir()}/bettyblocks`;
+
 // eslint-disable-next-line
 const { version: versionCLI, name: nameCLI } = require('../../package.json');
 
 const execPromise = promisify(exec);
-
-const TEMP_FOLDER = `${tmpdir()}/bettyblocks`;
 
 const logUpdateAvailable = (
   localVersion: string,
@@ -86,7 +87,7 @@ const readFile = async (): Promise<Versions> => {
       `${TEMP_FOLDER}/versions.json`,
     );
 
-    if (timestamp + 86400000 < Date.now()) {
+    if (timestamp + ONE_DAY < Date.now()) {
       console.log('Checking for new versions..');
 
       await writeToFile();
