@@ -1,6 +1,7 @@
 /* npm dependencies */
 
 import program from 'commander';
+
 import { CommandComponents } from './types';
 
 /* internal dependencies */
@@ -8,13 +9,14 @@ import { CommandComponents } from './types';
 /* setup */
 
 const availableCommands: CommandComponents[] = [
-  'create',
+  'add',
   'build',
-  'serve',
+  'create',
+  'generate',
+  'help',
   'preview',
   'publish',
-  'help',
-  'generate',
+  'serve',
 ];
 
 /* process arguments */

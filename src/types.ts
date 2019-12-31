@@ -4,6 +4,7 @@ export type Category = DefaultCategory | string;
 export type CommandBB = 'components' | 'bundle' | 'help';
 
 export type CommandComponents =
+  | 'add'
   | 'create'
   | 'build'
   | 'serve'
