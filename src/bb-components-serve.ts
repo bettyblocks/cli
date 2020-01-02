@@ -5,8 +5,6 @@ import program, { CommanderStatic } from 'commander';
 import { parseDir, parsePort } from './utils/arguments';
 import serveComponentSet from './utils/serveComponentSet';
 
-/* internal dependencies */
-
 /* process arguments */
 
 program

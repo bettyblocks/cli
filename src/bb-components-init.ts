@@ -5,9 +5,10 @@ import program, { CommanderStatic } from 'commander';
 import { promises } from 'fs';
 import { copy } from 'fs-extra';
 import { prompt } from 'inquirer';
-import path, { join } from 'path';
+import path from 'path';
 import { stringify } from 'yaml';
 
+/* internal dependencies */
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 const { writeFile } = promises;
@@ -30,7 +31,6 @@ if (args.length > 0) {
   await checkUpdateAvailableCLI();
 
   const cwd = process.cwd();
-  const dest = join(cwd, 'bettyblocks');
 
   const {
     name,
@@ -52,7 +52,6 @@ if (args.length > 0) {
     },
     {
       default: false,
-      filter: (raw: string): boolean => raw.toLowerCase() === 'public',
       message: 'Is this component set public?',
       name: 'isPublic',
       type: 'confirm',
@@ -76,20 +75,19 @@ if (args.length > 0) {
 
   try {
     await Promise.all([
-      copy(path.join(__dirname, '../assets/component-set'), dest),
-      copy(path.join(__dirname, '../assets/component-set/.*'), dest),
+      copy(path.join(__dirname, '../assets/component-set'), cwd),
       writeFile(`${cwd}/bettyblocks.yaml`, yaml, { encoding: 'utf-8' }),
     ]);
 
     console.log(
       chalk.green(
-        `\nComponent set succesfully created in directory '${dest}'.\n`,
+        `\nComponent set succesfully created in directory '${cwd}'.\n`,
       ),
     );
   } catch ({ message }) {
     throw Error(
       chalk.red(
-        `\nCould not create component set in directory ${dest}: ${message}.\n`,
+        `\nCould not create component set in directory ${cwd}: ${message}.\n`,
       ),
     );
   }
