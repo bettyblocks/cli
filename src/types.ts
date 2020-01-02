@@ -5,13 +5,14 @@ export type CommandBB = 'components' | 'bundle' | 'help';
 
 export type CommandComponents =
   | 'add'
-  | 'create'
   | 'build'
-  | 'serve'
-  | 'publish'
-  | 'preview'
+  | 'create'
+  | 'generate'
   | 'help'
-  | 'generate';
+  | 'install'
+  | 'preview'
+  | 'publish'
+  | 'serve';
 
 export type CommandBundle = 'init';
 
@@ -133,4 +134,15 @@ export interface Prefab {
 export interface Versions {
   remoteVersionCLI: string;
   remoteVersionPreview: string;
+}
+
+export interface Registry {
+  data: RegistryEntry[];
+}
+
+export interface RegistryEntry {
+  name: string;
+  path?: string;
+  public?: boolean;
+  version: string;
 }

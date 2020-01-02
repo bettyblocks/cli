@@ -12,6 +12,7 @@ const availableCommands: CommandComponents[] = [
   'create',
   'generate',
   'help',
+  'install',
   'preview',
   'publish',
   'serve',
@@ -39,6 +40,10 @@ program
   .command(
     'publish [options] [path]',
     'publish the component set from a specific path, defaults to CWD',
+  )
+  .command(
+    'install',
+    'install components based on the bettyblocks.yaml file in the current folder',
   )
   .command('generate [name]', 'generate a component with a given name')
   .on('command:*', ([command]: string[]): void => {
