@@ -1,15 +1,15 @@
 /* npm dependencies */
 
-import YAML from 'yaml';
 import chalk from 'chalk';
-import got from 'got';
 import program, { CommanderStatic } from 'commander';
 import { readFile, writeFile } from 'fs-extra';
+import got from 'got';
+import YAML from 'yaml';
 
-import getRootDir from './utils/getRootDir';
+import { exists, install } from './registry';
 import { RegistryEntry } from './types';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
-import { exists, install } from './registry';
+import getRootDir from './utils/getRootDir';
 
 const REGISTRY_URL = 'http://localhost:3030';
 
