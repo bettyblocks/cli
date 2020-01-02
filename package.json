@@ -5,10 +5,7 @@
   "main": "build/index.js",
   "author": "Niek Nijland <niek.nijland@bettyblocks.com>",
   "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bettyblocks/cli"
-  },
+  "repository": "https://github.com/bettyblocks/cli",
   "scripts": {
     "build": "tsc",
     "commit": "commit",
