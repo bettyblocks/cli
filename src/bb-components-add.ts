@@ -7,9 +7,9 @@ import program, { CommanderStatic } from 'commander';
 import { readFile, writeFile } from 'fs-extra';
 
 import getRootDir from './utils/getRootDir';
-import { Registry } from './types';
+import { RegistryEntry } from './types';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
-import { install } from './registry';
+import { exists, install } from './registry';
 
 const REGISTRY_URL = 'http://localhost:3030';
 
@@ -28,13 +28,17 @@ if (args.length === 0) {
 
 const [set] = args;
 
-const getVersions = async (setName: string): Promise<Registry> => {
+const getLatest = async (setName: string): Promise<RegistryEntry> => {
   try {
-    const { body } = await got(`${REGISTRY_URL}/api/blocks/${setName}`, {
+    const {
+      body: {
+        data: [entry],
+      },
+    } = await got(`${REGISTRY_URL}/api/blocks/${setName}`, {
       responseType: 'json',
     });
 
-    return body;
+    return entry;
   } catch (error) {
     const statusCode = error?.response?.statusCode;
 
@@ -54,9 +58,11 @@ const getVersions = async (setName: string): Promise<Registry> => {
   try {
     await checkUpdateAvailableCLI();
 
-    const {
-      data: [entry],
-    } = await getVersions(set);
+    const [name, version] = set.split(':');
+
+    const entry = await (typeof version === 'string'
+      ? exists({ name, version })
+      : getLatest(set));
 
     const rootDir = await getRootDir();
 
@@ -65,7 +71,7 @@ const getVersions = async (setName: string): Promise<Registry> => {
     const contents = await readFile(`${rootDir}/bettyblocks.yaml`);
     const yaml = YAML.parse(contents.toString());
 
-    yaml.dependencies[set] = entry.version;
+    yaml.dependencies[name] = entry.version;
 
     await writeFile(`${rootDir}/bettyblocks.yaml`, YAML.stringify(yaml));
   } catch ({ message }) {
