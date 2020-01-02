@@ -1,12 +1,12 @@
 /* npm dependencies */
 
 import chalk from 'chalk';
-import YAML from 'yaml';
 import program from 'commander';
 import { readFile } from 'fs-extra';
+import YAML from 'yaml';
 
-import getRootDir from './utils/getRootDir';
 import { exists, install } from './registry';
+import getRootDir from './utils/getRootDir';
 
 program.name('bb components install').parse(process.argv);
 

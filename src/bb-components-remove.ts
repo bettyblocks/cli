@@ -1,12 +1,12 @@
 /* npm dependencies */
 
-import YAML from 'yaml';
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
-import { readFile, writeFile, remove } from 'fs-extra';
+import { readFile, remove, writeFile } from 'fs-extra';
+import YAML from 'yaml';
 
-import getRootDir from './utils/getRootDir';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import getRootDir from './utils/getRootDir';
 
 /* process arguments */
 
