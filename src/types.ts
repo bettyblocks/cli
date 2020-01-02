@@ -12,6 +12,7 @@ export type CommandComponents =
   | 'install'
   | 'preview'
   | 'publish'
+  | 'remove'
   | 'serve';
 
 export type CommandBundle = 'init';

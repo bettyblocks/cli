@@ -15,6 +15,7 @@ const availableCommands: CommandComponents[] = [
   'install',
   'preview',
   'publish',
+  'remove',
   'serve',
 ];
 
@@ -24,7 +25,8 @@ program
   .usage(`<${availableCommands.join('|')}>`)
   .name('bb components')
   .command('create <path>', 'create a new component set at path')
-  .command('add <name>', 'add an external component')
+  .command('add <name>', 'add an external component set')
+  .command('remove <name>', 'remove an external component set')
   .command(
     'build [path]',
     'build the component set at a specific path, defaults to CWD',
