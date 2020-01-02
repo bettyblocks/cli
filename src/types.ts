@@ -1,14 +1,14 @@
 // eslint-disable import/prefer-default-export
 export type Category = DefaultCategory | string;
 
-export type CommandBB = 'components' | 'bundle' | 'help';
+export type CommandBB = 'bundle' | 'components' | 'help';
 
 export type CommandComponents =
   | 'add'
   | 'build'
-  | 'create'
   | 'generate'
   | 'help'
+  | 'init'
   | 'install'
   | 'preview'
   | 'publish'
@@ -26,18 +26,18 @@ export type DefaultCategory =
   | 'TABLE';
 
 export interface Component {
-  name: string;
-  type: string;
   allowedTypes: string[];
-  orientation: Orientation;
   jsx: string;
+  name: string;
+  orientation: Orientation;
   styles: string;
+  type: string;
 }
 
 export interface ComponentReference {
+  descendants: ComponentReference[];
   name: string;
   options: Option[];
-  descendants: ComponentReference[];
 }
 
 export type Icon =
@@ -90,9 +90,9 @@ export type Icon =
   | 'ListItemIcon'
   | 'MultiLineIcon'
   | 'MultiSelectIcon'
-  | 'NavbarIcon'
   | 'NavItemIcon'
   | 'NavSidebarIcon'
+  | 'NavbarIcon'
   | 'NumberInputIcon'
   | 'OrderedListIcon'
   | 'PanelIcon'
@@ -116,19 +116,19 @@ export type Icon =
   | 'UrlInputIcon';
 
 export interface Option {
-  value: unknown;
-  label: string;
-  key: string;
-  type: string;
   configuration?: unknown;
+  key: string;
+  label: string;
+  type: string;
+  value: unknown;
 }
 
-export type Orientation = 'VERTICAL' | 'HORIZONTAL';
+export type Orientation = 'HORIZONTAL' | 'VERTICAL';
 
 export interface Prefab {
-  name: string;
-  icon: Icon;
   category: Category;
+  icon: Icon;
+  name: string;
   structure: ComponentReference[];
 }
 
