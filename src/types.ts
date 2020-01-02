@@ -8,9 +8,10 @@ export type CommandComponents =
   | 'build'
   | 'generate'
   | 'help'
-  | 'init'
+  | 'install'
   | 'preview'
   | 'publish'
+  | 'remove'
   | 'serve';
 
 export type CommandBundle = 'init';
@@ -133,4 +134,15 @@ export interface Prefab {
 export interface Versions {
   remoteVersionCLI: string;
   remoteVersionPreview: string;
+}
+
+export interface Registry {
+  data: RegistryEntry[];
+}
+
+export interface RegistryEntry {
+  name: string;
+  path?: string;
+  public?: boolean;
+  version: string;
 }

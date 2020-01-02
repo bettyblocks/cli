@@ -12,8 +12,10 @@ const availableCommands: CommandComponents[] = [
   'generate',
   'help',
   'init',
+  'install',
   'preview',
   'publish',
+  'remove',
   'serve',
 ];
 
@@ -22,7 +24,8 @@ const availableCommands: CommandComponents[] = [
 program
   .usage(`<${availableCommands.join('|')}>`)
   .name('bb components')
-  .command('add <name>', 'add an external component')
+  .command('add <name>', 'add an external component set')
+  .command('remove <name>', 'remove an external component set')
   .command(
     'build [path]',
     'build the component set at a specific path, defaults to CWD',
@@ -41,6 +44,11 @@ program
     'serve [path]',
     'serve the component set at a specific path, defaults to CWD',
   )
+  .command(
+    'install',
+    'install components based on the bettyblocks.yaml file in the current folder',
+  )
+  .command('generate [name]', 'generate a component with a given name')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandComponents)) {
       console.error('Invalid command: %s\n', command);
