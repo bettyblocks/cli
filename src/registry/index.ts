@@ -38,8 +38,10 @@ export const install = async (
 export const exists = async ({
   name,
   version,
-}: RegistryEntry): Promise<void> => {
+}: RegistryEntry): Promise<RegistryEntry> => {
   await got.head(`${REGISTRY_URL}/blocks/${name}-${version}.tgz`, {
     responseType: 'json',
   });
+
+  return { name, version };
 };
