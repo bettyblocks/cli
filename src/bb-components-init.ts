@@ -2,23 +2,17 @@
 
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
-import { copy, existsSync, move } from 'fs-extra';
+import { promises } from 'fs';
+import { copy } from 'fs-extra';
 import { prompt } from 'inquirer';
-import path from 'path';
-import { parse, stringify } from 'yaml';
+import path, { join } from 'path';
+import { stringify } from 'yaml';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
-const VALID_NAME_PATTERN = /[a-z0-9-_]+\/[a-z0-9-_]/;
+const { writeFile } = promises;
 
-const files = [
-  'package.json',
-  '.eslintignore',
-  '.eslintrc.json',
-  '.gitignore',
-  '.prettierignore',
-  '.prettierrc.json',
-];
+const VALID_NAME_PATTERN = /[a-z0-9-_]+\/[a-z0-9-_]/;
 
 /* process arguments */
 
@@ -36,6 +30,7 @@ if (args.length > 0) {
   await checkUpdateAvailableCLI();
 
   const cwd = process.cwd();
+  const dest = join(cwd, 'bettyblocks');
 
   const {
     name,
@@ -53,12 +48,12 @@ if (args.length > 0) {
         'The name of your component set should start with @, followed by your organization id, /, and the name of your set.',
       validate: (name: string): true | string =>
         VALID_NAME_PATTERN.test(name) ||
-        'Make sure the name starts with @, followed by your organization id, /, and the name of your set.',
+        'Make sure the name starts with @, followed by your organization id, /, and the name of your set. For example: @betty-blocks/layout',
     },
     {
       default: false,
       filter: (raw: string): boolean => raw.toLowerCase() === 'public',
-      message: 'Is your component set public?',
+      message: 'Is this component set public?',
       name: 'isPublic',
       type: 'confirm',
     },
@@ -72,17 +67,30 @@ if (args.length > 0) {
     },
   ]);
 
-  // Copy assets into place
-
   const yaml = stringify({
     dependencies: {},
-    public: isPublic && isPublicConfirmed,
     name,
+    public: isPublic && isPublicConfirmed,
     version: '0.1.0',
   });
 
-  console.log(yaml);
-  // Write bettyblocks.yaml
+  try {
+    await Promise.all([
+      copy(path.join(__dirname, '../assets/component-set'), dest),
+      copy(path.join(__dirname, '../assets/component-set/.*'), dest),
+      writeFile(`${cwd}/bettyblocks.yaml`, yaml, { encoding: 'utf-8' }),
+    ]);
 
-  console.log(cwd);
+    console.log(
+      chalk.green(
+        `\nComponent set succesfully created in directory '${dest}'.\n`,
+      ),
+    );
+  } catch ({ message }) {
+    throw Error(
+      chalk.red(
+        `\nCould not create component set in directory ${dest}: ${message}.\n`,
+      ),
+    );
+  }
 })();
