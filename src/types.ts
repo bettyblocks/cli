@@ -8,6 +8,7 @@ export type CommandComponents =
   | 'build'
   | 'generate'
   | 'help'
+  | 'init'
   | 'install'
   | 'preview'
   | 'publish'
