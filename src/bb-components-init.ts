@@ -46,8 +46,8 @@ if (args.length > 0) {
       message: 'Name',
       prefix:
         'The name of your component set should start with @, followed by your organization id, /, and the name of your set.',
-      validate: (name: string): true | string =>
-        VALID_NAME_PATTERN.test(name) ||
+      validate: (nameValue: string): true | string =>
+        VALID_NAME_PATTERN.test(nameValue) ||
         'Make sure the name starts with @, followed by your organization id, /, and the name of your set. For example: @betty-blocks/layout',
     },
     {
@@ -62,7 +62,7 @@ if (args.length > 0) {
       message:
         'Are you ABSOLUTELY SURE that your component set should be public? Once published as such, it cannot be unpublished.',
       type: 'confirm',
-      when: ({ isPublic }): boolean => isPublic,
+      when: ({ isPublic: isPublicValue }): boolean => isPublicValue,
     },
   ]);
 
