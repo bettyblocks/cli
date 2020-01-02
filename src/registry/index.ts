@@ -1,8 +1,8 @@
+import { ensureDir } from 'fs-extra';
 import got from 'got';
 import { pipeline } from 'stream';
-import { promisify } from 'util';
-import { ensureDir } from 'fs-extra';
 import { x } from 'tar';
+import { promisify } from 'util';
 
 import { RegistryEntry } from '../types';
 
