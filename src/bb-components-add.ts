@@ -1,9 +1,11 @@
 /* npm dependencies */
 
 import chalk from 'chalk';
+import got from 'got';
 import program, { CommanderStatic } from 'commander';
-import { get, IncomingMessage } from 'http';
 import { join } from 'path';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
 import { x } from 'tar';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -36,124 +38,65 @@ if (args.length === 0) {
 
 const [set] = args;
 
-const getSetHandler = (res: IncomingMessage): void => {
-  const { statusCode } = res;
-
-  if (statusCode === 404) {
-    throw new ReferenceError('404: component set not found');
-  }
-
-  if (statusCode === 500) {
-    throw new Error('500: something went wrong on our end :(');
-  }
-
-  if (statusCode !== 200) {
-    throw new Error('Unknown error');
-  }
-
-  res.setEncoding('binary');
-
-  const zip = x({
-    cwd: join(__dirname, 'test'),
-  });
-
-  res.on('data', (chunk: string): void => {
-    zip.write(Buffer.from(chunk, 'binary'));
-  });
-
-  res.on('error', (error: Error): void => {
-    console.log('Something went wrong while retrieving the component set.');
-
-    throw error;
-  });
-
-  res.on('end', () => {
-    zip.end();
-  });
-};
-
-const getSet = (path: string): void => {
+const getSet = async (path: string): Promise<void> => {
   try {
-    get(
-      // TODO: fix host
-      `http://localhost:3030/${path}`,
-      getSetHandler,
+    await promisify(pipeline)(
+      got.stream(`http://localhost:3030/${path}`),
+      x({ cwd: join(__dirname, 'test') }),
     );
   } catch (error) {
-    console.log('Something went wrong while requesting the component set.');
-    console.error(error);
-  }
-};
+    const statusCode = error?.response?.statusCode;
 
-const getVersionsHandler = (
-  res: IncomingMessage,
-  callback: (versions: Registry) => void,
-): void => {
-  const { statusCode } = res;
+    if (statusCode === 404) {
+      throw new ReferenceError('404: component set not found');
+    }
 
-  if (statusCode === 404) {
-    throw new ReferenceError('404: component set not found');
-  }
-
-  if (statusCode === 500) {
-    throw new Error('500: something went wrong on our end :(');
-  }
-
-  if (statusCode !== 200) {
-    throw new Error('Unknown error');
-  }
-
-  res.setEncoding('utf8');
-
-  let chunks: string[] = [];
-
-  res.on('data', (chunk: string): void => {
-    chunks.push(chunk);
-  });
-
-  res.on('error', (error: Error): void => {
-    console.log(
-      'Something went wrong while retrieving component set versions.',
-    );
+    if (statusCode === 500) {
+      throw new Error('500: something went wrong on our end :(');
+    }
 
     throw error;
-  });
-
-  res.on('end', () => {
-    try {
-      const registry = JSON.parse(chunks.join(''));
-
-      callback(registry);
-    } catch (error) {
-      console.log('Something went wrong while parsing component set versions.');
-
-      throw error;
-    }
-  });
+  }
 };
 
-const getVersions = (
-  set: string,
-  callback: (versions: Registry) => void,
-): void => {
+const getVersions = async (set: string): Promise<Registry> => {
   try {
-    get(
+    const { statusCode, body } = await got(
       `http://localhost:3030/api/blocks/${set}`,
-      (res: IncomingMessage): void => getVersionsHandler(res, callback),
+      {
+        responseType: 'json',
+      },
     );
+
+    if (statusCode === 404) {
+      throw new ReferenceError('404: component set not found');
+    }
+
+    if (statusCode === 500) {
+      throw new Error('500: something went wrong on our end :(');
+    }
+
+    if (statusCode !== 200) {
+      throw new Error('Unknown error');
+    }
+
+    return body;
   } catch (error) {
     console.error(
       chalk.red(
         `Something went wrong while requesting component set versions. ${error}`,
       ),
     );
+    return error;
   }
 };
 
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
 
-  getVersions(set, ({ data: [{ path }] }: Registry): void => {
-    getSet(path);
-  });
+  const {
+    data: [{ path }],
+  }: Registry = await getVersions(set);
+
+  await getSet(path);
 })();
