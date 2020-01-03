@@ -18,9 +18,13 @@ const REGISTRY_URL = 'http://localhost:3030';
 program
   .usage('{@<organization}/{component-set}>')
   .name('bb components add')
+  .option(
+    '--registry [url]',
+    'Use a custom registry. Defaults to the Betty Blocks registry.',
+  )
   .parse(process.argv);
 
-const { args }: CommanderStatic = program;
+const { registry, args }: CommanderStatic = program;
 
 if (args.length === 0) {
   program.help();
@@ -34,7 +38,7 @@ const getLatest = async (setName: string): Promise<RegistryEntry> => {
       body: {
         data: [entry],
       },
-    } = await got(`${REGISTRY_URL}/api/blocks/${setName}`, {
+    } = await got(`${registry || REGISTRY_URL}/api/blocks/${setName}`, {
       responseType: 'json',
     });
 
@@ -61,12 +65,12 @@ const getLatest = async (setName: string): Promise<RegistryEntry> => {
     const [name, version] = set.split(':');
 
     const entry = await (typeof version === 'string'
-      ? exists({ name, version })
+      ? exists(registry || REGISTRY_URL, { name, version })
       : getLatest(set));
 
     const rootDir = await getRootDir();
 
-    await install(entry, rootDir);
+    await install(registry || REGISTRY_URL, entry, rootDir);
 
     const contents = await readFile(`${rootDir}/bettyblocks.yaml`);
     const yaml = YAML.parse(contents.toString());
