@@ -1,5 +1,4 @@
 /* eslint-disable no-use-before-define */
-import chalk from 'chalk';
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import Joi, { ValidationResult } from '@hapi/joi';
@@ -55,7 +54,7 @@ function validateComponentReference(prefab: Prefab): Prefab {
     const { name } = prefab;
     const { message } = error;
 
-    throw new Error(chalk.red(`\nBuild error in prefab ${name}: ${message}\n`));
+    throw new Error(`Build error in prefab ${name}: ${message}`);
   }
 
   return prefab;
@@ -77,9 +76,7 @@ const validate = (prefab: Prefab): void => {
   const { error }: ValidationResult = schema.validate(prefab);
 
   if (typeof error !== 'undefined') {
-    throw new Error(
-      chalk.red(`\nProperty: ${error.message} at prefab: ${prefab.name}\n`),
-    );
+    throw new Error(`Property: ${error.message} at prefab: ${prefab.name}`);
   }
 };
 
@@ -93,9 +90,7 @@ const validateOptions = ({ structure, name }: Prefab): void => {
     options.forEach(({ key }) => {
       if (keys.includes(key)) {
         throw new Error(
-          chalk.red(
-            `\nMultiple option references to key: ${key} in prefab: ${name}\n`,
-          ),
+          `Multiple option references to key: ${key} in prefab: ${name}`,
         );
       }
 

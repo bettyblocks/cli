@@ -1,22 +1,21 @@
 /* npm dependencies */
 
+import YAML from 'yaml';
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
-import { outputJson, pathExists, promises } from 'fs-extra';
+import { outputJson, pathExists, mkdirp, readFile, readJson } from 'fs-extra';
 
-import { Component, Prefab } from './types';
-import { parseDir } from './utils/arguments';
-import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+/* internal dependencies */
+
+import getRootDir from './utils/getRootDir';
 import readScripts from './utils/readScripts';
 import transpile from './utils/transpile';
-import { checkNameReferences } from './utils/validation';
-/* internal dependencies */
 import validateComponents from './validations/component';
 import validatePrefabs from './validations/prefab';
-
-/* npm dependencies */
-
-const { mkdir, readFile } = promises;
+import { Component, ComponentSet, Prefab } from './types';
+import { validateNameAndRefs } from './utils/validation';
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import { parseDir } from './utils/arguments';
 
 /* process arguments */
 
@@ -89,23 +88,66 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   return Promise.all(prefabs);
 };
 
+const readSrc = async (): Promise<ComponentSet> => {
+  const [prefabs, components] = await Promise.all([
+    readPrefabs(),
+    readComponents(),
+  ]);
+
+  return { prefabs, components };
+};
+
+const readDependencies = async (
+  dependencies: string[],
+): Promise<ComponentSet[]> =>
+  Promise.all(
+    dependencies.map(
+      async (scope: string): Promise<ComponentSet> => {
+        const dir = `${rootDir}/betty_blocks/${scope}`;
+        const [prefabs, components] = await Promise.all([
+          readJson(`${dir}/prefabs.json`),
+          readJson(`${dir}/templates.json`),
+        ]);
+
+        return {
+          prefabs,
+          components,
+        };
+      },
+    ),
+  );
+
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
 
   try {
-    const [prefabs, components]: [Prefab[], Component[]] = await Promise.all([
-      readPrefabs(),
-      readComponents(),
-    ]);
+    const root = await getRootDir();
+    const contents = await readFile(`${root}/bettyblocks.yaml`);
+    const yaml = YAML.parse(contents.toString());
+    const dependencies = Object.keys(yaml.dependencies);
+    const scopes = [yaml.name, ...dependencies];
 
-    checkNameReferences(prefabs, components);
+    const componentSet = await readSrc();
+    const componentSetDependencies = await readDependencies(dependencies);
+
+    const components = [
+      ...componentSet.components,
+      ...componentSetDependencies.flatMap(set => set.components),
+    ];
+
+    const prefabs = [
+      ...componentSet.prefabs,
+      ...componentSetDependencies.flatMap(set => set.prefabs),
+    ];
+
+    validateNameAndRefs({ components, prefabs }, scopes);
 
     await Promise.all([
       validateComponents(components),
       validatePrefabs(prefabs),
     ]);
 
-    await mkdir(distDir, { recursive: true });
+    await mkdirp(distDir);
 
     await Promise.all([
       outputJson(`${distDir}/prefabs.json`, prefabs),
@@ -115,9 +157,9 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     console.info(chalk.green('Success, the component set has been built'));
   } catch ({ file, name, message }) {
     if (file) {
-      console.error(chalk.red(`\n${name} in ${file}: ${message}\n`));
+      console.error(chalk.red(`${name} in ${file}: ${message}`));
     } else {
-      console.error(chalk.red(`\n${name}: ${message}\n`));
+      console.error(chalk.red(`${name}: ${message}`));
     }
   }
 })();

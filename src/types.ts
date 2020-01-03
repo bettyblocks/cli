@@ -147,3 +147,8 @@ export interface RegistryEntry {
   public?: boolean;
   version: string;
 }
+
+export interface ComponentSet {
+  prefabs: Prefab[];
+  components: Component[];
+}

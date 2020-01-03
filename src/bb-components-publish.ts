@@ -5,7 +5,9 @@ import program, { CommanderStatic } from 'commander';
 import { readJSON } from 'fs-extra';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
-import uploadBlob, { BlockBlobUploadResponseExtended } from './utils/uploadBlob';
+import uploadBlob, {
+  BlockBlobUploadResponseExtended,
+} from './utils/uploadBlob';
 
 /* setup */
 

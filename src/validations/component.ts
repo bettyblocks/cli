@@ -1,5 +1,3 @@
-import chalk from 'chalk';
-
 import Joi, { ObjectSchema, ValidationResult } from '@hapi/joi';
 
 import { Component } from '../types';
@@ -23,9 +21,7 @@ const validate = (component: Component): void => {
 
   if (typeof error !== 'undefined') {
     throw new Error(
-      chalk.red(
-        `\nProperty: ${error.message} at component: ${component.name}\n`,
-      ),
+      `Property: ${error.message} at component: ${component.name}`,
     );
   }
 };
