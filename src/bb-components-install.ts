@@ -1,14 +1,24 @@
 /* npm dependencies */
 
 import chalk from 'chalk';
-import program from 'commander';
+import program, { CommanderStatic } from 'commander';
 import { readFile } from 'fs-extra';
 import YAML from 'yaml';
 
 import { exists, install } from './registry';
 import getRootDir from './utils/getRootDir';
 
-program.name('bb components install').parse(process.argv);
+const REGISTRY_URL = 'https://blocks-registry.betty.services';
+
+program
+  .name('bb components install')
+  .option(
+    '--registry [url]',
+    'Use a custom registry. Defaults to the Betty Blocks registry.',
+  )
+  .parse(process.argv);
+
+const { registry }: CommanderStatic = program;
 
 (async (): Promise<void> => {
   const rootDir = await getRootDir();
@@ -23,7 +33,7 @@ program.name('bb components install').parse(process.argv);
           const version = dependencies[name];
 
           try {
-            await exists({ name, version });
+            await exists(registry || REGISTRY_URL, { name, version });
           } catch (error) {
             console.log(chalk.red(`${name}-${version} not found`));
             throw error;
@@ -37,7 +47,7 @@ program.name('bb components install').parse(process.argv);
         async (name: string): Promise<void> => {
           const version = dependencies[name];
 
-          await install({ name, version }, rootDir);
+          await install(registry || REGISTRY_URL, { name, version }, rootDir);
 
           console.log(chalk.blue(`${name}-${version}`));
         },

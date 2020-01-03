@@ -6,9 +6,8 @@ import { promisify } from 'util';
 
 import { RegistryEntry } from '../types';
 
-const REGISTRY_URL = 'http://localhost:3030';
-
 export const install = async (
+  registry: string,
   { name, version }: RegistryEntry,
   rootDir: string,
 ): Promise<void> => {
@@ -17,7 +16,7 @@ export const install = async (
 
     await ensureDir(cwd);
     await promisify(pipeline)(
-      got.stream(`${REGISTRY_URL}/blocks/${name}-${version}.tgz`),
+      got.stream(`${registry}/blocks/${name}-${version}.tgz`),
       x({ cwd }),
     );
   } catch (error) {
@@ -35,11 +34,11 @@ export const install = async (
   }
 };
 
-export const exists = async ({
-  name,
-  version,
-}: RegistryEntry): Promise<RegistryEntry> => {
-  await got.head(`${REGISTRY_URL}/blocks/${name}-${version}.tgz`, {
+export const exists = async (
+  registry: string,
+  { name, version }: RegistryEntry,
+): Promise<RegistryEntry> => {
+  await got.head(`${registry}/blocks/${name}-${version}.tgz`, {
     responseType: 'json',
   });
 
