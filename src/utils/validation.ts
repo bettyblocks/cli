@@ -2,7 +2,7 @@ import chalk from 'chalk';
 
 import { Component, ComponentReference, ComponentSet, Prefab } from '../types';
 
-const VALID_NAME_PATTERN = /@[a-z0-9-_]+\/[a-z0-9-_]+\/[a-zA-Z0-9]+$/;
+const VALID_NAME_PATTERN = /@[a-z0-9-_]+\/[a-z0-9-_]+\/[A-Z]+[a-zA-Z0-9]+$/;
 
 export const findDuplicates = <T extends { name: string }>(
   list: T[],

@@ -37,6 +37,8 @@ const [set] = args;
     delete yaml.dependencies[set];
 
     await writeFile(`${rootDir}/bettyblocks.yaml`, YAML.stringify(yaml));
+
+    console.info(chalk.green(`Removed ${set}.`));
   } catch ({ message }) {
     console.log(chalk.red(message));
     process.exit(1);

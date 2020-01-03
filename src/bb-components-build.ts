@@ -127,8 +127,10 @@ const readDependencies = async (
     const dependencies = Object.keys(yaml.dependencies);
     const scopes = [yaml.name, ...dependencies];
 
-    const componentSet = await readSrc();
-    const componentSetDependencies = await readDependencies(dependencies);
+    const [componentSet, componentSetDependencies] = await Promise.all([
+      readSrc(),
+      readDependencies(dependencies),
+    ]);
 
     const components = [
       ...componentSet.components,

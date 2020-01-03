@@ -74,6 +74,8 @@ const getLatest = async (setName: string): Promise<RegistryEntry> => {
     yaml.dependencies[name] = entry.version;
 
     await writeFile(`${rootDir}/bettyblocks.yaml`, YAML.stringify(yaml));
+
+    console.info(chalk.green(`Added ${name}:${entry.version}.`));
   } catch ({ message }) {
     console.log(chalk.red(message));
     process.exit(1);
