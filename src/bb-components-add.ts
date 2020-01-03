@@ -11,7 +11,7 @@ import { RegistryEntry } from './types';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import getRootDir from './utils/getRootDir';
 
-const REGISTRY_URL = 'http://localhost:3030';
+const REGISTRY_URL = 'https://blocks-registry.betty.services';
 
 /* process arguments */
 

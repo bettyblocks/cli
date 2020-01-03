@@ -8,7 +8,7 @@ import YAML from 'yaml';
 import { exists, install } from './registry';
 import getRootDir from './utils/getRootDir';
 
-const REGISTRY_URL = 'http://localhost:3030';
+const REGISTRY_URL = 'https://blocks-registry.betty.services';
 
 program
   .name('bb components install')
