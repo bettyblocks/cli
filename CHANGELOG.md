@@ -1,3 +1,10 @@
+## [22.36.4](https://github.com/bettyblocks/cli/compare/v22.36.3...v22.36.4) (2020-01-03)
+
+
+### Bug Fixes
+
+* update README with cli@22 ([d662ccd](https://github.com/bettyblocks/cli/commit/d662ccd))
+
 ## [22.36.3](https://github.com/bettyblocks/cli/compare/v22.36.2...v22.36.3) (2019-12-20)
 
 
