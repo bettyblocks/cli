@@ -3,7 +3,7 @@
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
 import { promises } from 'fs';
-import { copy } from 'fs-extra';
+import { copy, move } from 'fs-extra';
 import { prompt } from 'inquirer';
 import path from 'path';
 import { stringify } from 'yaml';
@@ -14,6 +14,15 @@ import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 const { writeFile } = promises;
 
 const VALID_NAME_PATTERN = /[a-z0-9-_]+\/[a-z0-9-_]/;
+
+const DOT_FILES = [
+  'package.json',
+  '.eslintignore',
+  '.eslintrc.json',
+  '.gitignore',
+  '.prettierignore',
+  '.prettierrc.json',
+];
 
 /* process arguments */
 
@@ -78,6 +87,12 @@ if (args.length > 0) {
       copy(path.join(__dirname, '../assets/component-set'), cwd),
       writeFile(`${cwd}/bettyblocks.yaml`, yaml, { encoding: 'utf-8' }),
     ]);
+
+    await Promise.all(
+      DOT_FILES.map(fileName =>
+        move(`${cwd}/__${fileName}`, `${cwd}/${fileName}`),
+      ),
+    );
 
     console.log(
       chalk.green(

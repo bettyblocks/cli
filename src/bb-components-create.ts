@@ -7,7 +7,7 @@ import path from 'path';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
-const files = [
+const DOT_FILES = [
   'package.json',
   '.eslintignore',
   '.eslintrc.json',
@@ -48,7 +48,7 @@ if (existsSync(dest)) {
     await copy(path.join(__dirname, '../assets/component-set'), dest);
 
     Promise.all(
-      files.map(fileName =>
+      DOT_FILES.map(fileName =>
         move(`${dest}/__${fileName}`, `${dest}/${fileName}`),
       ),
     );
