@@ -4,7 +4,7 @@ import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
 import { F_OK } from 'constants';
 import { promises } from 'fs';
-import { copy, ensureFile, mkdirp } from 'fs-extra';
+import { copy, ensureFile } from 'fs-extra';
 import { Answers } from 'inquirer';
 import { join } from 'path';
 import { stringify } from 'yaml';
