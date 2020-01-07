@@ -2,9 +2,11 @@
 
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
-import { outputFile, pathExists } from 'fs-extra';
+import { outputFile, pathExists, readFile } from 'fs-extra';
+import YAML from 'yaml';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import getRootDir from './utils/getRootDir';
 
 /* process arguments */
 
@@ -24,6 +26,12 @@ const name: string = args[0];
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
 
+  const rootDir = await getRootDir();
+  const yaml = await readFile(`${rootDir}/bettyblocks.yaml`, 'utf-8');
+  const { name: packageName } = YAML.parse(yaml);
+
+  const FULL_NAME = `'${packageName}/${name}'`;
+
   if (name.includes(' ')) {
     throw new Error(chalk.red(`\nName cannot contain spaces\n`));
   }
@@ -38,12 +46,12 @@ const name: string = args[0];
 
   const prefab = `
 (() => ({
-  name: '${name}',
+  name: ${FULL_NAME},
   icon: 'TitleIcon',
   category: 'CONTENT',
   structure: [
     {
-      name: '${name}',
+      name: ${FULL_NAME},
       options: [],
       descendants: [],
     },
@@ -53,7 +61,7 @@ const name: string = args[0];
 
   const component = `
 (() => ({
-  name: '${name}',
+  name: ${FULL_NAME},
   type: 'ROW',
   allowedTypes: [],
   orientation: 'HORIZONTAL',
