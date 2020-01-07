@@ -5,6 +5,7 @@ type FileMap = Record<string, { dest: string; src: string }>;
 const CWD = process.cwd();
 
 const DOT_FILE_NAMES = [
+  'package.json',
   '.eslintignore',
   '.eslintrc.json',
   '.gitignore',
@@ -12,7 +13,7 @@ const DOT_FILE_NAMES = [
   '.prettierrc.json',
 ];
 
-const REGULAR_FILE_NAMES = ['package.json', 'README.md'];
+const REGULAR_FILE_NAMES = ['README.md'];
 
 export const FILE_NAMES = [...REGULAR_FILE_NAMES, ...DOT_FILE_NAMES];
 
