@@ -2,8 +2,9 @@
 
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
+import { F_OK } from 'constants';
 import { promises } from 'fs';
-import { copy, move } from 'fs-extra';
+import { copy } from 'fs-extra';
 import { prompt } from 'inquirer';
 import { join } from 'path';
 import { stringify } from 'yaml';
@@ -11,15 +12,70 @@ import { stringify } from 'yaml';
 /* internal dependencies */
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
-const { readdir, stat, writeFile } = promises;
+type FileMap = Record<string, { dest: string; src: string }>;
+
+const { access, writeFile } = promises;
 
 const CWD = process.cwd();
 
-const VALID_NAME_PATTERN = /[a-z0-9-_]+\/[a-z0-9-_]/;
+const VALID_NAME_PATTERN = /[a-z0-8-_]+\/[a-z0-9-_]/;
 
 const ASSET_PATH = join(__dirname, '../assets/component-set');
+
+const DOT_FILE_NAMES = [
+  '.eslintignore',
+  '.eslintrc.json',
+  '.gitignore',
+  '.prettierignore',
+  '.prettierrc.json',
+];
+
+const REGULAR_FILE_NAMES = ['package.json', 'README.md'];
+
+const FILE_NAMES = [...REGULAR_FILE_NAMES, ...DOT_FILE_NAMES];
+
 const YAML_PATH = join(CWD, 'bettyblocks.yaml');
-const SRC_PATH = join(CWD, 'src');
+
+const QUESTION_NAME_PREFIX =
+  'The name of your component set should start with @, followed by your organization id, /, and the name of your set.';
+
+const QUESTION_NAME_VALIDATION =
+  'Make sure the name starts with @, followed by your organization id, /, and the name of your set. For example: @betty-blocks/layout';
+
+const QUESTION_PUBLIC_MESSAGE = 'Is this component set public?';
+
+const QUESTION_PUBLIC_CONFIRM =
+  'Are you ABSOLUTELY SURE that your component set should be public? Once published as such, it cannot be unpublished.';
+
+const WARNING_EXISTING_SET =
+  'The current working directory already contains a component set.';
+
+const INFO_SUCCESS =
+  'Component set succesfully created in the current working directory.';
+
+const warningFailure = (message: string): string =>
+  `Could not create component set in the current working directory: ${message}.`;
+
+const dotFiles = DOT_FILE_NAMES.reduce(
+  (mapping: FileMap, name: string): FileMap => ({
+    [name]: {
+      dest: join(CWD, name),
+      src: join(ASSET_PATH, `__${name}`),
+    },
+    ...mapping,
+  }),
+  {} as FileMap,
+);
+
+const regularFiles = REGULAR_FILE_NAMES.reduce(
+  (mapping: FileMap, name: string): FileMap => ({
+    [name]: { src: join(ASSET_PATH, name), dest: join(CWD, name) },
+    ...mapping,
+  }),
+  {} as FileMap,
+);
+
+const files = { ...regularFiles, ...dotFiles };
 
 /* process arguments */
 
@@ -37,13 +93,9 @@ if (args.length > 0) {
   await checkUpdateAvailableCLI();
 
   try {
-    await stat(YAML_PATH);
+    await access(YAML_PATH);
 
-    console.log(
-      chalk.green(
-        `\nThe current working directory already contains a component set.\n`,
-      ),
-    );
+    console.log(chalk.green(WARNING_EXISTING_SET));
   } catch {
     const {
       name,
@@ -57,23 +109,20 @@ if (args.length > 0) {
       {
         name: 'name',
         message: 'Name',
-        prefix:
-          'The name of your component set should start with @, followed by your organization id, /, and the name of your set.',
+        prefix: QUESTION_NAME_PREFIX,
         validate: (nameValue: string): true | string =>
-          VALID_NAME_PATTERN.test(nameValue) ||
-          'Make sure the name starts with @, followed by your organization id, /, and the name of your set. For example: @betty-blocks/layout',
+          VALID_NAME_PATTERN.test(nameValue) || QUESTION_NAME_VALIDATION,
       },
       {
         default: false,
-        message: 'Is this component set public?',
+        message: QUESTION_PUBLIC_MESSAGE,
         name: 'isPublic',
         type: 'confirm',
       },
       {
         default: false,
         name: 'isPublicConfirmed',
-        message:
-          'Are you ABSOLUTELY SURE that your component set should be public? Once published as such, it cannot be unpublished.',
+        message: QUESTION_PUBLIC_CONFIRM,
         type: 'confirm',
         when: ({ isPublic: isPublicValue }): boolean => isPublicValue,
       },
@@ -87,31 +136,24 @@ if (args.length > 0) {
     });
 
     try {
-      await writeFile(YAML_PATH, yaml, { encoding: 'utf-8' });
-      await copy(ASSET_PATH, CWD, { overwrite: false });
+      await Promise.all([
+        writeFile(YAML_PATH, yaml, { encoding: 'utf-8' }),
+        ...FILE_NAMES.map(
+          async (fileName: string): Promise<void> => {
+            const { dest, src } = files[fileName];
 
-      const filesCWD = await readdir(CWD);
-
-      await Promise.all(
-        filesCWD
-          .filter((file: string): boolean => file.startsWith('__'))
-          .map(
-            (file: string): Promise<void> =>
-              move(join(CWD, file), join(CWD, file.replace('__', ''))),
-          ),
-      );
-
-      console.log(
-        chalk.green(
-          `\nComponent set succesfully created in the current working directory.\n`,
+            try {
+              await access(dest, F_OK);
+            } catch (e) {
+              await copy(src, dest);
+            }
+          },
         ),
-      );
+      ]);
+
+      console.log(chalk.green(INFO_SUCCESS));
     } catch ({ message }) {
-      throw Error(
-        chalk.red(
-          `\nCould not create component set in the current working directory: ${message}.\n`,
-        ),
-      );
+      throw Error(chalk.red(warningFailure(message)));
     }
   }
 })();
