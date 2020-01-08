@@ -81,7 +81,7 @@ const getLatest = async (setName: string): Promise<RegistryEntry> => {
 
     console.info(chalk.green(`Added ${name}:${entry.version}.`));
   } catch ({ name, message }) {
-    console.error(chalk.red(`${name}: ${message}`));
+    console.error(chalk.red(`\n${name}: ${message}.\n`));
     process.exit(1);
   }
 })();

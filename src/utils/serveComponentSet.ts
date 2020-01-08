@@ -44,10 +44,10 @@ export default async (port: number): Promise<void> => {
       serveComponentSet(rootDir, port);
     } else {
       throw new Error(
-        '\nAn error has occurred, please check if something went wrong during the build step.\n',
+        'An error has occurred, please check if something went wrong during the build step',
       );
     }
   } catch ({ name, message }) {
-    console.error(chalk.red(`${name}: ${message}`));
+    console.error(chalk.red(`\n${name}: ${message}.\n`));
   }
 };

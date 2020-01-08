@@ -37,7 +37,7 @@ const readComponents: () => Promise<
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error('\nComponents folder not found\n');
+    throw new Error('Components folder not found');
   }
 
   const componentFiles: string[] = await readScripts(srcDir);
@@ -65,7 +65,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error('\nPrefabs folder not found\n');
+    throw new Error('Prefabs folder not found');
   }
 
   const prefabFiles: string[] = await readScripts(srcDir);
@@ -159,9 +159,9 @@ const readDependencies = async (
     console.info(chalk.green('Success, the component set has been built'));
   } catch ({ file, name, message }) {
     if (file) {
-      console.error(chalk.red(`${name} in ${file}: ${message}`));
+      console.error(chalk.red(`\n${name} in ${file}: ${message}.\n`));
     } else {
-      console.error(chalk.red(`${name}: ${message}`));
+      console.error(chalk.red(`\n${name}: ${message}.\n`));
     }
   }
 })();

@@ -58,7 +58,7 @@ const { registry }: CommanderStatic = program;
 
     console.log(`${length} block${length === 1 ? '' : 's'} installed`);
   } catch ({ name, message }) {
-    console.error(chalk.red(`${name}: ${message}`));
+    console.error(chalk.red(`\n${name}: ${message}.\n`));
     process.exit(1);
   }
 })();
