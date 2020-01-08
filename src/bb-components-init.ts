@@ -85,8 +85,8 @@ if (args.length > 0) {
       );
 
       console.log(chalk.green(INFO_SUCCESS));
-    } catch ({ message }) {
-      throw Error(chalk.red(warningFailure(message)));
+    } catch ({ name: errorName, message }) {
+      console.error(chalk.red(`${errorName}: ${warningFailure(message)}`));
     }
   }
 })();

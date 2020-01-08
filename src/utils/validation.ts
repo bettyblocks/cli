@@ -1,5 +1,3 @@
-import chalk from 'chalk';
-
 import { Component, ComponentReference, ComponentSet, Prefab } from '../types';
 
 const VALID_NAME_PATTERN = /@[a-z0-9-_]+\/[a-z0-9-_]+\/[A-Z]+[a-zA-Z0-9]+$/;
@@ -10,9 +8,7 @@ export const findDuplicates = <T extends { name: string }>(
 ): void => {
   list.reduce((acc: string[], { name }: T): string[] => {
     if (acc.includes(name)) {
-      throw new Error(
-        chalk.red(`\nThe name "${name}" is used for multiple ${type}s\n`),
-      );
+      throw new Error(`\nThe name "${name}" is used for multiple ${type}s\n`);
     }
 
     return [...acc, name];

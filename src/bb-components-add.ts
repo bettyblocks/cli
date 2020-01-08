@@ -78,8 +78,8 @@ const getLatest = async (setName: string): Promise<RegistryEntry> => {
     await writeFile(`${rootDir}/bettyblocks.yaml`, YAML.stringify(yaml));
 
     console.info(chalk.green(`Added ${name}:${entry.version}.`));
-  } catch ({ message }) {
-    console.log(chalk.red(message));
+  } catch ({ name, message }) {
+    console.error(chalk.red(`${name}: ${message}`));
     process.exit(1);
   }
 })();
