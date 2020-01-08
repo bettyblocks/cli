@@ -37,7 +37,7 @@ const readComponents: () => Promise<
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error(chalk.red('\nComponents folder not found\n'));
+    throw new Error('\nComponents folder not found\n');
   }
 
   const componentFiles: string[] = await readScripts(srcDir);
@@ -65,7 +65,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error(chalk.red('\nPrefabs folder not found\n'));
+    throw new Error('\nPrefabs folder not found\n');
   }
 
   const prefabFiles: string[] = await readScripts(srcDir);

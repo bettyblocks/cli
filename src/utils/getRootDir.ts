@@ -7,5 +7,7 @@ export default async (): Promise<string> => {
     return yaml.split('/bettyblocks.yaml')[0];
   }
 
-  throw new Error('Unable to resolve root dir');
+  throw new Error(
+    'Cannot find the root directory of the project, please try again in the component set folder',
+  );
 };
