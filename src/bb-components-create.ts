@@ -35,7 +35,9 @@ const dest: string = args[0];
 
 if (existsSync(dest)) {
   throw Error(
-    `\nCould not create component set: directory (${dest}) already exists.\n`,
+    chalk.red(
+      `\nCould not create component set: directory (${dest}) already exists.\n`,
+    ),
   );
 }
 

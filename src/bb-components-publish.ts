@@ -108,6 +108,6 @@ ${url}`,
       ),
     );
   } catch ({ name: errorName, message }) {
-    console.error(chalk.red(`${errorName}: ${message}`));
+    console.error(chalk.red(`\n${errorName}: ${message}.\n`));
   }
 })();

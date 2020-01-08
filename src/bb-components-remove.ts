@@ -40,7 +40,7 @@ const [set] = args;
 
     console.info(chalk.green(`Removed ${set}.`));
   } catch ({ name, message }) {
-    console.error(chalk.red(`${name}: ${message}`));
+    console.error(chalk.red(`\n${name}: ${message}.\n`));
     process.exit(1);
   }
 })();

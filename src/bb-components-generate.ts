@@ -34,15 +34,15 @@ const name: string = args[0];
     const FULL_NAME = `'${organisation}/${name}'`;
 
     if (name.includes(' ')) {
-      throw new Error(`\nName cannot contain spaces\n`);
+      throw new Error(`Name cannot contain spaces`);
     }
 
     if (await pathExists(`src/prefabs/${name}.js`)) {
-      throw new Error(`\nPrefab ${name} already exists\n`);
+      throw new Error(`Prefab ${name} already exists`);
     }
 
     if (await pathExists(`src/components/${name}.js`)) {
-      throw new Error(`\nComponent ${name} already exists\n`);
+      throw new Error(`Component ${name} already exists`);
     }
 
     const prefab = `
@@ -80,6 +80,6 @@ const name: string = args[0];
       console.log(chalk.green('The component has been generated')),
     ]);
   } catch ({ name: errorName, message }) {
-    console.error(chalk.red(`${errorName}: ${message}`));
+    console.error(chalk.red(`\n${errorName}: ${message}.\n`));
   }
 })();
