@@ -1,7 +1,7 @@
 // eslint-disable import/prefer-default-export
 export type Category = DefaultCategory | string;
 
-export type CommandBB = 'bundle' | 'components' | 'help';
+export type CommandBB = 'login' | 'bundle' | 'components' | 'help';
 
 export type CommandComponents =
   | 'add'
