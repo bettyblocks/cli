@@ -5,6 +5,7 @@ import program, { CommanderStatic } from 'commander';
 import { readJSON } from 'fs-extra';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import getRootDir from './utils/getRootDir';
 import uploadBlob, {
   BlockBlobUploadResponseExtended,
 } from './utils/uploadBlob';
@@ -45,12 +46,10 @@ const read = async (fileName: string): Promise<void> => {
     const { code, message }: Error & { code: 'ENOENT' | string } = error;
 
     throw new Error(
-      chalk.red(
-        [
-          'There was an error trying to publish your component set',
-          code === 'ENOENT' ? message : error,
-        ].join('\n'),
-      ),
+      [
+        'There was an error trying to publish your component set',
+        code === 'ENOENT' ? message : error,
+      ].join('\n'),
     );
   }
 };
@@ -68,7 +67,7 @@ const upload = async (
     const { body, message } = error;
 
     if (!body) {
-      throw new Error(chalk.red([defaultMessage, message].join('\n')));
+      throw new Error([defaultMessage, message].join('\n'));
     }
 
     const { code, message: bodyMessage } = body;
@@ -78,7 +77,7 @@ const upload = async (
         ? 'Make sure your azure blob account and key are correct'
         : bodyMessage;
 
-    throw new Error(chalk.red([defaultMessage, extraMessage].join('\n')));
+    throw new Error([defaultMessage, extraMessage].join('\n'));
   }
 };
 
@@ -93,17 +92,22 @@ const publish = async (
 };
 
 (async (): Promise<void> => {
-  await checkUpdateAvailableCLI();
+  try {
+    await checkUpdateAvailableCLI();
+    await getRootDir();
 
-  const [{ url }] = await Promise.all(
-    ['prefabs.json', 'templates.json'].map(publish),
-  );
+    const [{ url }] = await Promise.all(
+      ['prefabs.json', 'templates.json'].map(publish),
+    );
 
-  console.log(
-    chalk.green(
-      `Upload succesfully.\n
+    console.log(
+      chalk.green(
+        `Upload succesfully.\n
 Use the following URL in the Page Builder to start working with your component set:\n
 ${url}`,
-    ),
-  );
+      ),
+    );
+  } catch ({ name: errorName, message }) {
+    console.error(chalk.red(`\n${errorName}: ${message}.\n`));
+  }
 })();

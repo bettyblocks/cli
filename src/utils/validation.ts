@@ -1,5 +1,3 @@
-import chalk from 'chalk';
-
 import { Component, ComponentReference, ComponentSet, Prefab } from '../types';
 
 const VALID_NAME_PATTERN = /@[a-z0-9-_]+\/[a-z0-9-_]+\/[A-Z]+[a-zA-Z0-9]+$/;
@@ -10,9 +8,7 @@ export const findDuplicates = <T extends { name: string }>(
 ): void => {
   list.reduce((acc: string[], { name }: T): string[] => {
     if (acc.includes(name)) {
-      throw new Error(
-        chalk.red(`\nThe name "${name}" is used for multiple ${type}s\n`),
-      );
+      throw new Error(`The name "${name}" is used for multiple ${type}s`);
     }
 
     return [...acc, name];
@@ -24,7 +20,7 @@ const validateScope = (scopes: string[], name: string): void => {
     throw new Error(
       `The name "${name}" has an unexpected organisation. Expected one of "${scopes.join(
         ', ',
-      )}".`,
+      )}"`,
     );
   }
 };
@@ -32,7 +28,7 @@ const validateScope = (scopes: string[], name: string): void => {
 const validateName = (name: string): void => {
   if (!VALID_NAME_PATTERN.test(name)) {
     throw new Error(
-      `The name "${name}" is invalid, please use the following convention: "@organisation/set/MyComponent".`,
+      `The name "${name}" is invalid, please use the following convention: "@organisation/set/MyComponent"`,
     );
   }
 };
@@ -43,7 +39,7 @@ const validateRefExists = (names: Set<string>, prefabName: string) => ({
 }: ComponentReference): void => {
   if (!names.has(name)) {
     throw new Error(
-      `Prefab: ${prefabName} references non-existing component "${name}".`,
+      `Prefab: ${prefabName} references non-existing component "${name}"`,
     );
   }
 

@@ -21,13 +21,13 @@ const CWD = process.cwd();
 const YAML_PATH = join(CWD, 'bettyblocks.yaml');
 
 const WARNING_EXISTING_SET =
-  'The current working directory already contains a component set.';
+  'The current working directory already contains a component set';
 
 const INFO_SUCCESS =
-  'Component set succesfully created in the current working directory.';
+  'Component set succesfully created in the current working directory';
 
 const warningFailure = (message: string): string =>
-  `Could not create component set in the current working directory: ${message}.`;
+  `Could not create component set in the current working directory: ${message}`;
 
 /* process arguments */
 
@@ -85,8 +85,8 @@ if (args.length > 0) {
       );
 
       console.log(chalk.green(INFO_SUCCESS));
-    } catch ({ message }) {
-      throw Error(chalk.red(warningFailure(message)));
+    } catch ({ name: errorName, message }) {
+      console.error(chalk.red(`\n${errorName}: ${warningFailure(message)}.\n`));
     }
   }
 })();

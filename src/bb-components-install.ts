@@ -21,12 +21,12 @@ program
 const { registry }: CommanderStatic = program;
 
 (async (): Promise<void> => {
-  const rootDir = await getRootDir();
-  const contents = await readFile(`${rootDir}/bettyblocks.yaml`);
-  const { dependencies } = YAML.parse(contents.toString());
-  const names = Object.keys(dependencies);
-
   try {
+    const rootDir = await getRootDir();
+    const contents = await readFile(`${rootDir}/bettyblocks.yaml`);
+    const { dependencies } = YAML.parse(contents.toString());
+    const names = Object.keys(dependencies);
+
     await Promise.all(
       names.map(
         async (name: string): Promise<void> => {
@@ -57,7 +57,8 @@ const { registry }: CommanderStatic = program;
     const { length } = names;
 
     console.log(`${length} block${length === 1 ? '' : 's'} installed`);
-  } catch {
+  } catch ({ name, message }) {
+    console.error(chalk.red(`\n${name}: ${message}.\n`));
     process.exit(1);
   }
 })();

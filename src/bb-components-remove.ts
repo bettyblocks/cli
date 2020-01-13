@@ -39,8 +39,8 @@ const [set] = args;
     await writeFile(`${rootDir}/bettyblocks.yaml`, YAML.stringify(yaml));
 
     console.info(chalk.green(`Removed ${set}.`));
-  } catch ({ message }) {
-    console.log(chalk.red(message));
+  } catch ({ name, message }) {
+    console.error(chalk.red(`\n${name}: ${message}.\n`));
     process.exit(1);
   }
 })();

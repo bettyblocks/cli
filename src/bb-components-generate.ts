@@ -24,27 +24,28 @@ if (args.length === 0) {
 const name: string = args[0];
 
 (async (): Promise<void> => {
-  await checkUpdateAvailableCLI();
+  try {
+    await checkUpdateAvailableCLI();
+    const rootDir = await getRootDir();
 
-  const rootDir = await getRootDir();
-  const yaml = await readFile(`${rootDir}/bettyblocks.yaml`, 'utf-8');
-  const { name: packageName } = YAML.parse(yaml);
+    const yaml = await readFile(`${rootDir}/bettyblocks.yaml`, 'utf-8');
+    const { name: organisation } = YAML.parse(yaml);
 
-  const FULL_NAME = `'${packageName}/${name}'`;
+    const FULL_NAME = `'${organisation}/${name}'`;
 
-  if (name.includes(' ')) {
-    throw new Error(chalk.red(`\nName cannot contain spaces\n`));
-  }
+    if (name.includes(' ')) {
+      throw new Error(`Name cannot contain spaces`);
+    }
 
-  if (await pathExists(`src/prefabs/${name}.js`)) {
-    throw new Error(chalk.red(`\nPrefab ${name} already exists\n`));
-  }
+    if (await pathExists(`src/prefabs/${name}.js`)) {
+      throw new Error(`Prefab ${name} already exists`);
+    }
 
-  if (await pathExists(`src/components/${name}.js`)) {
-    throw new Error(chalk.red(`\nComponent ${name} already exists\n`));
-  }
+    if (await pathExists(`src/components/${name}.js`)) {
+      throw new Error(`Component ${name} already exists`);
+    }
 
-  const prefab = `
+    const prefab = `
 (() => ({
   name: ${FULL_NAME},
   icon: 'TitleIcon',
@@ -59,7 +60,7 @@ const name: string = args[0];
 }))();
   `;
 
-  const component = `
+    const component = `
 (() => ({
   name: ${FULL_NAME},
   type: 'ROW',
@@ -72,10 +73,13 @@ const name: string = args[0];
 }))();
   `;
 
-  await Promise.all([
-    outputFile(`src/prefabs/${name}.js`, prefab.trim()),
-    outputFile(`src/components/${name}.js`, component.trim()),
+    await Promise.all([
+      outputFile(`src/prefabs/${name}.js`, prefab.trim()),
+      outputFile(`src/components/${name}.js`, component.trim()),
 
-    console.log(chalk.green('The component has been generated')),
-  ]);
+      console.log(chalk.green('The component has been generated')),
+    ]);
+  } catch ({ name: errorName, message }) {
+    console.error(chalk.red(`\n${errorName}: ${message}.\n`));
+  }
 })();
