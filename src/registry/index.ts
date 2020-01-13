@@ -1,9 +1,9 @@
 import { ensureDir } from 'fs-extra';
-import got from 'got';
 import { pipeline } from 'stream';
-import { x } from 'tar';
 import { promisify } from 'util';
+import { x } from 'tar';
 
+import got from './client';
 import { RegistryEntry } from '../types';
 
 export const install = async (
@@ -38,9 +38,7 @@ export const exists = async (
   registry: string,
   { name, version }: RegistryEntry,
 ): Promise<RegistryEntry> => {
-  await got.head(`${registry}/blocks/${name}-${version}.tgz`, {
-    responseType: 'json',
-  });
+  await got.head(`${registry}/blocks/${name}-${version}.tgz`);
 
   return { name, version };
 };

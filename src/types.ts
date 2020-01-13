@@ -152,3 +152,30 @@ export interface ComponentSet {
   prefabs: Prefab[];
   components: Component[];
 }
+
+export interface UserRegistration {
+  applicationId: string;
+  id: string;
+  insertInstant: number;
+  lastLoginInstant: number;
+  roles: string[];
+  userNameStatus: string;
+  verified: boolean;
+}
+
+export interface User {
+  active: boolean;
+  email: string;
+  firstName: string;
+  id: string;
+  insertInstant: number;
+  lastLoginInstant: number;
+  lastName: string;
+  passwordChangeRequired: boolean;
+  passwordLastUpdateInstant: number;
+  registrations: UserRegistration[];
+  tenantId: string;
+  twoFactorDelivery: string;
+  usernameStatus: string;
+  verified: boolean;
+}

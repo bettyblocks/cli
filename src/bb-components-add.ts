@@ -1,15 +1,15 @@
 /* npm dependencies */
 
+import YAML from 'yaml';
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
 import { readFile, writeFile } from 'fs-extra';
-import got from 'got';
-import YAML from 'yaml';
 
 import { exists, install } from './registry';
 import { RegistryEntry } from './types';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import getRootDir from './utils/getRootDir';
+import client from './registry/client';
 
 const REGISTRY_URL = 'https://blocks-registry.betty.services';
 
@@ -24,7 +24,7 @@ program
   )
   .parse(process.argv);
 
-const { registry, args }: CommanderStatic = program;
+const { args, registry }: CommanderStatic = program;
 
 if (args.length === 0) {
   program.help();
@@ -38,9 +38,7 @@ const getLatest = async (setName: string): Promise<RegistryEntry> => {
       body: {
         data: [entry],
       },
-    } = await got(`${registry || REGISTRY_URL}/api/blocks/${setName}`, {
-      responseType: 'json',
-    });
+    } = await client(`${registry || REGISTRY_URL}/api/blocks/${setName}`);
 
     return entry;
   } catch (error) {

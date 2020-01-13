@@ -1,9 +1,9 @@
 /* npm dependencies */
 
+import YAML from 'yaml';
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
 import { readFile } from 'fs-extra';
-import YAML from 'yaml';
 
 import { exists, install } from './registry';
 import getRootDir from './utils/getRootDir';
