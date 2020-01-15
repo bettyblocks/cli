@@ -76,6 +76,8 @@ export const ICONS = [
 ];
 
 export const TYPES = [
+  'ACTION',
+  'ACTION_INPUT',
   'BUTTONGROUP',
   'COLOR',
   'CUSTOM',
