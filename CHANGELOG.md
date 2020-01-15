@@ -1,3 +1,10 @@
+# [22.37.0](https://github.com/bettyblocks/cli/compare/v22.36.5...v22.37.0) (2020-01-15)
+
+
+### Features
+
+* add ACTION and ACTION_INPUT as valid option types ([f4b0dd2](https://github.com/bettyblocks/cli/commit/f4b0dd2))
+
 ## [22.36.5](https://github.com/bettyblocks/cli/compare/v22.36.4...v22.36.5) (2020-01-10)
 
 
