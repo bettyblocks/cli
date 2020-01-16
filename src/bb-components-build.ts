@@ -49,9 +49,10 @@ const readComponents: () => Promise<
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
         // eslint-disable-next-line no-new-func
-        const transpiledFunction = Function(`return ${transpile(code)}`)()
-        if (!transpiledFunction) throw(new Error('Component doesn\'t return anything'));
-        return transpiledFunction
+        const transpiledFunction = Function(`return ${transpile(code)}`)();
+        if (!transpiledFunction)
+          throw new Error("Component doesn't return anything");
+        return transpiledFunction;
       } catch (error) {
         error.file = file;
         throw error;
@@ -77,9 +78,10 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
         // eslint-disable-next-line no-new-func
-        const transpiledFunction = Function(`return ${code}`)()
-        if (!transpiledFunction) throw(new Error('Prefab doesn\'t return anything'));
-        return transpiledFunction
+        const transpiledFunction = Function(`return ${code}`)();
+        if (!transpiledFunction)
+          throw new Error("Prefab doesn't return anything");
+        return transpiledFunction;
       } catch (error) {
         error.file = file;
         throw error;
