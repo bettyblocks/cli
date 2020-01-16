@@ -1,3 +1,10 @@
+## [22.37.1](https://github.com/bettyblocks/cli/compare/v22.37.0...v22.37.1) (2020-01-16)
+
+
+### Bug Fixes
+
+* linter warning ([510f65d](https://github.com/bettyblocks/cli/commit/510f65d))
+
 # [22.37.0](https://github.com/bettyblocks/cli/compare/v22.36.5...v22.37.0) (2020-01-15)
 
 
