@@ -1,3 +1,31 @@
+## [22.37.1](https://github.com/bettyblocks/cli/compare/v22.37.0...v22.37.1) (2020-01-16)
+
+
+### Bug Fixes
+
+* linter warning ([510f65d](https://github.com/bettyblocks/cli/commit/510f65d))
+
+# [22.37.0](https://github.com/bettyblocks/cli/compare/v22.36.5...v22.37.0) (2020-01-15)
+
+
+### Features
+
+* add ACTION and ACTION_INPUT as valid option types ([f4b0dd2](https://github.com/bettyblocks/cli/commit/f4b0dd2))
+
+## [22.36.5](https://github.com/bettyblocks/cli/compare/v22.36.4...v22.36.5) (2020-01-10)
+
+
+### Bug Fixes
+
+* raise error when a component/prefab doesn't return anything ([#90](https://github.com/bettyblocks/cli/issues/90)) ([3bf433d](https://github.com/bettyblocks/cli/commit/3bf433d))
+
+## [22.36.4](https://github.com/bettyblocks/cli/compare/v22.36.3...v22.36.4) (2020-01-03)
+
+
+### Bug Fixes
+
+* update README with cli@22 ([d662ccd](https://github.com/bettyblocks/cli/commit/d662ccd))
+
 ## [22.36.3](https://github.com/bettyblocks/cli/compare/v22.36.2...v22.36.3) (2019-12-20)
 
 
