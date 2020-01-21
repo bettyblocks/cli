@@ -20,6 +20,7 @@ const componentReferenceSchema = Joi.object({
           .valid(...TYPES)
           .required(),
         configuration: Joi.object({
+          apiVersion: Joi.string(),
           allowedInput: Joi.array().items(
             Joi.object({
               name: Joi.string().allow(''),
