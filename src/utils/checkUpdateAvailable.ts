@@ -1,18 +1,20 @@
-import { readJson, mkdir, writeJson, pathExists } from 'fs-extra';
-import { promisify } from 'util';
-import { exec } from 'child_process';
-import { join } from 'path';
-import { tmpdir } from 'os';
-import { lt } from 'semver';
 import chalk from 'chalk';
+import { exec } from 'child_process';
+import { mkdir, pathExists, readJson, writeJson } from 'fs-extra';
+import { tmpdir } from 'os';
+import { join } from 'path';
+import { lt } from 'semver';
+import { promisify } from 'util';
 
 import { Versions } from '../types';
+
+const ONE_DAY = 86400000;
+const TEMP_FOLDER = `${tmpdir()}/bettyblocks`;
+
 // eslint-disable-next-line
 const { version: versionCLI, name: nameCLI } = require('../../package.json');
 
 const execPromise = promisify(exec);
-
-const TEMP_FOLDER = `${tmpdir()}/bettyblocks`;
 
 const logUpdateAvailable = (
   localVersion: string,
@@ -32,6 +34,7 @@ const getRemoteVersionCLI = async (): Promise<string> => {
   const { stdout: output, stderr: error } = await execPromise(
     `npm show @betty-blocks/cli version`,
   );
+
   const remoteVersionCLI = output.toString().trim();
 
   if (error) {
@@ -45,6 +48,7 @@ const getRemoteVersionPreview = async (): Promise<string> => {
   const { stdout: output, stderr: error } = await execPromise(
     `npm show @betty-blocks/preview version`,
   );
+
   const remoteVersionPreview = output.toString().trim();
 
   if (error) {
@@ -69,6 +73,7 @@ const writeToFile = async (): Promise<void> => {
 
 const readFile = async (): Promise<Versions> => {
   const folderExist = await pathExists(TEMP_FOLDER);
+
   let remoteVersion;
 
   if (!folderExist) {
@@ -82,16 +87,20 @@ const readFile = async (): Promise<Versions> => {
       `${TEMP_FOLDER}/versions.json`,
     );
 
-    if (timestamp + 86400000 < Date.now()) {
+    if (timestamp + ONE_DAY < Date.now()) {
       console.log('Checking for new versions..');
+
       await writeToFile();
+
       remoteVersion = await readFile();
+
       console.log('Done');
     }
 
     remoteVersion = versions;
   } else {
     await writeToFile();
+
     remoteVersion = await readFile();
   }
 

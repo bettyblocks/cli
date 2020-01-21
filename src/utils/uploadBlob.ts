@@ -5,16 +5,15 @@ import {
   BlobURL,
   BlockBlobURL,
   ContainerURL,
+  Pipeline,
+  RestError,
   ServiceURL,
   SharedKeyCredential,
   StorageURL,
-  Pipeline,
-  RestError,
 } from '@azure/storage-blob';
-
 import {
-  ServiceSetPropertiesResponse,
   BlockBlobUploadResponse,
+  ServiceSetPropertiesResponse,
 } from '@azure/storage-blob/src/generated/src/models';
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
@@ -31,13 +30,12 @@ const getServiceUrl = (): ServiceURL => {
   );
 
   const pipeline: Pipeline = StorageURL.newPipeline(sharedKeyCredential);
-
-  const url = `https://${AZURE_BLOB_ACCOUNT as string}.blob.core.windows.net`;
+  const url = `https://${AZURE_BLOB_ACCOUNT}.blob.core.windows.net`;
 
   return new ServiceURL(url, pipeline);
 };
 
-const setCorsRules = (
+const setCORSRules = (
   serviceURL: ServiceURL,
 ): Promise<ServiceSetPropertiesResponse> =>
   serviceURL.setProperties(Aborter.none, {
@@ -94,10 +92,13 @@ export default async (
   blobContent: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
   const serviceURL = getServiceUrl();
-  await setCorsRules(serviceURL);
+
+  await setCORSRules(serviceURL);
+
   const containerURL = getContainerURL(serviceURL, blobContainerName);
+  const { url } = containerURL;
   const blockURL = await getBlockURL(containerURL, blobName);
   const uploadResponse = await upload(blockURL, blobContent);
 
-  return { ...uploadResponse, url: containerURL.url };
+  return { ...uploadResponse, url };
 };

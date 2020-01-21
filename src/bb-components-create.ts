@@ -1,13 +1,13 @@
 /* npm dependencies */
 
-import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { existsSync, copy, move } from 'fs-extra';
+import program, { CommanderStatic } from 'commander';
+import { copy, existsSync, move } from 'fs-extra';
 import path from 'path';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
-const LIST = [
+const DOT_FILES = [
   'package.json',
   '.eslintignore',
   '.eslintrc.json',
@@ -15,6 +15,7 @@ const LIST = [
   '.prettierignore',
   '.prettierrc.json',
 ];
+
 /* process arguments */
 
 program
@@ -42,11 +43,12 @@ if (existsSync(dest)) {
 
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
+
   try {
     await copy(path.join(__dirname, '../assets/component-set'), dest);
 
     Promise.all(
-      LIST.map(fileName =>
+      DOT_FILES.map(fileName =>
         move(`${dest}/__${fileName}`, `${dest}/${fileName}`),
       ),
     );

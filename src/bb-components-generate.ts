@@ -1,10 +1,13 @@
 /* npm dependencies */
 
-import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { pathExists, outputFile } from 'fs-extra';
+import program, { CommanderStatic } from 'commander';
+import { outputFile, pathExists, readFile } from 'fs-extra';
+import YAML from 'yaml';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import getRootDir from './utils/getRootDir';
+
 /* process arguments */
 
 program
@@ -21,27 +24,35 @@ if (args.length === 0) {
 const name: string = args[0];
 
 (async (): Promise<void> => {
-  await checkUpdateAvailableCLI();
-  if (name.includes(' ')) {
-    throw new Error(chalk.red(`\nName cannot contain spaces\n`));
-  }
+  try {
+    await checkUpdateAvailableCLI();
+    const rootDir = await getRootDir();
 
-  if (await pathExists(`src/prefabs/${name}.js`)) {
-    throw new Error(chalk.red(`\nPrefab ${name} already exists\n`));
-  }
+    const yaml = await readFile(`${rootDir}/bettyblocks.yaml`, 'utf-8');
+    const { name: organisation } = YAML.parse(yaml);
 
-  if (await pathExists(`src/components/${name}.js`)) {
-    throw new Error(chalk.red(`\nComponent ${name} already exists\n`));
-  }
+    const FULL_NAME = `'${organisation}/${name}'`;
 
-  const prefab = `
+    if (name.includes(' ')) {
+      throw new Error(`Name cannot contain spaces`);
+    }
+
+    if (await pathExists(`src/prefabs/${name}.js`)) {
+      throw new Error(`Prefab ${name} already exists`);
+    }
+
+    if (await pathExists(`src/components/${name}.js`)) {
+      throw new Error(`Component ${name} already exists`);
+    }
+
+    const prefab = `
 (() => ({
-  name: '${name}',
+  name: ${FULL_NAME},
   icon: 'TitleIcon',
   category: 'CONTENT',
   structure: [
     {
-      name: '${name}',
+      name: ${FULL_NAME},
       options: [],
       descendants: [],
     },
@@ -49,9 +60,9 @@ const name: string = args[0];
 }))();
   `;
 
-  const component = `
+    const component = `
 (() => ({
-  name: '${name}',
+  name: ${FULL_NAME},
   type: 'ROW',
   allowedTypes: [],
   orientation: 'HORIZONTAL',
@@ -62,9 +73,13 @@ const name: string = args[0];
 }))();
   `;
 
-  await Promise.all([
-    outputFile(`src/prefabs/${name}.js`, prefab.trim()),
-    outputFile(`src/components/${name}.js`, component.trim()),
-    console.log(chalk.green('The component has been generated')),
-  ]);
+    await Promise.all([
+      outputFile(`src/prefabs/${name}.js`, prefab.trim()),
+      outputFile(`src/components/${name}.js`, component.trim()),
+
+      console.log(chalk.green('The component has been generated')),
+    ]);
+  } catch ({ name: errorName, message }) {
+    console.error(chalk.red(`\n${errorName}: ${message}.\n`));
+  }
 })();

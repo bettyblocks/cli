@@ -1,11 +1,10 @@
 /* npm dependencies */
 
-import program from 'commander';
 import chalk from 'chalk';
+import program from 'commander';
 
 import { CommandBundle } from './types';
 
-/* internal dependencies */
 /* setup */
 
 const availableCommands: CommandBundle[] = ['init'];

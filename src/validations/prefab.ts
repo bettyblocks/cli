@@ -1,11 +1,11 @@
 /* eslint-disable no-use-before-define */
+
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import Joi, { ValidationResult } from '@hapi/joi';
-import chalk from 'chalk';
 
-import { Prefab, ComponentReference } from '../types';
-import { ICONS, TYPES, CONDITION_TYPE } from './constants';
+import { ComponentReference, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
+import { CONDITION_TYPE, ICONS, TYPES } from './constants';
 
 const componentReferenceSchema = Joi.object({
   name: Joi.string().required(),
@@ -20,6 +20,7 @@ const componentReferenceSchema = Joi.object({
           .valid(...TYPES)
           .required(),
         configuration: Joi.object({
+          apiVersion: Joi.string(),
           allowedInput: Joi.array().items(
             Joi.object({
               name: Joi.string().allow(''),
@@ -54,7 +55,7 @@ function validateComponentReference(prefab: Prefab): Prefab {
     const { name } = prefab;
     const { message } = error;
 
-    throw new Error(chalk.red(`\nBuild error in prefab ${name}: ${message}\n`));
+    throw new Error(`Build error in prefab ${name}: ${message}`);
   }
 
   return prefab;
@@ -76,9 +77,7 @@ const validate = (prefab: Prefab): void => {
   const { error }: ValidationResult = schema.validate(prefab);
 
   if (typeof error !== 'undefined') {
-    throw new Error(
-      chalk.red(`\nProperty: ${error.message} at prefab: ${prefab.name}\n`),
-    );
+    throw new Error(`Property: ${error.message} at prefab: ${prefab.name}`);
   }
 };
 
@@ -92,9 +91,7 @@ const validateOptions = ({ structure, name }: Prefab): void => {
     options.forEach(({ key }) => {
       if (keys.includes(key)) {
         throw new Error(
-          chalk.red(
-            `\nMultiple option references to key: ${key} in prefab: ${name}\n`,
-          ),
+          `Multiple option references to key: ${key} in prefab: ${name}`,
         );
       }
 

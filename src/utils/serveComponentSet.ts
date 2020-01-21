@@ -1,9 +1,10 @@
-import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
-import { existsSync } from 'fs';
 import chalk from 'chalk';
+import { existsSync } from 'fs';
+import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import handler from 'serve-handler';
 
 import { checkUpdateAvailableCLI } from './checkUpdateAvailable';
+import getRootDir from './getRootDir';
 
 const serveComponentSet = (rootDir: string, port: number): void => {
   const server: Server = createServer(
@@ -35,15 +36,18 @@ const serveComponentSet = (rootDir: string, port: number): void => {
   });
 };
 
-export default async (rootDir: string, port: number): Promise<void> => {
-  await checkUpdateAvailableCLI();
-  if (existsSync(`${rootDir}/dist`)) {
-    serveComponentSet(rootDir, port);
-  } else {
-    console.error(
-      chalk.red(
-        '\nAn error has occurred, please check if something went wrong during the build step.\n',
-      ),
-    );
+export default async (port: number): Promise<void> => {
+  try {
+    const rootDir = await getRootDir();
+    await checkUpdateAvailableCLI();
+    if (existsSync(`${rootDir}/dist`)) {
+      serveComponentSet(rootDir, port);
+    } else {
+      throw new Error(
+        'An error has occurred, please check if something went wrong during the build step',
+      );
+    }
+  } catch ({ name, message }) {
+    console.error(chalk.red(`\n${name}: ${message}.\n`));
   }
 };

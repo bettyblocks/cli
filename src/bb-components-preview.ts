@@ -1,8 +1,8 @@
 /* npm dependencies */
 
 import program, { CommanderStatic } from 'commander';
-import { parsePort } from './utils/arguments';
 
+import { parsePort } from './utils/arguments';
 import servePreview from './utils/servePreview';
 
 /* process arguments */
@@ -17,4 +17,5 @@ const { port: portRaw }: CommanderStatic = program;
 const port: number = parsePort(portRaw, 3001);
 
 /* execute command */
+
 servePreview(port);
