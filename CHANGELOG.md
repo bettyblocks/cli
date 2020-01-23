@@ -1,3 +1,10 @@
+## [22.37.2](https://github.com/bettyblocks/cli/compare/v22.37.1...v22.37.2) (2020-01-23)
+
+
+### Bug Fixes
+
+* added apiVersion configuration to prefab validation ([414708c](https://github.com/bettyblocks/cli/commit/414708c))
+
 ## [22.37.1](https://github.com/bettyblocks/cli/compare/v22.37.0...v22.37.1) (2020-01-16)
 
 
