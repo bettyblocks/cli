@@ -1,6 +1,6 @@
 {
   "name": "@betty-blocks/cli",
-  "version": "22.37.2",
+  "version": "22.38.0",
   "description": "A Betty Blocks CLI",
   "main": "build/index.js",
   "author": "Niek Nijland <niek.nijland@bettyblocks.com>",

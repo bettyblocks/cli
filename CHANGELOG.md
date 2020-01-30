@@ -1,3 +1,10 @@
+# [22.38.0](https://github.com/bettyblocks/cli/compare/v22.37.2...v22.38.0) (2020-01-30)
+
+
+### Features
+
+* add data list and sidebar left icons ([9415567](https://github.com/bettyblocks/cli/commit/9415567))
+
 ## [22.37.2](https://github.com/bettyblocks/cli/compare/v22.37.1...v22.37.2) (2020-01-23)
 
 
