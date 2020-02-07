@@ -1,3 +1,10 @@
+# [22.39.0](https://github.com/bettyblocks/cli/compare/v22.38.0...v22.39.0) (2020-02-07)
+
+
+### Features
+
+* validate conditional comparators ([93e92f7](https://github.com/bettyblocks/cli/commit/93e92f7))
+
 # [22.38.0](https://github.com/bettyblocks/cli/compare/v22.37.2...v22.38.0) (2020-01-30)
 
 
