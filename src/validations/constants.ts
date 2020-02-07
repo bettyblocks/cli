@@ -101,3 +101,4 @@ export const TYPES = [
 ];
 
 export const CONDITION_TYPE = ['HIDE', 'SHOW'];
+export const COMPARATORS = ['EQ'];
