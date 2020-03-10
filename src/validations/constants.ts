@@ -88,7 +88,6 @@ export const TYPES = [
   'FILTER',
   'FONT',
   'MODEL',
-  'MULTILINE',
   'NUMBER',
   'PROPERTY',
   'SIZE',
