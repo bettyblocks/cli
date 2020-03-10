@@ -1,3 +1,10 @@
+## [22.39.1](https://github.com/bettyblocks/cli/compare/v22.39.0...v22.39.1) (2020-03-10)
+
+
+### Bug Fixes
+
+* disallow multiline as option type ([3e05d3c](https://github.com/bettyblocks/cli/commit/3e05d3c))
+
 # [22.39.0](https://github.com/bettyblocks/cli/compare/v22.38.0...v22.39.0) (2020-02-07)
 
 
