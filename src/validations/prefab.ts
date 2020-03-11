@@ -91,7 +91,7 @@ const validateOptions = ({ structure, name }: Prefab): void => {
     const keys: string[] = [];
 
     options.forEach(({ key }) => {
-      if (keys.includes(key)) {
+      if (keys.map(k => k.toLowerCase()).includes(key.toLowerCase())) {
         throw new Error(
           chalk.red(
             `\nMultiple option references to key: ${key} in prefab: ${name}\n`,

@@ -145,7 +145,7 @@ test('Throw when two options with the same key are being used', () => {
             {
               value: '',
               label: 'Option 2',
-              key: 'sameKey',
+              key: 'sameKEY',
               type: 'TEXT',
             },
           ],
