@@ -1,3 +1,15 @@
+# [23.0.0](https://github.com/bettyblocks/cli/compare/v22.39.1...v23.0.0) (2020-03-11)
+
+
+### Bug Fixes
+
+* lowercase option keys when validating ([f0dc4f2](https://github.com/bettyblocks/cli/commit/f0dc4f2))
+
+
+### BREAKING CHANGES
+
+* Option keys like 'Hello' and 'hELLO' on the same prefab are no longer allowed
+
 ## [22.39.1](https://github.com/bettyblocks/cli/compare/v22.39.0...v22.39.1) (2020-03-10)
 
 
