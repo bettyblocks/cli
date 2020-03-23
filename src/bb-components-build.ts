@@ -32,9 +32,9 @@ const distDir = `${rootDir}/dist`;
 
 /* execute command */
 
-const readComponents: () => Promise<
+const readComponents: () => Promise<Component[]> = async (): Promise<
   Component[]
-> = async (): Promise<Component[]> => {
+> => {
   const srcDir = `${rootDir}/src/components`;
   const exists: boolean = await pathExists(srcDir);
 

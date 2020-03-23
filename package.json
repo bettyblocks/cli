@@ -19,6 +19,11 @@
     "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\"",
     "test": "jest --passWithNoTests"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn prettier:check"
+    }
+  },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-angular": "^8.2.0",
@@ -32,11 +37,11 @@
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "app-root-path": "^2.2.1",
-    "eslint": "^6.5.1",
+    "eslint": "^6.8.0",
     "husky": "^3.0.5",
-    "jest": "^24.8.0",
-    "semantic-release": "^15.13.24",
-    "ts-jest": "^24.0.2",
+    "jest": "^25.1.0",
+    "semantic-release": "^17.0.4",
+    "ts-jest": "^25.2.1",
     "tsc-watch": "^2.2.1",
     "typescript": "^3.5.3"
   },
