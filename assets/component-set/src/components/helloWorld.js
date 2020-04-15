@@ -1,9 +1,8 @@
 (() => ({
   name: 'HelloWorld',
-  icon: 'TitleIcon',
-  category: 'CONTENT',
   type: 'TEXT',
-  orientation: 'VERTICAL',
+  icon: 'TitleIcon',
+  orientation: 'HORIZONTAL',
   allowedTypes: [],
   jsx: (() => {
     const Tag = {
@@ -15,7 +14,7 @@
       Title6: 'h6',
       Body1: 'p',
       Body2: 'p',
-    }[options.type || 'Body1'];
+    }[options.type || 'Title1'];
     return <Tag className={classes.root}>{options.content}</Tag>;
   })(),
   styles: B => t => {
