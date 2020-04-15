@@ -1,36 +1,47 @@
 (() => ({
   name: 'HelloWorld',
-  type: 'ROW',
+  icon: 'TitleIcon',
+  category: 'CONTENT',
+  type: 'TEXT',
+  orientation: 'VERTICAL',
   allowedTypes: [],
-  orientation: 'HORIZONTAL',
-  jsx: <h1 className={classes.root}>{options.content || 'Hello world'}</h1>,
-  styles: B => ({ typography }) => ({
-    root: {
-      fontFamily: ({ options: { headingType } }) =>
-        typography[headingType].family,
-      fontSize: ({ options: { headingType } }) =>
-        typography[headingType].mobileSize,
-      fontWeight: ({ options: { headingType } }) =>
-        typography[headingType].weight,
-      textTransform: ({ options: { headingType } }) =>
-        typography[headingType].textTransform,
-      textAlign: ({ options: { textAlignment } }) => textAlignment,
-      letterSpacing: ({ options: { headingType } }) =>
-        typography[headingType].letterSpacing,
-      color: ({ options: { headingType, color } }) =>
-        color || typography[headingType].color,
-      [`@media ${B.mediaMinWidth(768)}`]: {
-        fontSize: ({ options: { headingType } }) =>
-          typography[headingType].tabletPortraitSize,
+  jsx: (() => {
+    const Tag = {
+      Title1: 'h1',
+      Title2: 'h2',
+      Title3: 'h3',
+      Title4: 'h4',
+      Title5: 'h5',
+      Title6: 'h6',
+      Body1: 'p',
+      Body2: 'p',
+    }[options.type || 'Body1'];
+    return <Tag className={classes.root}>{options.content}</Tag>;
+  })(),
+  styles: B => t => {
+    const style = new B.Styling(t);
+    return {
+      root: {
+        boxSizing: 'border-box',
+        position: 'relative',
+        width: '100%',
+        margin: 0,
+        paddingTop: ({ options: { padding } }) =>
+          style.getSpacing(padding[0], 'Desktop'),
+        paddingRight: ({ options: { padding } }) =>
+          style.getSpacing(padding[1], 'Desktop'),
+        paddingBottom: ({ options: { padding } }) =>
+          style.getSpacing(padding[2], 'Desktop'),
+        paddingLeft: ({ options: { padding } }) =>
+          style.getSpacing(padding[3], 'Desktop'),
+        fontFamily: ({ options: { type } }) => style.getFontFamily(type),
+        fontSize: ({ options: { type } }) => style.getFontSize(type),
+        textTransform: ({ options: { type } }) => style.getTextTransform(type),
+        fontWeight: ({ options: { type } }) => style.getFontWeight(type),
+        letterSpacing: ({ options: { type } }) => style.getLetterSpacing(type),
+        textAlign: ({ options: { align } }) => align,
+        color: ({ options: { color } }) => style.getColor(color),
       },
-      [`@media ${B.mediaMinWidth(1024)}`]: {
-        fontSize: ({ options: { headingType } }) =>
-          typography[headingType].tabletLandscapeSize,
-      },
-      [`@media ${B.mediaMinWidth(1200)}`]: {
-        fontSize: ({ options: { headingType } }) =>
-          typography[headingType].desktopSize,
-      },
-    },
-  }),
+    };
+  },
 }))();

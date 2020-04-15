@@ -19,7 +19,7 @@ const availableCommands: CommandBB[] = ['components', 'bundle', 'help'];
 /* process arguments */
 
 program
-  .description('The Betty Blocks CLI')
+  .description('Betty Blocks CLI')
   .version(version)
   .command('components <cmd>', 'manage your component sets')
   .command('bundle <cmd>', 'manage your vendor bundle')
