@@ -4,7 +4,7 @@ import Joi, { ValidationResult } from '@hapi/joi';
 import chalk from 'chalk';
 
 import { Prefab, ComponentReference } from '../types';
-import { ICONS, TYPES, CONDITION_TYPE, COMPARATORS } from './constants';
+import { ICONS, OPTIONS, CONDITION_TYPE, COMPARATORS } from './constants';
 import { findDuplicates } from '../utils/validation';
 
 const componentReferenceSchema = Joi.object({
@@ -17,7 +17,7 @@ const componentReferenceSchema = Joi.object({
         key: Joi.string().required(),
         // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
         type: Joi.string()
-          .valid(...TYPES)
+          .valid(...OPTIONS)
           .required(),
         configuration: Joi.object({
           apiVersion: Joi.string(),
