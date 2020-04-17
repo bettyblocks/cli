@@ -14,7 +14,12 @@ import { CommandBB } from './types';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { version }: { version: string } = require('../package.json');
 
-const availableCommands: CommandBB[] = ['components', 'bundle', 'help'];
+const availableCommands: CommandBB[] = [
+  'components',
+  'interactions',
+  'bundle',
+  'help',
+];
 
 /* process arguments */
 
@@ -22,6 +27,7 @@ program
   .description('Betty Blocks CLI')
   .version(version)
   .command('components <cmd>', 'manage your component sets')
+  .command('interactions <cmd>', 'manage your interactions')
   .command('bundle <cmd>', 'manage your vendor bundle')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandBB)) {
