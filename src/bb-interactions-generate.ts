@@ -38,7 +38,7 @@ function subtotal(price: number, quantity: number): number {
   `;
 
   await Promise.all([
-    outputFile(`src/interactions/${name}.js`, interaction.trim()),
+    outputFile(`src/interactions/${name}.ts`, interaction.trim()),
     console.log(chalk.green('The interaction has been generated')),
   ]);
 })();
