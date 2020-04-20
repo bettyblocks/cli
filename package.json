@@ -16,8 +16,7 @@
     "lint": "eslint \"src/**\"",
     "prettier:base": "prettier --parser typescript --single-quote",
     "prettier:check": "yarn prettier:base --list-different \"src/**/*.{ts,tsx}\"",
-    "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\"",
-    "test": "jest --passWithNoTests"
+    "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\""
   },
   "husky": {
     "hooks": {
@@ -32,16 +31,13 @@
     "@types/babel__generator": "^7.0.2",
     "@types/babel__traverse": "^7.0.7",
     "@types/fs-extra": "^8.0.0",
-    "@types/jest": "^24.0.17",
     "@types/node": "^12.6.8",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "app-root-path": "^2.2.1",
     "eslint": "^6.8.0",
     "husky": "^3.0.5",
-    "jest": "^25.1.0",
     "semantic-release": "^17.0.4",
-    "ts-jest": "^25.2.1",
     "tsc-watch": "^2.2.1",
     "typescript": "^3.5.3"
   },
@@ -81,11 +77,5 @@
   "files": [
     "assets/",
     "build/"
-  ],
-  "jest": {
-    "transform": {
-      "^.+\\.(js|jsx|ts|tsx)?$": "ts-jest"
-    },
-    "displayName": "CLI"
-  }
+  ]
 }
