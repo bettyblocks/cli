@@ -32,8 +32,9 @@ const name: string = args[0];
   }
 
   const interaction = `
-function subtotal(price: number, quantity: number): number {
-  return price * quantity;
+function ${name}(argument: string): string {
+  // Function logic
+  return argument;
 }
   `;
 
