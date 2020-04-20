@@ -32,7 +32,6 @@ enum Compatibility {
   Unit = 'Unit',
 }
 
-// TODO: support all the things!
 const compatibilityLiteral = (node: TypeNode): StringLiteral => {
   const text = node.getText();
 
