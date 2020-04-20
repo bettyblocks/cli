@@ -10,7 +10,7 @@ import { Component, Prefab, Interaction } from './types';
 import validateComponents from './validations/component';
 import validatePrefabs from './validations/prefab';
 import transpile from './utils/transpile';
-import readScripts from './utils/readScripts';
+import readFilesByType from './utils/readFilesByType';
 import { parseDir } from './utils/arguments';
 import { checkNameReferences } from './utils/validation';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -42,7 +42,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
     throw new Error(chalk.red('\nComponents folder not found\n'));
   }
 
-  const componentFiles: string[] = await readScripts(srcDir);
+  const componentFiles: string[] = await readFilesByType(srcDir);
 
   const components: Array<Promise<Component>> = componentFiles.map(
     async (file: string): Promise<Component> => {
@@ -71,7 +71,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     throw new Error(chalk.red('\nPrefabs folder not found\n'));
   }
 
-  const prefabFiles: string[] = await readScripts(srcDir);
+  const prefabFiles: string[] = await readFilesByType(srcDir);
 
   const prefabs: Array<Promise<Prefab>> = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
@@ -102,7 +102,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     throw new Error(chalk.red('\nInteractions folder not found\n'));
   }
 
-  const interactionFiles: string[] = await readScripts(srcDir);
+  const interactionFiles: string[] = await readFilesByType(srcDir, 'ts');
 
   const interactions: Array<Promise<Interaction>> = interactionFiles.map(
     async (file: string): Promise<Interaction> => {
