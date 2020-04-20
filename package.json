@@ -16,7 +16,8 @@
     "lint": "eslint \"src/**\"",
     "prettier:base": "prettier --parser typescript --single-quote",
     "prettier:check": "yarn prettier:base --list-different \"src/**/*.{ts,tsx}\"",
-    "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\""
+    "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\"",
+    "test": "ava ./__tests__/**/*.test.{ts,tsx}"
   },
   "husky": {
     "hooks": {
@@ -38,8 +39,7 @@
     "eslint": "^6.8.0",
     "husky": "^3.0.5",
     "semantic-release": "^17.0.4",
-    "tsc-watch": "^2.2.1",
-    "typescript": "^3.5.3"
+    "tsc-watch": "^2.2.1"
   },
   "dependencies": {
     "@azure/ms-rest-js": "^2.0.4",
@@ -55,6 +55,7 @@
     "@types/hapi__joi": "^16.0.0",
     "@types/react": "^16.9.9",
     "@types/serve-handler": "^6.1.0",
+    "ava": "^3.7.1",
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "eslint-config-airbnb-base": "^14.0.0",
@@ -66,7 +67,20 @@
     "prettier": "^1.18.2",
     "semver": "^6.3.0",
     "serve": "^11.1.0",
-    "serve-handler": "^6.1.2"
+    "serve-handler": "^6.1.2",
+    "ts-node": "^8.8.2",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^3.8.3"
+  },
+  "ava": {
+    "extensions": [
+      "ts",
+      "tsx"
+    ],
+    "require": [
+      "ts-node/register",
+      "tsconfig-paths/register"
+    ]
   },
   "resolutions": {
     "@types/react": "^16.9.9"
