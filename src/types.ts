@@ -131,6 +131,11 @@ export interface Prefab {
   structure: ComponentReference[];
 }
 
+export interface Interaction {
+  name: string;
+  function: string;
+}
+
 export interface Versions {
   remoteVersionCLI: string;
   remoteVersionPreview: string;

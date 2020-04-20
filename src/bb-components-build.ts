@@ -3,7 +3,7 @@
 import program, { CommanderStatic } from 'commander';
 import { promises, outputJson, pathExists } from 'fs-extra';
 import chalk from 'chalk';
-import { Component, Prefab } from './types';
+import { Component, Prefab, Interaction } from './types';
 
 /* internal dependencies */
 
@@ -92,12 +92,44 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   return Promise.all(prefabs);
 };
 
+const readInteractions: () => Promise<Interaction[]> = async (): Promise<
+  Interaction[]
+> => {
+  const srcDir = `${rootDir}/src/interactions`;
+  const exists: boolean = await pathExists(srcDir);
+
+  if (!exists) {
+    throw new Error(chalk.red('\nInteractions folder not found\n'));
+  }
+
+  const interactionFiles: string[] = await readScripts(srcDir);
+
+  const interactions: Array<Promise<Interaction>> = interactionFiles.map(
+    async (file: string): Promise<Interaction> => {
+      try {
+        const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+        return { name: 'Interaction', function: code }; // Generated compatibility data
+      } catch (error) {
+        error.file = file;
+        throw error;
+      }
+    },
+  );
+
+  return Promise.all(interactions);
+};
+
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
-    const [prefabs, components]: [Prefab[], Component[]] = await Promise.all([
+    const [prefabs, components, interactions]: [
+      Prefab[],
+      Component[],
+      Interaction[],
+    ] = await Promise.all([
       readPrefabs(),
       readComponents(),
+      readInteractions(),
     ]);
 
     checkNameReferences(prefabs, components);
@@ -112,6 +144,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     await Promise.all([
       outputJson(`${distDir}/prefabs.json`, prefabs),
       outputJson(`${distDir}/templates.json`, components),
+      outputJson(`${distDir}/interactions.json`, interactions),
     ]);
 
     console.info(chalk.green('Success, the component set has been built'));
