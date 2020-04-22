@@ -74,7 +74,6 @@ export const ICONS = [
   'SelectIcon',
   'SidebarLeftIcon',
   'SubmitButtonIcon',
-  'TabGroupIcon',
   'TabIcon',
   'TabsIcon',
   'Table',
