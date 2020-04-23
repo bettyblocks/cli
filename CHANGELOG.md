@@ -1,3 +1,17 @@
+# [23.1.0](https://github.com/bettyblocks/cli/compare/v23.0.0...v23.1.0) (2020-04-23)
+
+
+### Bug Fixes
+
+* remove duplicate tabs icon ([0089c9c](https://github.com/bettyblocks/cli/commit/0089c9c))
+* semantic release ([57a4d6f](https://github.com/bettyblocks/cli/commit/57a4d6f))
+* upgrade eslint, jest and semantic-release ([a2c7541](https://github.com/bettyblocks/cli/commit/a2c7541))
+
+
+### Features
+
+* add new icons for the material component set ([9a673d9](https://github.com/bettyblocks/cli/commit/9a673d9))
+
 # [23.0.0](https://github.com/bettyblocks/cli/compare/v22.39.1...v23.0.0) (2020-03-11)
 
 
