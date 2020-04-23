@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import {
   createObjectLiteral,
   createPropertyAssignment,
@@ -18,18 +19,29 @@ import {
   visitNode,
 } from 'typescript';
 
-enum Compatibility {
+export enum Compatibility {
   Boolean = 'Boolean',
+  Number = 'Number',
+  String = 'String',
+}
+
+// TODO: Add support
+export enum CompatibilityToDo {
   Color = 'Color',
   Endpoint = 'Endpoint',
   Filter = 'Filter',
   Font = 'Font',
-  Number = 'Number',
   Properties = 'Properties',
   Property = 'Property',
   Size = 'Size',
-  String = 'String',
   Unit = 'Unit',
+}
+
+// TODO: This can be used in IDE
+export interface Interaction {
+  name: string;
+  parameters: Record<string, Compatibility>;
+  type: Compatibility;
 }
 
 const compatibilityLiteral = (node: TypeNode): StringLiteral => {
@@ -50,13 +62,6 @@ const compatibilityLiteral = (node: TypeNode): StringLiteral => {
     }
   }
 };
-
-// This can be used in IDE
-interface Interaction {
-  name: string;
-  parameters: Record<string, Compatibility>;
-  type: Compatibility;
-}
 
 const createParameter = ({
   name,
@@ -120,7 +125,7 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
   return (node: SourceFile): SourceFile => visitNode(node, visit);
 };
 
-export const transpile = (code: string): string => {
+export default (code: string): string => {
   const { outputText } = transpileModule(code, {
     transformers: { before: [compatibilityTransformer()] },
   });
