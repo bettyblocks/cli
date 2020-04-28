@@ -17,7 +17,6 @@ import {
   TransformerFactory,
   transpileModule,
   TypeNode,
-  updateSourceFile,
   visitNode,
 } from 'typescript';
 
@@ -70,13 +69,17 @@ export interface Interaction {
 }
 
 const isInteraction = (value: unknown): value is Interaction => {
-  const { name, parameters, type } = value as Interaction;
+  if (typeof value === 'object' && value !== null) {
+    const { name, parameters, type } = value as Interaction;
 
-  return (
-    typeof name === 'string' &&
-    isParameters(parameters) &&
-    isCompatibility(type)
-  );
+    return (
+      typeof name === 'string' &&
+      isParameters(parameters) &&
+      isCompatibility(type)
+    );
+  }
+
+  return false;
 };
 
 const compatibilityLiteral = (node: TypeNode): StringLiteral => {
@@ -116,83 +119,83 @@ const createParameter = ({
 
 const compatibilityTransformer = (): TransformerFactory<
   SourceFile
-> => (): Transformer<SourceFile> => {
-  const visit = (node: Node): Node => {
-    if (isSourceFile(node)) {
-      const { statements } = node;
-      const { length } = statements;
+> => (): Transformer<SourceFile> => (sourceFile: SourceFile): SourceFile =>
+  visitNode(
+    sourceFile,
+    (node: Node): Node => {
+      if (isSourceFile(node)) {
+        const { statements } = node;
+        const { length } = statements;
 
-      if (length === 0) {
-        throw new RangeError('file does not contain an interaction');
-      }
-
-      if (length > 1) {
-        throw new RangeError('file contains multiple statements');
-      }
-
-      const [statement] = statements;
-
-      if (isVariableStatement(statement)) {
-        const {
-          declarationList: {
-            declarations: [declaration],
-          },
-        } = statement;
-
-        const { initializer, name: nameNode } = declaration;
-        const name = nameNode.getText();
-
-        if (typeof initializer === 'undefined') {
-          throw new TypeError(`definition of ${name} lacks an expression`);
+        if (length === 0) {
+          throw new RangeError('file does not contain an interaction');
         }
 
-        if (!isArrowFunction(initializer)) {
-          throw new TypeError(`expression of ${name} is not an arrow function`);
+        if (length > 1) {
+          throw new RangeError('file contains multiple statements');
         }
 
-        const { parameters, type } = initializer;
+        const [statement] = statements;
 
-        if (typeof type === 'undefined') {
-          throw new TypeError(`return type of ${name} is undefined`);
+        if (isVariableStatement(statement)) {
+          const {
+            declarationList: {
+              declarations: [declaration],
+            },
+          } = statement;
+
+          const { initializer, name: nameNode } = declaration;
+          const name = nameNode.getText();
+
+          if (typeof initializer === 'undefined') {
+            throw new TypeError(`definition of ${name} lacks an expression`);
+          }
+
+          if (!isArrowFunction(initializer)) {
+            throw new TypeError(
+              `expression of ${name} is not an arrow function`,
+            );
+          }
+
+          const { parameters, type } = initializer;
+
+          if (typeof type === 'undefined') {
+            throw new TypeError(`return type of ${name} is undefined`);
+          }
+
+          node.statements = createNodeArray([
+            createStatement(
+              createObjectLiteral([
+                createPropertyAssignment(
+                  createStringLiteral('name'),
+                  createStringLiteral(name),
+                ),
+                createPropertyAssignment(
+                  createStringLiteral('parameters'),
+                  createObjectLiteral(parameters.map(createParameter)),
+                ),
+                createPropertyAssignment(
+                  createStringLiteral('type'),
+                  compatibilityLiteral(type),
+                ),
+              ]),
+            ),
+          ]);
+
+          return node;
         }
-
-        node.statements = createNodeArray([
-          createStatement(
-            createObjectLiteral([
-              createPropertyAssignment(
-                createStringLiteral('name'),
-                createStringLiteral(name),
-              ),
-              createPropertyAssignment(
-                createStringLiteral('parameters'),
-                createObjectLiteral(parameters.map(createParameter)),
-              ),
-              createPropertyAssignment(
-                createStringLiteral('type'),
-                compatibilityLiteral(type),
-              ),
-            ]),
-          ),
-        ]);
-
-        return node;
       }
-    }
 
-    console.log(node);
-
-    throw new TypeError(
-      [
-        'expected an expression of the kind:',
-        '  const interaction = (...args: Arguments): ReturnType => {',
-        '    // function body',
-        '  };',
-      ].join('\n'),
-    );
-  };
-
-  return (node: SourceFile): SourceFile => visitNode(node, visit);
-};
+      throw new TypeError(
+        [
+          'expected an expression of the kind:',
+          '  const interaction = (...args: Arguments): ReturnType => {',
+          '    // function body',
+          '  };',
+        ].join('\n'),
+      );
+    },
+  );
 
 export default (code: string): Interaction => {
   const { outputText } = transpileModule(code, {
