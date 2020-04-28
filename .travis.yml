@@ -1,5 +1,5 @@
 language: node_js
-node_js: 12.7.0
+node_js: 14.0.0
 
 jobs:
   include:
@@ -7,19 +7,19 @@ jobs:
       script:
         - commitlint --from=master
       if: type = pull_request
-      name: "Commit lint"
+      name: 'Commit lint'
     - script:
         - yarn prettier:write
         - yarn build
         - yarn lint
-      name: "Lint"
+      name: 'Lint'
     - script:
         - yarn build
         - yarn test
-      name: "Test"
+      name: 'Test'
     - stage: publish
       script: skip
-      name: "Release"
+      name: 'Release'
       if: branch = master AND type != pull_request
       deploy:
         provider: script
