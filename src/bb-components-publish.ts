@@ -94,7 +94,7 @@ const publish = async (
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const [{ url }] = await Promise.all(
-    ['prefabs.json', 'templates.json'].map(publish),
+    ['prefabs.json', 'templates.json', 'interactions.json'].map(publish),
   );
 
   console.log(
