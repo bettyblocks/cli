@@ -1,21 +1,23 @@
 /* eslint-disable no-param-reassign */
 import {
+  createNodeArray,
   createObjectLiteral,
   createPropertyAssignment,
+  createStatement,
   createStringLiteral,
   isArrowFunction,
-  isVariableDeclaration,
+  isSourceFile,
+  isVariableStatement,
   Node,
   ParameterDeclaration,
   PropertyAssignment,
   SourceFile,
   StringLiteral,
-  TransformationContext,
   Transformer,
   TransformerFactory,
   transpileModule,
   TypeNode,
-  visitEachChild,
+  updateSourceFile,
   visitNode,
 } from 'typescript';
 
@@ -37,12 +39,45 @@ export enum CompatibilityToDo {
   Unit = 'Unit',
 }
 
-// TODO: This can be used in IDE
+const compatibilityValues: Compatibility[] = [
+  Compatibility.Boolean,
+  Compatibility.Number,
+  Compatibility.String,
+];
+
+const isCompatibility = (value: unknown): value is Compatibility =>
+  typeof value === 'string' &&
+  compatibilityValues.includes(value as Compatibility);
+
+const isParameters = (value: unknown): boolean => {
+  if (typeof value === 'object' && value !== null) {
+    const names = Object.keys(value);
+    const types = Object.values(value);
+
+    return (
+      names.every((name: unknown): boolean => typeof name === 'string') &&
+      types.every(isCompatibility)
+    );
+  }
+
+  return false;
+};
+
 export interface Interaction {
   name: string;
   parameters: Record<string, Compatibility>;
   type: Compatibility;
 }
+
+const isInteraction = (value: unknown): value is Interaction => {
+  const { name, parameters, type } = value as Interaction;
+
+  return (
+    typeof name === 'string' &&
+    isParameters(parameters) &&
+    isCompatibility(type)
+  );
+};
 
 const compatibilityLiteral = (node: TypeNode): StringLiteral => {
   const text = node.getText();
@@ -79,56 +114,97 @@ const createParameter = ({
   );
 };
 
-const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
-  context: TransformationContext,
-): Transformer<SourceFile> => {
+const compatibilityTransformer = (): TransformerFactory<
+  SourceFile
+> => (): Transformer<SourceFile> => {
   const visit = (node: Node): Node => {
-    if (isVariableDeclaration(node)) {
-      const { initializer, name: nameNode } = node;
-      const name = nameNode.getText();
+    if (isSourceFile(node)) {
+      const { statements } = node;
+      const { length } = statements;
 
-      if (typeof initializer === 'undefined') {
-        throw new TypeError(`definition of ${name} lacks an expression`);
+      if (length === 0) {
+        throw new RangeError('file does not contain an interaction');
       }
 
-      if (!isArrowFunction(initializer)) {
-        throw new TypeError(`expression of ${name} is not an arrow function`);
+      if (length > 1) {
+        throw new RangeError('file contains multiple statements');
       }
 
-      const { parameters, type } = initializer;
+      const [statement] = statements;
 
-      if (typeof type === 'undefined') {
-        throw new TypeError(`return type of ${name} is undefined`);
+      if (isVariableStatement(statement)) {
+        const {
+          declarationList: {
+            declarations: [declaration],
+          },
+        } = statement;
+
+        const { initializer, name: nameNode } = declaration;
+        const name = nameNode.getText();
+
+        if (typeof initializer === 'undefined') {
+          throw new TypeError(`definition of ${name} lacks an expression`);
+        }
+
+        if (!isArrowFunction(initializer)) {
+          throw new TypeError(`expression of ${name} is not an arrow function`);
+        }
+
+        const { parameters, type } = initializer;
+
+        if (typeof type === 'undefined') {
+          throw new TypeError(`return type of ${name} is undefined`);
+        }
+
+        node.statements = createNodeArray([
+          createStatement(
+            createObjectLiteral([
+              createPropertyAssignment(
+                createStringLiteral('name'),
+                createStringLiteral(name),
+              ),
+              createPropertyAssignment(
+                createStringLiteral('parameters'),
+                createObjectLiteral(parameters.map(createParameter)),
+              ),
+              createPropertyAssignment(
+                createStringLiteral('type'),
+                compatibilityLiteral(type),
+              ),
+            ]),
+          ),
+        ]);
+
+        return node;
       }
-
-      node.initializer = createObjectLiteral([
-        createPropertyAssignment(
-          createStringLiteral('name'),
-          createStringLiteral(name),
-        ),
-        createPropertyAssignment(
-          createStringLiteral('parameters'),
-          createObjectLiteral(parameters.map(createParameter)),
-        ),
-        createPropertyAssignment(
-          createStringLiteral('type'),
-          compatibilityLiteral(type),
-        ),
-      ]);
-
-      return node;
     }
 
-    return visitEachChild(node, visit, context);
+    console.log(node);
+
+    throw new TypeError(
+      [
+        'expected an expression of the kind:',
+        '  const interaction = (...args: Arguments): ReturnType => {',
+        '    // function body',
+        '  };',
+      ].join('\n'),
+    );
   };
 
   return (node: SourceFile): SourceFile => visitNode(node, visit);
 };
 
-export default (code: string): string => {
+export default (code: string): Interaction => {
   const { outputText } = transpileModule(code, {
     transformers: { before: [compatibilityTransformer()] },
   });
 
-  return outputText;
+  const { length } = outputText;
+  const interaction = JSON.parse(outputText.slice(1, length - 3));
+
+  if (isInteraction(interaction)) {
+    return interaction;
+  }
+
+  throw new TypeError('object is not an Interaction');
 };

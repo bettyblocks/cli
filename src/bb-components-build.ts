@@ -1,19 +1,19 @@
 /* npm dependencies */
 
-import program, { CommanderStatic } from 'commander';
-import { promises, outputJson, pathExists } from 'fs-extra';
 import chalk from 'chalk';
-import { Component, Prefab, Interaction } from './types';
+import program, { CommanderStatic } from 'commander';
+import { outputJson, pathExists, promises } from 'fs-extra';
 
+import extractCompatibility from './interactions/compatibility';
+import { Component, Interaction, Prefab } from './types';
+import { parseDir } from './utils/arguments';
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import readFilesByType from './utils/readFilesByType';
+import transpile from './utils/transpile';
+import { checkNameReferences } from './utils/validation';
 /* internal dependencies */
-
 import validateComponents from './validations/component';
 import validatePrefabs from './validations/prefab';
-import transpile from './utils/transpile';
-import readFilesByType from './utils/readFilesByType';
-import { parseDir } from './utils/arguments';
-import { checkNameReferences } from './utils/validation';
-import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 /* npm dependencies */
 
@@ -50,8 +50,11 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
         // eslint-disable-next-line no-new-func
         const transpiledFunction = Function(`return ${transpile(code)}`)();
-        if (!transpiledFunction)
+
+        if (!transpiledFunction) {
           throw new Error("Component doesn't return anything");
+        }
+
         return transpiledFunction;
       } catch (error) {
         error.file = file;
@@ -79,8 +82,11 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
         // eslint-disable-next-line no-new-func
         const transpiledFunction = Function(`return ${code}`)();
-        if (!transpiledFunction)
+
+        if (!transpiledFunction) {
           throw new Error("Prefab doesn't return anything");
+        }
+
         return transpiledFunction;
       } catch (error) {
         error.file = file;
@@ -104,29 +110,30 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
   const interactionFiles: string[] = await readFilesByType(srcDir, 'ts');
 
-  const interactions: Array<Promise<Interaction>> = interactionFiles.map(
-    async (file: string): Promise<Interaction> => {
-      try {
-        const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
-        return { name: 'Interaction', function: code }; // Generated compatibility data
-      } catch (error) {
-        error.file = file;
-        throw error;
-      }
-    },
-  );
+  return Promise.all(
+    interactionFiles.map(
+      async (file: string): Promise<Interaction> => {
+        try {
+          const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
 
-  return Promise.all(interactions);
+          return {
+            function: code,
+            ...extractCompatibility(code),
+          };
+        } catch (error) {
+          error.file = file;
+
+          throw error;
+        }
+      },
+    ),
+  );
 };
 
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
-    const [prefabs, components, interactions]: [
-      Prefab[],
-      Component[],
-      Interaction[],
-    ] = await Promise.all([
+    const [prefabs, components, interactions] = await Promise.all([
       readPrefabs(),
       readComponents(),
       readInteractions(),
