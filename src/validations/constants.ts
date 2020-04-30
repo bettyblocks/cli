@@ -91,6 +91,7 @@ export const TYPES = [
   'BUTTONGROUP',
   'COLOR',
   'CUSTOM',
+  'CUSTOM_MODEL',
   'DROPDOWN',
   'ENDPOINT',
   'FILTER',
@@ -109,3 +110,4 @@ export const TYPES = [
 
 export const CONDITION_TYPE = ['HIDE', 'SHOW'];
 export const COMPARATORS = ['EQ'];
+export const MODAL_TYPE = ['MODEL_AND_PROPERTIES'];
