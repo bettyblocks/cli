@@ -1,3 +1,10 @@
+# [23.2.0](https://github.com/bettyblocks/cli/compare/v23.1.0...v23.2.0) (2020-05-01)
+
+
+### Features
+
+* add custom model configuration to the validation ([22d755c](https://github.com/bettyblocks/cli/commit/22d755c))
+
 # [23.1.0](https://github.com/bettyblocks/cli/compare/v23.0.0...v23.1.0) (2020-04-23)
 
 
