@@ -1,6 +1,6 @@
 {
   "name": "@betty-blocks/cli",
-  "version": "23.0.0",
+  "version": "23.1.0",
   "description": "A Betty Blocks CLI",
   "main": "build/index.js",
   "author": "Niek Nijland <niek.nijland@bettyblocks.com>",
@@ -38,8 +38,11 @@
     "app-root-path": "^2.2.1",
     "eslint": "^6.8.0",
     "husky": "^3.0.5",
-    "semantic-release": "^17.0.4",
-    "tsc-watch": "^2.2.1"
+    "jest": "^25.1.0",
+    "semantic-release": "^17.0.7",
+    "ts-jest": "^25.2.1",
+    "tsc-watch": "^2.2.1",
+    "typescript": "^3.5.3"
   },
   "dependencies": {
     "@azure/ms-rest-js": "^2.0.4",
@@ -50,8 +53,8 @@
     "@babel/types": "^7.5.5",
     "@betty-blocks/preview": "^1.1.0",
     "@hapi/joi": "^16.1.8",
-    "@semantic-release/changelog": "^3.0.4",
-    "@semantic-release/git": "^7.0.16",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/git": "^9.0.0",
     "@types/hapi__joi": "^16.0.0",
     "@types/react": "^16.9.9",
     "@types/serve-handler": "^6.1.0",
