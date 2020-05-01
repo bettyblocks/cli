@@ -1,3 +1,10 @@
+## [23.2.1](https://github.com/bettyblocks/cli/compare/v23.2.0...v23.2.1) (2020-05-01)
+
+
+### Bug Fixes
+
+* change key to avoid double negative ([5fa27b2](https://github.com/bettyblocks/cli/commit/5fa27b2))
+
 # [23.2.0](https://github.com/bettyblocks/cli/compare/v23.1.0...v23.2.0) (2020-05-01)
 
 
