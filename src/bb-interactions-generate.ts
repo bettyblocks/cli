@@ -32,8 +32,8 @@ const name: string = args[0];
   }
 
   const interaction = `
-function ${name}(argument: string): string {
-  // Function logic
+const ${name} = (argument: string): string => {
+  // Logic
   return argument;
 }
   `;
