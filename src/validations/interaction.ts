@@ -7,6 +7,8 @@ import { findDuplicates } from '../utils/validation';
 const schema: ObjectSchema = Joi.object({
   name: Joi.string().required(),
   function: Joi.string().required(),
+  parameters: Joi.object().required(),
+  type: Joi.string().required(),
 });
 
 const validate = (interaction: Interaction): void => {
