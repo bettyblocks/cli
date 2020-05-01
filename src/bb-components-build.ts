@@ -14,6 +14,7 @@ import { checkNameReferences } from './utils/validation';
 /* internal dependencies */
 import validateComponents from './validations/component';
 import validatePrefabs from './validations/prefab';
+import validateInteractions from './validations/interaction';
 
 /* npm dependencies */
 
@@ -144,6 +145,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     await Promise.all([
       validateComponents(components),
       validatePrefabs(prefabs),
+      validateInteractions(interactions),
     ]);
 
     await mkdir(distDir, { recursive: true });
