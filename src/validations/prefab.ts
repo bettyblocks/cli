@@ -48,7 +48,7 @@ const componentReferenceSchema = Joi.object({
           modal: Joi.object({
             type: Joi.string().valid(...MODAL_TYPE),
             generateCustomModel: Joi.boolean(),
-            removeComponentOnCancel: Joi.boolean(),
+            createComponentOnCancel: Joi.boolean(),
           }),
         }),
       }),
