@@ -1,3 +1,10 @@
+## [23.2.2](https://github.com/bettyblocks/cli/compare/v23.2.1...v23.2.2) (2020-05-03)
+
+
+### Bug Fixes
+
+* change key to something more descriptive ([612a0a5](https://github.com/bettyblocks/cli/commit/612a0a5))
+
 ## [23.2.1](https://github.com/bettyblocks/cli/compare/v23.2.0...v23.2.1) (2020-05-01)
 
 
