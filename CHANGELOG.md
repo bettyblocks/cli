@@ -1,3 +1,24 @@
+## [23.2.2](https://github.com/bettyblocks/cli/compare/v23.2.1...v23.2.2) (2020-05-03)
+
+
+### Bug Fixes
+
+* change key to something more descriptive ([612a0a5](https://github.com/bettyblocks/cli/commit/612a0a5))
+
+## [23.2.1](https://github.com/bettyblocks/cli/compare/v23.2.0...v23.2.1) (2020-05-01)
+
+
+### Bug Fixes
+
+* change key to avoid double negative ([5fa27b2](https://github.com/bettyblocks/cli/commit/5fa27b2))
+
+# [23.2.0](https://github.com/bettyblocks/cli/compare/v23.1.0...v23.2.0) (2020-05-01)
+
+
+### Features
+
+* add custom model configuration to the validation ([22d755c](https://github.com/bettyblocks/cli/commit/22d755c))
+
 # [23.1.0](https://github.com/bettyblocks/cli/compare/v23.0.0...v23.1.0) (2020-04-23)
 
 

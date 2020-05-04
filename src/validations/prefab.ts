@@ -5,6 +5,13 @@ import chalk from 'chalk';
 
 import { Prefab, ComponentReference } from '../types';
 import { ICONS, OPTIONS, CONDITION_TYPE, COMPARATORS } from './constants';
+import {
+  ICONS,
+  TYPES,
+  CONDITION_TYPE,
+  COMPARATORS,
+  MODAL_TYPE,
+} from './constants';
 import { findDuplicates } from '../utils/validation';
 
 const componentReferenceSchema = Joi.object({
@@ -39,6 +46,11 @@ const componentReferenceSchema = Joi.object({
           dataType: Joi.string(),
           dependsOn: Joi.string(),
           placeholder: Joi.string(),
+          modal: Joi.object({
+            type: Joi.string().valid(...MODAL_TYPE),
+            generateCustomModel: Joi.boolean(),
+            modelRequired: Joi.boolean(),
+          }),
         }),
       }),
     )
