@@ -1,7 +1,7 @@
 // eslint-disable import/prefer-default-export
 export type Category = DefaultCategory | string;
 
-export type CommandBB = 'components' | 'bundle' | 'help';
+export type CommandBB = 'components' | 'interactions' | 'bundle' | 'help';
 
 export type CommandComponents =
   | 'create'
@@ -11,6 +11,8 @@ export type CommandComponents =
   | 'preview'
   | 'help'
   | 'generate';
+
+export type CommandInteractions = 'generate';
 
 export type CommandBundle = 'init';
 
@@ -127,6 +129,11 @@ export interface Prefab {
   icon: Icon;
   category: Category;
   structure: ComponentReference[];
+}
+
+export interface Interaction {
+  name: string;
+  function: string;
 }
 
 export interface Versions {

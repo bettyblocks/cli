@@ -1,19 +1,23 @@
+import test, { ExecutionContext } from 'ava';
+
+import { Component, Prefab } from '../src/types';
 import validateComponents from '../src/validations/component';
 import validatePrefab from '../src/validations/prefab';
-import { Component, Prefab } from '../src/types';
 
-test('Throw when one of the components is invalid', () => {
+type Context = ExecutionContext<unknown>;
+
+test('Throw when one of the components is invalid', (t: Context): void => {
   const components: { name: string }[] = [
     {
       name: 'HelloWorld',
     },
   ];
 
-  expect(() => validateComponents(components as Component[])).toThrow();
+  t.throws(() => validateComponents(components as Component[]));
 });
 
-test('Throw when two components have the same name', () => {
-  const components: Component[] = [
+test('Throw when two components have the same name', (t: Context): void => {
+  const components = [
     {
       name: 'HelloWorld',
       type: 'ROW',
@@ -30,13 +34,13 @@ test('Throw when two components have the same name', () => {
       jsx: '<div>jsx</div>',
       styles: 'styles',
     },
-  ];
+  ] as Component[];
 
-  expect(() => validateComponents(components as Component[])).toThrow();
+  t.throws(() => validateComponents(components));
 });
 
-test("Don't throw when all components are valid", () => {
-  const components: Component[] = [
+test("Don't throw when all components are valid", (t: Context): void => {
+  const components = [
     {
       name: 'HelloWorld',
       type: 'ROW',
@@ -45,37 +49,37 @@ test("Don't throw when all components are valid", () => {
       jsx: '<div>jsx</div>',
       styles: 'styles',
     },
-  ];
+  ] as Component[];
 
-  expect(() => validateComponents(components)).not.toThrow();
+  t.notThrows(() => validateComponents(components));
 });
 
-test('Throw when one of the prefabs is invalid', () => {
-  const prefab: { name: string }[] = [
+test('Throw when one of the prefabs is invalid', (t: Context): void => {
+  const prefabs = [
     {
       name: 'Component Name',
     },
-  ];
+  ] as Prefab[];
 
-  expect(() => validatePrefab(prefab as Prefab[])).toThrow();
+  t.throws(() => validatePrefab(prefabs));
 });
 
-test("Don't throw when all prefabs are valid", () => {
-  const prefab: Prefab[] = [
+test("Don't throw when all prefabs are valid", (t: Context): void => {
+  const prefabs = [
     {
       name: 'Component Name',
       icon: 'AccordionIcon',
       category: 'Content',
       structure: [],
     },
-  ];
+  ] as Prefab[];
 
-  expect(() => validatePrefab(prefab));
+  t.notThrows(() => validatePrefab(prefabs));
 });
 
-test('Throw when one of the prefabs options is invalid', () => {
-  const prefab: Prefab[] = [
-    ({
+test('Throw when one of the prefabs options is invalid', (t: Context): void => {
+  const prefabs = ([
+    {
       name: 'Component Name',
       icon: 'TitleIcon',
       category: 'CONTENT',
@@ -94,14 +98,14 @@ test('Throw when one of the prefabs options is invalid', () => {
           descendants: [],
         },
       ],
-    } as unknown) as Prefab,
-  ];
+    },
+  ] as unknown) as Prefab[];
 
-  expect(() => validatePrefab(prefab)).toThrow();
+  t.throws(() => validatePrefab(prefabs));
 });
 
-test('Throw when the prefabs option type is not referring to one the correct types', () => {
-  const prefab: Prefab[] = [
+test('Throw when the prefabs option type is not referring to one the correct types', (t: Context): void => {
+  const prefabs = [
     {
       name: 'Component Name',
       icon: 'TitleIcon',
@@ -121,13 +125,13 @@ test('Throw when the prefabs option type is not referring to one the correct typ
         },
       ],
     },
-  ];
+  ] as Prefab[];
 
-  expect(() => validatePrefab(prefab as Prefab[])).toThrow();
+  t.throws(() => validatePrefab(prefabs));
 });
 
-test('Throw when two options with the same key are being used', () => {
-  const prefab: Prefab[] = [
+test('Throw when two options with the same key are being used', (t: Context): void => {
+  const prefabs = [
     {
       name: 'Component Name',
       icon: 'TitleIcon',
@@ -153,7 +157,7 @@ test('Throw when two options with the same key are being used', () => {
         },
       ],
     },
-  ];
+  ] as Prefab[];
 
-  expect(() => validatePrefab(prefab as Prefab[])).toThrow();
+  t.throws(() => validatePrefab(prefabs));
 });

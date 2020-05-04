@@ -85,7 +85,7 @@ export const ICONS = [
   'UrlInputIcon',
 ];
 
-export const TYPES = [
+export const OPTIONS = [
   'ACTION',
   'ACTION_INPUT',
   'BUTTONGROUP',
@@ -99,6 +99,7 @@ export const TYPES = [
   'MODEL',
   'NUMBER',
   'PROPERTY',
+  'PROPERTIES',
   'SIZE',
   'SIZES',
   'TEXT',
