@@ -4,10 +4,9 @@ import Joi, { ValidationResult } from '@hapi/joi';
 import chalk from 'chalk';
 
 import { Prefab, ComponentReference } from '../types';
-import { ICONS, OPTIONS, CONDITION_TYPE, COMPARATORS } from './constants';
 import {
   ICONS,
-  TYPES,
+  OPTIONS,
   CONDITION_TYPE,
   COMPARATORS,
   MODAL_TYPE,
