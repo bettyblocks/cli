@@ -158,6 +158,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
     console.info(chalk.green('Success, the component set has been built'));
   } catch ({ file, name, message }) {
+    process.exitCode = 1;
     if (file) {
       console.error(chalk.red(`\n${name} in ${file}: ${message}\n`));
     } else {
