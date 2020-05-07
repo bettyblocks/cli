@@ -106,7 +106,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error(chalk.red('\nInteractions folder not found\n'));
+    return new Promise((): void => {});
   }
 
   const interactionFiles: string[] = await readFilesByType(srcDir, 'ts');
