@@ -1,3 +1,10 @@
+## [23.2.3](https://github.com/bettyblocks/cli/compare/v23.2.2...v23.2.3) (2020-05-07)
+
+
+### Bug Fixes
+
+* add exit code 1 to error of building ([bcea37b](https://github.com/bettyblocks/cli/commit/bcea37b))
+
 ## [23.2.2](https://github.com/bettyblocks/cli/compare/v23.2.1...v23.2.2) (2020-05-03)
 
 
