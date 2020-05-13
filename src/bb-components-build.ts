@@ -106,7 +106,9 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    return new Promise((): void => {});
+    return new Promise((resolve): void => {
+      resolve();
+    });
   }
 
   const interactionFiles: string[] = await readFilesByType(srcDir, 'ts');
@@ -145,7 +147,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     await Promise.all([
       validateComponents(components),
       validatePrefabs(prefabs),
-      validateInteractions(interactions),
+      interactions && validateInteractions(interactions),
     ]);
 
     await mkdir(distDir, { recursive: true });
@@ -153,7 +155,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     await Promise.all([
       outputJson(`${distDir}/prefabs.json`, prefabs),
       outputJson(`${distDir}/templates.json`, components),
-      outputJson(`${distDir}/interactions.json`, interactions),
+      interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ]);
 
     console.info(chalk.green('Success, the component set has been built'));
