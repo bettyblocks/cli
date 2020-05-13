@@ -1,3 +1,10 @@
+## [23.2.4](https://github.com/bettyblocks/cli/compare/v23.2.3...v23.2.4) (2020-05-07)
+
+
+### Bug Fixes
+
+* make interactions directory optional ([#117](https://github.com/bettyblocks/cli/issues/117)) ([96d74fd](https://github.com/bettyblocks/cli/commit/96d74fd))
+
 ## [23.2.3](https://github.com/bettyblocks/cli/compare/v23.2.2...v23.2.3) (2020-05-07)
 
 
