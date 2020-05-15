@@ -1,3 +1,10 @@
+## [23.2.6](https://github.com/bettyblocks/cli/compare/v23.2.5...v23.2.6) (2020-05-15)
+
+
+### Bug Fixes
+
+* bump for semantic release fix ([00041a4](https://github.com/bettyblocks/cli/commit/00041a4))
+
 ## [23.2.4](https://github.com/bettyblocks/cli/compare/v23.2.3...v23.2.4) (2020-05-07)
 
 
