@@ -5,7 +5,7 @@
 To install the CLI you will need [a recent version of Node.js](https://nodejs.org/en/).
 
 ```bash
-$ npm install -g @betty-blocks/cli@22
+$ npm install -g @betty-blocks/cli@23
 ```
 
 ## Introduction
