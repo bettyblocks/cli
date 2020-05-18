@@ -186,14 +186,12 @@ const compatibilityTransformer = (): TransformerFactory<
         }
       }
 
-      throw new TypeError(
-        [
-          'expected an expression of the kind:',
-          '  const interaction = (...args: Arguments): ReturnType => {',
-          '    // function body',
-          '  };',
-        ].join('\n'),
-      );
+      throw new TypeError(`
+expected an expression of the kind:
+  const interaction = (...args: Arguments): ReturnType => {
+    // function body',
+  };
+`);
     },
   );
 
