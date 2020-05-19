@@ -21,14 +21,14 @@ import {
 
 export interface Component {
   functions: string[];
-  events: string[];
+  triggers: string[];
 }
 
 const isComponent = (value: unknown): value is Component => {
   if (typeof value === 'object' && value !== null) {
-    const { functions, events } = value as Component;
+    const { functions, triggers } = value as Component;
 
-    return Array.isArray(functions) && Array.isArray(events);
+    return Array.isArray(functions) && Array.isArray(triggers);
   }
 
   return false;
@@ -78,7 +78,7 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
               createArrayLiteral(functions.map(n => createStringLiteral(n))),
             ),
             createPropertyAssignment(
-              createStringLiteral('events'),
+              createStringLiteral('triggers'),
               createArrayLiteral(triggers.map(n => createStringLiteral(n))),
             ),
           ]),
