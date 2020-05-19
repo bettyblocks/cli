@@ -7,6 +7,7 @@ import {
   createStatement,
   createStringLiteral,
   isCallExpression,
+  isIdentifier,
   isPropertyAccessExpression,
   isSourceFile,
   isStringLiteral,
@@ -46,7 +47,10 @@ const addCompatibility = (
   collection: string[],
   node: Node,
 ): void => {
-  if (isPropertyAccessExpression(node) && node.getText() === name) {
+  if (
+    (isIdentifier(node) && node.getText() === name) ||
+    (isPropertyAccessExpression(node) && node.getText() === `B.${name}`)
+  ) {
     if (isCallExpression(node.parent)) {
       node.parent.forEachChild(c => {
         if (isStringLiteral(c)) {
@@ -64,8 +68,8 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
   const triggers: string[] = [];
 
   const visit: Visitor = (node: Node): Node => {
-    addCompatibility('B.defineFunction', functions, node);
-    addCompatibility('B.triggerEvent', triggers, node);
+    addCompatibility('defineFunction', functions, node);
+    addCompatibility('triggerEvent', triggers, node);
 
     return visitEachChild(node, visit, context);
   };
