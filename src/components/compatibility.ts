@@ -28,7 +28,12 @@ const isComponent = (value: unknown): value is Component => {
   if (typeof value === 'object' && value !== null) {
     const { functions, triggers } = value as Component;
 
-    return Array.isArray(functions) && Array.isArray(triggers);
+    if (Array.isArray(functions) && Array.isArray(triggers)) {
+      return (
+        functions.every(f => typeof f === 'string') &&
+        triggers.every(t => typeof t === 'string')
+      );
+    }
   }
 
   return false;

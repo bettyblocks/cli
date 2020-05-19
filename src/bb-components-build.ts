@@ -159,8 +159,6 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
     await mkdir(distDir, { recursive: true });
 
-    console.log(components);
-
     await Promise.all([
       outputJson(`${distDir}/prefabs.json`, prefabs),
       outputJson(`${distDir}/templates.json`, components),
