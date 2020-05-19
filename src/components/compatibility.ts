@@ -6,8 +6,10 @@ import {
   createPropertyAssignment,
   createStatement,
   createStringLiteral,
+  isCallExpression,
   isPropertyAccessExpression,
   isSourceFile,
+  isStringLiteral,
   Node,
   SourceFile,
   TransformationContext,
@@ -50,22 +52,26 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
       isPropertyAccessExpression(node) &&
       node.getText() === 'B.defineFunction'
     ) {
-      const name = node.parent
-        .getChildAt(2)
-        .getChildAt(0)
-        .getText();
-      functions.push(name.replace(/'/g, ''));
+      if (isCallExpression(node.parent)) {
+        node.parent.forEachChild(c => {
+          if (isStringLiteral(c)) {
+            functions.push(c.getText().replace(/'/g, ''));
+          }
+        });
+      }
     }
 
     if (
       isPropertyAccessExpression(node) &&
       node.getText() === 'B.triggerEvent'
     ) {
-      const name = node.parent
-        .getChildAt(2)
-        .getChildAt(0)
-        .getText();
-      triggers.push(name.replace(/'/g, ''));
+      if (isCallExpression(node.parent)) {
+        node.parent.forEachChild(c => {
+          if (isStringLiteral(c)) {
+            triggers.push(c.getText().replace(/'/g, ''));
+          }
+        });
+      }
     }
 
     return visitEachChild(node, visit, context);
