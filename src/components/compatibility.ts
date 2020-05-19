@@ -41,6 +41,22 @@ const isComponent = (value: unknown): value is Component => {
   return false;
 };
 
+const addCompatibility = (
+  name: string,
+  collection: string[],
+  node: Node,
+): void => {
+  if (isPropertyAccessExpression(node) && node.getText() === name) {
+    if (isCallExpression(node.parent)) {
+      node.parent.forEachChild(c => {
+        if (isStringLiteral(c)) {
+          collection.push(c.getText().replace(/'/g, ''));
+        }
+      });
+    }
+  }
+};
+
 const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
   context: TransformationContext,
 ): Transformer<SourceFile> => {
@@ -48,31 +64,8 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
   const triggers: string[] = [];
 
   const visit: Visitor = (node: Node): Node => {
-    if (
-      isPropertyAccessExpression(node) &&
-      node.getText() === 'B.defineFunction'
-    ) {
-      if (isCallExpression(node.parent)) {
-        node.parent.forEachChild(c => {
-          if (isStringLiteral(c)) {
-            functions.push(c.getText().replace(/'/g, ''));
-          }
-        });
-      }
-    }
-
-    if (
-      isPropertyAccessExpression(node) &&
-      node.getText() === 'B.triggerEvent'
-    ) {
-      if (isCallExpression(node.parent)) {
-        node.parent.forEachChild(c => {
-          if (isStringLiteral(c)) {
-            triggers.push(c.getText().replace(/'/g, ''));
-          }
-        });
-      }
-    }
+    addCompatibility('B.defineFunction', functions, node);
+    addCompatibility('B.triggerEvent', triggers, node);
 
     return visitEachChild(node, visit, context);
   };
