@@ -21,7 +21,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn prettier:check"
+      "pre-commit": "yarn prettier:check",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "devDependencies": {
