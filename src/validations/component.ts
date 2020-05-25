@@ -13,10 +13,8 @@ const schema: ObjectSchema = Joi.object({
     .items(Joi.string())
     .required(),
   orientation: Joi.string().required(),
-  compatibility: Joi.object({
-    functions: Joi.array().items(Joi.string()),
-    triggers: Joi.array().items(Joi.string()),
-  }),
+  functions: Joi.array().items(Joi.string()),
+  triggers: Joi.array().items(Joi.string()),
   jsx: Joi.any().required(),
   styles: Joi.any().required(),
 });

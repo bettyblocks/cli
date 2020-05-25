@@ -62,7 +62,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 
         return {
           ...transpiledFunction,
-          compatibility,
+          ...compatibility,
         };
       } catch (error) {
         error.file = file;
