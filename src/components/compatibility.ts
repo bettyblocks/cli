@@ -22,14 +22,16 @@ import {
   Visitor,
 } from 'typescript';
 
-export interface Component {
+export interface ComponentCompatibility {
   functions: string[];
   triggers: string[];
 }
 
-const isComponent = (value: unknown): value is Component => {
+const isComponentCompatibility = (
+  value: unknown,
+): value is ComponentCompatibility => {
   if (typeof value === 'object' && value !== null) {
-    const { functions, triggers } = value as Component;
+    const { functions, triggers } = value as ComponentCompatibility;
 
     if (Array.isArray(functions) && Array.isArray(triggers)) {
       return (
@@ -98,7 +100,7 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
   };
 };
 
-export default (code: string): Component => {
+export default (code: string): ComponentCompatibility => {
   const { outputText } = transpileModule(code, {
     transformers: { before: [compatibilityTransformer()] },
   });
@@ -106,9 +108,9 @@ export default (code: string): Component => {
   const { length } = outputText;
   const component = JSON.parse(outputText.slice(1, length - 3));
 
-  if (isComponent(component)) {
+  if (isComponentCompatibility(component)) {
     return component;
   }
 
-  throw new TypeError('object is not a Component');
+  throw new TypeError('object is not a ComponentCompatibility');
 };
