@@ -23,7 +23,7 @@ test('extract compatibility for simple button with custom trigger and function',
       });
     }, []);
     return (
-      <button>
+      <button onClick={handleClick}>
         Knopje
       </button>
     );
@@ -133,5 +133,112 @@ test('extract compatibility for complex button with multiple triggers and functi
   t.deepEqual(compatibility, {
     triggers: ['CustomTrigger1', 'CustomTrigger2', 'CustomTrigger3'],
     functions: ['CustomFunction1', 'CustomFunction2', 'CustomFunction3'],
+  });
+});
+
+test('compatibility galore', (t: Context): void => {
+  const code = `
+(() => ({
+  name: 'Button',
+  type: 'BUTTON',
+  icon: 'ButtonIcon',
+  orientation: 'VERTICAL',
+  allowedTypes: [],
+  jsx: (() => {
+    const handleClick1 = () => {
+      B.triggerEvent('CustomTrigger1');
+    };
+    const handleClick2 = event => {
+      B.triggerEvent('CustomTrigger2', event);
+    };
+    const handleClick3 = () => {
+      triggerEvent('CustomTrigger3');
+    };
+    const handleClick4 = event => {
+      triggerEvent('CustomTrigger4', event);
+    };
+    const handleClick5 = event => {
+      const name = 'value';
+      funct(name);
+      B.triggerEvent('CustomTrigger5', event);
+      triggerEvent('CustomTrigger6', event);
+      funct(name);
+    };
+    B.triggerEvent('CustomTrigger7');
+    B.triggerEvent('CustomTrigger8', {name: 'value'});
+    triggerEvent('CustomTrigger9');
+    triggerEvent('CustomTrigger10', {name: 'value'});
+    useEffect(() => {
+      B.defineFunction('CustomFunction1', () => {});
+    }, []);
+    useEffect(() => {
+      B.defineFunction('CustomFunction2', event => {
+        console.log(event);
+      });
+    }, []);
+    useEffect(() => {
+      defineFunction('CustomFunction3', () => {});
+    }, []);
+    useEffect(() => {
+      defineFunction('CustomFunction4', event => {
+        console.log(event);
+      });
+    }, []);
+    useEffect(() => {
+      const name = 'value';
+      funct(name);
+      B.defineFunction('CustomFunction5', event => {
+        console.log(event);
+      });
+      defineFunction('CustomFunction6', event => {
+        console.log(event);
+      });
+      funct(name);
+    }, []);
+    B.defineFunction('CustomFunction7', event => {
+      console.log(event);
+    });
+    B.defineFunction('CustomFunction8', () => {});
+    defineFunction('CustomFunction9', event => {
+      console.log(event);
+    });
+    defineFunction('CustomFunction10', () => {});
+    return (
+      <button>
+        Knopje
+      </button>
+    );
+  })(),
+  styles: () => () => ({}),
+}))();
+  `;
+
+  const compatibility = toCompatibility(code);
+
+  t.deepEqual(compatibility, {
+    triggers: [
+      'CustomTrigger1',
+      'CustomTrigger2',
+      'CustomTrigger3',
+      'CustomTrigger4',
+      'CustomTrigger5',
+      'CustomTrigger6',
+      'CustomTrigger7',
+      'CustomTrigger8',
+      'CustomTrigger9',
+      'CustomTrigger10',
+    ],
+    functions: [
+      'CustomFunction1',
+      'CustomFunction2',
+      'CustomFunction3',
+      'CustomFunction4',
+      'CustomFunction5',
+      'CustomFunction6',
+      'CustomFunction7',
+      'CustomFunction8',
+      'CustomFunction9',
+      'CustomFunction10',
+    ],
   });
 });
