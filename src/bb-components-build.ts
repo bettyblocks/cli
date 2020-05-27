@@ -4,7 +4,8 @@ import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
 import { outputJson, pathExists, promises } from 'fs-extra';
 
-import extractCompatibility from './interactions/compatibility';
+import extractInteractionCompatibility from './interactions/compatibility';
+import extractComponentCompatibility from './components/compatibility';
 import { Component, Interaction, Prefab } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -49,6 +50,9 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
     async (file: string): Promise<Component> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+
+        const compatibility = extractComponentCompatibility(code);
+
         // eslint-disable-next-line no-new-func
         const transpiledFunction = Function(`return ${transpile(code)}`)();
 
@@ -56,7 +60,10 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
           throw new Error("Component doesn't return anything");
         }
 
-        return transpiledFunction;
+        return {
+          ...transpiledFunction,
+          ...compatibility,
+        };
       } catch (error) {
         error.file = file;
         throw error;
@@ -121,7 +128,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
           return {
             function: code,
-            ...extractCompatibility(code),
+            ...extractInteractionCompatibility(code),
           };
         } catch (error) {
           error.file = file;

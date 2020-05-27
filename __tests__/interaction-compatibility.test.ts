@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import test, { ExecutionContext } from 'ava';
 
-import toCompatibility, { Compatibility } from '../src/interactions/compatibility';
+import toCompatibility, {
+  Compatibility,
+} from '../src/interactions/compatibility';
 
 type Context = ExecutionContext<unknown>;
 
