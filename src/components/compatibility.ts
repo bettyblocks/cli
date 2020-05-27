@@ -71,7 +71,7 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
 
   const visit: Visitor = (node: Node): Node => {
     addCompatibility('defineFunction', functions, node);
-    addCompatibility('triggerEvent', triggers, node);
+    addCompatibility('triggerEvent', triggers, node); // TODO: investigate inline triggers
 
     return visitEachChild(node, visit, context);
   };
