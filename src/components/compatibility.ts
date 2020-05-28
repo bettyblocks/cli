@@ -10,7 +10,6 @@ import {
   isIdentifier,
   isPropertyAccessExpression,
   isSourceFile,
-  isStringLiteral,
   Node,
   SourceFile,
   TransformationContext,
@@ -54,11 +53,13 @@ const addCompatibility = (
     (isPropertyAccessExpression(node) && node.getText() === `B.${name}`)
   ) {
     if (isCallExpression(node.parent)) {
-      node.parent.forEachChild(c => {
-        if (isStringLiteral(c)) {
-          collection.push(c.getText().replace(/'/g, ''));
-        }
-      });
+      collection.push(
+        node.parent
+          .getChildAt(2)
+          .getChildAt(0)
+          .getText()
+          .replace(/'/g, ''),
+      );
     }
   }
 };
