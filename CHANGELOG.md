@@ -1,3 +1,10 @@
+# [23.3.0](https://github.com/bettyblocks/cli/compare/v23.2.6...v23.3.0) (2020-05-27)
+
+
+### Features
+
+* bumper ([#123](https://github.com/bettyblocks/cli/issues/123)) ([9f57725](https://github.com/bettyblocks/cli/commit/9f57725))
+
 ## [23.2.6](https://github.com/bettyblocks/cli/compare/v23.2.5...v23.2.6) (2020-05-15)
 
 
