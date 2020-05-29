@@ -1,3 +1,10 @@
+## [23.3.2](https://github.com/bettyblocks/cli/compare/v23.3.1...v23.3.2) (2020-05-29)
+
+
+### Bug Fixes
+
+* inline triggers ([#126](https://github.com/bettyblocks/cli/issues/126)) ([a13e8a3](https://github.com/bettyblocks/cli/commit/a13e8a3))
+
 ## [23.3.1](https://github.com/bettyblocks/cli/compare/v23.3.0...v23.3.1) (2020-05-29)
 
 
