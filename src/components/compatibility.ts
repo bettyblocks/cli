@@ -8,6 +8,7 @@ import {
   createStringLiteral,
   isCallExpression,
   isIdentifier,
+  isMethodDeclaration,
   isPropertyAccessExpression,
   isSourceFile,
   Node,
@@ -57,6 +58,15 @@ const addCompatibility = (
         node.parent
           .getChildAt(2)
           .getChildAt(0)
+          .getText()
+          .replace(/'/g, ''),
+      );
+    }
+    if (isMethodDeclaration(node.parent)) {
+      collection.push(
+        node.parent
+          .getChildAt(2)
+          .getChildAt(1)
           .getText()
           .replace(/'/g, ''),
       );
