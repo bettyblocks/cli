@@ -125,7 +125,7 @@ test('extract compatibility for complex button with multiple triggers and functi
         },
       };
     },
-  }))();  
+  }))();
   `;
 
   const compatibility = toCompatibility(code);
@@ -192,6 +192,44 @@ test('extract compatibility for simple button with custom trigger with changing 
   });
 });
 
+test('extract compatibility for simple button with custom inline triggers', (t: Context): void => {
+  const code = `
+(() => ({
+  name: 'Button',
+  type: 'BUTTON',
+  icon: 'ButtonIcon',
+  orientation: 'VERTICAL',
+  allowedTypes: [],
+  jsx: (() => {
+    const { triggerEvent } = B;
+    return (
+      <button
+        onCustom1={ () => B.triggerEvent('CustomTrigger1') }
+        onCustom2={ () => triggerEvent('CustomTrigger2') }
+        onCustom3={ event => B.triggerEvent('CustomTrigger3', event) }
+        onCustom4={ event => triggerEvent('CustomTrigger4', event) }
+      >
+        Knopje
+      </button>
+    );
+  })(),
+  styles: () => () => ({}),
+}))();
+  `;
+
+  const compatibility = toCompatibility(code);
+
+  t.deepEqual(compatibility, {
+    triggers: [
+      'CustomTrigger1',
+      'CustomTrigger2',
+      'CustomTrigger3',
+      'CustomTrigger4',
+    ],
+    functions: [],
+  });
+});
+
 test('compatibility galore', (t: Context): void => {
   const code = `
 (() => ({
@@ -201,6 +239,7 @@ test('compatibility galore', (t: Context): void => {
   orientation: 'VERTICAL',
   allowedTypes: [],
   jsx: (() => {
+    const { triggerEvent } = B;
     const handleClick1 = () => {
       B.triggerEvent('CustomTrigger1');
     };
