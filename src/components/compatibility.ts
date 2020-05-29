@@ -8,6 +8,7 @@ import {
   createStringLiteral,
   isCallExpression,
   isIdentifier,
+  isMethodDeclaration,
   isPropertyAccessExpression,
   isSourceFile,
   Node,
@@ -50,13 +51,23 @@ const addCompatibility = (
 ): void => {
   if (
     (isIdentifier(node) && node.getText() === name) ||
-    (isPropertyAccessExpression(node) && node.getText() === `B.${name}`)
+    (isPropertyAccessExpression(node) &&
+      (node.getText() === `B.${name}` || node.getText() === `.${name}`))
   ) {
     if (isCallExpression(node.parent)) {
       collection.push(
         node.parent
           .getChildAt(2)
           .getChildAt(0)
+          .getText()
+          .replace(/'/g, ''),
+      );
+    }
+    if (isMethodDeclaration(node.parent)) {
+      collection.push(
+        node.parent
+          .getChildAt(2)
+          .getChildAt(1)
           .getText()
           .replace(/'/g, ''),
       );
