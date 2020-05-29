@@ -136,6 +136,62 @@ test('extract compatibility for complex button with multiple triggers and functi
   });
 });
 
+test('extract compatibility for simple button with custom trigger with changing input', (t: Context): void => {
+  const code = `
+(() => ({
+  name: 'Button',
+  type: 'BUTTON',
+  icon: 'ButtonIcon',
+  orientation: 'VERTICAL',
+  allowedTypes: [],
+  jsx: (() => {
+    const handleClick1 = event => {
+      B.triggerEvent('CustomTrigger1', event);
+    };
+    const handleClick2 = () => {
+      B.triggerEvent('CustomTrigger2');
+    };
+    const handleClick3 = () => {
+      B.triggerEvent('CustomTrigger3', true);
+    };
+    const handleClick3 = () => {
+      B.triggerEvent('CustomTrigger4', 27);
+    };
+    const handleClick3 = () => {
+      B.triggerEvent('CustomTrigger5', 'value');
+    };
+    const handleClick3 = () => {
+      B.triggerEvent('CustomTrigger6', [ 'value1', 'value2', 'value3' ]);
+    };
+    const handleClick3 = () => {
+      B.triggerEvent('CustomTrigger7', { name1: 'value1', name2: 'value2', name3: 'value3' });
+    };
+    return (
+      <button onClick={handleClick}>
+        Knopje
+      </button>
+    );
+  })(),
+  styles: () => () => ({}),
+}))();
+  `;
+
+  const compatibility = toCompatibility(code);
+
+  t.deepEqual(compatibility, {
+    triggers: [
+      'CustomTrigger1',
+      'CustomTrigger2',
+      'CustomTrigger3',
+      'CustomTrigger4',
+      'CustomTrigger5',
+      'CustomTrigger6',
+      'CustomTrigger7',
+    ],
+    functions: [],
+  });
+});
+
 test('compatibility galore', (t: Context): void => {
   const code = `
 (() => ({
