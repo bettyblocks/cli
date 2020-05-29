@@ -51,7 +51,8 @@ const addCompatibility = (
 ): void => {
   if (
     (isIdentifier(node) && node.getText() === name) ||
-    (isPropertyAccessExpression(node) && node.getText() === `B.${name}`)
+    (isPropertyAccessExpression(node) &&
+      (node.getText() === `B.${name}` || node.getText() === `.${name}`))
   ) {
     if (isCallExpression(node.parent)) {
       collection.push(

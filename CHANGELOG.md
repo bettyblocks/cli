@@ -1,3 +1,10 @@
+## [23.3.1](https://github.com/bettyblocks/cli/compare/v23.3.0...v23.3.1) (2020-05-29)
+
+
+### Bug Fixes
+
+* isolate identifier ([#124](https://github.com/bettyblocks/cli/issues/124)) ([984ebaa](https://github.com/bettyblocks/cli/commit/984ebaa))
+
 # [23.3.0](https://github.com/bettyblocks/cli/compare/v23.2.6...v23.3.0) (2020-05-27)
 
 
