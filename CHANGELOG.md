@@ -1,3 +1,10 @@
+# [23.4.0](https://github.com/bettyblocks/cli/compare/v23.3.2...v23.4.0) (2020-06-02)
+
+
+### Features
+
+* add stepper, avatar, drawer and checkboxgroup icons ([2c317cf](https://github.com/bettyblocks/cli/commit/2c317cf))
+
 ## [23.3.2](https://github.com/bettyblocks/cli/compare/v23.3.1...v23.3.2) (2020-05-29)
 
 
