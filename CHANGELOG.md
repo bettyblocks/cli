@@ -1,3 +1,10 @@
+# [23.5.0](https://github.com/bettyblocks/cli/compare/v23.4.0...v23.5.0) (2020-06-11)
+
+
+### Features
+
+* add step, dialog and conditional icon ([fc7eb23](https://github.com/bettyblocks/cli/commit/fc7eb23))
+
 # [23.4.0](https://github.com/bettyblocks/cli/compare/v23.3.2...v23.4.0) (2020-06-02)
 
 
