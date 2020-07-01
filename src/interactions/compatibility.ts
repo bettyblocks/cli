@@ -6,6 +6,7 @@ import {
   createStatement,
   createStringLiteral,
   isArrowFunction,
+  isFunctionDeclaration,
   isSourceFile,
   isVariableStatement,
   ExpressionStatement,
@@ -193,13 +194,35 @@ const compatibilityTransformer = (): TransformerFactory<
 
           return node;
         }
+
+        if (isFunctionDeclaration(statement)) {
+          const { parameters, type, name: nameNode } = statement;
+
+          if (typeof nameNode === 'undefined') {
+            throw new TypeError(`function name indentifier is not defined`);
+          }
+
+          const name = nameNode.getText();
+
+          if (typeof type === 'undefined') {
+            throw new TypeError(`return type of ${name} is undefined`);
+          }
+
+          node.statements = generateCompatibility(name, type, parameters);
+
+          return node;
+        }
       }
 
       throw new TypeError(`
-expected an expression of the kind:
-  const interaction = (...args: Arguments): ReturnType => {
-    // function body',
+expected an arrow function:
+  const interaction = (...args: ArgumentType[]): ReturnType => {
+    // body
   };
+or a regular function:
+  function interaction(...args: ArgumentType[]): ReturnType {
+    // body
+  }
 `);
     },
   );
