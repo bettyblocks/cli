@@ -8,7 +8,9 @@ import {
   isArrowFunction,
   isSourceFile,
   isVariableStatement,
+  ExpressionStatement,
   Node,
+  NodeArray,
   ParameterDeclaration,
   PropertyAssignment,
   SourceFile,
@@ -117,6 +119,30 @@ const createParameter = ({
   );
 };
 
+const generateCompatibility = (
+  name: string,
+  type: TypeNode,
+  parameters: NodeArray<ParameterDeclaration>,
+): NodeArray<ExpressionStatement> =>
+  createNodeArray([
+    createStatement(
+      createObjectLiteral([
+        createPropertyAssignment(
+          createStringLiteral('name'),
+          createStringLiteral(name),
+        ),
+        createPropertyAssignment(
+          createStringLiteral('parameters'),
+          createObjectLiteral(parameters.map(createParameter)),
+        ),
+        createPropertyAssignment(
+          createStringLiteral('type'),
+          compatibilityLiteral(type),
+        ),
+      ]),
+    ),
+  ]);
+
 const compatibilityTransformer = (): TransformerFactory<
   SourceFile
 > => (): Transformer<SourceFile> => (sourceFile: SourceFile): SourceFile =>
@@ -163,24 +189,7 @@ const compatibilityTransformer = (): TransformerFactory<
             throw new TypeError(`return type of ${name} is undefined`);
           }
 
-          node.statements = createNodeArray([
-            createStatement(
-              createObjectLiteral([
-                createPropertyAssignment(
-                  createStringLiteral('name'),
-                  createStringLiteral(name),
-                ),
-                createPropertyAssignment(
-                  createStringLiteral('parameters'),
-                  createObjectLiteral(parameters.map(createParameter)),
-                ),
-                createPropertyAssignment(
-                  createStringLiteral('type'),
-                  compatibilityLiteral(type),
-                ),
-              ]),
-            ),
-          ]);
+          node.statements = generateCompatibility(name, type, parameters);
 
           return node;
         }
