@@ -5,10 +5,8 @@ import {
   createPropertyAssignment,
   createStatement,
   createStringLiteral,
-  isArrowFunction,
   isFunctionDeclaration,
   isSourceFile,
-  isVariableStatement,
   ExpressionStatement,
   Node,
   NodeArray,
@@ -164,37 +162,6 @@ const compatibilityTransformer = (): TransformerFactory<
 
         const [statement] = statements;
 
-        if (isVariableStatement(statement)) {
-          const {
-            declarationList: {
-              declarations: [declaration],
-            },
-          } = statement;
-
-          const { initializer, name: nameNode } = declaration;
-          const name = nameNode.getText();
-
-          if (typeof initializer === 'undefined') {
-            throw new TypeError(`definition of ${name} lacks an expression`);
-          }
-
-          if (!isArrowFunction(initializer)) {
-            throw new TypeError(
-              `expression of ${name} is not an arrow function`,
-            );
-          }
-
-          const { parameters, type } = initializer;
-
-          if (typeof type === 'undefined') {
-            throw new TypeError(`return type of ${name} is undefined`);
-          }
-
-          node.statements = generateCompatibility(name, type, parameters);
-
-          return node;
-        }
-
         if (isFunctionDeclaration(statement)) {
           const { parameters, type, name: nameNode } = statement;
 
@@ -215,11 +182,7 @@ const compatibilityTransformer = (): TransformerFactory<
       }
 
       throw new TypeError(`
-expected an arrow function:
-  const interaction = (...args: ArgumentType[]): ReturnType => {
-    // body
-  };
-or a regular function:
+expected expression of the kind
   function interaction(...args: ArgumentType[]): ReturnType {
     // body
   }
