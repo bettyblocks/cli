@@ -32,11 +32,11 @@ const name: string = args[0];
   }
 
   const interaction = `
-const ${name} = (event: Event, argument: string): string => {
+function ${name}(argument: string): string {
   // Logic
   return argument;
 }
-  `;
+`;
 
   await Promise.all([
     outputFile(`src/interactions/${name}.ts`, interaction.trim()),

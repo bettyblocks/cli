@@ -1,3 +1,3 @@
-const hello = (event: Event, name: string): string => {
+function hello(name: string): string {
   return `Hello ${name || 'World'}!`;
-};
+}

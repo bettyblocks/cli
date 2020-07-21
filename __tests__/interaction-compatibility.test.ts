@@ -8,12 +8,12 @@ import toCompatibility, {
 type Context = ExecutionContext<unknown>;
 
 test('extract compatibility for: () => boolean', (t: Context): void => {
-  const code = 'const foo = (): boolean => true;';
+  const code = 'function yes(): boolean { return true; }';
 
   const compatibility = toCompatibility(code);
 
   t.deepEqual(compatibility, {
-    name: 'foo',
+    name: 'yes',
     parameters: {},
     type: Compatibility.Boolean,
   });
@@ -21,7 +21,7 @@ test('extract compatibility for: () => boolean', (t: Context): void => {
 
 test('extract compatibility for: (price: number, quantity: number) => number', (t: Context): void => {
   const code =
-    'const subtotal = (price: number, quantity: number): number => price * quantity;';
+    'function subtotal(price: number, quantity: number): number { return price * quantity; }';
 
   const compatibility = toCompatibility(code);
 
@@ -36,7 +36,7 @@ test('extract compatibility for: (price: number, quantity: number) => number', (
 });
 
 test('fail extraction: () => void', (t: Context): void => {
-  const code = 'const f = (): void => {};';
+  const code = 'function f(): void { }';
 
   t.throws(() => toCompatibility(code), {
     name: 'TypeError',

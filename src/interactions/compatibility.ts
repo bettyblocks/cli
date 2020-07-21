@@ -5,10 +5,11 @@ import {
   createPropertyAssignment,
   createStatement,
   createStringLiteral,
-  isArrowFunction,
+  isFunctionDeclaration,
   isSourceFile,
-  isVariableStatement,
+  ExpressionStatement,
   Node,
+  NodeArray,
   ParameterDeclaration,
   PropertyAssignment,
   SourceFile,
@@ -117,6 +118,30 @@ const createParameter = ({
   );
 };
 
+const generateCompatibility = (
+  name: string,
+  type: TypeNode,
+  parameters: NodeArray<ParameterDeclaration>,
+): NodeArray<ExpressionStatement> =>
+  createNodeArray([
+    createStatement(
+      createObjectLiteral([
+        createPropertyAssignment(
+          createStringLiteral('name'),
+          createStringLiteral(name),
+        ),
+        createPropertyAssignment(
+          createStringLiteral('parameters'),
+          createObjectLiteral(parameters.map(createParameter)),
+        ),
+        createPropertyAssignment(
+          createStringLiteral('type'),
+          compatibilityLiteral(type),
+        ),
+      ]),
+    ),
+  ]);
+
 const compatibilityTransformer = (): TransformerFactory<
   SourceFile
 > => (): Transformer<SourceFile> => (sourceFile: SourceFile): SourceFile =>
@@ -137,60 +162,30 @@ const compatibilityTransformer = (): TransformerFactory<
 
         const [statement] = statements;
 
-        if (isVariableStatement(statement)) {
-          const {
-            declarationList: {
-              declarations: [declaration],
-            },
-          } = statement;
+        if (isFunctionDeclaration(statement)) {
+          const { parameters, type, name: nameNode } = statement;
 
-          const { initializer, name: nameNode } = declaration;
+          if (typeof nameNode === 'undefined') {
+            throw new TypeError(`function name indentifier is not defined`);
+          }
+
           const name = nameNode.getText();
-
-          if (typeof initializer === 'undefined') {
-            throw new TypeError(`definition of ${name} lacks an expression`);
-          }
-
-          if (!isArrowFunction(initializer)) {
-            throw new TypeError(
-              `expression of ${name} is not an arrow function`,
-            );
-          }
-
-          const { parameters, type } = initializer;
 
           if (typeof type === 'undefined') {
             throw new TypeError(`return type of ${name} is undefined`);
           }
 
-          node.statements = createNodeArray([
-            createStatement(
-              createObjectLiteral([
-                createPropertyAssignment(
-                  createStringLiteral('name'),
-                  createStringLiteral(name),
-                ),
-                createPropertyAssignment(
-                  createStringLiteral('parameters'),
-                  createObjectLiteral(parameters.map(createParameter)),
-                ),
-                createPropertyAssignment(
-                  createStringLiteral('type'),
-                  compatibilityLiteral(type),
-                ),
-              ]),
-            ),
-          ]);
+          node.statements = generateCompatibility(name, type, parameters);
 
           return node;
         }
       }
 
       throw new TypeError(`
-expected an expression of the kind:
-  const interaction = (...args: Arguments): ReturnType => {
-    // function body',
-  };
+expected expression of the kind
+  function interaction(...args: ArgumentType[]): ReturnType {
+    // body
+  }
 `);
     },
   );
