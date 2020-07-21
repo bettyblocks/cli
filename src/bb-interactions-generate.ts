@@ -32,7 +32,7 @@ const name: string = args[0];
   }
 
   const interaction = `
-const ${name} = (event: Event, argument: string): string => {
+function ${name}(event: Event, argument: string): string {
   // Logic
   return argument;
 }
