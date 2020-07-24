@@ -6,6 +6,7 @@ import {
   createStatement,
   createStringLiteral,
   isFunctionDeclaration,
+  isInterfaceDeclaration,
   isSourceFile,
   ExpressionStatement,
   Node,
@@ -25,6 +26,7 @@ export enum Compatibility {
   Boolean = 'Boolean',
   Number = 'Number',
   String = 'String',
+  Event = 'Event',
 }
 
 // TODO: Add support
@@ -43,6 +45,7 @@ const compatibilityValues: Compatibility[] = [
   Compatibility.Boolean,
   Compatibility.Number,
   Compatibility.String,
+  Compatibility.Event,
 ];
 
 const isCompatibility = (value: unknown): value is Compatibility =>
@@ -96,26 +99,61 @@ const compatibilityLiteral = (node: TypeNode): StringLiteral => {
     case 'string': {
       return createStringLiteral(Compatibility.String);
     }
+    case 'Event': {
+      return createStringLiteral(Compatibility.Event);
+    }
     default: {
       throw new TypeError(`unsupported type: ${text}`);
     }
   }
 };
 
+interface TypeDefinition {
+  name: Node;
+  type: Node;
+}
+
 const createParameter = ({
   name,
   type,
-}: ParameterDeclaration): PropertyAssignment => {
+}: TypeDefinition): PropertyAssignment => {
   const text = name.getText();
 
   if (typeof type === 'undefined') {
-    throw new TypeError(`type of parameter ${text} is undefined`);
+    throw new TypeError(`type of parameter ${name.getText()} is undefined`);
   }
 
   return createPropertyAssignment(
     createStringLiteral(text),
-    compatibilityLiteral(type),
+    compatibilityLiteral(type as TypeNode),
   );
+};
+
+const parseParameters = ({
+  name,
+  type,
+}: ParameterDeclaration): PropertyAssignment[] => {
+  if (typeof type === 'undefined' && typeof name === 'undefined') {
+    return [];
+  }
+
+  if (typeof type === 'undefined') {
+    throw new TypeError(`type of parameter ${name.getText()} is undefined`);
+  }
+
+  const typeDefinitions: PropertyAssignment[] = [];
+
+  type.forEachChild(child => {
+    const [childName, __delimiter, childType] = child.getChildren();
+    if (childType.getText() !== 'Event') {
+      typeDefinitions[typeDefinitions.length] = createParameter({
+        name: childName,
+        type: childType,
+      });
+    }
+  });
+
+  return typeDefinitions;
 };
 
 const generateCompatibility = (
@@ -132,7 +170,7 @@ const generateCompatibility = (
         ),
         createPropertyAssignment(
           createStringLiteral('parameters'),
-          createObjectLiteral(parameters.map(createParameter)),
+          createObjectLiteral(parseParameters(parameters[0] || {})),
         ),
         createPropertyAssignment(
           createStringLiteral('type'),
@@ -150,7 +188,7 @@ const compatibilityTransformer = (): TransformerFactory<
     (node: Node): Node => {
       if (isSourceFile(node)) {
         const { statements } = node;
-        const { length } = statements;
+        const { length } = statements.filter(isFunctionDeclaration);
 
         if (length === 0) {
           throw new RangeError('file does not contain an interaction');
@@ -160,10 +198,16 @@ const compatibilityTransformer = (): TransformerFactory<
           throw new RangeError('file contains multiple statements');
         }
 
-        const [statement] = statements;
+        const [statement] = statements.filter(isFunctionDeclaration);
 
         if (isFunctionDeclaration(statement)) {
           const { parameters, type, name: nameNode } = statement;
+
+          if (parameters.length > 1) {
+            throw new TypeError(
+              `function statement has too many parameters, expected 0 or 1 but received ${parameters.length}`,
+            );
+          }
 
           if (typeof nameNode === 'undefined') {
             throw new TypeError(`function name indentifier is not defined`);

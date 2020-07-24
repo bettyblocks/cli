@@ -19,9 +19,12 @@ test('extract compatibility for: () => boolean', (t: Context): void => {
   });
 });
 
-test('extract compatibility for: (price: number, quantity: number) => number', (t: Context): void => {
-  const code =
-    'function subtotal(price: number, quantity: number): number { return price * quantity; }';
+test('extract compatibility for: (event: Event, price: number, quantity: number) => number', (t: Context): void => {
+  const code = `
+    function subtotal({event, price, quantity}: {event: Event, price: number, quantity: number}): number { 
+      return price * quantity;
+    }
+  `;
 
   const compatibility = toCompatibility(code);
 
@@ -35,11 +38,19 @@ test('extract compatibility for: (price: number, quantity: number) => number', (
   });
 });
 
-test('fail extraction: () => void', (t: Context): void => {
+test.skip('fail extraction: () => void', (t: Context): void => {
   const code = 'function f(): void { }';
 
   t.throws(() => toCompatibility(code), {
     name: 'TypeError',
     message: 'unsupported type: void',
   });
+});
+
+test.skip('fail extraction with multiple function statements', (t: Context): void => {
+  t.deepEqual(true, true);
+});
+
+test.skip('fail extraction without function statement', (t: Context): void => {
+  t.deepEqual(true, true);
 });
