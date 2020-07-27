@@ -6,7 +6,6 @@ import {
   createStatement,
   createStringLiteral,
   isFunctionDeclaration,
-  isInterfaceDeclaration,
   isSourceFile,
   ExpressionStatement,
   Node,
@@ -99,9 +98,6 @@ const compatibilityLiteral = (node: TypeNode): StringLiteral => {
     case 'string': {
       return createStringLiteral(Compatibility.String);
     }
-    case 'Event': {
-      return createStringLiteral(Compatibility.Event);
-    }
     default: {
       throw new TypeError(`unsupported type: ${text}`);
     }
@@ -120,7 +116,7 @@ const createParameter = ({
   const text = name.getText();
 
   if (typeof type === 'undefined') {
-    throw new TypeError(`type of parameter ${name.getText()} is undefined`);
+    throw new TypeError(`typeof ${text} is undefined`);
   }
 
   return createPropertyAssignment(
@@ -141,10 +137,31 @@ const parseParameters = ({
     throw new TypeError(`type of parameter ${name.getText()} is undefined`);
   }
 
+  const namedParameters: string[] = [];
+  const types: TypeDefinition[] = [];
+
+  name.forEachChild(child =>
+    child.getChildren().forEach(c2 => namedParameters.push(c2.getText())),
+  );
+  type.forEachChild(child => {
+    const [childName, , childType] = child.getChildren();
+    types.push({
+      name: childName,
+      type: childType,
+    });
+  });
+
+  if (namedParameters.length > types.length) {
+    const missingParams = namedParameters.filter(
+      param => !types.find(t => t.name.getText() === param),
+    );
+    throw new TypeError(`type of parameter ${missingParams} is undefined`);
+  }
+
   const typeDefinitions: PropertyAssignment[] = [];
 
   type.forEachChild(child => {
-    const [childName, __delimiter, childType] = child.getChildren();
+    const [childName, , childType] = child.getChildren();
     if (childType.getText() !== 'Event') {
       typeDefinitions[typeDefinitions.length] = createParameter({
         name: childName,
@@ -159,7 +176,7 @@ const parseParameters = ({
 const generateCompatibility = (
   name: string,
   type: TypeNode,
-  parameters: NodeArray<ParameterDeclaration>,
+  parameters: ParameterDeclaration,
 ): NodeArray<ExpressionStatement> =>
   createNodeArray([
     createStatement(
@@ -170,7 +187,7 @@ const generateCompatibility = (
         ),
         createPropertyAssignment(
           createStringLiteral('parameters'),
-          createObjectLiteral(parseParameters(parameters[0] || {})),
+          createObjectLiteral(parseParameters(parameters)),
         ),
         createPropertyAssignment(
           createStringLiteral('type'),
@@ -188,19 +205,17 @@ const compatibilityTransformer = (): TransformerFactory<
     (node: Node): Node => {
       if (isSourceFile(node)) {
         const { statements } = node;
-        const { length } = statements.filter(isFunctionDeclaration);
+        const [statement] = statements.filter(isFunctionDeclaration);
 
-        if (length === 0) {
+        if (statements.length === 0) {
           throw new RangeError('file does not contain an interaction');
         }
 
-        if (length > 1) {
+        if (statements.length > 1) {
           throw new RangeError('file contains multiple statements');
         }
 
-        const [statement] = statements.filter(isFunctionDeclaration);
-
-        if (isFunctionDeclaration(statement)) {
+        if (statement && isFunctionDeclaration(statement)) {
           const { parameters, type, name: nameNode } = statement;
 
           if (parameters.length > 1) {
@@ -219,7 +234,11 @@ const compatibilityTransformer = (): TransformerFactory<
             throw new TypeError(`return type of ${name} is undefined`);
           }
 
-          node.statements = generateCompatibility(name, type, parameters);
+          node.statements = generateCompatibility(
+            name,
+            type,
+            parameters[0] || {},
+          );
 
           return node;
         }
@@ -227,7 +246,7 @@ const compatibilityTransformer = (): TransformerFactory<
 
       throw new TypeError(`
 expected expression of the kind
-  function interaction(...args: ArgumentType[]): ReturnType {
+  function interaction({ event, argument }: { event: Event, argument: ArgumentType }): ReturnType {
     // body
   }
 `);
