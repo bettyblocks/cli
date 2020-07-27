@@ -141,7 +141,7 @@ const parseParameters = ({
   const types: TypeDefinition[] = [];
 
   name.forEachChild(child =>
-    child.getChildren().forEach(c2 => namedParameters.push(c2.getText())),
+    child.getChildren().forEach(param => namedParameters.push(param.getText())),
   );
   type.forEachChild(child => {
     const [childName, , childType] = child.getChildren();

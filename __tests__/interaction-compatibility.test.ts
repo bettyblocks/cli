@@ -19,9 +19,9 @@ test('extract compatibility for: () => boolean', (t: Context): void => {
   });
 });
 
-test('extract compatibility for: (event: Event, price: number, quantity: number) => number', (t: Context): void => {
+test('extract compatibility for: ({ event, price, quantity }: { event: Event, price: number, quantity: number }) => number', (t: Context): void => {
   const code = `
-    function subtotal({event, price, quantity}: {event: Event, price: number, quantity: number}): number { 
+    function subtotal({ event, price, quantity }: { event: Event, price: number, quantity: number }): number { 
       return price * quantity;
     }
   `;
@@ -63,7 +63,7 @@ expected expression of the kind
 
 test('fail extraction when passing incompatible type for: subtotal({ event, price }: { event: Event, price: PriceType }): number => number', (t: Context): void => {
   const code = `
-    function subtotal({event, price}: {event: Event, price: PriceType}): number {
+    function subtotal({ event, price }: { event: Event, price: PriceType }): number {
       return price * 1;
     }
   `;
@@ -76,20 +76,20 @@ test('fail extraction when passing incompatible type for: subtotal({ event, pric
 
 test('fail extraction when not passing a type for: subtotal({ event, price }): number => number', (t: Context): void => {
   const code = `
-    function subtotal({event, price}):number {
+    function subtotal({ event, price }):number {
       return price * 1;
     }
   `;
 
   t.throws(() => toCompatibility(code), {
     name: 'TypeError',
-    message: 'type of parameter {event, price} is undefined',
+    message: 'type of parameter { event, price } is undefined',
   });
 });
 
 test('fail extraction when passing partial type for: subtotal({ event, price, quantity }: { event: Event, price: number }): number => number', (t: Context): void => {
   const code = `
-    function subtotal({event, price, quantity}: {event: Event, price: number}):number {
+    function subtotal({ event, price, quantity }: { event: Event, price: number }):number {
       return price * quantity;
     }
   `;
