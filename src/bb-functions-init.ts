@@ -6,6 +6,8 @@ import program, { CommanderStatic } from 'commander';
 
 /* internal dependencies */
 
+import rootDir from './utils/rootDir';
+
 /* process arguments */
 
 program
@@ -13,11 +15,6 @@ program
   .name('bb functions init')
   .parse(process.argv);
 
-const rootDir = path.join(
-  (process.mainModule as NodeModule).filename,
-  '..',
-  '..',
-);
 const { args }: CommanderStatic = program;
 
 /* execute command */
@@ -28,7 +25,7 @@ const identifier = args[0],
 
 fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
   if (err && err.code == 'ENOENT') {
-    const sourceDir = path.join(rootDir, 'src', 'functions', 'templates');
+    const sourceDir = path.join(rootDir(), 'src', 'functions', 'templates');
     fs.copySync(sourceDir, targetDir);
 
     console.log(`Initialized functions project in ${targetDir}.
