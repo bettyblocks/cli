@@ -16,6 +16,7 @@ const { version }: { version: string } = require('../package.json');
 
 const availableCommands: CommandBB[] = [
   'components',
+  'functions',
   'interactions',
   'bundle',
   'help',
