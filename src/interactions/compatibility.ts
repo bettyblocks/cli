@@ -183,7 +183,7 @@ const compatibilityTransformer = (): TransformerFactory<
 
       throw new TypeError(`
 expected expression of the kind
-  function interaction(...args: ArgumentType[]): ReturnType {
+  function name(arg1: type1, arg2: type2, ...): type3 {
     // body
   }
 `);
