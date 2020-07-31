@@ -1,3 +1,10 @@
+# [23.6.0](https://github.com/bettyblocks/cli/compare/v23.5.0...v23.6.0) (2020-07-29)
+
+
+### Features
+
+* allow option type AUTHENTICATION_PROFILE ([89c1c32](https://github.com/bettyblocks/cli/commit/89c1c32))
+
 # [23.5.0](https://github.com/bettyblocks/cli/compare/v23.4.0...v23.5.0) (2020-06-11)
 
 
