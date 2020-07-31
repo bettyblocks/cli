@@ -1,3 +1,10 @@
+# [23.7.0](https://github.com/bettyblocks/cli/compare/v23.6.0...v23.7.0) (2020-07-31)
+
+
+### Features
+
+* global interactions type object ([679917d](https://github.com/bettyblocks/cli/commit/679917d))
+
 # [23.6.0](https://github.com/bettyblocks/cli/compare/v23.5.0...v23.6.0) (2020-07-29)
 
 
