@@ -1,3 +1,10 @@
+# [23.9.0](https://github.com/bettyblocks/cli/compare/v23.8.0...v23.9.0) (2020-08-03)
+
+
+### Features
+
+* adds strict programmatically ([#142](https://github.com/bettyblocks/cli/issues/142)) ([6d4f0e1](https://github.com/bettyblocks/cli/commit/6d4f0e1))
+
 # [23.8.0](https://github.com/bettyblocks/cli/compare/v23.7.0...v23.8.0) (2020-08-03)
 
 
