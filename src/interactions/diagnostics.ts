@@ -1,5 +1,3 @@
-import { readFileSync } from 'fs';
-
 import {
   createProgram,
   Diagnostic,
