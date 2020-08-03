@@ -5,6 +5,7 @@ import program, { CommanderStatic } from 'commander';
 import { outputJson, pathExists, promises } from 'fs-extra';
 
 import extractInteractionCompatibility from './interactions/compatibility';
+import getDiagnostics from './interactions/diagnostics';
 import extractComponentCompatibility from './components/compatibility';
 import { Component, Interaction, Prefab } from './types';
 import { parseDir } from './utils/arguments';
@@ -125,6 +126,8 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
       async (file: string): Promise<Interaction> => {
         try {
           const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+
+          getDiagnostics(`${srcDir}/${file}`);
 
           return {
             function: code,
