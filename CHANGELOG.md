@@ -1,3 +1,10 @@
+# [23.8.0](https://github.com/bettyblocks/cli/compare/v23.7.0...v23.8.0) (2020-08-03)
+
+
+### Features
+
+* add diagnostic reporting for interactions pndjs 1337 ([#141](https://github.com/bettyblocks/cli/issues/141)) ([8adaa60](https://github.com/bettyblocks/cli/commit/8adaa60))
+
 # [23.7.0](https://github.com/bettyblocks/cli/compare/v23.6.0...v23.7.0) (2020-07-31)
 
 
