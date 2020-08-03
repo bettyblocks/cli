@@ -74,45 +74,6 @@ test('fail extraction when passing incompatible type for: subtotal({ event, pric
   });
 });
 
-test('fail extraction when not passing a type for: subtotal({ event, price }): number => number', (t: Context): void => {
-  const code = `
-    function subtotal({ event, price }):number {
-      return price * 1;
-    }
-  `;
-
-  t.throws(() => toCompatibility(code), {
-    name: 'TypeError',
-    message: 'type of parameter { event, price } is undefined',
-  });
-});
-
-test('fail extraction when passing partial type for: subtotal({ event, price, quantity }: { event: Event, price: number }): number => number', (t: Context): void => {
-  const code = `
-    function subtotal({ event, price, quantity }: { event: Event, price: number }):number {
-      return price * quantity;
-    }
-  `;
-
-  t.throws(() => toCompatibility(code), {
-    name: 'TypeError',
-    message: 'type of parameter quantity is undefined',
-  });
-});
-
-test('fail extraction when passing an empty type for: subtotal({ event, price, quantity }: {}): number => number', (t: Context): void => {
-  const code = `
-    function subtotal({ event, price, quantity }: {}): number {
-      return price * quantity;
-    }
-  `;
-
-  t.throws(() => toCompatibility(code), {
-    name: 'TypeError',
-    message: 'type of parameter event,price,quantity is undefined',
-  });
-});
-
 test('fail extraction: () => void', (t: Context): void => {
   const code = 'function f(): void { }';
 

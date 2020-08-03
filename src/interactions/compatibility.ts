@@ -151,13 +151,6 @@ const parseParameters = ({
     });
   });
 
-  if (namedParameters.length > types.length) {
-    const missingParams = namedParameters.filter(
-      param => !types.find(t => t.name.getText() === param),
-    );
-    throw new TypeError(`type of parameter ${missingParams} is undefined`);
-  }
-
   const typeDefinitions: PropertyAssignment[] = [];
 
   type.forEachChild(child => {
