@@ -44,7 +44,7 @@ withinFunctionsProject(workingDir, (identifier: string) => {
       ...sourceJson.dependencies,
     };
 
-    fs.writeJsonSync(targetPackage, targetJson);
+    fs.writeFileSync(targetPackage, JSON.stringify(targetJson, null, 2));
     console.log('Building custom functions bundle file ...');
 
     const build = spawn(`cd ${buildDir} && npm install && npm run build`, {
