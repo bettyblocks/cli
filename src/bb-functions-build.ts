@@ -20,14 +20,12 @@ program.name('bb functions build').parse(process.argv);
 const workingDir = process.cwd();
 
 withinFunctionsProject(workingDir, (identifier: string) => {
-  const packerDir = path.join(rootDir(), 'src', 'functions', 'packer'),
-    buildDir = path.join(os.tmpdir(), identifier),
-    sourceSrc = path.join(workingDir, 'src'),
-    targetSrc = path.join(buildDir, 'src'),
-    sourcePackage = path.join(workingDir, 'package.json'),
-    targetPackage = path.join(buildDir, 'package.json'),
-    sourceModules = path.join(workingDir, 'node_modules'),
-    targetModules = path.join(buildDir, 'node_modules');
+  const packerDir = path.join(rootDir(), 'src', 'functions', 'packer');
+  const buildDir = path.join(os.tmpdir(), identifier);
+  const sourceSrc = path.join(workingDir, 'src');
+  const targetSrc = path.join(buildDir, 'src');
+  const sourcePackage = path.join(workingDir, 'package.json');
+  const targetPackage = path.join(buildDir, 'package.json');
 
   fs.emptyDir(buildDir, (err: NodeJS.ErrnoException | null) => {
     if (err) {
@@ -38,12 +36,12 @@ withinFunctionsProject(workingDir, (identifier: string) => {
     fs.copySync(sourceSrc, targetSrc);
     fs.copySync(sourceSrc, targetSrc);
 
-    const sourceJson = fs.readJsonSync(sourcePackage),
-      targetJson = fs.readJsonSync(targetPackage);
+    const sourceJson = fs.readJsonSync(sourcePackage);
+    const targetJson = fs.readJsonSync(targetPackage);
 
-    targetJson['dependencies'] = {
-      ...targetJson['dependencies'],
-      ...sourceJson['dependencies'],
+    targetJson.dependencies = {
+      ...targetJson.dependencies,
+      ...sourceJson.dependencies,
     };
 
     fs.writeJsonSync(targetPackage, targetJson);
@@ -52,7 +50,7 @@ withinFunctionsProject(workingDir, (identifier: string) => {
     const build = spawn(`cd ${buildDir} && npm install && npm run build`, {
       shell: true,
     });
-    build.on('close', (code: number) => {
+    build.on('close', () => {
       console.log('Done.');
     });
   });
