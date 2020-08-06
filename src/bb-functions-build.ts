@@ -20,7 +20,7 @@ program.name('bb functions build').parse(process.argv);
 const workingDir = process.cwd();
 
 withinFunctionsProject(workingDir, (identifier: string) => {
-  const packerDir = path.join(rootDir(), 'src', 'functions', 'packer');
+  const packerDir = path.join(rootDir(), 'assets', 'functions', 'packer');
   const buildDir = path.join(os.tmpdir(), identifier);
   const sourceSrc = path.join(workingDir, 'src');
   const targetSrc = path.join(buildDir, 'src');
