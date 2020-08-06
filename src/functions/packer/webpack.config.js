@@ -4,6 +4,6 @@ module.exports = {
   output: {
     filename: 'custom.js',
     libraryTarget: 'var',
-    library: 'custom'
+    library: 'custom',
   },
 };

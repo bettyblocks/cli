@@ -6,11 +6,9 @@ async function allUsers() {
         email
       }
     }
-  }`)
+  }`);
 
-  return result
+  return result;
 }
 
-export {
-  allUsers
-}
+export { allUsers };

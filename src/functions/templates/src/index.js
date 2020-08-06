@@ -1,7 +1,4 @@
-import { sayHello } from './say-hello'
-import { allUsers } from './all-users'
+import { sayHello } from './say-hello';
+import { allUsers } from './all-users';
 
-export {
-  sayHello,
-  allUsers
-}
+export { sayHello, allUsers };

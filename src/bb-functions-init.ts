@@ -19,12 +19,12 @@ const { args }: CommanderStatic = program;
 
 /* execute command */
 
-const identifier = args[0],
-  workingDir = process.cwd(),
-  targetDir = path.join(workingDir, identifier);
+const identifier = args[0];
+const workingDir = process.cwd();
+const targetDir = path.join(workingDir, identifier);
 
 fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
-  if (err && err.code == 'ENOENT') {
+  if (err && err.code === 'ENOENT') {
     const sourceDir = path.join(rootDir(), 'src', 'functions', 'templates');
     fs.copySync(sourceDir, targetDir);
 

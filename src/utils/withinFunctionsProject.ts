@@ -5,10 +5,12 @@ const withinFunctionsProject = (
   dir: string,
   callback: (identifier: string) => void,
 ): void => {
-  const expected = ['functions.json', 'package.json', 'src'],
-    intersection = fs.readdirSync(dir).filter(file => expected.includes(file));
+  const expected = ['functions.json', 'package.json', 'src'];
+  const intersection = fs
+    .readdirSync(dir)
+    .filter(file => expected.includes(file));
 
-  if (intersection.length == expected.length) {
+  if (intersection.length === expected.length) {
     const identifier = path.basename(dir);
     callback(identifier);
   } else {
