@@ -174,6 +174,11 @@ const groomMetaData = async (identifier: string): Promise<MetaData> => {
   return groomedMetaData;
 };
 
+const sleep = (milliseconds: number): Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+};
+
 const publishFunctions = async (
   identifier: string,
   metaData: MetaData,
@@ -242,12 +247,15 @@ const publishFunctions = async (
   );
 
   await Promise.all(promises);
+  await sleep(400);
+
   await ide.close();
 };
 
 withinFunctionsProject(workingDir, (identifier: string): void => {
   console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
 
+  console.log(`Bundling custom functions ...`);
   const build = spawn('bb functions build', {
     shell: true,
   });
