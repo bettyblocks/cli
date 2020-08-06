@@ -29,10 +29,11 @@ fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
     fs.copySync(sourceDir, targetDir);
 
     console.log(`Initialized functions project in ${targetDir}.
-You can use "bb functions" to build it, test it, and more:
+You can use "bb functions" to build and/or publish it:
 
     cd ${identifier}
-    bb functions test
+    bb functions build
+    bb functions publish
 `);
   } else {
     console.log(`The directory "${targetDir}" already exists. Abort.`);

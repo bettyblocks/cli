@@ -263,5 +263,6 @@ withinFunctionsProject(workingDir, (identifier: string): void => {
   build.on('close', async () => {
     const metaData = await groomMetaData(identifier);
     await publishFunctions(identifier, metaData);
+    console.log('Done.');
   });
 });

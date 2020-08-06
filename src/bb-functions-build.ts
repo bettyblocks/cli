@@ -45,7 +45,7 @@ withinFunctionsProject(workingDir, (identifier: string) => {
     };
 
     fs.writeFileSync(targetPackage, JSON.stringify(targetJson, null, 2));
-    console.log('Building custom functions bundle file ...');
+    console.log(`Building "${identifier}" custom functions bundle ...`);
 
     const build = spawn(`cd ${buildDir} && npm install && npm run build`, {
       shell: true,
