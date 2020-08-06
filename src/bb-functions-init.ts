@@ -1,5 +1,6 @@
 /* npm dependencies */
 
+import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
 import program, { CommanderStatic } from 'commander';
@@ -16,6 +17,13 @@ program
   .parse(process.argv);
 
 const { args }: CommanderStatic = program;
+
+if (args.length !== 1) {
+  console.log(
+    chalk.red('Please provide the identifier (subdomain) of your application.'),
+  );
+  process.exit();
+}
 
 /* execute command */
 
