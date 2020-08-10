@@ -1,23 +1,22 @@
-import axios from 'axios';
-import FormData from 'form-data';
 import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
 import puppeteer from 'puppeteer';
+import request from 'request';
 
 type NamedObject = Record<string, string | object>;
 
-type Body = string | FormData | undefined;
-
-type RequestParams = {
-  method: string;
+type RequestOptions = {
+  url: string;
+  method: 'GET' | 'POST' | 'PUT';
   headers: NamedObject;
-  body: Body;
+  body?: NamedObject;
+  formData?: NamedObject;
+  json: boolean;
 };
 
-const PROTOCOL = 'https';
-const HOST = 'bettyblocks.com';
+const URL = 'https://{IDENTIFIER}.bettyblocks.com{PATH}';
 
 class IDE {
   identifier: string;
@@ -28,29 +27,34 @@ class IDE {
 
   private page?: puppeteer.Page;
 
-  private requestParams: Record<string, RequestParams>;
+  private cookie: string;
 
   constructor(identifier: string) {
     this.identifier = identifier;
-    this.requestParams = {};
+    this.cookie = '';
   }
 
-  async get(requestPath: string): Promise<string | object | null> {
-    return this.request('GET', requestPath);
+  async get(
+    requestPath: string,
+    label?: string,
+  ): Promise<string | object | null> {
+    return this.request('GET', requestPath, undefined, label);
   }
 
   async post(
     requestPath: string,
     params: NamedObject,
+    label?: string,
   ): Promise<string | object | null> {
-    return this.request('POST', requestPath, params);
+    return this.request('POST', requestPath, params, label);
   }
 
   async put(
     requestPath: string,
     params: NamedObject,
+    label?: string,
   ): Promise<string | object | null> {
-    return this.request('PUT', requestPath, params);
+    return this.request('PUT', requestPath, params, label);
   }
 
   async close(): Promise<void> {
@@ -58,70 +62,57 @@ class IDE {
   }
 
   private async request(
-    method: 'GET' | 'PUT' | 'POST',
+    method: 'GET' | 'POST' | 'PUT',
     requestPath: string,
     params?: NamedObject,
+    label?: string,
   ): Promise<string | object | null> {
     await this.initializePage();
+
     if (!this.page) return null;
 
-    const url = `${PROTOCOL}://${this.identifier}.${HOST}/api/${requestPath}`;
-    const streams = Object.values(params || {}).filter(
-      value => value && value.toString().match(/^file:\/\//),
-    );
-    const headers: NamedObject = {};
+    const options: RequestOptions = {
+      method,
+      url: URL.replace('{IDENTIFIER}', this.identifier).replace(
+        '{PATH}',
+        `/api/${requestPath}`,
+      ),
+      headers: { Cookie: this.cookie },
+      json: false,
+    };
 
     if (method !== 'GET' && this.csrfToken) {
-      headers['x-csrf-token'] = this.csrfToken;
+      options.headers['x-csrf-token'] = this.csrfToken;
     }
-
-    if (params && streams.length) {
-      const cookies = await this.page.cookies();
-      const formData = new FormData();
-
-      Object.keys(params).forEach(name => {
-        const value = params[name];
-        const filePath = value.toString().split('file://')[1];
-        formData.append(name, filePath ? fs.createReadStream(filePath) : value);
-      });
-
-      await axios.post(url, formData, {
-        headers: {
-          Cookie: cookies
-            .map(({ name, value }) => `${name}=${value};`)
-            .join(' '),
-          ...headers,
-          ...formData.getHeaders(),
-        },
-      });
-
-      return 'OK';
-    }
-
-    const requestId = Math.random()
-      .toString(36)
-      .substr(2, 9);
-
-    let body: string | undefined;
 
     if (params) {
-      headers['x-requested-with'] = 'XMLHttpRequest';
-      headers['content-type'] = 'application/json';
-      body = JSON.stringify(params);
+      if (params.code) {
+        const code = fs.createReadStream(
+          (params.code as string).split('file://')[1],
+        );
+        options.formData = { code };
+      } else {
+        options.headers['x-requested-with'] = 'XMLHttpRequest';
+        options.body = params;
+        options.json = true;
+      }
     }
 
-    this.requestParams[requestId] = { method, headers, body };
+    if (label) console.log(label);
 
-    const response = await this.page.goto(`${url}?reqId=${requestId}`);
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+    const response = await new Promise<string | object>((resolve, reject) => {
+      request(options, (err, res, bod) => {
+        if (!err && res.statusCode < 400) {
+          const json = res.headers['content-type'] === 'application/json';
+          resolve(json && typeof bod === 'string' ? JSON.parse(bod) : bod);
+        } else {
+          reject(err || bod.replace(/<[^>]+?>/g, ''));
+        }
+      });
+    });
 
-    if (response) {
-      const responseText = await response.text();
-      const parseJson =
-        response.headers()['content-type'] === 'application/json';
-      return parseJson ? JSON.parse(responseText) : responseText;
-    }
-
-    return null;
+    return response;
   }
 
   private async initializePage(): Promise<void> {
@@ -130,29 +121,11 @@ class IDE {
       this.page = await this.browser.newPage();
 
       await this.ensureLogin();
-      await this.page.setRequestInterception(true);
-      const { requestParams } = this;
+      const cookies = await this.page.cookies();
 
-      this.page.on('request', (req: puppeteer.Request) => {
-        let overrides = {};
-        const [url, requestId] = req.url().split('?reqId=');
-
-        if (requestId) {
-          const reqParams = requestParams[requestId];
-          overrides = {
-            url,
-            method: reqParams.method,
-            postData: reqParams.body,
-            headers: {
-              ...req.headers(),
-              ...reqParams.headers,
-            },
-          };
-          delete requestParams[requestId];
-        }
-
-        req.continue(overrides);
-      });
+      this.cookie = cookies
+        .map(({ name, value }) => `${name}=${value};`)
+        .join(' ');
 
       this.csrfToken = await this.page.evaluate(() => {
         // eslint-disable-next-line no-eval
@@ -173,9 +146,11 @@ class IDE {
     }
 
     const cookies = config.cookies[this.identifier];
-
     if (cookies) await this.page.setCookie(...cookies);
-    await this.page.goto(`${PROTOCOL}://${this.identifier}.${HOST}`);
+
+    await this.page.goto(
+      URL.replace('{IDENTIFIER}', this.identifier).replace('{PATH}', ''),
+    );
 
     if (this.page.url().match(loginRegex)) {
       const { email, password } = await prompts([

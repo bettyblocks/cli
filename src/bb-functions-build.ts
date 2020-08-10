@@ -9,7 +9,7 @@ import program from 'commander';
 /* internal dependencies */
 
 import rootDir from './utils/rootDir';
-import withinFunctionsProject from './utils/withinFunctionsProject';
+import acquireFunctionsProject from './utils/acquireFunctionsProject';
 
 /* process arguments */
 
@@ -18,8 +18,13 @@ program.name('bb functions build').parse(process.argv);
 /* execute command */
 
 const workingDir = process.cwd();
+const identifier = acquireFunctionsProject(workingDir);
 
-withinFunctionsProject(workingDir, (identifier: string) => {
+console.log(
+  `Building ${identifier}.bettyblocks.com bundle (this can take a while) ...`,
+);
+
+new Promise((resolve): void => {
   const packerDir = path.join(rootDir(), 'assets', 'functions', 'packer');
   const buildDir = path.join(os.tmpdir(), identifier);
   const sourceSrc = path.join(workingDir, 'src');
@@ -45,13 +50,18 @@ withinFunctionsProject(workingDir, (identifier: string) => {
     };
 
     fs.writeFileSync(targetPackage, JSON.stringify(targetJson, null, 2));
-    console.log(`Building "${identifier}" custom functions bundle ...`);
 
     const build = spawn(`cd ${buildDir} && npm install && npm run build`, {
       shell: true,
     });
-    build.on('close', () => {
-      console.log('Done.');
-    });
+
+    build.on('close', resolve);
   });
-});
+})
+  .then(() => {
+    console.log('Done.');
+  })
+  .catch((err: NodeJS.ErrnoException) => {
+    console.log(`${err}\nAbort.`);
+    process.exit();
+  });

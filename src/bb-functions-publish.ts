@@ -12,15 +12,23 @@ import prompts from 'prompts';
 /* internal dependencies */
 
 import IDE from './utils/ide';
-import withinFunctionsProject from './utils/withinFunctionsProject';
+import acquireFunctionsProject from './utils/acquireFunctionsProject';
 
 /* process arguments */
 
-program.name('bb functions publish').parse(process.argv);
+program
+  .name('bb functions publish')
+  .option('-b, --bump', 'Bump the revision number.')
+  .option('-s, --skip', 'Skip building the custom functions bundle.')
+  .parse(process.argv);
+
+const bumpRevision = program.bump;
+const skipBuild = program.skip;
 
 /* execute command */
 
 const workingDir = process.cwd();
+const identifier = acquireFunctionsProject(workingDir);
 
 type NamedObject = Record<string, string | object>;
 
@@ -42,7 +50,6 @@ type CustomFunctions = CustomFunction[];
 type Action = {
   id: string;
   description: string;
-  // eslint-disable-next-line camelcase
   use_new_runtime: boolean;
 };
 
@@ -136,7 +143,7 @@ const resolveMissingFunction = async (
   return groomed;
 };
 
-const groomMetaData = async (identifier: string): Promise<MetaData> => {
+const groomMetaData = async (): Promise<MetaData> => {
   console.log('Grooming functions.json ...');
 
   const buildDir = path.join(os.tmpdir(), identifier);
@@ -171,24 +178,19 @@ const groomMetaData = async (identifier: string): Promise<MetaData> => {
   );
 
   fs.writeFileSync(functionsJsonFile, JSON.stringify(groomedMetaData, null, 2));
+
   return groomedMetaData;
 };
 
-const sleep = (milliseconds: number): Promise<void> => {
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
-};
-
 const publishFunctions = async (
-  identifier: string,
   metaData: MetaData,
-): Promise<void> => {
+): Promise<void | string | object | null> => {
   const ide = new IDE(identifier);
   const customFunctions = (await ide.get(
     'bootstrap/custom_functions',
   )) as CustomFunctions;
   const revision = customFunctions.reduce((rev, func) => {
-    return Math.max(rev, func.revision);
+    return Math.max(rev, func.revision) + (bumpRevision ? 1 : 0);
   }, 0);
 
   const ids: NamedObject = customFunctions.reduce(
@@ -199,9 +201,11 @@ const publishFunctions = async (
   let promises: Promise<void | string | object | null>[] = Object.keys(
     metaData,
   ).map(
-    async (name: string): Promise<void> => {
+    (name: string): Promise<string | object | null> => {
       const { returnType, inputVariables } = metaData[name];
       const id = ids[name];
+      const method = id ? 'put' : 'post';
+      const action = id ? 'Updating' : 'Creating';
       const params = {
         name,
         revision,
@@ -209,60 +213,74 @@ const publishFunctions = async (
         inputVariables,
       };
 
-      if (id) {
-        console.log(`Updating custom function "${name}" ...`);
-        await ide.put(`custom_functions/${id}`, { record: params });
-      } else {
-        console.log(`Creating custom function "${name}" ...`);
-        await ide.post('custom_functions/new', { record: params });
-      }
+      return ide[method](
+        `custom_functions/${id || 'new'}`,
+        { record: params },
+        `${action} custom function "${name}" ...`,
+      );
     },
   );
 
-  console.log(`Uploading "${revision}.js" ...`);
   const buildDir = path.join(os.tmpdir(), identifier);
   const customJsFile = path.join(buildDir, 'dist', 'custom.js');
 
-  await ide.post(`custom_functions/${revision}`, {
-    code: `file://${customJsFile}`,
-  });
-
   promises.push(
-    ide.post(`custom_functions/${revision}`, {
-      code: `file://${customJsFile}`,
-    }),
+    ide.post(
+      `custom_functions/${revision}`,
+      { code: `file://${customJsFile}` },
+      `Uploading "${revision}.js" ...`,
+    ),
   );
 
   const actions = (await ide.get('actions')) as Actions;
 
   promises = promises.concat(
     actions.map(
-      async ({ id, description, use_new_runtime }: Action): Promise<void> => {
+      ({
+        id,
+        description,
+        use_new_runtime,
+      }: Action): Promise<string | object | null> => {
         if (use_new_runtime) {
-          console.log(`Compiling action "${description}" ...`);
-          await ide.put(`actions/${id}`, { record: { description } });
+          return ide.put(
+            `actions/${id}`,
+            { record: { description } },
+            `Compiling action "${description}" ...`,
+          );
         }
+        return Promise.resolve(null);
       },
     ),
   );
 
-  await Promise.all(promises);
-  await sleep(400);
+  promises.push(
+    new Promise((resolve): void => {
+      resolve(ide.close());
+    }),
+  );
 
-  await ide.close();
+  return Promise.all(promises);
 };
 
-withinFunctionsProject(workingDir, (identifier: string): void => {
-  console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
+console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
 
-  console.log(`Bundling custom functions ...`);
-  const build = spawn('bb functions build', {
-    shell: true,
-  });
-
-  build.on('close', async () => {
-    const metaData = await groomMetaData(identifier);
-    await publishFunctions(identifier, metaData);
+new Promise((resolve): void => {
+  if (skipBuild) {
+    resolve();
+  } else {
+    console.log(`Building custom functions bundle (this can take a while) ...`);
+    const build = spawn('bb functions build', {
+      shell: true,
+    });
+    build.on('close', resolve);
+  }
+})
+  .then(groomMetaData)
+  .then(publishFunctions)
+  .then(() => {
     console.log('Done.');
+  })
+  .catch((err: NodeJS.ErrnoException) => {
+    console.log(`${err}\nAbort.`);
+    process.exit();
   });
-});
