@@ -36,7 +36,7 @@ const serveComponentSet = (options: ServeOptions): Promise<void> => {
             headers: [
               {
                 key: 'Access-Control-Allow-Origin',
-                value: response.headers.origin || '*',
+                value: '*',
               },
               {
                 key: 'Cache-Control',
