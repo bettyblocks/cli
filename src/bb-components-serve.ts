@@ -5,6 +5,7 @@ import program from 'commander';
 import { parseDir, parsePort } from './utils/arguments';
 import serveComponentSet from './utils/serveComponentSet';
 import { ServeOptions } from './types';
+import chalk from 'chalk';
 
 /* internal dependencies */
 
@@ -30,4 +31,16 @@ const options: ServeOptions = {
 };
 
 /* execute command */
-serveComponentSet(options);
+serveComponentSet(options).then(
+  () => {
+    const scheme = options.ssl ? 'https' : 'http';
+    const url = `${scheme}://${options.host}:${options.port}`;
+
+    console.info(chalk.green(`Serving the component set at ${url}`));
+  },
+  error => {
+    console.error(chalk.red(`\n${error}\n`));
+    process.exit(1);
+  },
+);
+
