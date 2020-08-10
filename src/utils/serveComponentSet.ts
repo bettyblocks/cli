@@ -1,5 +1,5 @@
-import { IncomingMessage, ServerResponse } from 'http';
-import { createServer, ServerOptions } from 'https';
+import { createServer as createHttpServer, IncomingMessage, ServerResponse } from 'http';
+import { createServer as createHttpsServer, ServerOptions } from 'https';
 import { existsSync } from 'fs';
 import handler from 'serve-handler';
 import * as fs from 'fs';
@@ -9,6 +9,7 @@ import { ServeOptions } from '../types';
 const serveComponentSet = (options: ServeOptions): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
     const serverOptions: ServerOptions = {};
+    const createServer = options.ssl ? createHttpsServer : createHttpServer;
 
     if (options.ssl) {
       if (!fs.existsSync(options.sslKey)) {
@@ -23,28 +24,30 @@ const serveComponentSet = (options: ServeOptions): Promise<void> => {
       serverOptions.cert = fs.readFileSync(options.sslCert);
     }
 
-    createServer(
-      serverOptions,
-      (response: IncomingMessage, request: ServerResponse): Promise<void> =>
-        handler(response, request, {
-          public: `${options.rootDir}/dist`,
-          headers: [
-            {
-              source: '**/*.@(json)',
-              headers: [
-                {
-                  key: 'Access-Control-Allow-Origin',
-                  value: response.headers.origin || '*',
-                },
-                {
-                  key: 'Cache-Control',
-                  value: 'no-cache ',
-                },
-              ],
-            },
-          ],
-        }),
-    )
+    const listener = (
+      response: IncomingMessage,
+      request: ServerResponse,
+    ): Promise<void> =>
+      handler(response, request, {
+        public: `${options.rootDir}/dist`,
+        headers: [
+          {
+            source: '**/*.@(json)',
+            headers: [
+              {
+                key: 'Access-Control-Allow-Origin',
+                value: response.headers.origin || '*',
+              },
+              {
+                key: 'Cache-Control',
+                value: 'no-cache ',
+              },
+            ],
+          },
+        ],
+      });
+
+    createServer(serverOptions, listener)
       .on('error', error => reject(error.message))
       .listen(options.port, options.host, () => resolve());
   });
