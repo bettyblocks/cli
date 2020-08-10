@@ -1,27 +1,30 @@
-import { createServer as createHttpServer, IncomingMessage, ServerResponse } from 'http';
+import {
+  createServer as createHttpServer,
+  IncomingMessage,
+  ServerResponse,
+} from 'http';
 import { createServer as createHttpsServer, ServerOptions } from 'https';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import handler from 'serve-handler';
-import * as fs from 'fs';
 import { checkUpdateAvailableCLI } from './checkUpdateAvailable';
 import { ServeOptions } from '../types';
 
 const serveComponentSet = (options: ServeOptions): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<void>((resolve, reject): void => {
     const serverOptions: ServerOptions = {};
     const createServer = options.ssl ? createHttpsServer : createHttpServer;
 
     if (options.ssl) {
-      if (!fs.existsSync(options.sslKey)) {
+      if (!existsSync(options.sslKey)) {
         throw new Error(`Private key '${options.sslKey}' does not exists.`);
       }
 
-      if (!fs.existsSync(options.sslCert)) {
+      if (!existsSync(options.sslCert)) {
         throw new Error(`Certificate '${options.sslCert}' does not exists.`);
       }
 
-      serverOptions.key = fs.readFileSync(options.sslKey);
-      serverOptions.cert = fs.readFileSync(options.sslCert);
+      serverOptions.key = readFileSync(options.sslKey);
+      serverOptions.cert = readFileSync(options.sslCert);
     }
 
     const listener = (
