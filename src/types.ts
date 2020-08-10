@@ -140,3 +140,12 @@ export interface Versions {
   remoteVersionCLI: string;
   remoteVersionPreview: string;
 }
+
+export interface ServeOptions {
+  rootDir: string;
+  host: string;
+  port: number;
+  ssl: boolean;
+  sslCert: string;
+  sslKey: string;
+}
