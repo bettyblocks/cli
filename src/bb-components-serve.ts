@@ -1,11 +1,10 @@
 /* npm dependencies */
 
+import chalk from 'chalk';
 import program from 'commander';
-
 import { parseDir, parsePort } from './utils/arguments';
 import serveComponentSet from './utils/serveComponentSet';
 import { ServeOptions } from './types';
-import chalk from 'chalk';
 
 /* internal dependencies */
 
@@ -14,7 +13,12 @@ import chalk from 'chalk';
 program
   .usage('[path]')
   .name('bb components serve')
-  .option('-p, --port [port]', 'Port to listen on.', value => parsePort(value, 5001), 5001)
+  .option(
+    '-p, --port [port]',
+    'Port to listen on.',
+    value => parsePort(value, 5001),
+    5001,
+  )
   .option('--host [host]', 'Host to listen on.', 'localhost')
   .option('--ssl', 'Serve using HTTPS.', false)
   .option('--ssl-key [ssl-key]', 'SSL certificate to use for serving HTTPS.')
@@ -43,4 +47,3 @@ serveComponentSet(options).then(
     process.exit(1);
   },
 );
-
