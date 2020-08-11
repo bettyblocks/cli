@@ -209,8 +209,8 @@ const publishFunctions = async (
       const params = {
         name,
         revision,
-        returnType,
-        inputVariables,
+        return_type: returnType,
+        input_variables: inputVariables,
       };
 
       return ide[method](
