@@ -1,3 +1,10 @@
+## [23.9.1](https://github.com/bettyblocks/cli/compare/v23.9.0...v23.9.1) (2020-08-11)
+
+
+### Bug Fixes
+
+* example parameters to object ([94c1a41](https://github.com/bettyblocks/cli/commit/94c1a41))
+
 # [23.9.0](https://github.com/bettyblocks/cli/compare/v23.8.0...v23.9.0) (2020-08-03)
 
 
