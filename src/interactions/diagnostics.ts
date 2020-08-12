@@ -29,12 +29,8 @@ export default function(filePath: string): void {
   config.strict = true;
 
   const program = createProgram([filePath], config);
-  const emitResult = program.emit();
 
-  const diagnostics = [
-    ...getPreEmitDiagnostics(program),
-    ...emitResult.diagnostics,
-  ];
+  const diagnostics = [...getPreEmitDiagnostics(program)];
 
   if (diagnostics.length > 0) {
     reportDiagnostics(diagnostics);
