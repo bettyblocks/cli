@@ -20,7 +20,7 @@
   "scripts": {
     "start": "bb components serve",
     "build": "bb components build",
-    "dev": "nodemon --watch src --exec \"rimraf dist && bb components build && bb components serve\"",
+    "dev": "nodemon --watch src --ignore 'src/interactions/*.js' --exec \"rimraf dist && bb components build && bb components serve\"",
     "preview": "bb components preview",
     "lint": "eslint --ext js ./src"
   },
