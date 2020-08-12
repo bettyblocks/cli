@@ -1,3 +1,10 @@
+## [23.9.2](https://github.com/bettyblocks/cli/compare/v23.9.1...v23.9.2) (2020-08-12)
+
+
+### Bug Fixes
+
+* exclude interactions compile and no longer emit program. fixes [#145](https://github.com/bettyblocks/cli/issues/145) ([#147](https://github.com/bettyblocks/cli/issues/147)) ([1d126a7](https://github.com/bettyblocks/cli/commit/1d126a7))
+
 ## [23.9.1](https://github.com/bettyblocks/cli/compare/v23.9.0...v23.9.1) (2020-08-11)
 
 
