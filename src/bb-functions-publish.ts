@@ -36,6 +36,7 @@ type NamedObject = Record<string, string | object>;
 
 type MetaData = {
   [name: string]: {
+    replace?: string;
     returnType: string;
     inputVariables: NamedObject;
   };
@@ -97,6 +98,8 @@ const resolveMissingFunction = async (
 
     // eslint-disable-next-line no-param-reassign
     groomed[name] = metaData[replacedFunction];
+    // eslint-disable-next-line no-param-reassign
+    groomed[name].replace = replacedFunction;
     // eslint-disable-next-line no-param-reassign
     delete metaData[replacedFunction];
   } else {
@@ -188,9 +191,11 @@ const publishFunctions = async (
   metaData: MetaData,
 ): Promise<void | string | object | null> => {
   const ide = new IDE(identifier);
+
   const customFunctions = (await ide.get(
     'bootstrap/custom_functions',
   )) as CustomFunctions;
+
   const revision = customFunctions.reduce((rev, func) => {
     return Math.max(rev, func.revision) + (bumpRevision ? 1 : 0);
   }, 0);
@@ -204,8 +209,8 @@ const publishFunctions = async (
     metaData,
   ).map(
     (name: string): Promise<string | object | null> => {
-      const { returnType, inputVariables } = metaData[name];
-      const id = ids[name];
+      const { replace, returnType, inputVariables } = metaData[name];
+      const id = ids[replace || name];
       const method = id ? 'put' : 'post';
       const action = id ? 'Updating' : 'Creating';
       const params = {
@@ -218,7 +223,7 @@ const publishFunctions = async (
       return ide[method](
         `custom_functions/${id || 'new'}`,
         { record: params },
-        `${action} custom function "${name}" ...`,
+        `${action} custom function "${replace || name}" ...`,
       );
     },
   );
@@ -269,6 +274,17 @@ const publishFunctions = async (
   );
 };
 
+const cleanMetaData = async (): Promise<void> => {
+  const functionsJsonFile = path.join(workingDir, 'functions.json');
+  const metaData = fs.readJsonSync(functionsJsonFile);
+
+  Object.keys(metaData).forEach(name => {
+    delete metaData[name].replace;
+  });
+
+  fs.writeFileSync(functionsJsonFile, JSON.stringify(metaData, null, 2));
+};
+
 console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
 
 new Promise((resolve): void => {
@@ -289,6 +305,7 @@ new Promise((resolve): void => {
 })
   .then(groomMetaData)
   .then(publishFunctions)
+  .then(cleanMetaData)
   .then(() => {
     console.log('Done.');
   })
