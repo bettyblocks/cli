@@ -1,4 +1,5 @@
 import fs from 'fs-extra';
+import ora from 'ora';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
@@ -98,15 +99,21 @@ class IDE {
       }
     }
 
-    if (label) console.log(label);
+    let spinner: ora.Ora;
+
+    if (label) {
+      spinner = ora(label).start();
+    }
 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const response = await new Promise<string | object>((resolve, reject) => {
       request(options, (err, res, bod) => {
         if (!err && res.statusCode < 400) {
           const json = res.headers['content-type'] === 'application/json';
+          if (spinner) spinner.succeed();
           resolve(json && typeof bod === 'string' ? JSON.parse(bod) : bod);
         } else {
+          if (spinner) spinner.fail();
           reject(err || bod.replace(/<[^>]+?>/g, ''));
         }
       });

@@ -4,10 +4,12 @@
 
 import { spawn } from 'child_process';
 import fs from 'fs-extra';
+import ora from 'ora';
 import os from 'os';
 import path from 'path';
 import program from 'commander';
 import prompts from 'prompts';
+import sequential from 'promise-sequential';
 
 /* internal dependencies */
 
@@ -259,7 +261,12 @@ const publishFunctions = async (
     }),
   );
 
-  return Promise.all(promises);
+  return sequential(
+    promises.map(p => {
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      return () => p;
+    }),
+  );
 };
 
 console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
@@ -268,11 +275,16 @@ new Promise((resolve): void => {
   if (skipBuild) {
     resolve();
   } else {
-    console.log(`Building custom functions bundle (this can take a while) ...`);
+    const building = ora(
+      `Building custom functions bundle (this can take a while) ...`,
+    ).start();
     const build = spawn('bb functions build', {
       shell: true,
     });
-    build.on('close', resolve);
+    build.on('close', () => {
+      building.succeed();
+      resolve();
+    });
   }
 })
   .then(groomMetaData)
