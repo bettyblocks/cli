@@ -1,3 +1,45 @@
+## [23.9.2](https://github.com/bettyblocks/cli/compare/v23.9.1...v23.9.2) (2020-08-12)
+
+
+### Bug Fixes
+
+* exclude interactions compile and no longer emit program. fixes [#145](https://github.com/bettyblocks/cli/issues/145) ([#147](https://github.com/bettyblocks/cli/issues/147)) ([1d126a7](https://github.com/bettyblocks/cli/commit/1d126a7))
+
+## [23.9.1](https://github.com/bettyblocks/cli/compare/v23.9.0...v23.9.1) (2020-08-11)
+
+
+### Bug Fixes
+
+* example parameters to object ([94c1a41](https://github.com/bettyblocks/cli/commit/94c1a41))
+
+# [23.9.0](https://github.com/bettyblocks/cli/compare/v23.8.0...v23.9.0) (2020-08-03)
+
+
+### Features
+
+* adds strict programmatically ([#142](https://github.com/bettyblocks/cli/issues/142)) ([6d4f0e1](https://github.com/bettyblocks/cli/commit/6d4f0e1))
+
+# [23.8.0](https://github.com/bettyblocks/cli/compare/v23.7.0...v23.8.0) (2020-08-03)
+
+
+### Features
+
+* add diagnostic reporting for interactions pndjs 1337 ([#141](https://github.com/bettyblocks/cli/issues/141)) ([8adaa60](https://github.com/bettyblocks/cli/commit/8adaa60))
+
+# [23.7.0](https://github.com/bettyblocks/cli/compare/v23.6.0...v23.7.0) (2020-07-31)
+
+
+### Features
+
+* global interactions type object ([679917d](https://github.com/bettyblocks/cli/commit/679917d))
+
+# [23.6.0](https://github.com/bettyblocks/cli/compare/v23.5.0...v23.6.0) (2020-07-29)
+
+
+### Features
+
+* allow option type AUTHENTICATION_PROFILE ([89c1c32](https://github.com/bettyblocks/cli/commit/89c1c32))
+
 # [23.5.0](https://github.com/bettyblocks/cli/compare/v23.4.0...v23.5.0) (2020-06-11)
 
 
