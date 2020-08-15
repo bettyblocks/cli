@@ -8,7 +8,7 @@ async function allUsers() {
     }
   }`);
 
-  return result;
+  return results;
 }
 
 export { allUsers };
