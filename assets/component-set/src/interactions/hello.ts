@@ -1,3 +1,3 @@
-function hello(name: string): string {
+function hello({ name }: { name: string }): string {
   return `Hello ${name || 'World'}!`;
 }
