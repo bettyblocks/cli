@@ -1,3 +1,10 @@
+## [23.9.3](https://github.com/bettyblocks/cli/compare/v23.9.2...v23.9.3) (2020-08-18)
+
+
+### Bug Fixes
+
+* resolve vulnerability warnings ([#149](https://github.com/bettyblocks/cli/issues/149)) ([6da7ea4](https://github.com/bettyblocks/cli/commit/6da7ea4))
+
 ## [23.9.2](https://github.com/bettyblocks/cli/compare/v23.9.1...v23.9.2) (2020-08-12)
 
 
