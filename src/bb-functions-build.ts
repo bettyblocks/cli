@@ -55,6 +55,8 @@ new Promise((resolve): void => {
       shell: true,
     });
 
+    build.stdout.pipe(process.stdout);
+    build.stderr.pipe(process.stderr);
     build.on('close', resolve);
   });
 })
