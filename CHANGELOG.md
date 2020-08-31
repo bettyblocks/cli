@@ -1,3 +1,10 @@
+# [23.10.0](https://github.com/bettyblocks/cli/compare/v23.9.3...v23.10.0) (2020-08-31)
+
+
+### Features
+
+* check if value of options with type FILTER is an object ([dbfa51e](https://github.com/bettyblocks/cli/commit/dbfa51e))
+
 ## [23.9.3](https://github.com/bettyblocks/cli/compare/v23.9.2...v23.9.3) (2020-08-18)
 
 
