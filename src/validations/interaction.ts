@@ -1,4 +1,4 @@
-import Joi, { ObjectSchema, ValidationResult } from '@hapi/joi';
+import Joi, { ObjectSchema, ValidationResult } from 'joi';
 import chalk from 'chalk';
 
 import { Interaction } from '../types';
