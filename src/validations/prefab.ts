@@ -35,6 +35,7 @@ const componentReferenceSchema = Joi.object({
               value: Joi.string(),
             }),
           ),
+          allowedTypes: Joi.array().items(Joi.string()),
           as: Joi.string(),
           component: Joi.string(),
           condition: Joi.object({
