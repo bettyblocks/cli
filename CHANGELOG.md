@@ -1,3 +1,10 @@
+# [23.11.0](https://github.com/bettyblocks/cli/compare/v23.10.0...v23.11.0) (2020-09-01)
+
+
+### Features
+
+* add custom model attribute to build validation ([a68af9c](https://github.com/bettyblocks/cli/commit/a68af9c))
+
 # [23.10.0](https://github.com/bettyblocks/cli/compare/v23.9.3...v23.10.0) (2020-08-31)
 
 
