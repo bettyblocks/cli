@@ -100,6 +100,7 @@ export const OPTIONS = [
   'COLOR',
   'CUSTOM',
   'CUSTOM_MODEL',
+  'CUSTOM_MODEL_ATTRIBUTE',
   'DROPDOWN',
   'ENDPOINT',
   'FILTER',
