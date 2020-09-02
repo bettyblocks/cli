@@ -1,3 +1,19 @@
+# [23.12.0](https://github.com/bettyblocks/cli/compare/v23.11.0...v23.12.0) (2020-09-02)
+
+
+### Bug Fixes
+
+* * is sufficient because there is no auth ([9247b63](https://github.com/bettyblocks/cli/commit/9247b63))
+* eslint warnings ([e4d6978](https://github.com/bettyblocks/cli/commit/e4d6978))
+* use correct createserver for http/https ([8c06bc8](https://github.com/bettyblocks/cli/commit/8c06bc8))
+
+
+### Features
+
+* add support for https and different hostname ([d5d8bda](https://github.com/bettyblocks/cli/commit/d5d8bda))
+* define serveoptions type for serve arguments ([29b57c4](https://github.com/bettyblocks/cli/commit/29b57c4))
+* support https, proper error handling ([0551bd1](https://github.com/bettyblocks/cli/commit/0551bd1))
+
 # [23.11.0](https://github.com/bettyblocks/cli/compare/v23.10.0...v23.11.0) (2020-09-01)
 
 
