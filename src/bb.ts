@@ -16,6 +16,7 @@ const { version }: { version: string } = require('../package.json');
 
 const availableCommands: CommandBB[] = [
   'components',
+  'functions',
   'interactions',
   'bundle',
   'help',
@@ -25,10 +26,11 @@ const availableCommands: CommandBB[] = [
 
 program
   .description('Betty Blocks CLI')
-  .version(version)
-  .command('components <cmd>', 'manage your component sets')
-  .command('interactions <cmd>', 'manage your interactions')
-  .command('bundle <cmd>', 'manage your vendor bundle')
+  .version(version, '-v, --version')
+  .command('components [cmd]', 'manage your component sets')
+  .command('functions [cmd]', 'manage your custom functions')
+  .command('interactions [cmd]', 'manage your interactions')
+  .command('bundle [cmd]', 'manage your vendor bundle')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandBB)) {
       throw new Error(chalk.red(`\nInvalid command: ${command}\n`));

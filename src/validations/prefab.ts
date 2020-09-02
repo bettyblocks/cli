@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import Joi, { ValidationResult } from '@hapi/joi';
+import Joi, { ValidationResult } from 'joi';
 import chalk from 'chalk';
 
 import { Prefab, ComponentReference } from '../types';
@@ -18,7 +18,9 @@ const componentReferenceSchema = Joi.object({
   options: Joi.array()
     .items(
       Joi.object({
-        value: Joi.any().required(),
+        value: Joi.any()
+          .when('type', { is: 'FILTER', then: Joi.object() })
+          .required(),
         label: Joi.string().required(),
         key: Joi.string().required(),
         // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
@@ -33,6 +35,7 @@ const componentReferenceSchema = Joi.object({
               value: Joi.string(),
             }),
           ),
+          allowedTypes: Joi.array().items(Joi.string()),
           as: Joi.string(),
           component: Joi.string(),
           condition: Joi.object({
@@ -80,7 +83,7 @@ const schema = Joi.object({
     .required(),
   category: Joi.string().required(),
   structure: Joi.array()
-    .items(validateComponentReference)
+    .items(Joi.custom(validateComponentReference))
     .required(),
 });
 

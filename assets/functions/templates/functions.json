@@ -1,0 +1,11 @@
+{
+  "allUsers": {
+    "returnType": "string"
+  },
+  "sayHello": {
+    "returnType": "string",
+    "inputVariables": {
+      "name": "string"
+    }
+  }
+}

@@ -1,3 +1,24 @@
+# [23.11.0](https://github.com/bettyblocks/cli/compare/v23.10.0...v23.11.0) (2020-09-01)
+
+
+### Features
+
+* add custom model attribute to build validation ([a68af9c](https://github.com/bettyblocks/cli/commit/a68af9c))
+
+# [23.10.0](https://github.com/bettyblocks/cli/compare/v23.9.3...v23.10.0) (2020-08-31)
+
+
+### Features
+
+* check if value of options with type FILTER is an object ([dbfa51e](https://github.com/bettyblocks/cli/commit/dbfa51e))
+
+## [23.9.3](https://github.com/bettyblocks/cli/compare/v23.9.2...v23.9.3) (2020-08-18)
+
+
+### Bug Fixes
+
+* resolve vulnerability warnings ([#149](https://github.com/bettyblocks/cli/issues/149)) ([6da7ea4](https://github.com/bettyblocks/cli/commit/6da7ea4))
+
 ## [23.9.2](https://github.com/bettyblocks/cli/compare/v23.9.1...v23.9.2) (2020-08-12)
 
 
