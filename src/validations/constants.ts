@@ -31,6 +31,7 @@ export const ICONS = [
   'DataTableRow',
   'DatePickerIcon',
   'DateTimePickerIcon',
+  'DecimalInputIcon',
   'DefinitionListIcon',
   'DialogIcon',
   'DrawerIcon',
