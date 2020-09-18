@@ -1,3 +1,10 @@
+# [23.13.0](https://github.com/bettyblocks/cli/compare/v23.12.0...v23.13.0) (2020-09-18)
+
+
+### Features
+
+* add DecimalInputIcon ([#154](https://github.com/bettyblocks/cli/issues/154)) ([d0b76a1](https://github.com/bettyblocks/cli/commit/d0b76a1))
+
 # [23.12.0](https://github.com/bettyblocks/cli/compare/v23.11.0...v23.12.0) (2020-09-02)
 
 
