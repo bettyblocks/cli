@@ -96,6 +96,7 @@ export const ICONS = [
 export const OPTIONS = [
   'ACTION',
   'ACTION_INPUT',
+  'ACTION_PROPERTIES',
   'AUTHENTICATION_PROFILE',
   'BUTTONGROUP',
   'COLOR',
