@@ -1,3 +1,10 @@
+# [23.15.0](https://github.com/bettyblocks/cli/compare/v23.14.0...v23.15.0) (2020-10-02)
+
+
+### Features
+
+* allow actionProperties as an option ([#156](https://github.com/bettyblocks/cli/issues/156)) ([746e84c](https://github.com/bettyblocks/cli/commit/746e84c))
+
 # [23.14.0](https://github.com/bettyblocks/cli/compare/v23.13.0...v23.14.0) (2020-09-22)
 
 
