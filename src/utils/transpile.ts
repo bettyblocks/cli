@@ -3,11 +3,11 @@ import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import { stringLiteral, File } from '@babel/types';
 
-const generateInnerCode: (ast: File) => void = (ast: File): void => {
+const generateInnerCode = (ast: File, keys: string[]): void => {
   traverse(ast, {
     // tslint:disable-next-line: function-name
     ObjectProperty(path) {
-      if (['jsx', 'styles'].includes(path.node.key.name)) {
+      if (keys.includes(path.node.key.name)) {
         const value: string = generate(path.node.value).code;
 
         // Reassigningment is how this kind of traversal works
@@ -18,12 +18,12 @@ const generateInnerCode: (ast: File) => void = (ast: File): void => {
   });
 };
 
-export default (code: string): string => {
+export default (code: string, keys: string[]): string => {
   const ast: File = parse(code, {
     plugins: ['jsx'],
   });
 
-  generateInnerCode(ast);
+  generateInnerCode(ast, keys);
 
   return generate(ast).code;
 };

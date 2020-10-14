@@ -55,7 +55,9 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
         const compatibility = extractComponentCompatibility(code);
 
         // eslint-disable-next-line no-new-func
-        const transpiledFunction = Function(`return ${transpile(code)}`)();
+        const transpiledFunction = Function(
+          `return ${transpile(code, ['jsx', 'styles'])}`,
+        )();
 
         if (!transpiledFunction) {
           throw new Error("Component doesn't return anything");
@@ -90,7 +92,9 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
         // eslint-disable-next-line no-new-func
-        const transpiledFunction = Function(`return ${code}`)();
+        const transpiledFunction = Function(
+          `return ${transpile(code, ['beforeCreate'])}`,
+        )();
 
         if (!transpiledFunction) {
           throw new Error("Prefab doesn't return anything");

@@ -82,6 +82,7 @@ const schema = Joi.object({
     .valid(...ICONS)
     .required(),
   category: Joi.string().required(),
+  beforeCreate: Joi.any(),
   structure: Joi.array()
     .items(Joi.custom(validateComponentReference))
     .required(),

@@ -132,9 +132,10 @@ export interface Option {
 export type Orientation = 'VERTICAL' | 'HORIZONTAL';
 
 export interface Prefab {
+  beforeCreate?: string;
+  category: Category;
   name: string;
   icon: Icon;
-  category: Category;
   structure: ComponentReference[];
 }
 
