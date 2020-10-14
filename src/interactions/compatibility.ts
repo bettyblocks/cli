@@ -251,8 +251,9 @@ export default (code: string): Interaction => {
     transformers: { before: [compatibilityTransformer()] },
   });
 
-  const { length } = outputText;
-  const interaction = JSON.parse(outputText.slice(1, length - 3));
+  const interaction = JSON.parse(
+    outputText.replace(/^[^{]+/, '').replace(/[^}]+$/, ''),
+  );
 
   if (isInteraction(interaction)) {
     return interaction;

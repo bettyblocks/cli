@@ -117,8 +117,9 @@ export default (code: string): ComponentCompatibility => {
     transformers: { before: [compatibilityTransformer()] },
   });
 
-  const { length } = outputText;
-  const component = JSON.parse(outputText.slice(1, length - 3));
+  const component = JSON.parse(
+    outputText.replace(/^[^{]+/, '').replace(/[^}]+$/, ''),
+  );
 
   if (isComponentCompatibility(component)) {
     return component;
