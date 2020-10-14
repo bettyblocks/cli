@@ -1,3 +1,10 @@
+# [23.16.0](https://github.com/bettyblocks/cli/compare/v23.15.0...v23.16.0) (2020-10-14)
+
+
+### Features
+
+* introduce beforeCreate hook for prefab ([e4aa1ed](https://github.com/bettyblocks/cli/commit/e4aa1ed))
+
 # [23.15.0](https://github.com/bettyblocks/cli/compare/v23.14.0...v23.15.0) (2020-10-02)
 
 
