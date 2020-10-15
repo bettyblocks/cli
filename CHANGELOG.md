@@ -1,3 +1,10 @@
+## [23.16.1](https://github.com/bettyblocks/cli/compare/v23.16.0...v23.16.1) (2020-10-15)
+
+
+### Bug Fixes
+
+* windows support with building json ([10e036b](https://github.com/bettyblocks/cli/commit/10e036b))
+
 # [23.16.0](https://github.com/bettyblocks/cli/compare/v23.15.0...v23.16.0) (2020-10-14)
 
 
