@@ -79,6 +79,7 @@ export const ICONS = [
   'RowColumnIcon',
   'SelectIcon',
   'SidebarLeftIcon',
+  'SnackbarIcon',
   'StepIcon',
   'StepperIcon',
   'SubmitButtonIcon',
