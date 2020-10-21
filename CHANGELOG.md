@@ -1,3 +1,10 @@
+# [23.17.0](https://github.com/bettyblocks/cli/compare/v23.16.1...v23.17.0) (2020-10-21)
+
+
+### Features
+
+* add snackbar icon ([bd9f322](https://github.com/bettyblocks/cli/commit/bd9f322))
+
 ## [23.16.1](https://github.com/bettyblocks/cli/compare/v23.16.0...v23.16.1) (2020-10-15)
 
 
