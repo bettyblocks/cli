@@ -119,6 +119,7 @@ export const OPTIONS = [
   'TOGGLE',
   'UNIT',
   'VARIABLE',
+  'VISIBILITY',
 ];
 
 export const CONDITION_TYPE = ['HIDE', 'SHOW'];
