@@ -11,4 +11,4 @@ async function allUsers() {
   return allUser.results;
 }
 
-export { allUsers };
+export default allUsers;
