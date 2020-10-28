@@ -1,3 +1,10 @@
+# [23.18.0](https://github.com/bettyblocks/cli/compare/v23.17.0...v23.18.0) (2020-10-28)
+
+
+### Features
+
+* add visibility option type ([#162](https://github.com/bettyblocks/cli/issues/162)) ([a8c9113](https://github.com/bettyblocks/cli/commit/a8c9113))
+
 # [23.17.0](https://github.com/bettyblocks/cli/compare/v23.16.1...v23.17.0) (2020-10-21)
 
 
