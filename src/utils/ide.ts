@@ -50,7 +50,7 @@ class IDE {
         webhead: WebheadInstance,
       ) => {
         if (!session.csrfToken) {
-          const match = (webhead.text() || '').match(/Betty\.CSRF = '(.*?)'/);
+          const match = webhead.text().match(/Betty\.CSRF = '(.*?)'/);
           if (match) {
             const [, csrfToken] = match;
             session.csrfToken = csrfToken;
