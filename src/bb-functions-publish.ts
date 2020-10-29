@@ -195,9 +195,9 @@ const publishFunctions = async (
     'bootstrap/custom_functions',
   )) as CustomFunctions;
 
-  const revision = customFunctions.reduce((rev, func) => {
-    return Math.max(rev, func.revision) + (bumpRevision ? 1 : 0);
-  }, 0);
+  const revision =
+    customFunctions.reduce((rev, func) => Math.max(rev, func.revision), 0) +
+    (bumpRevision ? 1 : 0);
 
   const ids: NamedObject = customFunctions.reduce(
     (map, { id, name }) => ({ ...map, [name]: id }),
