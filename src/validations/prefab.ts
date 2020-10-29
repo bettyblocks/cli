@@ -10,6 +10,7 @@ import {
   CONDITION_TYPE,
   COMPARATORS,
   MODAL_TYPE,
+  CONFIGURATION_AS,
 } from './constants';
 import { findDuplicates } from '../utils/validation';
 
@@ -36,7 +37,7 @@ const componentReferenceSchema = Joi.object({
             }),
           ),
           allowedTypes: Joi.array().items(Joi.string()),
-          as: Joi.string(),
+          as: Joi.string().valid(...CONFIGURATION_AS),
           component: Joi.string(),
           condition: Joi.object({
             // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
