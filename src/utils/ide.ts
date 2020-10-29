@@ -112,31 +112,54 @@ class IDE {
 
     if (this.webhead.text().match('redirect_location')) {
       await this.webhead.get('/login');
-
-      const config = fs.readJsonSync(this.configFile);
-      const { email, password } = await prompts([
-        {
-          type: 'text',
-          name: 'email',
-          message: 'Fill in your e-mail address',
-          initial: config.email,
-        },
-        {
-          type: 'password',
-          name: 'password',
-          message: 'Fill in your password',
-        },
-      ]);
-
-      config.email = email;
-      fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
-
-      await this.webhead.submit('form', {
-        username: email,
-        password,
-      });
     }
 
+    const entireCredentials = async (): Promise<void> => {
+      if (this.webhead.$('form [name="username"]').length) {
+        const config = fs.readJsonSync(this.configFile);
+        const { email, password } = await prompts([
+          {
+            type: 'text',
+            name: 'email',
+            message: 'Fill in your e-mail address',
+            initial: config.email,
+          },
+          {
+            type: 'password',
+            name: 'password',
+            message: 'Fill in your password',
+          },
+        ]);
+
+        config.email = email;
+        fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
+
+        await this.webhead.submit('form', {
+          username: email,
+          password,
+        });
+
+        await entireCredentials();
+      }
+    };
+
+    const entire2FA = async (): Promise<void> => {
+      if (this.webhead.$('form [name="otp"]').length) {
+        const { otp } = await prompts([
+          {
+            type: 'text',
+            name: 'otp',
+            message: 'Fill in your 2FA code',
+          },
+        ]);
+
+        await this.webhead.submit('form', { otp });
+        await entire2FA();
+      }
+    };
+
+    await entireCredentials();
+    await entire2FA();
     this.loggedIn = true;
   }
 }

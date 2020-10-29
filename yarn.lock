@@ -1173,6 +1173,13 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/cheerio@^0.22.22":
+  version "0.22.22"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.22.tgz#ae71cf4ca59b8bbaf34c99af7a5d6c8894988f5f"
+  integrity sha512-05DYX4zU96IBfZFY+t3Mh88nlwSMtmmzSYaQkKN48T495VV1dkHSah6qYyDTN5ngaS0i0VonH37m+RuzSM0YiA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.npmjs.org/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -10534,11 +10541,12 @@ wcwidth@^1.0.0, wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-webhead@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/webhead/-/webhead-1.0.2.tgz#764276c3b6bea2f7c446de9b685d4f60c972f6fb"
-  integrity sha512-gv6uLDAAFaoOb+ITP2EckMjklwwTOZIMWpOdt/EYCsmzdzpPNGSnt/uIENwhnmPbxS79izaEokXfa/gxWXn+AQ==
+webhead@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/webhead/-/webhead-1.0.3.tgz#57c9c119253e9ec929c371164aa2b34af0d8181f"
+  integrity sha512-zXzoSYHgnfHpBvO5GHz/alSaIMRrOhZ9XO+kXKKYkSZbdzKt7sLvDllmanV704gkD31ds21NLVfJRFJwDCQKzQ==
   dependencies:
+    "@types/cheerio" "^0.22.22"
     cheerio "^1.0.0-rc.3"
     fs-extra "^9.0.1"
     jquery-param "^1.1.3"
