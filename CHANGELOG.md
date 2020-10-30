@@ -1,3 +1,10 @@
+## [23.18.1](https://github.com/bettyblocks/cli/compare/v23.18.0...v23.18.1) (2020-10-30)
+
+
+### Bug Fixes
+
+* pushing custom code art 2504 ([#161](https://github.com/bettyblocks/cli/issues/161)) ([27f67b7](https://github.com/bettyblocks/cli/commit/27f67b7))
+
 # [23.18.0](https://github.com/bettyblocks/cli/compare/v23.17.0...v23.18.0) (2020-10-28)
 
 
