@@ -10,4 +10,4 @@ async function sayHello() {
   }
 }
 
-export { sayHello };
+export default sayHello;

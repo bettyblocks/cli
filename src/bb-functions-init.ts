@@ -34,7 +34,18 @@ const targetDir = path.join(workingDir, identifier);
 fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
   if (err && err.code === 'ENOENT') {
     const sourceDir = path.join(rootDir(), 'assets', 'functions', 'templates');
+
     fs.copySync(sourceDir, targetDir);
+    fs.copySync(
+      path.join(
+        rootDir(),
+        'assets',
+        'functions',
+        'packer',
+        'webpack.config.js',
+      ),
+      path.join(targetDir, 'webpack.config.js'),
+    );
 
     console.log(`Initialized functions project in ${targetDir}.
 You can use "bb functions" to build and/or publish it:

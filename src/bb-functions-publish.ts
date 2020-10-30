@@ -9,7 +9,6 @@ import os from 'os';
 import path from 'path';
 import program from 'commander';
 import prompts from 'prompts';
-import sequential from 'promise-sequential';
 
 /* internal dependencies */
 
@@ -189,26 +188,24 @@ const groomMetaData = async (): Promise<MetaData> => {
 
 const publishFunctions = async (
   metaData: MetaData,
-): Promise<void | string | object | null> => {
+): Promise<string | object | null> => {
   const ide = new IDE(identifier);
 
   const customFunctions = (await ide.get(
     'bootstrap/custom_functions',
   )) as CustomFunctions;
 
-  const revision = customFunctions.reduce((rev, func) => {
-    return Math.max(rev, func.revision) + (bumpRevision ? 1 : 0);
-  }, 0);
+  const revision =
+    customFunctions.reduce((rev, func) => Math.max(rev, func.revision), 0) +
+    (bumpRevision ? 1 : 0);
 
   const ids: NamedObject = customFunctions.reduce(
     (map, { id, name }) => ({ ...map, [name]: id }),
     {},
   );
 
-  let promises: Promise<void | string | object | null>[] = Object.keys(
-    metaData,
-  ).map(
-    (name: string): Promise<string | object | null> => {
+  await Promise.all(
+    Object.keys(metaData).map((name: string) => {
       const { replace, returnType, inputVariables } = metaData[name];
       const id = ids[replace || name];
       const method = id ? 'put' : 'post';
@@ -219,58 +216,41 @@ const publishFunctions = async (
         return_type: returnType,
         input_variables: inputVariables,
       };
-
       return ide[method](
         `custom_functions/${id || 'new'}`,
-        { record: params },
+        { json: { record: params } },
         `${action} custom function "${replace || name}" ...`,
       );
-    },
+    }),
   );
 
   const buildDir = path.join(os.tmpdir(), identifier);
   const customJsFile = path.join(buildDir, 'dist', 'custom.js');
 
-  promises.push(
-    ide.post(
-      `custom_functions/${revision}`,
-      { code: `file://${customJsFile}` },
-      `Uploading "${revision}.js" ...`,
-    ),
+  await ide.post(
+    `custom_functions/${revision}`,
+    { multiPartData: [{ name: 'code', file: customJsFile }] },
+    `Uploading "${revision}.js" ...`,
   );
 
   const actions = (await ide.get('actions')) as Actions;
 
-  promises = promises.concat(
-    actions.map(
-      ({
-        id,
-        description,
-        use_new_runtime,
-      }: Action): Promise<string | object | null> => {
-        if (use_new_runtime) {
-          return ide.put(
-            `actions/${id}`,
-            { record: { description } },
-            `Compiling action "${description}" ...`,
-          );
-        }
-        return Promise.resolve(null);
-      },
-    ),
-  );
-
-  promises.push(
-    new Promise((resolve): void => {
-      resolve(ide.close());
-    }),
-  );
-
-  return sequential(
-    promises.map(p => {
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      return () => p;
-    }),
+  return actions.reduce(
+    async (
+      promise: Promise<string | object | null>,
+      { id, use_new_runtime, description }: Action,
+    ) => {
+      await promise;
+      if (use_new_runtime) {
+        return ide.put(
+          `actions/${id}`,
+          { json: { record: { description } } },
+          `Compiling action "${description}" ...`,
+        );
+      }
+      return Promise.resolve(null);
+    },
+    Promise.resolve(null),
   );
 };
 

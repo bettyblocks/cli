@@ -1,5 +1,5 @@
 async function allUsers() {
-  const { results } = await gql(`{
+  const { allUser } = await gql(`{
     allUser {
       results {
         id
@@ -8,7 +8,7 @@ async function allUsers() {
     }
   }`);
 
-  return results;
+  return allUser.results;
 }
 
-export { allUsers };
+export default allUsers;
