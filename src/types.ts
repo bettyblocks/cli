@@ -42,6 +42,7 @@ export interface Component {
 
 export interface ComponentReference {
   name: string;
+  actions?: Action[];
   options: Option[];
   descendants: ComponentReference[];
 }
@@ -122,11 +123,16 @@ export type Icon =
   | 'UrlInputIcon';
 
 export interface Option {
-  value: unknown;
+  value: string | ValueConfig;
   label: string;
   key: string;
   type: string;
   configuration?: unknown;
+}
+
+export interface ValueConfig {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 export type Orientation = 'VERTICAL' | 'HORIZONTAL';
@@ -156,4 +162,15 @@ export interface ServeOptions {
   ssl: boolean;
   sslCert: string;
   sslKey: string;
+}
+
+export interface Action {
+  name: string;
+  id: string;
+  newRuntime: boolean;
+  steps: ActionStep[];
+}
+
+export interface ActionStep {
+  kind: string;
 }

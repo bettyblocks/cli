@@ -16,6 +16,18 @@ import { findDuplicates } from '../utils/validation';
 
 const componentReferenceSchema = Joi.object({
   name: Joi.string().required(),
+  actions: Joi.array().items(
+    Joi.object({
+      name: Joi.string().required(),
+      id: Joi.string().required(),
+      newRuntime: Joi.boolean().required(),
+      steps: Joi.array().items(
+        Joi.object({
+          kind: Joi.string().required(),
+        }),
+      ),
+    }),
+  ),
   options: Joi.array()
     .items(
       Joi.object({
@@ -101,6 +113,7 @@ const validate = (prefab: Prefab): void => {
 
 const validateOptions = ({ structure, name }: Prefab): void => {
   const innerValidateOptions = ({
+    actions,
     options,
     descendants,
   }: ComponentReference): void => {
@@ -117,6 +130,30 @@ const validateOptions = ({ structure, name }: Prefab): void => {
 
       keys.push(key);
     });
+
+    if (actions) {
+      const actionIds = actions.map(action => action.id);
+      options
+        .filter(
+          option => option.type === 'ACTION' || option.type === 'FORM_DATA',
+        )
+        .forEach(option => {
+          const errorMessage = `\nInvalid reference to value in option: ${option.key} in prefab: ${name}\n`;
+          if (typeof option.value === 'string' && option.value) {
+            if (!actionIds.includes(option.value)) {
+              throw new Error(chalk.red(errorMessage));
+            }
+          } else if (
+            typeof option.value === 'object' &&
+            option.value &&
+            option.value.actionId
+          ) {
+            if (!actionIds.includes(option.value.actionId)) {
+              throw new Error(chalk.red(errorMessage));
+            }
+          }
+        });
+    }
 
     descendants.map(innerValidateOptions);
   };
