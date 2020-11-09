@@ -8,6 +8,7 @@ import path from 'path';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 const LIST = [
+  'nodemon.json',
   'package.json',
   '.eslintignore',
   '.eslintrc.json',
