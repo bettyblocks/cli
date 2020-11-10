@@ -14,20 +14,19 @@ import {
 } from './constants';
 import { findDuplicates } from '../utils/validation';
 
-const componentReferenceSchema = Joi.object({
+const actionReferenceSchema = Joi.object({
   name: Joi.string().required(),
-  actions: Joi.array().items(
+  id: Joi.string().required(),
+  newRuntime: Joi.boolean().required(),
+  steps: Joi.array().items(
     Joi.object({
-      name: Joi.string().required(),
-      id: Joi.string().required(),
-      newRuntime: Joi.boolean().required(),
-      steps: Joi.array().items(
-        Joi.object({
-          kind: Joi.string().required(),
-        }),
-      ),
+      kind: Joi.string().required(),
     }),
   ),
+});
+
+const componentReferenceSchema = Joi.object({
+  name: Joi.string().required(),
   options: Joi.array()
     .items(
       Joi.object({
@@ -88,6 +87,19 @@ function validateComponentReference(prefab: Prefab): Prefab {
   return prefab;
 }
 
+function validateActionReference(prefab: Prefab): Prefab {
+  const { error } = actionReferenceSchema.validate(prefab);
+
+  if (typeof error !== 'undefined') {
+    const { name } = prefab;
+    const { message } = error;
+
+    throw new Error(chalk.red(`\nBuild error in prefab ${name}: ${message}\n`));
+  }
+
+  return prefab;
+}
+
 const schema = Joi.object({
   name: Joi.string().required(),
   // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
@@ -95,6 +107,7 @@ const schema = Joi.object({
     .valid(...ICONS)
     .required(),
   category: Joi.string().required(),
+  actions: Joi.array().items(Joi.custom(validateActionReference)),
   beforeCreate: Joi.any(),
   structure: Joi.array()
     .items(Joi.custom(validateComponentReference))
@@ -111,9 +124,8 @@ const validate = (prefab: Prefab): void => {
   }
 };
 
-const validateOptions = ({ structure, name }: Prefab): void => {
+const validateOptions = ({ structure, name, actions }: Prefab): void => {
   const innerValidateOptions = ({
-    actions,
     options,
     descendants,
   }: ComponentReference): void => {
@@ -138,7 +150,9 @@ const validateOptions = ({ structure, name }: Prefab): void => {
           option => option.type === 'ACTION' || option.type === 'FORM_DATA',
         )
         .forEach(option => {
-          const errorMessage = `\nInvalid reference to value in option: ${option.key} in prefab: ${name}\n`;
+          const errorMessage = `\nInvalid reference to value in option: ${
+            option.key
+          } in prefab: ${name}\n the possible options are [${actionIds.toString()}]`;
           if (typeof option.value === 'string' && option.value) {
             if (!actionIds.includes(option.value)) {
               throw new Error(chalk.red(errorMessage));

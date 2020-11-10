@@ -139,6 +139,7 @@ export type Orientation = 'VERTICAL' | 'HORIZONTAL';
 
 export interface Prefab {
   beforeCreate?: string;
+  actions?: Action[];
   category: Category;
   name: string;
   icon: Icon;
