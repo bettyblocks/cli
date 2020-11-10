@@ -169,7 +169,7 @@ export interface Action {
   name: string;
   id: string;
   newRuntime: boolean;
-  steps: ActionStep[];
+  steps?: ActionStep[];
 }
 
 export interface ActionStep {

@@ -16,7 +16,9 @@ import { findDuplicates } from '../utils/validation';
 
 const actionReferenceSchema = Joi.object({
   name: Joi.string().required(),
-  id: Joi.string().required(),
+  id: Joi.string()
+    .regex(/^[#]/)
+    .required(),
   newRuntime: Joi.boolean().required(),
   steps: Joi.array().items(
     Joi.object({
