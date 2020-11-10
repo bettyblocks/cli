@@ -1,3 +1,10 @@
+## [23.18.2](https://github.com/bettyblocks/cli/compare/v23.18.1...v23.18.2) (2020-11-10)
+
+
+### Bug Fixes
+
+* updates nodemon structure to watch ts files too ([#163](https://github.com/bettyblocks/cli/issues/163)) ([931eff4](https://github.com/bettyblocks/cli/commit/931eff4))
+
 ## [23.18.1](https://github.com/bettyblocks/cli/compare/v23.18.0...v23.18.1) (2020-10-30)
 
 
