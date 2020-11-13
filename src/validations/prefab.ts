@@ -16,9 +16,7 @@ import { findDuplicates } from '../utils/validation';
 
 const actionReferenceSchema = Joi.object({
   name: Joi.string().required(),
-  id: Joi.string()
-    .regex(/^[#]/)
-    .required(),
+  ref: Joi.object(),
   newRuntime: Joi.boolean().required(),
   steps: Joi.array().items(
     Joi.object({
@@ -26,6 +24,21 @@ const actionReferenceSchema = Joi.object({
     }),
   ),
 });
+
+const validateComponentParameterReference = Joi.object({
+  name: Joi.string().required(),
+  ref: Joi.object(),
+});
+
+const validatePropertyReference = Joi.object({
+  name: Joi.string().required(),
+  path: Joi.alternatives().try(Joi.string(), Joi.array().items(Joi.string())),
+});
+
+const validateInteractionReference = Joi.alternatives().try(
+  validateComponentParameterReference,
+  validatePropertyReference,
+);
 
 const componentReferenceSchema = Joi.object({
   name: Joi.string().required(),
@@ -35,6 +48,7 @@ const componentReferenceSchema = Joi.object({
         value: Joi.any()
           .when('type', { is: 'FILTER', then: Joi.object() })
           .required(),
+        ref: Joi.object(),
         label: Joi.string().required(),
         key: Joi.string().required(),
         // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
@@ -109,6 +123,7 @@ const schema = Joi.object({
     .valid(...ICONS)
     .required(),
   category: Joi.string().required(),
+  interactions: Joi.array().items(validateInteractionReference),
   actions: Joi.array().items(Joi.custom(validateActionReference)),
   beforeCreate: Joi.any(),
   structure: Joi.array()
@@ -126,7 +141,7 @@ const validate = (prefab: Prefab): void => {
   }
 };
 
-const validateOptions = ({ structure, name, actions }: Prefab): void => {
+const validateOptions = ({ structure, name }: Prefab): void => {
   const innerValidateOptions = ({
     options,
     descendants,
@@ -144,32 +159,6 @@ const validateOptions = ({ structure, name, actions }: Prefab): void => {
 
       keys.push(key);
     });
-
-    if (actions) {
-      const actionIds = actions.map(action => action.id);
-      options
-        .filter(
-          option => option.type === 'ACTION' || option.type === 'FORM_DATA',
-        )
-        .forEach(option => {
-          const errorMessage = `\nInvalid reference to value in option: ${
-            option.key
-          } in prefab: ${name}\n the possible options are [${actionIds.toString()}]`;
-          if (typeof option.value === 'string' && option.value) {
-            if (!actionIds.includes(option.value)) {
-              throw new Error(chalk.red(errorMessage));
-            }
-          } else if (
-            typeof option.value === 'object' &&
-            option.value &&
-            option.value.actionId
-          ) {
-            if (!actionIds.includes(option.value.actionId)) {
-              throw new Error(chalk.red(errorMessage));
-            }
-          }
-        });
-    }
 
     descendants.map(innerValidateOptions);
   };
