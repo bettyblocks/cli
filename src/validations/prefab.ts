@@ -1,22 +1,26 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import Joi, { ValidationResult } from 'joi';
-import chalk from 'chalk';
 
-import { Prefab, ComponentReference } from '../types';
-import {
-  ICONS,
-  OPTIONS,
-  CONDITION_TYPE,
-  COMPARATORS,
-  MODAL_TYPE,
-  CONFIGURATION_AS,
-} from './constants';
+import chalk from 'chalk';
+import Joi, { ValidationResult } from 'joi';
+
+import { ComponentReference, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
+import {
+  COMPARATORS,
+  CONDITION_TYPE,
+  CONFIGURATION_AS,
+  ICONS,
+  INTERACTION_TYPE,
+  MODAL_TYPE,
+  OPTIONS,
+} from './constants';
 
 const actionReferenceSchema = Joi.object({
   name: Joi.string().required(),
-  ref: Joi.object(),
+  ref: Joi.object({
+    id: Joi.string().required(),
+  }).required(),
   newRuntime: Joi.boolean().required(),
   steps: Joi.array().items(
     Joi.object({
@@ -25,21 +29,68 @@ const actionReferenceSchema = Joi.object({
   ),
 });
 
-const validateComponentParameterReference = Joi.object({
+// TODO: check if name is valid
+// TODO: check if triggers are defined in components
+// TODO: check if interaction component ref matches another ref
+
+/*
+
+interactions: [
+  {
+    name: string,
+    type: Global | Custom,
+    ref: {
+      targetComponent: string (ref)
+    },
+    parameters?: [
+      {
+        name: string,
+        ref: {
+          componentId: string (ref)
+        }
+      }
+    ]
+  }
+]
+
+*/
+
+const validateInteractionReferenceCommon = Joi.object({
   name: Joi.string().required(),
-  ref: Joi.object(),
+  type: Joi.string()
+    .valid(INTERACTION_TYPE)
+    .required(),
+  ref: Joi.object({
+    sourceComponent: Joi.string().required(),
+    targetComponent: Joi.string().required(),
+  }).required(),
+  trigger: Joi.string().required(),
 });
 
-const validatePropertyReference = Joi.object({
-  name: Joi.string().required(),
-  path: Joi.alternatives().try(Joi.string(), Joi.array().items(Joi.string())),
-});
+const validateInteractionReferenceParameters = {
+  parameters: Joi.array().items(
+    Joi.object({
+      name: Joi.string().required(),
+      parameter: Joi.string().required(),
+      ref: Joi.object({
+        component: Joi.string().required(),
+      }).required(),
+    }),
+  ),
+};
 
-const validateInteractionReference = Joi.alternatives().try(
-  validateComponentParameterReference,
-  validatePropertyReference,
+const validateInteractionReference = Joi.alternatives().conditional(
+  Joi.object({ type: Joi.valid('Global') }),
+  {
+    then: validateInteractionReferenceCommon.append(
+      validateInteractionReferenceParameters,
+    ),
+    otherwise: validateInteractionReferenceCommon,
+  },
 );
 
+// TODO: check ref based on option type
+// TODO: check value based on option type
 const componentReferenceSchema = Joi.object({
   name: Joi.string().required(),
   options: Joi.array()

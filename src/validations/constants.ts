@@ -131,3 +131,5 @@ export const CONFIGURATION_AS = [
   'UNIT',
   'VISIBILITY',
 ];
+
+export const INTERACTION_TYPE = ['Global', 'Custom'];
