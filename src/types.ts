@@ -32,19 +32,22 @@ export type DefaultCategory =
   | 'TABLE';
 
 export interface Component {
-  name: string;
-  type: string;
   allowedTypes: string[];
-  orientation: Orientation;
   jsx: string;
+  name: string;
+  orientation: Orientation;
   styles: string;
+  type: string;
 }
 
 export interface ComponentReference {
-  name: string;
   actions?: Action[];
-  options: Option[];
   descendants: ComponentReference[];
+  name: string;
+  options: Option[];
+  ref?: {
+    id: string;
+  };
 }
 
 export type Icon =
@@ -143,7 +146,7 @@ export interface Prefab {
   category: Category;
   name: string;
   icon: Icon;
-  interactions: Interaction[];
+  interactions?: Interaction[];
   structure: ComponentReference[];
 }
 
