@@ -66,29 +66,41 @@ const validateInteractionReferenceCommon = Joi.object({
   type: Joi.string()
     .valid(...INTERACTION_TYPE)
     .required(),
+  parameters: Joi.array()
+    .required()
+    .items(
+      Joi.object({
+        name: Joi.string().required(),
+        parameter: Joi.string().required(),
+        ref: Joi.object({
+          component: Joi.string().required(),
+        }).required(),
+      }),
+    ),
 });
 
-const validateInteractionReferenceParameters = {
-  parameters: Joi.array().items(
-    Joi.object({
-      name: Joi.string().required(),
-      parameter: Joi.string().required(),
-      ref: Joi.object({
-        component: Joi.string().required(),
-      }).required(),
-    }),
-  ),
-};
+const validateInteractionReferenceParameters = Joi.object({
+  parameters: Joi.array()
+    .required()
+    .items(
+      Joi.object({
+        name: Joi.string().required(),
+        parameter: Joi.string().required(),
+        ref: Joi.object({
+          component: Joi.string().required(),
+        }).required(),
+      }),
+    ),
+});
 
-const validateInteractionReference = Joi.alternatives().conditional(
-  Joi.object({ type: Joi.valid('Global') }),
-  {
-    then: validateInteractionReferenceCommon.append(
+const validateInteractionReference = Joi.alternatives()
+  .conditional(Joi.object({ type: Joi.string().valid('Global') }), {
+    then: validateInteractionReferenceCommon.concat(
       validateInteractionReferenceParameters,
     ),
     otherwise: validateInteractionReferenceCommon,
-  },
-);
+  })
+  .required();
 
 // TODO: check ref based on option type
 // TODO: check value based on option type
@@ -175,7 +187,7 @@ const schema = Joi.object({
     .valid(...ICONS)
     .required(),
   category: Joi.string().required(),
-  interactions: Joi.array().items(validateInteractionReference),
+  interactions: Joi.array().items(validateInteractionReferenceCommon),
   actions: Joi.array().items(Joi.custom(validateActionReference)),
   beforeCreate: Joi.any(),
   structure: Joi.array()
