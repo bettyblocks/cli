@@ -57,14 +57,15 @@ interactions: [
 
 const validateInteractionReferenceCommon = Joi.object({
   name: Joi.string().required(),
-  type: Joi.string()
-    .valid(INTERACTION_TYPE)
-    .required(),
   ref: Joi.object({
     sourceComponent: Joi.string().required(),
     targetComponent: Joi.string().required(),
   }).required(),
+  targetOptionName: Joi.string().required(),
   trigger: Joi.string().required(),
+  type: Joi.string()
+    .valid(INTERACTION_TYPE)
+    .required(),
 });
 
 const validateInteractionReferenceParameters = {
