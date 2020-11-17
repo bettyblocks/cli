@@ -1,4 +1,4 @@
-// eslint-disable import/prefer-default-export
+/* eslint-disable import/prefer-default-export */
 export type Category = DefaultCategory | string;
 
 export type CommandBB =
@@ -138,18 +138,44 @@ export interface ValueConfig {
 export type Orientation = 'VERTICAL' | 'HORIZONTAL';
 
 export interface Prefab {
-  beforeCreate?: string;
   actions?: Action[];
+  beforeCreate?: string;
   category: Category;
   name: string;
   icon: Icon;
+  interactions: Interaction[];
   structure: ComponentReference[];
 }
 
-export interface Interaction {
-  name: string;
-  function: string;
+export enum InteractionType {
+  Custom = 'Custom',
+  Global = 'Global',
 }
+
+interface BaseInteraction<T extends InteractionType> {
+  name: string;
+  ref: {
+    sourceComponent: string;
+    targetComponent: string;
+  };
+  targetOptionName: string;
+  trigger: string;
+  type: T;
+}
+
+export interface InteractionParameter {
+  name: string;
+  parameter: string;
+  ref: {
+    component: string;
+  };
+}
+
+export type Interaction =
+  | BaseInteraction<InteractionType.Custom>
+  | BaseInteraction<InteractionType.Global> & {
+      parameters: InteractionParameter[];
+    };
 
 export interface Versions {
   remoteVersionCLI: string;
