@@ -64,7 +64,7 @@ const validateInteractionReferenceCommon = Joi.object({
   targetOptionName: Joi.string().required(),
   trigger: Joi.string().required(),
   type: Joi.string()
-    .valid(INTERACTION_TYPE)
+    .valid(...INTERACTION_TYPE)
     .required(),
 });
 
