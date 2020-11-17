@@ -473,32 +473,32 @@ Property: "interactions[0].parameters[0].ref.component" is required at prefab: P
 
 // /* References */
 
-test('Throw when a prefab interaction name does not reference an existing interaction', (t: Context): void => {
-  const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
-    interactions: [
-      {
-        name: 'interaction 1',
-        parameters: [
-          {
-            name: 'option2',
-            parameter: 'parameter1',
-            ref: { component: 'component 1' },
-          },
-        ],
-        ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
-        targetOptionName: 'option1',
-        trigger: 'Click',
-        type: 'Global',
-      },
-    ],
-    name: 'Prefab',
-    structure: [],
-  } as Prefab;
+// test('Throw when a prefab interaction name does not reference an existing interaction', (t: Context): void => {
+//   const prefab = {
+//     category: 'CONTENT',
+//     icon: 'TitleIcon',
+//     interactions: [
+//       {
+//         name: 'interaction 1',
+//         parameters: [
+//           {
+//             name: 'option2',
+//             parameter: 'parameter1',
+//             ref: { component: 'component 1' },
+//           },
+//         ],
+//         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
+//         targetOptionName: 'option1',
+//         trigger: 'Click',
+//         type: 'Global',
+//       },
+//     ],
+//     name: 'Prefab',
+//     structure: [],
+//   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]));
-});
+//   t.throws(() => validatePrefabs([prefab]));
+// });
 
 // test('Pass when a prefab interaction name references an existing interaction', (t: Context): void => {
 //   const prefab = {
