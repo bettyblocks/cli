@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import test, { ExecutionContext } from 'ava';
 
-import toCompatibility, {
-  Compatibility,
-} from '../src/interactions/compatibility';
+import toCompatibility from '../src/interactions/compatibility';
+import { InteractionOptionType } from '../src/types';
 
 type Context = ExecutionContext<unknown>;
 
@@ -15,7 +14,7 @@ test('extract compatibility for: () => boolean', (t: Context): void => {
   t.deepEqual(compatibility, {
     name: 'yes',
     parameters: {},
-    type: Compatibility.Boolean,
+    type: InteractionOptionType.Boolean,
   });
 });
 
@@ -31,10 +30,10 @@ test('extract compatibility for: ({ event, price, quantity }: { event: Event, pr
   t.deepEqual(compatibility, {
     name: 'subtotal',
     parameters: {
-      price: Compatibility.Number,
-      quantity: Compatibility.Number,
+      price: InteractionOptionType.Number,
+      quantity: InteractionOptionType.Number,
     },
-    type: Compatibility.Number,
+    type: InteractionOptionType.Number,
   });
 });
 

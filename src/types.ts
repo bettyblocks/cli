@@ -148,13 +148,42 @@ export type Option = OptionBase & (ValueDefault | ValueRef);
 
 export type Orientation = 'VERTICAL' | 'HORIZONTAL';
 
+export enum InteractionOptionType {
+  Boolean = 'Boolean',
+  Number = 'Number',
+  String = 'String',
+  Event = 'Event',
+}
+
+// TODO: Add support
+export enum InteractionOptionTypeToDo {
+  Color = 'Color',
+  Endpoint = 'Endpoint',
+  Filter = 'Filter',
+  Font = 'Font',
+  Properties = 'Properties',
+  Property = 'Property',
+  Size = 'Size',
+  Unit = 'Unit',
+}
+
+export interface InteractionCompatibility {
+  name: string;
+  parameters: Record<string, InteractionOptionType>;
+  type: InteractionOptionType;
+}
+
+export interface Interaction extends InteractionCompatibility {
+  function: string;
+}
+
 export interface Prefab {
   actions?: Action[];
   beforeCreate?: string;
   category: Category;
   name: string;
   icon: Icon;
-  interactions?: Interaction[];
+  interactions?: PrefabInteraction[];
   structure: ComponentReference[];
 }
 
@@ -163,7 +192,7 @@ export enum InteractionType {
   Global = 'Global',
 }
 
-interface BaseInteraction<T extends InteractionType> {
+interface BasePrefabInteraction<T extends InteractionType> {
   name: string;
   ref: {
     sourceComponent: string;
@@ -174,7 +203,7 @@ interface BaseInteraction<T extends InteractionType> {
   type: T;
 }
 
-export interface InteractionParameter {
+export interface PrefabInteractionParameter {
   name: string;
   parameter: string;
   ref: {
@@ -182,10 +211,10 @@ export interface InteractionParameter {
   };
 }
 
-export type Interaction =
-  | BaseInteraction<InteractionType.Custom>
-  | BaseInteraction<InteractionType.Global> & {
-      parameters: InteractionParameter[];
+export type PrefabInteraction =
+  | BasePrefabInteraction<InteractionType.Custom>
+  | BasePrefabInteraction<InteractionType.Global> & {
+      parameters: PrefabInteractionParameter[];
     };
 
 export interface Versions {

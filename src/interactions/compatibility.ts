@@ -5,9 +5,9 @@ import {
   createPropertyAssignment,
   createStatement,
   createStringLiteral,
+  ExpressionStatement,
   isFunctionDeclaration,
   isSourceFile,
-  ExpressionStatement,
   Node,
   NodeArray,
   ParameterDeclaration,
@@ -21,35 +21,20 @@ import {
   visitNode,
 } from 'typescript';
 
-export enum Compatibility {
-  Boolean = 'Boolean',
-  Number = 'Number',
-  String = 'String',
-  Event = 'Event',
-}
+import { InteractionCompatibility, InteractionOptionType } from '../types';
 
-// TODO: Add support
-export enum CompatibilityToDo {
-  Color = 'Color',
-  Endpoint = 'Endpoint',
-  Filter = 'Filter',
-  Font = 'Font',
-  Properties = 'Properties',
-  Property = 'Property',
-  Size = 'Size',
-  Unit = 'Unit',
-}
-
-const compatibilityValues: Compatibility[] = [
-  Compatibility.Boolean,
-  Compatibility.Number,
-  Compatibility.String,
-  Compatibility.Event,
+const compatibilityValues: InteractionOptionType[] = [
+  InteractionOptionType.Boolean,
+  InteractionOptionType.Number,
+  InteractionOptionType.String,
+  InteractionOptionType.Event,
 ];
 
-const isCompatibility = (value: unknown): value is Compatibility =>
+const isInteractionOptionType = (
+  value: unknown,
+): value is InteractionOptionType =>
   typeof value === 'string' &&
-  compatibilityValues.includes(value as Compatibility);
+  compatibilityValues.includes(value as InteractionOptionType);
 
 const isParameters = (value: unknown): boolean => {
   if (typeof value === 'object' && value !== null) {
@@ -58,27 +43,21 @@ const isParameters = (value: unknown): boolean => {
 
     return (
       names.every((name: unknown): boolean => typeof name === 'string') &&
-      types.every(isCompatibility)
+      types.every(isInteractionOptionType)
     );
   }
 
   return false;
 };
 
-export interface Interaction {
-  name: string;
-  parameters: Record<string, Compatibility>;
-  type: Compatibility;
-}
-
-const isInteraction = (value: unknown): value is Interaction => {
+const isInteraction = (value: unknown): value is InteractionCompatibility => {
   if (typeof value === 'object' && value !== null) {
-    const { name, parameters, type } = value as Interaction;
+    const { name, parameters, type } = value as InteractionCompatibility;
 
     return (
       typeof name === 'string' &&
       isParameters(parameters) &&
-      isCompatibility(type)
+      isInteractionOptionType(type)
     );
   }
 
@@ -90,13 +69,13 @@ const compatibilityLiteral = (node: TypeNode): StringLiteral => {
 
   switch (text) {
     case 'boolean': {
-      return createStringLiteral(Compatibility.Boolean);
+      return createStringLiteral(InteractionOptionType.Boolean);
     }
     case 'number': {
-      return createStringLiteral(Compatibility.Number);
+      return createStringLiteral(InteractionOptionType.Number);
     }
     case 'string': {
-      return createStringLiteral(Compatibility.String);
+      return createStringLiteral(InteractionOptionType.String);
     }
     default: {
       throw new TypeError(`unsupported type: ${text}`);
@@ -143,6 +122,7 @@ const parseParameters = ({
   name.forEachChild(child =>
     child.getChildren().forEach(param => namedParameters.push(param.getText())),
   );
+
   type.forEachChild(child => {
     const [childName, , childType] = child.getChildren();
     types.push({
@@ -246,7 +226,7 @@ expected expression of the kind
     },
   );
 
-export default (code: string): Interaction => {
+export default (code: string): InteractionCompatibility => {
   const { outputText } = transpileModule(code, {
     transformers: { before: [compatibilityTransformer()] },
   });

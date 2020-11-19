@@ -3,10 +3,10 @@ import test, { ExecutionContext } from 'ava';
 import {
   Action,
   Component,
-  Interaction,
-  InteractionParameter,
   InteractionType,
   Prefab,
+  PrefabInteraction,
+  PrefabInteractionParameter,
 } from '../src/types';
 import validateComponents from '../src/validations/component';
 import validatePrefabs from '../src/validations/prefab';
@@ -187,7 +187,7 @@ test('Throw when a prefab interaction does not define a name', (t: Context): voi
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    interactions: [{} as Interaction],
+    interactions: [{} as PrefabInteraction],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -203,7 +203,7 @@ test('Throw when a prefab interaction does not define a ref', (t: Context): void
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    interactions: [{ name: 'interaction 1' } as Interaction],
+    interactions: [{ name: 'interaction 1' } as PrefabInteraction],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -225,7 +225,7 @@ test('Throw when a prefab interaction does not define a type', (t: Context): voi
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
         trigger: 'Click',
-      } as Interaction,
+      } as PrefabInteraction,
     ],
     name: 'Prefab',
     structure: [],
@@ -247,7 +247,7 @@ test('Throw when a prefab interaction does not define a trigger', (t: Context): 
         name: 'interaction 1',
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
-      } as Interaction,
+      } as PrefabInteraction,
     ],
     name: 'Prefab',
     structure: [],
@@ -292,7 +292,7 @@ test('Throw when a prefab interaction does not define a targetOptionName', (t: C
       {
         name: 'interaction 1',
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
-      } as Interaction,
+      } as PrefabInteraction,
     ],
     name: 'Prefab',
     structure: [],
@@ -309,7 +309,7 @@ test('Throw when a prefab interaction does not define a sourceComponent', (t: Co
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    interactions: [{ name: 'interaction 1', ref: {} } as Interaction],
+    interactions: [{ name: 'interaction 1', ref: {} } as PrefabInteraction],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -329,7 +329,7 @@ test('Throw when a prefab interaction does not define a targetComponent', (t: Co
       {
         name: 'interaction 1',
         ref: { sourceComponent: 'component 1' },
-      } as Interaction,
+      } as PrefabInteraction,
     ],
     name: 'Prefab',
     structure: [],
@@ -398,7 +398,7 @@ test('Throw when a global prefab interaction parameter does not define a name', 
     interactions: [
       {
         name: 'interaction 1',
-        parameters: [{} as InteractionParameter],
+        parameters: [{} as PrefabInteractionParameter],
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
         trigger: 'Click',
@@ -423,7 +423,7 @@ test('Throw when a global prefab interaction parameter does not define a paramet
     interactions: [
       {
         name: 'interaction 1',
-        parameters: [{ name: 'option2' } as InteractionParameter],
+        parameters: [{ name: 'option2' } as PrefabInteractionParameter],
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
         trigger: 'Click',
@@ -453,7 +453,7 @@ test('Throw when a global prefab interaction parameter does not reference a comp
             name: 'option2',
             parameter: 'parameter1',
             ref: {},
-          } as InteractionParameter,
+          } as PrefabInteractionParameter,
         ],
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
