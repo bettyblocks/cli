@@ -125,18 +125,26 @@ export type Icon =
   | 'UnorderedListIcon'
   | 'UrlInputIcon';
 
-export interface Option {
-  value: string | ValueConfig;
+export type ValueConfig = Record<string, unknown>;
+
+export interface OptionBase {
   label: string;
   key: string;
   type: string;
   configuration?: unknown;
 }
 
-export interface ValueConfig {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
+export interface ValueDefault {
+  value: string | ValueConfig;
 }
+
+export interface ValueRef {
+  ref: {
+    value: string;
+  };
+}
+
+export type Option = OptionBase & (ValueDefault | ValueRef);
 
 export type Orientation = 'VERTICAL' | 'HORIZONTAL';
 
@@ -196,7 +204,9 @@ export interface ServeOptions {
 
 export interface Action {
   name: string;
-  id: string;
+  ref: {
+    id: string;
+  };
   newRuntime: boolean;
   steps?: ActionStep[];
 }

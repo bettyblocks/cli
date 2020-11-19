@@ -4,6 +4,8 @@
 import chalk from 'chalk';
 import Joi, { ValidationResult } from 'joi';
 
+import { jsxIdentifier } from '@babel/types';
+
 import { ComponentReference, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
 import {
@@ -22,11 +24,25 @@ const actionReferenceSchema = Joi.object({
     id: Joi.string().required(),
   }).required(),
   newRuntime: Joi.boolean().required(),
+  variables: Joi.array(),
   steps: Joi.array().items(
     Joi.object({
       kind: Joi.string().required(),
     }),
   ),
+});
+
+const variableReferenceSchema = Joi.object({
+  kind: Joi.string()
+    .required()
+    .allow('construct'),
+  name: Joi.string().required(),
+  modelId: Joi.string().required(),
+  customModelId: Joi.string(),
+  ref: Joi.object({
+    id: Joi.string().required(),
+    actionId: Joi.string(),
+  }).required(),
 });
 
 // TODO: check if name is valid
@@ -45,6 +61,7 @@ interactions: [
     parameters?: [
       {
         name: string,
+        parameter: string,
         ref: {
           componentId: string (ref)
         }
@@ -102,52 +119,90 @@ const validateInteractionReference = Joi.alternatives()
   })
   .required();
 
+const refSchema = Joi.object().when('type', {
+  is: 'ACTION',
+  then: Joi.object({
+    value: Joi.string().required(),
+  }),
+});
+
+const valueSchema = Joi.alternatives().try(
+  Joi.string()
+    .allow('')
+    .required(),
+  Joi.object().required(),
+);
+
+// const valueSchema = Joi.any().forbidden();
+
+/*
+
+        value: Joi.any()
+          .when('type', { is: 'FILTER', then: Joi.object() })
+
+*/
+
+const optionConfigurationSchema = Joi.object({
+  apiVersion: Joi.string(),
+  allowedInput: Joi.array().items(
+    Joi.object({
+      name: Joi.string().allow(''),
+      value: Joi.string(),
+    }),
+  ),
+  allowedTypes: Joi.array().items(Joi.string()),
+  as: Joi.string().valid(...CONFIGURATION_AS),
+  component: Joi.string(),
+  condition: Joi.object({
+    // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
+    type: Joi.string().valid(...CONDITION_TYPE),
+    option: Joi.string(),
+    comparator: Joi.string().valid(...COMPARATORS),
+    value: Joi.any(),
+  }),
+  dataType: Joi.string(),
+  dependsOn: Joi.string(),
+  placeholder: Joi.string(),
+  modal: Joi.object({
+    type: Joi.string().valid(...MODAL_TYPE),
+    generateCustomModel: Joi.boolean(),
+    modelRequired: Joi.boolean(),
+  }),
+});
+
+const optionSchemaBase = Joi.object({
+  label: Joi.string().required(),
+  key: Joi.string().required(),
+  // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
+  type: Joi.string()
+    .valid(...OPTIONS)
+    .required(),
+  configuration: optionConfigurationSchema,
+});
+
+const optionSchemaRef = Joi.object({
+  value: Joi.any().forbidden(),
+  ref: refSchema,
+});
+
+const optionSchemaNoRef = Joi.object({
+  value: valueSchema,
+});
+
+const optionSchema = optionSchemaBase.concat(
+  Joi.object().when('ref', {
+    is: Joi.object(),
+    then: optionSchemaRef,
+    otherwise: optionSchemaNoRef,
+  }),
+);
+
 // TODO: check ref based on option type
 // TODO: check value based on option type
 const componentReferenceSchema = Joi.object({
   name: Joi.string().required(),
   options: Joi.array()
-    .items(
-      Joi.object({
-        value: Joi.any()
-          .when('type', { is: 'FILTER', then: Joi.object() })
-          .required(),
-        ref: Joi.object(),
-        label: Joi.string().required(),
-        key: Joi.string().required(),
-        // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
-        type: Joi.string()
-          .valid(...OPTIONS)
-          .required(),
-        configuration: Joi.object({
-          apiVersion: Joi.string(),
-          allowedInput: Joi.array().items(
-            Joi.object({
-              name: Joi.string().allow(''),
-              value: Joi.string(),
-            }),
-          ),
-          allowedTypes: Joi.array().items(Joi.string()),
-          as: Joi.string().valid(...CONFIGURATION_AS),
-          component: Joi.string(),
-          condition: Joi.object({
-            // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
-            type: Joi.string().valid(...CONDITION_TYPE),
-            option: Joi.string(),
-            comparator: Joi.string().valid(...COMPARATORS),
-            value: Joi.any(),
-          }),
-          dataType: Joi.string(),
-          dependsOn: Joi.string(),
-          placeholder: Joi.string(),
-          modal: Joi.object({
-            type: Joi.string().valid(...MODAL_TYPE),
-            generateCustomModel: Joi.boolean(),
-            modelRequired: Joi.boolean(),
-          }),
-        }),
-      }),
-    )
+    .items(optionSchema)
     .required(),
   descendants: Joi.array()
     .items(Joi.custom(validateComponentReference))
@@ -189,6 +244,7 @@ const schema = Joi.object({
   category: Joi.string().required(),
   interactions: Joi.array().items(validateInteractionReferenceCommon),
   actions: Joi.array().items(Joi.custom(validateActionReference)),
+  variables: Joi.array(),
   beforeCreate: Joi.any(),
   structure: Joi.array()
     .items(Joi.custom(validateComponentReference))
