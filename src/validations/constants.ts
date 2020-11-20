@@ -134,21 +134,19 @@ export const CONFIGURATION_AS = [
 
 export const INTERACTION_TYPE = ['Global', 'Custom'];
 
+export const EVENT_KIND_NEW_RUNTIME = 'authenticate_user';
+
 export const EVENT_KIND = [
   'action',
   'assign',
-  'authenticate_user',
   'auto_increment_generate',
   'auto_increment_set',
   'condition',
-  'condition_group',
   'create',
   'create_betty_user',
-  'custom_function',
   'delete',
   'export',
   'expression',
-  'external_function',
   'group',
   'http_request',
   'import',

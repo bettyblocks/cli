@@ -1,6 +1,7 @@
 import test, { ExecutionContext } from 'ava';
 
 import { Prefab, PrefabAction } from '../../src/types';
+import { EVENT_KIND } from '../../src/validations/constants';
 import validatePrefabs from '../../src/validations/prefab';
 
 type Context = ExecutionContext<unknown>;
@@ -117,7 +118,37 @@ Property: "actions[0].ref.id" is required at prefab: Prefab
   });
 });
 
-test('Pass when actions contains an event of an supported kind', (t: Context): void => {
+test('Pass when actions contains an event of a kind supported by the old runtime', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+        },
+        useNewRuntime: false,
+        events: [
+          {
+            kind: 'create',
+          },
+          {
+            kind: 'send_mail',
+          },
+        ],
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Pass when actions contains an event of a kind supported by the new runtime', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -130,10 +161,7 @@ test('Pass when actions contains an event of an supported kind', (t: Context): v
         useNewRuntime: true,
         events: [
           {
-            kind: 'create',
-          },
-          {
-            kind: 'send_mail',
+            kind: 'authenticate_user',
           },
         ],
       } as PrefabAction,
@@ -157,10 +185,10 @@ test('Throw when actions contains an event of an unsupported kind', (t: Context)
         ref: {
           id: 'foo',
         },
-        useNewRuntime: true,
+        useNewRuntime: false,
         events: [
           {
-            kind: 'switch',
+            kind: 'authenticate_user',
           },
           {
             kind: 'send_mail',
@@ -174,7 +202,9 @@ test('Throw when actions contains an event of an unsupported kind', (t: Context)
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "actions[0].events[0].kind" must be one of [action, assign, authenticate_user, auto_increment_generate, auto_increment_set, condition, condition_group, create, create_betty_user, custom_function, delete, export, expression, external_function, group, http_request, import, login_web_user, logout_web_user, loop, pdf_generate, pdf_merge, redirect_web_page, render_web_template, send_mail, sftp_download, sftp_list, sftp_upload, update, zip] at prefab: Prefab
+Property: "actions[0].events[0].kind" must be one of [${EVENT_KIND.join(
+      ', ',
+    )}] at prefab: Prefab
 `,
   });
 });
@@ -189,7 +219,7 @@ test('Pass when actions array contains a valid action object', (t: Context): voi
         ref: {
           id: 'foo',
         },
-        useNewRuntime: true,
+        useNewRuntime: false,
         events: [
           {
             kind: 'create',
