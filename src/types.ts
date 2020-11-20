@@ -1,6 +1,3 @@
-import { string } from 'joi';
-
-/* eslint-disable import/prefer-default-export */
 export type Category = DefaultCategory | string;
 
 export type CommandBB =

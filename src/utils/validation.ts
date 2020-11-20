@@ -2,19 +2,30 @@ import chalk from 'chalk';
 
 import { Component, Prefab, PrefabComponent } from '../types';
 
-export const findDuplicates = <T extends { name: string }>(
+export const findDuplicates = <T extends object>(
   list: T[],
   type: string,
+  key = 'name',
 ): void => {
-  list.reduce((acc: string[], { name }: T): string[] => {
-    if (acc.includes(name)) {
-      throw new Error(
-        chalk.red(`\nThe name "${name}" is used for multiple ${type}s\n`),
-      );
+  list.reduce((acc: Set<string>, x: T): Set<string> => {
+    const value = x[key as keyof T];
+
+    if (typeof value === 'string') {
+      const valueLower = value.toLowerCase();
+
+      if (acc.has(valueLower)) {
+        throw new Error(
+          chalk.red(
+            `\nThe name "${valueLower}" is used for multiple ${type}s\n`,
+          ),
+        );
+      }
+
+      acc.add(valueLower);
     }
 
-    return [...acc, name];
-  }, []);
+    return acc;
+  }, new Set());
 };
 
 const checkComponentReferenceNames = (

@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const ICONS = [
   'AccordionIcon',
   'AccordionItemIcon',
@@ -124,6 +123,7 @@ export const OPTIONS = [
 export const CONDITION_TYPE = ['HIDE', 'SHOW'];
 export const COMPARATORS = ['EQ'];
 export const MODAL_TYPE = ['MODEL_AND_PROPERTIES'];
+
 export const CONFIGURATION_AS = [
   'BUTTONGROUP',
   'DROPDOWN',
