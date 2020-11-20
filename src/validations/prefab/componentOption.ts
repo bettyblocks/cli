@@ -19,13 +19,6 @@ const refSchema = Joi.when('type', {
   otherwise: Joi.forbidden(),
 });
 
-const valueSchema = Joi.alternatives().try(
-  Joi.array(),
-  Joi.boolean(),
-  Joi.string().allow(''),
-  Joi.object(),
-);
-
 const optionConfigurationSchema = Joi.object({
   apiVersion: Joi.string(),
   allowedInput: Joi.array().items(
@@ -63,7 +56,7 @@ export const optionSchema = Joi.object({
   value: Joi.when('ref', {
     is: Joi.exist(),
     then: Joi.forbidden(),
-    otherwise: valueSchema,
+    otherwise: Joi.any(),
   }),
   ref: refSchema,
 });
