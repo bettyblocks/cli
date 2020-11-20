@@ -11,7 +11,7 @@ export const actionSchema = Joi.object({
     }),
   ),
   name: Joi.string().required(),
-  newRuntime: Joi.boolean().required(),
+  useNewRuntime: Joi.boolean().required(),
   ref: Joi.object({
     id: Joi.string().required(),
   }).required(),

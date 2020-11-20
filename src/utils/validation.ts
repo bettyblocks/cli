@@ -37,7 +37,7 @@ export const findDuplicates = <
     try {
       value = fromStructure(item, structure);
     } catch {
-      return acc;
+      // all is well in the world
     }
 
     if (typeof value === 'string') {

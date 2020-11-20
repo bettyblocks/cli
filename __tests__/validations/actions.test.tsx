@@ -48,7 +48,7 @@ Property: "actions[0].name" is required at prefab: Prefab
   });
 });
 
-test('Throw when action has no newRuntime', (t: Context): void => {
+test('Throw when action has no useNewRuntime', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -59,19 +59,19 @@ test('Throw when action has no newRuntime', (t: Context): void => {
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "actions[0].newRuntime" is required at prefab: Prefab
+Property: "actions[0].useNewRuntime" is required at prefab: Prefab
 `,
   });
 });
 
-test('Throw when newRuntime is not a boolean', (t: Context): void => {
+test('Throw when useNewRuntime is not a boolean', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     actions: [
       ({
         name: 'foo',
-        newRuntime: '1',
+        useNewRuntime: '1',
       } as unknown) as PrefabAction,
     ],
     name: 'Prefab',
@@ -80,7 +80,7 @@ test('Throw when newRuntime is not a boolean', (t: Context): void => {
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "actions[0].newRuntime" must be a boolean at prefab: Prefab
+Property: "actions[0].useNewRuntime" must be a boolean at prefab: Prefab
 `,
   });
 });
@@ -89,7 +89,7 @@ test('Throw when action has no ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    actions: [{ name: 'foo', newRuntime: true } as PrefabAction],
+    actions: [{ name: 'foo', useNewRuntime: true } as PrefabAction],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -105,7 +105,7 @@ test('Throw when action has no id inside ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    actions: [{ name: 'foo', newRuntime: true, ref: {} } as PrefabAction],
+    actions: [{ name: 'foo', useNewRuntime: true, ref: {} } as PrefabAction],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -127,7 +127,7 @@ test('Pass when actions contains an event of an supported kind', (t: Context): v
         ref: {
           id: 'foo',
         },
-        newRuntime: true,
+        useNewRuntime: true,
         events: [
           {
             kind: 'create',
@@ -157,7 +157,7 @@ test('Throw when actions contains an event of an unsupported kind', (t: Context)
         ref: {
           id: 'foo',
         },
-        newRuntime: true,
+        useNewRuntime: true,
         events: [
           {
             kind: 'switch',
@@ -189,7 +189,7 @@ test('Pass when actions array contains a valid action object', (t: Context): voi
         ref: {
           id: 'foo',
         },
-        newRuntime: true,
+        useNewRuntime: true,
         events: [
           {
             kind: 'create',
@@ -219,7 +219,7 @@ test('Pass when action object does not contain any events', (t: Context): void =
         ref: {
           id: 'foo',
         },
-        newRuntime: true,
+        useNewRuntime: true,
       } as PrefabAction,
     ],
     name: 'Prefab',
@@ -241,7 +241,7 @@ test('Throw when component option has a value and a ref object with a value', (t
         ref: {
           id: 'foo',
         },
-        newRuntime: true,
+        useNewRuntime: true,
       } as PrefabAction,
     ],
     name: 'Prefab',
@@ -463,14 +463,14 @@ test('Throw when multiple action reference the same id', (t: Context): void => {
         ref: {
           id: 'foo',
         },
-        newRuntime: true,
+        useNewRuntime: true,
       },
       {
         name: 'action_2',
         ref: {
           id: 'foo',
         },
-        newRuntime: true,
+        useNewRuntime: true,
       },
     ],
   } as unknown) as Prefab;

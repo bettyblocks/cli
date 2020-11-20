@@ -237,7 +237,7 @@ export interface PrefabAction {
   ref: {
     id: string;
   };
-  newRuntime: boolean;
+  useNewRuntime: boolean;
   events?: PrefabActionStep[];
 }
 
