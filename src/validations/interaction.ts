@@ -28,5 +28,5 @@ export default (interactions: Interaction[]): void => {
     validate(interaction);
   });
 
-  findDuplicates(interactions, 'interaction');
+  findDuplicates(interactions, 'interaction', 'name');
 };

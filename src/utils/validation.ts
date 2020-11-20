@@ -2,13 +2,43 @@ import chalk from 'chalk';
 
 import { Component, Prefab, PrefabComponent } from '../types';
 
-export const findDuplicates = <T extends object>(
+function fromStructure<
+  KString extends string & keyof T,
+  KObject extends Record<string, K>,
+  K extends KString | KObject,
+  T extends object
+>(object: T, structure: K): string | void {
+  if (typeof structure === 'string') {
+    const value = object[structure as KString];
+
+    if (typeof value === 'string' || typeof value === 'undefined') {
+      return value;
+    }
+  }
+
+  const [[k, v]] = Object.entries(structure);
+
+  return fromStructure((object[k as KString] as unknown) as T, v);
+}
+
+export const findDuplicates = <
+  KString extends string & keyof T,
+  KObject extends Record<string, KString | KObject>,
+  K extends KString | KObject,
+  T extends object
+>(
   list: T[],
   type: string,
-  key = 'name',
+  structure: K,
 ): void => {
-  list.reduce((acc: Set<string>, x: T): Set<string> => {
-    const value = x[key as keyof T];
+  list.reduce((acc: Set<string>, item: T): Set<string> => {
+    let value;
+
+    try {
+      value = fromStructure(item, structure);
+    } catch {
+      return acc;
+    }
 
     if (typeof value === 'string') {
       const valueLower = value.toLowerCase();

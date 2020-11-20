@@ -25,7 +25,7 @@ export const interactionSchema = Joi.object({
     targetComponent: Joi.string().required(),
   }).required(),
   targetOptionName: Joi.string().required(),
-  trigger: Joi.string().required(),
+  sourceEvent: Joi.string().required(),
   type: Joi.string()
     .valid(...INTERACTION_TYPE)
     .required(),

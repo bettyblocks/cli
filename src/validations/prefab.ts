@@ -2,9 +2,9 @@
 // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
 
 import chalk from 'chalk';
-import Joi, { ValidationResult } from 'joi';
+import Joi from 'joi';
 
-import { Prefab } from '../types';
+import { Prefab, PrefabAction } from '../types';
 import { findDuplicates } from '../utils/validation';
 import { ICONS } from './constants';
 import { actionSchema } from './prefab/action';
@@ -28,7 +28,22 @@ const schema = Joi.object({
 });
 
 const validate = (prefab: Prefab): void => {
-  const { error }: ValidationResult = schema.validate(prefab);
+  const { actions, interactions, variables } = prefab;
+  const { error } = schema.validate(prefab);
+
+  if (Array.isArray(actions)) {
+    findDuplicates(actions as PrefabAction[], 'action', 'name');
+    findDuplicates(actions as PrefabAction[], 'action', { ref: 'id' });
+  }
+
+  if (Array.isArray(interactions)) {
+    findDuplicates(interactions, 'interaction', 'name');
+  }
+
+  if (Array.isArray(variables)) {
+    findDuplicates(variables, 'variable', 'name');
+    findDuplicates(variables, 'action', { ref: 'id' });
+  }
 
   if (typeof error !== 'undefined') {
     throw new Error(
@@ -40,5 +55,5 @@ const validate = (prefab: Prefab): void => {
 export default (prefabs: Prefab[]): void => {
   prefabs.forEach(validate);
 
-  findDuplicates(prefabs, 'prefab');
+  findDuplicates(prefabs, 'prefab', 'name');
 };

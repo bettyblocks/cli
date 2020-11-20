@@ -78,7 +78,7 @@ test('Throw when a prefab interaction does not define a type', (t: Context): voi
         name: 'interaction 1',
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
-        trigger: 'Click',
+        sourceEvent: 'Click',
       } as PrefabInteraction,
     ],
     name: 'Prefab',
@@ -92,7 +92,7 @@ Property: "interactions[0].type" is required at prefab: Prefab
   });
 });
 
-test('Throw when a prefab interaction does not define a trigger', (t: Context): void => {
+test('Throw when a prefab interaction does not define a sourceEvent', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -109,7 +109,7 @@ test('Throw when a prefab interaction does not define a trigger', (t: Context): 
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "interactions[0].trigger" is required at prefab: Prefab
+Property: "interactions[0].sourceEvent" is required at prefab: Prefab
 `,
   });
 });
@@ -123,7 +123,7 @@ test('Throw when a prefab interaction type is not Global or Custom', (t: Context
         name: 'interaction 1',
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
-        trigger: 'Click',
+        sourceEvent: 'Click',
         type: 'Login' as InteractionType,
       },
     ],
@@ -205,7 +205,7 @@ test('Throw when a global prefab interaction does not define parameters', (t: Co
         name: 'interaction 1',
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
-        trigger: 'Click',
+        sourceEvent: 'Click',
         type: 'Global',
       } as unknown) as PrefabInteraction,
     ],
@@ -230,7 +230,7 @@ test('Throw when a custom prefab interaction defines parameters', (t: Context): 
         parameters: [],
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
-        trigger: 'Click',
+        sourceEvent: 'Click',
         type: 'Custom',
       } as unknown) as PrefabInteraction,
     ],
@@ -255,7 +255,7 @@ test('Throw when a global prefab interaction parameter does not define a name', 
         parameters: [{} as PrefabInteractionParameter],
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
-        trigger: 'Click',
+        sourceEvent: 'Click',
         type: 'Global',
       },
     ],
@@ -280,7 +280,7 @@ test('Throw when a global prefab interaction parameter does not define a paramet
         parameters: [{ name: 'option2' } as PrefabInteractionParameter],
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
-        trigger: 'Click',
+        sourceEvent: 'Click',
         type: 'Global',
       },
     ],
@@ -311,7 +311,7 @@ test('Throw when a global prefab interaction parameter does not reference a comp
         ],
         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
         targetOptionName: 'option1',
-        trigger: 'Click',
+        sourceEvent: 'Click',
         type: 'Global',
       },
     ],
@@ -344,7 +344,7 @@ Property: "interactions[0].parameters[0].ref.component" is required at prefab: P
 //         ],
 //         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
 //         targetOptionName: 'option1',
-//         trigger: 'Click',
+//         sourceEvent: 'Click',
 //         type: 'Global',
 //       },
 //     ],
@@ -371,7 +371,7 @@ Property: "interactions[0].parameters[0].ref.component" is required at prefab: P
 //         ],
 //         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
 //         targetOptionName: 'option1',
-//         trigger: 'Click',
+//         sourceEvent: 'Click',
 //         type: 'Global',
 //       },
 //     ],
@@ -386,7 +386,7 @@ Property: "interactions[0].parameters[0].ref.component" is required at prefab: P
 
 // test('Throw when a prefab interaction does not reference an existing targetComponent', (t: Context): void => {});
 
-// test('Throw when a prefab interaction trigger is not defined in one of the components', (t: Context): void => {});
+// test('Throw when a prefab interaction sourceEvent is not defined in one of the components', (t: Context): void => {});
 
 // test('Throw when a global prefab interaction parameter name does not reference an existing option', (t: Context): void => {});
 

@@ -200,7 +200,7 @@ interface BasePrefabInteraction<T extends InteractionType> {
     targetComponent: string;
   };
   targetOptionName: string;
-  trigger: string;
+  sourceEvent: string;
   type: T;
 }
 

@@ -68,7 +68,12 @@ test('Throw when newRuntime is not a boolean', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    actions: [({ name: 'foo', newRuntime: '1' } as unknown) as PrefabAction],
+    actions: [
+      ({
+        name: 'foo',
+        newRuntime: '1',
+      } as unknown) as PrefabAction,
+    ],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -424,6 +429,55 @@ test('Throw when component option has neither ref nor value', (t: Context): void
 Property: "structure[0]" failed custom validation because 
 Build error in component HelloWorld: "options[0].ref" is required
  at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when multiple action reference the same id', (t: Context): void => {
+  const prefab = ({
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [
+      {
+        name: 'HelloWorld',
+        options: [
+          {
+            label: 'Action',
+            key: 'actionId',
+            ref: {
+              value: 'foo',
+            },
+            type: 'ACTION',
+            configuration: {
+              apiVersion: 'v1',
+            },
+          },
+        ],
+        descendants: [],
+      },
+    ],
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+        },
+        newRuntime: true,
+      },
+      {
+        name: 'action_2',
+        ref: {
+          id: 'foo',
+        },
+        newRuntime: true,
+      },
+    ],
+  } as unknown) as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+The name "foo" is used for multiple actions
 `,
   });
 });
