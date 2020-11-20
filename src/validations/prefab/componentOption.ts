@@ -20,11 +20,10 @@ const refSchema = Joi.when('type', {
 });
 
 const valueSchema = Joi.alternatives().try(
+  Joi.array(),
   Joi.boolean(),
-  Joi.string()
-    .allow('')
-    .required(),
-  Joi.object().required(),
+  Joi.string().allow(''),
+  Joi.object(),
 );
 
 const optionConfigurationSchema = Joi.object({
