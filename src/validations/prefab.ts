@@ -11,6 +11,7 @@ import {
   COMPARATORS,
   CONDITION_TYPE,
   CONFIGURATION_AS,
+  EVENT_KIND,
   ICONS,
   INTERACTION_TYPE,
   MODAL_TYPE,
@@ -20,7 +21,9 @@ import {
 const actionSchema = Joi.object({
   events: Joi.array().items(
     Joi.object({
-      kind: Joi.string().required(),
+      kind: Joi.string()
+        .valid(...EVENT_KIND)
+        .required(),
     }),
   ),
   name: Joi.string().required(),

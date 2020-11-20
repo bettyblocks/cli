@@ -133,3 +133,36 @@ export const CONFIGURATION_AS = [
 ];
 
 export const INTERACTION_TYPE = ['Global', 'Custom'];
+
+export const EVENT_KIND = [
+  'action',
+  'assign',
+  'authenticate_user',
+  'auto_increment_generate',
+  'auto_increment_set',
+  'condition',
+  'condition_group',
+  'create',
+  'create_betty_user',
+  'custom_function',
+  'delete',
+  'export',
+  'expression',
+  'external_function',
+  'group',
+  'http_request',
+  'import',
+  'login_web_user',
+  'logout_web_user',
+  'loop',
+  'pdf_generate',
+  'pdf_merge',
+  'redirect_web_page',
+  'render_web_template',
+  'send_mail',
+  'sftp_download',
+  'sftp_list',
+  'sftp_upload',
+  'update',
+  'zip',
+];

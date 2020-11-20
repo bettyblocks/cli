@@ -663,7 +663,7 @@ Property: "actions[0].ref.id" is required at prefab: Prefab
   });
 });
 
-test('Pass when actions contains an event of an unsupported kind', (t: Context): void => {
+test('Pass when actions contains an event of an supported kind', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -691,6 +691,38 @@ test('Pass when actions contains an event of an unsupported kind', (t: Context):
   validatePrefabs([prefab]);
 
   t.pass();
+});
+
+test('Throw when actions contains an event of an unsupported kind', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+        },
+        newRuntime: true,
+        events: [
+          {
+            kind: 'switch',
+          },
+          {
+            kind: 'send_mail',
+          },
+        ],
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "actions[0].events[0].kind" must be one of [action, assign, authenticate_user, auto_increment_generate, auto_increment_set, condition, condition_group, create, create_betty_user, custom_function, delete, export, expression, external_function, group, http_request, import, login_web_user, logout_web_user, loop, pdf_generate, pdf_merge, redirect_web_page, render_web_template, send_mail, sftp_download, sftp_list, sftp_upload, update, zip] at prefab: Prefab
+`,
+  });
 });
 
 test('Pass when actions array contains a valid action object', (t: Context): void => {
