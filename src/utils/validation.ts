@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { Component, ComponentReference, Prefab } from '../types';
+import { Component, Prefab, PrefabComponent } from '../types';
 
 export const findDuplicates = <T extends { name: string }>(
   list: T[],
@@ -20,7 +20,7 @@ export const findDuplicates = <T extends { name: string }>(
 const checkComponentReferenceNames = (
   names: Set<string>,
   prefabName: string,
-) => ({ name, descendants }: ComponentReference): void => {
+) => ({ name, descendants }: PrefabComponent): void => {
   if (!names.has(name)) {
     throw new Error(
       chalk.red(

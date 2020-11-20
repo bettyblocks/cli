@@ -1,12 +1,13 @@
 import test, { ExecutionContext } from 'ava';
 
 import {
-  Action,
   Component,
   InteractionType,
   Prefab,
+  PrefabAction,
   PrefabInteraction,
   PrefabInteractionParameter,
+  PrefabVariable,
 } from '../src/types';
 import validateComponents from '../src/validations/component';
 import validatePrefabs from '../src/validations/prefab';
@@ -167,6 +168,19 @@ test('Throw when two options with the same key are being used', (t: Context): vo
   ] as Prefab[];
 
   t.throws(() => validatePrefabs(prefabs));
+});
+
+test('Pass without interactions array', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
 });
 
 test('Pass when interactions is the empty list', (t: Context): void => {
@@ -342,54 +356,54 @@ Property: "interactions[0].ref.targetComponent" is required at prefab: Prefab
   });
 });
 
-// test('Throw when a global prefab interaction does not define parameters', (t: Context): void => {
-//   const prefab = {
-//     category: 'CONTENT',
-//     icon: 'TitleIcon',
-//     interactions: [
-//       {
-//         name: 'interaction 1',
-//         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
-//         targetOptionName: 'option1',
-//         trigger: 'Click',
-//         type: 'Global',
-//       },
-//     ],
-//     name: 'Prefab',
-//     structure: [],
-//   } as Prefab;
+test('Throw when a global prefab interaction does not define parameters', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    interactions: [
+      ({
+        name: 'interaction 1',
+        ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
+        targetOptionName: 'option1',
+        trigger: 'Click',
+        type: 'Global',
+      } as unknown) as PrefabInteraction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
 
-//   t.throws(() => validatePrefabs([prefab]), {
-//     message: `
-// Property: "interactions[0].type" must be one of [Global, Custom] at prefab: Prefab
-// `,
-//   });
-// });
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "interactions[0].parameters" is required at prefab: Prefab
+`,
+  });
+});
 
-// test('Throw when a custom prefab interaction defines parameters', (t: Context): void => {
-//   const prefab = {
-//     category: 'CONTENT',
-//     icon: 'TitleIcon',
-//     interactions: [
-//       {
-//         name: 'interaction 1',
-//         parameters: [],
-//         ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
-//         targetOptionName: 'option1',
-//         trigger: 'Click',
-//         type: 'Custom',
-//       },
-//     ],
-//     name: 'Prefab',
-//     structure: [],
-//   } as Prefab;
+test('Throw when a custom prefab interaction defines parameters', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    interactions: [
+      ({
+        name: 'interaction 1',
+        parameters: [],
+        ref: { sourceComponent: 'component 1', targetComponent: 'component 2' },
+        targetOptionName: 'option1',
+        trigger: 'Click',
+        type: 'Custom',
+      } as unknown) as PrefabInteraction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
 
-//   t.throws(() => validatePrefabs([prefab]), {
-//     message: `
-// Property: "interactions[0].parameters" is not allowed at prefab: Prefab
-// `,
-//   });
-// });
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "interactions[0].parameters" is not allowed at prefab: Prefab
+`,
+  });
+});
 
 test('Throw when a global prefab interaction parameter does not define a name', (t: Context): void => {
   const prefab = {
@@ -542,6 +556,19 @@ Property: "interactions[0].parameters[0].ref.component" is required at prefab: P
 
 // /* Actions */
 
+test('Pass without actions array', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
 test('Pass when actions is empty list', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
@@ -556,7 +583,87 @@ test('Pass when actions is empty list', (t: Context): void => {
   t.pass();
 });
 
-test('Pass when actions array contains an valid action object', (t: Context): void => {
+test('Throw when action has no name', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [{} as PrefabAction],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "actions[0].name" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when action has no newRuntime', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [{ name: 'foo' } as PrefabAction],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "actions[0].newRuntime" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when newRuntime is not a boolean', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [({ name: 'foo', newRuntime: '1' } as unknown) as PrefabAction],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "actions[0].newRuntime" must be a boolean at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when action has no ref', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [{ name: 'foo', newRuntime: true } as PrefabAction],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "actions[0].ref" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when action has no id inside ref', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [{ name: 'foo', newRuntime: true, ref: {} } as PrefabAction],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "actions[0].ref.id" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Pass when actions contains an event of an unsupported kind', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -567,7 +674,7 @@ test('Pass when actions array contains an valid action object', (t: Context): vo
           id: 'foo',
         },
         newRuntime: true,
-        steps: [
+        events: [
           {
             kind: 'create',
           },
@@ -575,7 +682,7 @@ test('Pass when actions array contains an valid action object', (t: Context): vo
             kind: 'send_mail',
           },
         ],
-      } as Action,
+      } as PrefabAction,
     ],
     name: 'Prefab',
     structure: [],
@@ -586,7 +693,7 @@ test('Pass when actions array contains an valid action object', (t: Context): vo
   t.pass();
 });
 
-test('Pass when action object does not contain any steps', (t: Context): void => {
+test('Pass when actions array contains a valid action object', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -597,7 +704,15 @@ test('Pass when action object does not contain any steps', (t: Context): void =>
           id: 'foo',
         },
         newRuntime: true,
-      } as Action,
+        events: [
+          {
+            kind: 'create',
+          },
+          {
+            kind: 'send_mail',
+          },
+        ],
+      } as PrefabAction,
     ],
     name: 'Prefab',
     structure: [],
@@ -608,7 +723,7 @@ test('Pass when action object does not contain any steps', (t: Context): void =>
   t.pass();
 });
 
-test('Throw when component option has a value key and a ref object with a value key', (t: Context): void => {
+test('Pass when action object does not contain any events', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -619,7 +734,29 @@ test('Throw when component option has a value key and a ref object with a value 
           id: 'foo',
         },
         newRuntime: true,
-      } as Action,
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Throw when component option has a value and a ref object with a value', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+        },
+        newRuntime: true,
+      } as PrefabAction,
     ],
     name: 'Prefab',
     structure: [
@@ -647,13 +784,13 @@ test('Throw when component option has a value key and a ref object with a value 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
 Property: "structure[0]" failed custom validation because 
-Build error in prefab HelloWorld: "options[0].ref" is not allowed
+Build error in component HelloWorld: "options[0].value" is not allowed
  at prefab: Prefab
 `,
   });
 });
 
-test('Pass when component option has a value key and no ref key', (t: Context): void => {
+test('Pass when component option has a value and no ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -682,7 +819,7 @@ test('Pass when component option has a value key and no ref key', (t: Context): 
   t.pass();
 });
 
-test('Pass when component option has a ref key and no value key', (t: Context): void => {
+test('Pass when component option has a ref and no value', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -706,6 +843,279 @@ test('Pass when component option has a ref key and no value key', (t: Context): 
         descendants: [],
       },
     ],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Throw when component option has a ref when type is not ACTION', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [
+      {
+        name: 'HelloWorld',
+        options: [
+          {
+            type: 'TEXT',
+            label: 'Title',
+            key: 'title',
+            ref: {
+              value: 'foo',
+            },
+          },
+        ],
+        descendants: [],
+      },
+    ],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "structure[0]" failed custom validation because 
+Build error in component HelloWorld: "options[0].ref" is not allowed
+ at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when component option has a ref object without a value', (t: Context): void => {
+  const prefab = ({
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [
+      {
+        name: 'HelloWorld',
+        options: [
+          {
+            label: 'Action',
+            key: 'actionId',
+            ref: {},
+            type: 'ACTION',
+            configuration: {
+              apiVersion: 'v1',
+            },
+          },
+        ],
+        descendants: [],
+      },
+    ],
+  } as unknown) as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "structure[0]" failed custom validation because 
+Build error in component HelloWorld: "options[0].ref.value" is required
+ at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when component option has neither ref nor value', (t: Context): void => {
+  const prefab = ({
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [
+      {
+        name: 'HelloWorld',
+        options: [
+          {
+            label: 'Action',
+            key: 'actionId',
+            type: 'ACTION',
+            configuration: {
+              apiVersion: 'v1',
+            },
+          },
+        ],
+        descendants: [],
+      },
+    ],
+  } as unknown) as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "structure[0]" failed custom validation because 
+Build error in component HelloWorld: "options[0].ref" is required
+ at prefab: Prefab
+`,
+  });
+});
+
+test('Pass without variables array', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Pass when variables array is the empty list', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Throw when variable does not have kind construct ', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [{} as PrefabVariable],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].kind" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when variable kind is unsupported', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [({ kind: 'string' } as unknown) as PrefabVariable],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].kind" must be [construct] at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when variable does not have a modelId', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [{ kind: 'construct' } as PrefabVariable],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].modelId" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when variable does not have a name', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [{ kind: 'construct', modelId: '' } as PrefabVariable],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].name" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when variable does not have a ref', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [
+      { kind: 'construct', modelId: '', name: 'foo' } as PrefabVariable,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].ref" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when variable does not have a actionId ref', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [
+      {
+        kind: 'construct',
+        modelId: '',
+        name: 'foo',
+        ref: {},
+      } as PrefabVariable,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].ref.actionId" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when variable does not have a customModelId ref', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [
+      {
+        kind: 'construct',
+        modelId: '',
+        name: 'foo',
+        ref: { actionId: 'bar' },
+      } as PrefabVariable,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].ref.customModelId" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Pass for valid variable object', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [
+      {
+        kind: 'construct',
+        modelId: '',
+        name: 'foo',
+        ref: { actionId: 'bar', customModelId: 'baz' },
+      } as PrefabVariable,
+    ],
+    name: 'Prefab',
+    structure: [],
   } as Prefab;
 
   validatePrefabs([prefab]);

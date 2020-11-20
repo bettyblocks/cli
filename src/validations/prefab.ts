@@ -1,12 +1,11 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-use-before-define */
+// Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
 
 import chalk from 'chalk';
 import Joi, { ValidationResult } from 'joi';
 
-import { jsxIdentifier } from '@babel/types';
-
-import { ComponentReference, Prefab } from '../types';
+import { Prefab, PrefabComponent } from '../types';
 import { findDuplicates } from '../utils/validation';
 import {
   COMPARATORS,
@@ -18,30 +17,30 @@ import {
   OPTIONS,
 } from './constants';
 
-const actionReferenceSchema = Joi.object({
-  name: Joi.string().required(),
-  ref: Joi.object({
-    id: Joi.string().required(),
-  }).required(),
-  newRuntime: Joi.boolean().required(),
-  variables: Joi.array(),
-  steps: Joi.array().items(
+const actionSchema = Joi.object({
+  events: Joi.array().items(
     Joi.object({
       kind: Joi.string().required(),
     }),
   ),
-});
-
-const variableReferenceSchema = Joi.object({
-  kind: Joi.string()
-    .required()
-    .allow('construct'),
   name: Joi.string().required(),
-  modelId: Joi.string().required(),
-  customModelId: Joi.string(),
+  newRuntime: Joi.boolean().required(),
   ref: Joi.object({
     id: Joi.string().required(),
-    actionId: Joi.string(),
+  }).required(),
+});
+
+const variableSchema = Joi.object({
+  kind: Joi.string()
+    .valid('construct')
+    .required(),
+  modelId: Joi.string()
+    .allow('')
+    .required(),
+  name: Joi.string().required(),
+  ref: Joi.object({
+    actionId: Joi.string().required(),
+    customModelId: Joi.string().required(),
   }).required(),
 });
 
@@ -72,7 +71,23 @@ interactions: [
 
 */
 
-const validateInteractionReferenceCommon = Joi.object({
+const interactionParametersSchema = Joi.when('type', {
+  is: 'Global',
+  then: Joi.array()
+    .items(
+      Joi.object({
+        name: Joi.string().required(),
+        parameter: Joi.string().required(),
+        ref: Joi.object({
+          component: Joi.string().required(),
+        }).required(),
+      }),
+    )
+    .required(),
+  otherwise: Joi.forbidden(),
+});
+
+const interactionSchema = Joi.object({
   name: Joi.string().required(),
   ref: Joi.object({
     sourceComponent: Joi.string().required(),
@@ -83,64 +98,27 @@ const validateInteractionReferenceCommon = Joi.object({
   type: Joi.string()
     .valid(...INTERACTION_TYPE)
     .required(),
-  parameters: Joi.array()
-    .required()
-    .items(
-      Joi.object({
-        name: Joi.string().required(),
-        parameter: Joi.string().required(),
-        ref: Joi.object({
-          component: Joi.string().required(),
-        }).required(),
-      }),
-    ),
+  parameters: interactionParametersSchema,
 });
 
-const validateInteractionReferenceParameters = Joi.object({
-  parameters: Joi.array()
-    .required()
-    .items(
-      Joi.object({
-        name: Joi.string().required(),
-        parameter: Joi.string().required(),
-        ref: Joi.object({
-          component: Joi.string().required(),
-        }).required(),
-      }),
-    ),
-});
-
-const validateInteractionReference = Joi.alternatives()
-  .conditional(Joi.object({ type: Joi.string().valid('Global') }), {
-    then: validateInteractionReferenceCommon.concat(
-      validateInteractionReferenceParameters,
-    ),
-    otherwise: validateInteractionReferenceCommon,
-  })
-  .required();
-
-const refSchema = Joi.object().when('type', {
+const refSchema = Joi.when('type', {
   is: 'ACTION',
   then: Joi.object({
     value: Joi.string().required(),
+  }).when('value', {
+    not: Joi.exist(),
+    then: Joi.required(),
   }),
+  otherwise: Joi.forbidden(),
 });
 
 const valueSchema = Joi.alternatives().try(
+  Joi.boolean(),
   Joi.string()
     .allow('')
     .required(),
   Joi.object().required(),
 );
-
-// const valueSchema = Joi.any().forbidden();
-
-/*
-
-        value: Joi.any()
-          .when('type', { is: 'FILTER', then: Joi.object() })
-
-*/
 
 const optionConfigurationSchema = Joi.object({
   apiVersion: Joi.string(),
@@ -170,84 +148,60 @@ const optionConfigurationSchema = Joi.object({
   }),
 });
 
-const optionSchemaBase = Joi.object({
+const optionSchema = Joi.object({
   label: Joi.string().required(),
   key: Joi.string().required(),
-  // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
   type: Joi.string()
     .valid(...OPTIONS)
     .required(),
   configuration: optionConfigurationSchema,
-});
-
-const optionSchemaRef = Joi.object({
-  value: Joi.any().forbidden(),
+  value: Joi.when('ref', {
+    is: Joi.exist(),
+    then: Joi.forbidden(),
+    otherwise: valueSchema,
+  }),
   ref: refSchema,
 });
 
-const optionSchemaNoRef = Joi.object({
-  value: valueSchema,
-});
-
-const optionSchema = optionSchemaBase.concat(
-  Joi.object().when('ref', {
-    is: Joi.object(),
-    then: optionSchemaRef,
-    otherwise: optionSchemaNoRef,
-  }),
-);
-
 // TODO: check ref based on option type
 // TODO: check value based on option type
-const componentReferenceSchema = Joi.object({
+const componentSchema = Joi.object({
   name: Joi.string().required(),
   options: Joi.array()
     .items(optionSchema)
     .required(),
   descendants: Joi.array()
-    .items(Joi.custom(validateComponentReference))
+    .items(Joi.custom(validateComponent))
     .required(),
 });
 
-function validateComponentReference(prefab: Prefab): Prefab {
-  const { error } = componentReferenceSchema.validate(prefab);
+function validateComponent(component: PrefabComponent): Prefab | unknown {
+  const { error } = componentSchema.validate(component);
 
   if (typeof error !== 'undefined') {
-    const { name } = prefab;
+    const { name } = component;
     const { message } = error;
 
-    throw new Error(chalk.red(`\nBuild error in prefab ${name}: ${message}\n`));
+    throw new Error(
+      chalk.red(`\nBuild error in component ${name}: ${message}\n`),
+    );
   }
 
-  return prefab;
-}
-
-function validateActionReference(prefab: Prefab): Prefab {
-  const { error } = actionReferenceSchema.validate(prefab);
-
-  if (typeof error !== 'undefined') {
-    const { name } = prefab;
-    const { message } = error;
-
-    throw new Error(chalk.red(`\nBuild error in prefab ${name}: ${message}\n`));
-  }
-
-  return prefab;
+  return component;
 }
 
 const schema = Joi.object({
   name: Joi.string().required(),
-  // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
   icon: Joi.string()
     .valid(...ICONS)
     .required(),
   category: Joi.string().required(),
-  interactions: Joi.array().items(validateInteractionReferenceCommon),
-  actions: Joi.array().items(Joi.custom(validateActionReference)),
-  variables: Joi.array(),
+  interactions: Joi.array().items(interactionSchema),
+  actions: Joi.array().items(actionSchema),
+  variables: Joi.array().items(variableSchema),
   beforeCreate: Joi.any(),
   structure: Joi.array()
-    .items(Joi.custom(validateComponentReference))
+    .items(Joi.custom(validateComponent))
     .required(),
 });
 
@@ -265,7 +219,7 @@ const validateOptions = ({ structure, name }: Prefab): void => {
   const innerValidateOptions = ({
     options,
     descendants,
-  }: ComponentReference): void => {
+  }: PrefabComponent): void => {
     const keys: string[] = [];
 
     options.forEach(({ key }) => {

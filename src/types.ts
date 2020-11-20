@@ -1,3 +1,5 @@
+import { string } from 'joi';
+
 /* eslint-disable import/prefer-default-export */
 export type Category = DefaultCategory | string;
 
@@ -40,11 +42,11 @@ export interface Component {
   type: string;
 }
 
-export interface ComponentReference {
-  actions?: Action[];
-  descendants: ComponentReference[];
+export interface PrefabComponent {
+  actions?: PrefabAction[];
+  descendants: PrefabComponent[];
   name: string;
-  options: Option[];
+  options: PrefabComponentOption[];
   ref?: {
     id: string;
   };
@@ -127,7 +129,7 @@ export type Icon =
 
 export type ValueConfig = Record<string, unknown>;
 
-export interface OptionBase {
+export interface PrefabComponentOptionBase {
   label: string;
   key: string;
   type: string;
@@ -144,7 +146,8 @@ export interface ValueRef {
   };
 }
 
-export type Option = OptionBase & (ValueDefault | ValueRef);
+export type PrefabComponentOption = PrefabComponentOptionBase &
+  (ValueDefault | ValueRef);
 
 export type Orientation = 'VERTICAL' | 'HORIZONTAL';
 
@@ -178,13 +181,14 @@ export interface Interaction extends InteractionCompatibility {
 }
 
 export interface Prefab {
-  actions?: Action[];
+  actions?: PrefabAction[];
   beforeCreate?: string;
   category: Category;
   name: string;
   icon: Icon;
   interactions?: PrefabInteraction[];
-  structure: ComponentReference[];
+  structure: PrefabComponent[];
+  variables?: PrefabVariable[];
 }
 
 export enum InteractionType {
@@ -231,15 +235,27 @@ export interface ServeOptions {
   sslKey: string;
 }
 
-export interface Action {
+export interface PrefabAction {
   name: string;
   ref: {
     id: string;
   };
   newRuntime: boolean;
-  steps?: ActionStep[];
+  events?: PrefabActionStep[];
 }
 
-export interface ActionStep {
+export interface PrefabActionStep {
   kind: string;
+}
+
+export type PrefabVariableKind = 'construct';
+
+export interface PrefabVariable {
+  kind: PrefabVariableKind;
+  name: string;
+  modelId: string;
+  ref: {
+    actionId: string;
+    customModelId: string;
+  };
 }
