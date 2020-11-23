@@ -236,6 +236,7 @@ export interface PrefabAction {
   name: string;
   ref: {
     id: string;
+    endpointId: string;
   };
   useNewRuntime: boolean;
   events?: PrefabActionStep[];
@@ -252,7 +253,7 @@ export interface PrefabVariable {
   name: string;
   modelId: string;
   ref: {
-    actionId: string;
+    endpointId: string;
     customModelId: string;
   };
 }

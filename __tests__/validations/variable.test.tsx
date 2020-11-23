@@ -114,7 +114,7 @@ Property: "variables[0].ref" is required at prefab: Prefab
   });
 });
 
-test('Throw when variable does not have a actionId ref', (t: Context): void => {
+test('Throw when variable does not have a endpointId ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -132,7 +132,7 @@ test('Throw when variable does not have a actionId ref', (t: Context): void => {
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "variables[0].ref.actionId" is required at prefab: Prefab
+Property: "variables[0].ref.endpointId" is required at prefab: Prefab
 `,
   });
 });
@@ -146,7 +146,7 @@ test('Throw when variable does not have a customModelId ref', (t: Context): void
         kind: 'construct',
         modelId: '',
         name: 'foo',
-        ref: { actionId: 'bar' },
+        ref: { endpointId: 'bar' },
       } as PrefabVariable,
     ],
     name: 'Prefab',
@@ -169,7 +169,7 @@ test('Pass for valid variable object', (t: Context): void => {
         kind: 'construct',
         modelId: '',
         name: 'foo',
-        ref: { actionId: 'bar', customModelId: 'baz' },
+        ref: { endpointId: 'bar', customModelId: 'baz' },
       } as PrefabVariable,
     ],
     name: 'Prefab',

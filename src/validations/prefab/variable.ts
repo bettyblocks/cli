@@ -9,7 +9,7 @@ export const variableSchema = Joi.object({
     .required(),
   name: Joi.string().required(),
   ref: Joi.object({
-    actionId: Joi.string().required(),
+    endpointId: Joi.string().required(),
     customModelId: Joi.string().required(),
   }).required(),
 });
