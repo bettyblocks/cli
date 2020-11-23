@@ -27,8 +27,8 @@ const targetOptionNameSchema = Joi.when('type', {
 export const interactionSchema = Joi.object({
   name: Joi.string().required(),
   ref: Joi.object({
-    sourceComponent: Joi.string().required(),
-    targetComponent: Joi.string().required(),
+    sourceComponentId: Joi.string().required(),
+    targetComponentId: Joi.string().required(),
   }).required(),
   targetOptionName: targetOptionNameSchema,
   sourceEvent: Joi.string().required(),

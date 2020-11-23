@@ -196,8 +196,8 @@ export enum InteractionType {
 interface BasePrefabInteraction<T extends InteractionType> {
   name: string;
   ref: {
-    sourceComponent: string;
-    targetComponent: string;
+    sourceComponentId: string;
+    targetComponentId: string;
   };
   targetOptionName: string;
   sourceEvent: string;
