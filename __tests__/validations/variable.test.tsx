@@ -160,6 +160,53 @@ Property: "variables[0].ref.customModelId" is required at prefab: Prefab
   });
 });
 
+test('Throw when variable does not have propertyIds', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [
+      {
+        kind: 'construct',
+        modelId: '',
+        name: 'foo',
+        ref: { endpointId: 'bar', customModelId: 'foo' },
+      } as PrefabVariable,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].propertyIds" is required at prefab: Prefab
+`,
+  });
+});
+
+test('Throw when propertyIds is not an empty array', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [
+      {
+        kind: 'construct',
+        modelId: '',
+        name: 'foo',
+        propertyIds: ['d16a63cc951b44c09bc203fa239a6479'],
+        ref: { endpointId: 'bar', customModelId: 'foo' },
+      } as PrefabVariable,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "variables[0].propertyIds" must contain 0 items at prefab: Prefab
+`,
+  });
+});
+
 test('Pass for valid variable object', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
@@ -169,6 +216,7 @@ test('Pass for valid variable object', (t: Context): void => {
         kind: 'construct',
         modelId: '',
         name: 'foo',
+        propertyIds: [],
         ref: { endpointId: 'bar', customModelId: 'baz' },
       } as PrefabVariable,
     ],

@@ -12,4 +12,7 @@ export const variableSchema = Joi.object({
     endpointId: Joi.string().required(),
     customModelId: Joi.string().required(),
   }).required(),
+  propertyIds: Joi.array()
+    .length(0)
+    .required(),
 });

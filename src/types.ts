@@ -252,6 +252,7 @@ export interface PrefabVariable {
   kind: PrefabVariableKind;
   name: string;
   modelId: string;
+  propertyIds: string[];
   ref: {
     endpointId: string;
     customModelId: string;
