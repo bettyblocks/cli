@@ -32,7 +32,6 @@ const validate = (prefab: Prefab): void => {
   const { error } = schema.validate(prefab);
 
   if (Array.isArray(actions)) {
-    findDuplicates(actions as PrefabAction[], 'action', 'name');
     findDuplicates(actions as PrefabAction[], 'action', { ref: 'id' });
   }
 
