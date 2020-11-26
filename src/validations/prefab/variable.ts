@@ -9,10 +9,8 @@ export const variableSchema = Joi.object({
     .required(),
   name: Joi.string().required(),
   ref: Joi.object({
+    id: Joi.string().required(),
     endpointId: Joi.string().required(),
     customModelId: Joi.string().required(),
   }).required(),
-  propertyIds: Joi.array()
-    .length(0)
-    .required(),
 });
