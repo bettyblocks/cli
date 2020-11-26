@@ -1,96 +1,44 @@
 /* eslint-disable no-use-before-define */
-/* eslint-disable @typescript-eslint/no-use-before-define */
-import Joi, { ValidationResult } from 'joi';
+// Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
+
 import chalk from 'chalk';
+import Joi from 'joi';
 
-import { Prefab, ComponentReference } from '../types';
-import {
-  ICONS,
-  OPTIONS,
-  CONDITION_TYPE,
-  COMPARATORS,
-  MODAL_TYPE,
-  CONFIGURATION_AS,
-} from './constants';
+import { Prefab, PrefabAction } from '../types';
 import { findDuplicates } from '../utils/validation';
-
-const componentReferenceSchema = Joi.object({
-  name: Joi.string().required(),
-  options: Joi.array()
-    .items(
-      Joi.object({
-        value: Joi.any()
-          .when('type', { is: 'FILTER', then: Joi.object() })
-          .required(),
-        label: Joi.string().required(),
-        key: Joi.string().required(),
-        // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
-        type: Joi.string()
-          .valid(...OPTIONS)
-          .required(),
-        configuration: Joi.object({
-          apiVersion: Joi.string(),
-          allowedInput: Joi.array().items(
-            Joi.object({
-              name: Joi.string().allow(''),
-              value: Joi.string(),
-            }),
-          ),
-          allowedTypes: Joi.array().items(Joi.string()),
-          as: Joi.string().valid(...CONFIGURATION_AS),
-          component: Joi.string(),
-          condition: Joi.object({
-            // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
-            type: Joi.string().valid(...CONDITION_TYPE),
-            option: Joi.string(),
-            comparator: Joi.string().valid(...COMPARATORS),
-            value: Joi.any(),
-          }),
-          dataType: Joi.string(),
-          dependsOn: Joi.string(),
-          placeholder: Joi.string(),
-          modal: Joi.object({
-            type: Joi.string().valid(...MODAL_TYPE),
-            generateCustomModel: Joi.boolean(),
-            modelRequired: Joi.boolean(),
-          }),
-        }),
-      }),
-    )
-    .required(),
-  descendants: Joi.array()
-    .items(Joi.custom(validateComponentReference))
-    .required(),
-});
-
-function validateComponentReference(prefab: Prefab): Prefab {
-  const { error } = componentReferenceSchema.validate(prefab);
-
-  if (typeof error !== 'undefined') {
-    const { name } = prefab;
-    const { message } = error;
-
-    throw new Error(chalk.red(`\nBuild error in prefab ${name}: ${message}\n`));
-  }
-
-  return prefab;
-}
+import { ICONS } from './constants';
+import { actionSchema } from './prefab/action';
+import { validateComponent } from './prefab/component';
+import { interactionSchema } from './prefab/interaction';
+import { variableSchema } from './prefab/variable';
 
 const schema = Joi.object({
   name: Joi.string().required(),
-  // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
   icon: Joi.string()
     .valid(...ICONS)
     .required(),
   category: Joi.string().required(),
+  interactions: Joi.array().items(interactionSchema),
+  actions: Joi.array().items(actionSchema),
+  variables: Joi.array().items(variableSchema),
   beforeCreate: Joi.any(),
   structure: Joi.array()
-    .items(Joi.custom(validateComponentReference))
+    .items(Joi.custom(validateComponent))
     .required(),
 });
 
 const validate = (prefab: Prefab): void => {
-  const { error }: ValidationResult = schema.validate(prefab);
+  const { actions, variables } = prefab;
+  const { error } = schema.validate(prefab);
+
+  if (Array.isArray(actions)) {
+    findDuplicates(actions as PrefabAction[], 'action', { ref: 'id' });
+  }
+
+  if (Array.isArray(variables)) {
+    findDuplicates(variables, 'variable', 'name');
+    findDuplicates(variables, 'action', { ref: 'id' });
+  }
 
   if (typeof error !== 'undefined') {
     throw new Error(
@@ -99,36 +47,8 @@ const validate = (prefab: Prefab): void => {
   }
 };
 
-const validateOptions = ({ structure, name }: Prefab): void => {
-  const innerValidateOptions = ({
-    options,
-    descendants,
-  }: ComponentReference): void => {
-    const keys: string[] = [];
-
-    options.forEach(({ key }) => {
-      if (keys.map(k => k.toLowerCase()).includes(key.toLowerCase())) {
-        throw new Error(
-          chalk.red(
-            `\nMultiple option references to key: ${key} in prefab: ${name}\n`,
-          ),
-        );
-      }
-
-      keys.push(key);
-    });
-
-    descendants.map(innerValidateOptions);
-  };
-
-  structure.map(innerValidateOptions);
-};
-
 export default (prefabs: Prefab[]): void => {
-  prefabs.forEach((prefab: Prefab): void => {
-    validate(prefab);
-    validateOptions(prefab);
-  });
+  prefabs.forEach(validate);
 
-  findDuplicates(prefabs, 'prefab');
+  findDuplicates(prefabs, 'prefab', 'name');
 };

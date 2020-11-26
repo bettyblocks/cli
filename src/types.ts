@@ -1,4 +1,3 @@
-// eslint-disable import/prefer-default-export
 export type Category = DefaultCategory | string;
 
 export type CommandBB =
@@ -32,18 +31,22 @@ export type DefaultCategory =
   | 'TABLE';
 
 export interface Component {
-  name: string;
-  type: string;
   allowedTypes: string[];
-  orientation: Orientation;
   jsx: string;
+  name: string;
+  orientation: Orientation;
   styles: string;
+  type: string;
 }
 
-export interface ComponentReference {
+export interface PrefabComponent {
+  actions?: PrefabAction[];
+  descendants: PrefabComponent[];
   name: string;
-  options: Option[];
-  descendants: ComponentReference[];
+  options: PrefabComponentOption[];
+  ref?: {
+    id: string;
+  };
 }
 
 export type Icon =
@@ -121,28 +124,99 @@ export type Icon =
   | 'UnorderedListIcon'
   | 'UrlInputIcon';
 
-export interface Option {
-  value: unknown;
+export type ValueConfig = Record<string, unknown>;
+
+export interface PrefabComponentOptionBase {
   label: string;
   key: string;
   type: string;
   configuration?: unknown;
 }
 
+export interface ValueDefault {
+  value: string | ValueConfig;
+}
+
+export interface ValueRef {
+  ref: {
+    value: string;
+  };
+}
+
+export type PrefabComponentOption = PrefabComponentOptionBase &
+  (ValueDefault | ValueRef);
+
 export type Orientation = 'VERTICAL' | 'HORIZONTAL';
 
+export enum InteractionOptionType {
+  Boolean = 'Boolean',
+  Number = 'Number',
+  String = 'String',
+  Event = 'Event',
+}
+
+// TODO: Add support
+export enum InteractionOptionTypeToDo {
+  Color = 'Color',
+  Endpoint = 'Endpoint',
+  Filter = 'Filter',
+  Font = 'Font',
+  Properties = 'Properties',
+  Property = 'Property',
+  Size = 'Size',
+  Unit = 'Unit',
+}
+
+export interface InteractionCompatibility {
+  name: string;
+  parameters: Record<string, InteractionOptionType>;
+  type: InteractionOptionType;
+}
+
+export interface Interaction extends InteractionCompatibility {
+  function: string;
+}
+
 export interface Prefab {
+  actions?: PrefabAction[];
   beforeCreate?: string;
   category: Category;
   name: string;
   icon: Icon;
-  structure: ComponentReference[];
+  interactions?: PrefabInteraction[];
+  structure: PrefabComponent[];
+  variables?: PrefabVariable[];
 }
 
-export interface Interaction {
-  name: string;
-  function: string;
+export enum InteractionType {
+  Custom = 'Custom',
+  Global = 'Global',
 }
+
+interface BasePrefabInteraction<T extends InteractionType> {
+  name: string;
+  ref: {
+    sourceComponentId: string;
+    targetComponentId: string;
+  };
+  targetOptionName: string;
+  sourceEvent: string;
+  type: T;
+}
+
+export interface PrefabInteractionParameter {
+  name: string;
+  parameter: string;
+  ref: {
+    component: string;
+  };
+}
+
+export type PrefabInteraction =
+  | BasePrefabInteraction<InteractionType.Custom>
+  | BasePrefabInteraction<InteractionType.Global> & {
+      parameters: PrefabInteractionParameter[];
+    };
 
 export interface Versions {
   remoteVersionCLI: string;
@@ -156,4 +230,31 @@ export interface ServeOptions {
   ssl: boolean;
   sslCert: string;
   sslKey: string;
+}
+
+export interface PrefabAction {
+  name: string;
+  ref: {
+    id: string;
+    endpointId: string;
+  };
+  useNewRuntime: boolean;
+  events?: PrefabActionStep[];
+}
+
+export interface PrefabActionStep {
+  kind: string;
+}
+
+export type PrefabVariableKind = 'construct';
+
+export interface PrefabVariable {
+  kind: PrefabVariableKind;
+  name: string;
+  modelId: string;
+  ref: {
+    id: string;
+    endpointId: string;
+    customModelId: string;
+  };
 }
