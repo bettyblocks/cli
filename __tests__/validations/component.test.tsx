@@ -1,8 +1,8 @@
 import test, { ExecutionContext } from 'ava';
 
-import { Component, Prefab } from '../src/types';
-import validateComponents from '../src/validations/component';
-import validatePrefab from '../src/validations/prefab';
+import { Component, Prefab } from '../../src/types';
+import validateComponents from '../../src/validations/component';
+import validatePrefabs from '../../src/validations/prefab';
 
 type Context = ExecutionContext<unknown>;
 
@@ -61,7 +61,7 @@ test('Throw when one of the prefabs is invalid', (t: Context): void => {
     },
   ] as Prefab[];
 
-  t.throws(() => validatePrefab(prefabs));
+  t.throws(() => validatePrefabs(prefabs));
 });
 
 test("Don't throw when all prefabs are valid", (t: Context): void => {
@@ -74,7 +74,7 @@ test("Don't throw when all prefabs are valid", (t: Context): void => {
     },
   ] as Prefab[];
 
-  t.notThrows(() => validatePrefab(prefabs));
+  t.notThrows(() => validatePrefabs(prefabs));
 });
 
 test('Throw when one of the prefabs options is invalid', (t: Context): void => {
@@ -101,7 +101,37 @@ test('Throw when one of the prefabs options is invalid', (t: Context): void => {
     },
   ] as unknown) as Prefab[];
 
-  t.throws(() => validatePrefab(prefabs));
+  t.throws(() => validatePrefabs(prefabs));
+});
+
+test('Dont throw when prefab component has a ref', (t: Context): void => {
+  const prefabs = ([
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          ref: {
+            id: '#id',
+          },
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown) as Prefab[];
+
+  validatePrefabs(prefabs);
+  t.pass();
 });
 
 test('Throw when the prefabs option type is not referring to one the correct types', (t: Context): void => {
@@ -127,7 +157,7 @@ test('Throw when the prefabs option type is not referring to one the correct typ
     },
   ] as Prefab[];
 
-  t.throws(() => validatePrefab(prefabs));
+  t.throws(() => validatePrefabs(prefabs));
 });
 
 test('Throw when two options with the same key are being used', (t: Context): void => {
@@ -159,5 +189,5 @@ test('Throw when two options with the same key are being used', (t: Context): vo
     },
   ] as Prefab[];
 
-  t.throws(() => validatePrefab(prefabs));
+  t.throws(() => validatePrefabs(prefabs));
 });

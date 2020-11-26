@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const ICONS = [
   'AccordionIcon',
   'AccordionItemIcon',
@@ -124,10 +123,44 @@ export const OPTIONS = [
 export const CONDITION_TYPE = ['HIDE', 'SHOW'];
 export const COMPARATORS = ['EQ'];
 export const MODAL_TYPE = ['MODEL_AND_PROPERTIES'];
+
 export const CONFIGURATION_AS = [
   'BUTTONGROUP',
   'DROPDOWN',
   'MULTILINE',
   'UNIT',
   'VISIBILITY',
+];
+
+export const INTERACTION_TYPE = ['Global', 'Custom'];
+
+export const EVENT_KIND_NEW_RUNTIME = 'authenticate_user';
+
+export const EVENT_KIND = [
+  'action',
+  'assign',
+  'auto_increment_generate',
+  'auto_increment_set',
+  'condition',
+  'create',
+  'create_betty_user',
+  'delete',
+  'export',
+  'expression',
+  'group',
+  'http_request',
+  'import',
+  'login_web_user',
+  'logout_web_user',
+  'loop',
+  'pdf_generate',
+  'pdf_merge',
+  'redirect_web_page',
+  'render_web_template',
+  'send_mail',
+  'sftp_download',
+  'sftp_list',
+  'sftp_upload',
+  'update',
+  'zip',
 ];

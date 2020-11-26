@@ -10,6 +10,7 @@ module.exports = {
   rules: {
     'prettier/prettier': ['error', { singleQuote: true }],
     'no-console': 0,
+    'import/prefer-default-export': 0,
     'import/extensions': [
       'error',
       'ignorePackages',

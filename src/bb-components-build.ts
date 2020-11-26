@@ -4,9 +4,9 @@ import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
 import { outputJson, pathExists, promises } from 'fs-extra';
 
+import extractComponentCompatibility from './components/compatibility';
 import extractInteractionCompatibility from './interactions/compatibility';
 import getDiagnostics from './interactions/diagnostics';
-import extractComponentCompatibility from './components/compatibility';
 import { Component, Interaction, Prefab } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -15,8 +15,8 @@ import transpile from './utils/transpile';
 import { checkNameReferences } from './utils/validation';
 /* internal dependencies */
 import validateComponents from './validations/component';
-import validatePrefabs from './validations/prefab';
 import validateInteractions from './validations/interaction';
+import validatePrefabs from './validations/prefab';
 
 /* npm dependencies */
 

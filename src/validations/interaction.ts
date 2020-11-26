@@ -1,5 +1,5 @@
-import Joi, { ObjectSchema, ValidationResult } from 'joi';
 import chalk from 'chalk';
+import Joi, { ObjectSchema, ValidationResult } from 'joi';
 
 import { Interaction } from '../types';
 import { findDuplicates } from '../utils/validation';
@@ -28,5 +28,5 @@ export default (interactions: Interaction[]): void => {
     validate(interaction);
   });
 
-  findDuplicates(interactions, 'interaction');
+  findDuplicates(interactions, 'interaction', 'name');
 };
