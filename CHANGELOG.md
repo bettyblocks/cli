@@ -1,3 +1,10 @@
+# [23.19.0](https://github.com/bettyblocks/cli/compare/v23.18.2...v23.19.0) (2020-11-26)
+
+
+### Features
+
+* create action from prefab ([b557586](https://github.com/bettyblocks/cli/commit/b557586))
+
 ## [23.18.2](https://github.com/bettyblocks/cli/compare/v23.18.1...v23.18.2) (2020-11-10)
 
 
