@@ -28,7 +28,7 @@ const schema = Joi.object({
 });
 
 const validate = (prefab: Prefab): void => {
-  const { actions, interactions, variables } = prefab;
+  const { actions, variables } = prefab;
   const { error } = schema.validate(prefab);
 
   if (Array.isArray(actions)) {
