@@ -35,10 +35,6 @@ const validate = (prefab: Prefab): void => {
     findDuplicates(actions as PrefabAction[], 'action', { ref: 'id' });
   }
 
-  if (Array.isArray(interactions)) {
-    findDuplicates(interactions, 'interaction', 'name');
-  }
-
   if (Array.isArray(variables)) {
     findDuplicates(variables, 'variable', 'name');
     findDuplicates(variables, 'action', { ref: 'id' });
