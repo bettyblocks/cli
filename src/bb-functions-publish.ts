@@ -204,8 +204,9 @@ const publishFunctions = async (
     {},
   );
 
-  await Promise.all(
-    Object.keys(metaData).map((name: string) => {
+  await Object.keys(metaData).reduce(
+    async (promise: Promise<string | object | null>, name: string) => {
+      await promise;
       const { replace, returnType, inputVariables } = metaData[name];
       const id = ids[replace || name];
       const method = id ? 'put' : 'post';
@@ -221,7 +222,8 @@ const publishFunctions = async (
         { json: { record: params } },
         `${action} custom function "${replace || name}" ...`,
       );
-    }),
+    },
+    Promise.resolve(null),
   );
 
   const buildDir = path.join(os.tmpdir(), identifier);
