@@ -1,3 +1,10 @@
+## [23.19.1](https://github.com/bettyblocks/cli/compare/v23.19.0...v23.19.1) (2020-11-30)
+
+
+### Bug Fixes
+
+* drop node-libcurl in favor of node-fetch ([9e8d281](https://github.com/bettyblocks/cli/commit/9e8d281))
+
 # [23.19.0](https://github.com/bettyblocks/cli/compare/v23.18.2...v23.19.0) (2020-11-26)
 
 
