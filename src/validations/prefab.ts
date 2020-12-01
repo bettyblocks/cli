@@ -6,7 +6,12 @@ import Joi from 'joi';
 
 import { Prefab, PrefabAction } from '../types';
 import { findDuplicates } from '../utils/validation';
-import { ICONS } from './constants';
+import {
+  ICONS,
+  MAX_ACTIONS,
+  MAX_VARIABLES,
+  MAX_INTERACTIONS,
+} from './constants';
 import { actionSchema } from './prefab/action';
 import { validateComponent } from './prefab/component';
 import { interactionSchema } from './prefab/interaction';
@@ -18,9 +23,15 @@ const schema = Joi.object({
     .valid(...ICONS)
     .required(),
   category: Joi.string().required(),
-  interactions: Joi.array().items(interactionSchema),
-  actions: Joi.array().items(actionSchema),
-  variables: Joi.array().items(variableSchema),
+  interactions: Joi.array()
+    .items(interactionSchema)
+    .max(MAX_INTERACTIONS),
+  actions: Joi.array()
+    .items(actionSchema)
+    .max(MAX_ACTIONS),
+  variables: Joi.array()
+    .items(variableSchema)
+    .max(MAX_VARIABLES),
   beforeCreate: Joi.any(),
   structure: Joi.array()
     .items(Joi.custom(validateComponent))
