@@ -6,6 +6,11 @@ import {
   MAX_ACTION_EVENTS,
 } from '../constants';
 
+const assignSchema = Joi.object({
+  leftHandSide: Joi.string().required(),
+  path: Joi.array().items(Joi.string()),
+});
+
 export const actionSchema = Joi.object({
   events: Joi.when('useNewRuntime', {
     is: true,
@@ -25,7 +30,7 @@ export const actionSchema = Joi.object({
                     object: Joi.string().required(),
                     customModel: Joi.string().required(),
                   }),
-                  assign: Joi.array().items(Joi.string()),
+                  assign: Joi.array().items(assignSchema),
                 }),
               },
               {
