@@ -102,6 +102,7 @@ export const OPTIONS = [
   'ACTION',
   'ACTION_INPUT',
   'ACTION_PROPERTIES',
+  'ACTION_MODEL',
   'AUTHENTICATION_PROFILE',
   'BUTTONGROUP',
   'COLOR',
@@ -169,3 +170,5 @@ export const EVENT_KIND = [
   'update',
   'zip',
 ];
+
+export const VARIABLE_KIND = ['construct', 'object'];
