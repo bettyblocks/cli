@@ -13,7 +13,45 @@ export const actionSchema = Joi.object({
       .items(Joi.object({ kind: Joi.valid(EVENT_KIND_NEW_RUNTIME) }))
       .max(MAX_ACTION_EVENTS),
     otherwise: Joi.array()
-      .items(Joi.object({ kind: Joi.valid(...EVENT_KIND) }))
+      .items(
+        Joi.object({
+          kind: Joi.valid(...EVENT_KIND),
+          options: Joi.when('kind', {
+            switch: [
+              {
+                is: 'update',
+                then: Joi.object({
+                  ref: Joi.object({
+                    object: Joi.string().required(),
+                    customModel: Joi.string().required(),
+                  }),
+                  assign: Joi.array().items(Joi.string()),
+                }),
+              },
+              {
+                is: 'create',
+                then: Joi.object({
+                  model: Joi.string().required(),
+                  assign: Joi.array().items(Joi.string()),
+                  ref: Joi.object({
+                    customModel: Joi.string().required(),
+                  }),
+                }),
+              },
+              {
+                is: 'delete',
+                then: Joi.object({
+                  ref: Joi.object({
+                    object: Joi.string().required(),
+                    customModel: Joi.string().required(),
+                  }),
+                }),
+              },
+            ],
+            otherwise: Joi.forbidden(),
+          }),
+        }),
+      )
       .max(MAX_ACTION_EVENTS),
   }),
   name: Joi.string().required(),

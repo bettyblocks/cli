@@ -242,8 +242,35 @@ export interface PrefabAction {
   events?: PrefabActionStep[];
 }
 
+interface PrefabActionUpdateStepOption {
+  ref: {
+    object: string;
+    customModel?: string;
+  };
+  assign: string[];
+}
+
+export interface PrefabActionCreateStepOption {
+  model: string;
+  assign: string[];
+  ref: {
+    customModel: string;
+  };
+}
+
+export interface PrefabActionDeleteStepOption {
+  ref: {
+    object: string;
+    customModel: string;
+  };
+}
+
 export interface PrefabActionStep {
   kind: string;
+  options?:
+    | PrefabActionUpdateStepOption
+    | PrefabActionCreateStepOption
+    | PrefabActionDeleteStepOption;
 }
 
 export type PrefabVariableKind = 'construct';
@@ -251,10 +278,9 @@ export type PrefabVariableKind = 'construct';
 export interface PrefabVariable {
   kind: PrefabVariableKind;
   name: string;
-  modelId: string;
   ref: {
-    id: string;
     endpointId: string;
-    customModelId: string;
+    id: string;
   };
+  options: unknown;
 }
