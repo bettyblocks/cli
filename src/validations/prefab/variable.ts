@@ -17,7 +17,9 @@ export const variableKindSchema = Joi.when('kind', {
     {
       is: 'object',
       then: Joi.object({
-        modelId: Joi.string().required(),
+        modelId: Joi.string()
+          .allow('')
+          .required(),
       }),
     },
   ],
