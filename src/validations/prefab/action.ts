@@ -28,7 +28,6 @@ export const actionSchema = Joi.object({
                 then: Joi.object({
                   ref: Joi.object({
                     object: Joi.string().required(),
-                    customModel: Joi.string().required(),
                   }),
                   assign: Joi.array().items(assignSchema),
                 }),
@@ -36,7 +35,9 @@ export const actionSchema = Joi.object({
               {
                 is: 'create',
                 then: Joi.object({
-                  model: Joi.string().required(),
+                  modelId: Joi.string()
+                    .allow('')
+                    .required(),
                   assign: Joi.array().items(Joi.string()),
                   ref: Joi.object({
                     customModel: Joi.string().required(),
