@@ -32,59 +32,64 @@ test('Pass when variables array is the empty list', (t: Context): void => {
   t.pass();
 });
 
-test('Throw when variable does not have kind construct ', (t: Context): void => {
-  const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
-    variables: [{} as PrefabVariable],
-    name: 'Prefab',
-    structure: [],
-  } as Prefab;
-
-  t.throws(() => validatePrefabs([prefab]), {
-    message: `
-Property: "variables[0].kind" is required at prefab: Prefab
-`,
-  });
-});
-
 test('Throw when variable kind is unsupported', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    variables: [({ kind: 'string' } as unknown) as PrefabVariable],
+    variables: [
+      ({
+        name: 'foo',
+        kind: 'string',
+        ref: {
+          endpointId: '#endpointId',
+          id: '#variableId',
+        },
+      } as unknown) as PrefabVariable,
+    ],
     name: 'Prefab',
     structure: [],
   } as Prefab;
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "variables[0].kind" must be [construct] at prefab: Prefab
+Property: "variables[0].kind" must be one of [construct, object] at prefab: Prefab
 `,
   });
 });
 
-test('Throw when variable does not have a modelId', (t: Context): void => {
+test('Throw when construct variable does not have a modelId', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    variables: [{ kind: 'construct' } as PrefabVariable],
+    variables: [
+      {
+        kind: 'construct',
+        name: 'foo',
+        ref: {
+          endpointId: '#endpointId',
+          id: '#variableId',
+        },
+        options: {},
+      } as PrefabVariable,
+    ],
     name: 'Prefab',
     structure: [],
   } as Prefab;
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "variables[0].modelId" is required at prefab: Prefab
+Property: "variables[0].options.modelId" is required at prefab: Prefab
 `,
   });
 });
 
-test('Throw when variable does not have a name', (t: Context): void => {
+test('Throw when construct variable does not have a name', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    variables: [{ kind: 'construct', modelId: '' } as PrefabVariable],
+    variables: [
+      { kind: 'construct', options: { modelId: '' } } as PrefabVariable,
+    ],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -96,12 +101,20 @@ Property: "variables[0].name" is required at prefab: Prefab
   });
 });
 
-test('Throw when variable does not have a ref', (t: Context): void => {
+test('Throw when construct variable does not have a ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     variables: [
-      { kind: 'construct', modelId: '', name: 'foo' } as PrefabVariable,
+      {
+        kind: 'construct',
+        name: 'foo',
+        ref: {
+          endpointId: '#endpointId',
+          id: '#variableId',
+        },
+        options: { modelId: '' },
+      } as PrefabVariable,
     ],
     name: 'Prefab',
     structure: [],
@@ -109,21 +122,25 @@ test('Throw when variable does not have a ref', (t: Context): void => {
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "variables[0].ref" is required at prefab: Prefab
+Property: "variables[0].options.ref" is required at prefab: Prefab
 `,
   });
 });
 
-test('Throw when variable does not have a id ref', (t: Context): void => {
+test('Throw when construct variable does not have a id ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     variables: [
       {
         kind: 'construct',
-        modelId: '',
         name: 'foo',
-        ref: {},
+        ref: {
+          endpointId: '#endpointId',
+        },
+        options: {
+          modelId: '',
+        },
       } as PrefabVariable,
     ],
     name: 'Prefab',
@@ -137,16 +154,21 @@ Property: "variables[0].ref.id" is required at prefab: Prefab
   });
 });
 
-test('Throw when variable does not have a endpointId ref', (t: Context): void => {
+test('Throw when construct variable does not have a endpointId ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     variables: [
       {
         kind: 'construct',
-        modelId: '',
         name: 'foo',
-        ref: { id: 'uniqueId' },
+        ref: {
+          id: '#variableId',
+        },
+        options: {
+          modelId: '',
+          ref: { customModelId: '#customModelId' },
+        },
       } as PrefabVariable,
     ],
     name: 'Prefab',
@@ -160,16 +182,22 @@ Property: "variables[0].ref.endpointId" is required at prefab: Prefab
   });
 });
 
-test('Throw when variable does not have a customModelId ref', (t: Context): void => {
+test('Throw when construct variable does not have a customModelId ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     variables: [
       {
         kind: 'construct',
-        modelId: '',
         name: 'foo',
-        ref: { id: 'uniqueId', endpointId: 'bar' },
+        ref: {
+          id: '#variableId',
+          endpointId: '#endpointId',
+        },
+        options: {
+          modelId: '',
+          ref: {},
+        },
       } as PrefabVariable,
     ],
     name: 'Prefab',
@@ -178,21 +206,27 @@ test('Throw when variable does not have a customModelId ref', (t: Context): void
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "variables[0].ref.customModelId" is required at prefab: Prefab
+Property: "variables[0].options.ref.customModelId" is required at prefab: Prefab
 `,
   });
 });
 
-test('Pass for valid variable object', (t: Context): void => {
+test('Pass for valid construct variable', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     variables: [
       {
         kind: 'construct',
-        modelId: '',
         name: 'foo',
-        ref: { id: 'uniqueId', endpointId: 'bar', customModelId: 'baz' },
+        ref: {
+          id: '#variableId',
+          endpointId: '#endpointId',
+        },
+        options: {
+          modelId: '',
+          ref: { customModelId: 'baz' },
+        },
       } as PrefabVariable,
     ],
     name: 'Prefab',

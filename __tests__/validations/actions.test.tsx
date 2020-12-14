@@ -240,6 +240,194 @@ Property: "actions[0].events[0].kind" must be one of [${EVENT_KIND.join(
   });
 });
 
+test('Pass when a update event has options', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+          endpointId: 'bar',
+        },
+        useNewRuntime: false,
+        events: [
+          {
+            kind: 'update',
+            options: {
+              ref: {
+                object: '#objectVariableId',
+              },
+              assign: [
+                {
+                  leftHandSide: '#propertyId',
+                  ref: {
+                    path: ['#customModelVariableId', `#attribute_#property.id`],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Pass when create event has valid options', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+          endpointId: 'bar',
+        },
+        useNewRuntime: false,
+        events: [
+          {
+            kind: 'create',
+            options: {
+              modelId: '#modelId',
+              ref: {
+                customModel: '#customModelId',
+              },
+              assign: [
+                {
+                  leftHandSide: '#propertyId',
+                  ref: {
+                    path: ['#customModelVariableId', `#attribute_#property.id`],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Pass when a delete event has valid options', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+          endpointId: 'bar',
+        },
+        useNewRuntime: false,
+        events: [
+          {
+            kind: 'delete',
+            options: {
+              ref: {
+                object: '#objectVariableId',
+                customModel: '#customModelId',
+              },
+            },
+          },
+        ],
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Pass when a update event has no options', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+          endpointId: 'bar',
+        },
+        useNewRuntime: false,
+        events: [
+          {
+            kind: 'update',
+          },
+        ],
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Throw when a assign event has options', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+          endpointId: 'bar',
+        },
+        useNewRuntime: false,
+        events: [
+          {
+            kind: 'assign',
+            options: {
+              ref: {
+                object: '#customModelId',
+              },
+              assign: [
+                {
+                  leftHandSide: '#propertyId',
+                  ref: {
+                    path: ['#customModelVariableId', `#attribute_#property.id`],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.throws(() => validatePrefabs([prefab]), {
+    message: `
+Property: "actions[0].events[0].options" is not allowed at prefab: Prefab
+`,
+  });
+});
+
 test('Pass when actions array contains a valid action object', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',

@@ -1,3 +1,8 @@
+export const MAX_ACTIONS = 5;
+export const MAX_VARIABLES = 20;
+export const MAX_INTERACTIONS = 20;
+export const MAX_ACTION_EVENTS = 50;
+
 export const ICONS = [
   'AccordionIcon',
   'AccordionItemIcon',
@@ -97,6 +102,7 @@ export const OPTIONS = [
   'ACTION',
   'ACTION_INPUT',
   'ACTION_PROPERTIES',
+  'ACTION_MODEL',
   'AUTHENTICATION_PROFILE',
   'BUTTONGROUP',
   'COLOR',
@@ -164,3 +170,5 @@ export const EVENT_KIND = [
   'update',
   'zip',
 ];
+
+export const VARIABLE_KIND = ['construct', 'object'];
