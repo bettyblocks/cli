@@ -242,17 +242,24 @@ export interface PrefabAction {
   events?: PrefabActionStep[];
 }
 
+interface PrefabActionAssign {
+  leftHandSide: string;
+  ref: {
+    path: string[];
+  };
+}
+
 interface PrefabActionUpdateStepOption {
   ref: {
     object: string;
     customModel?: string;
   };
-  assign: string[];
+  assign: PrefabActionAssign[];
 }
 
 export interface PrefabActionCreateStepOption {
-  model: string;
-  assign: string[];
+  modelId: string;
+  assign: PrefabActionAssign[];
   ref: {
     customModel: string;
   };

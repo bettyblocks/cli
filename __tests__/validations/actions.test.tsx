@@ -258,9 +258,15 @@ test('Pass when a update event has options', (t: Context): void => {
             options: {
               ref: {
                 object: '#objectVariableId',
-                customModel: '#customModelId',
               },
-              assign: ['#property1', '#property2'],
+              assign: [
+                {
+                  leftHandSide: '#propertyId',
+                  ref: {
+                    path: ['#customModelVariableId', `#attribute_#property.id`],
+                  },
+                },
+              ],
             },
           },
         ],
@@ -291,11 +297,18 @@ test('Pass when create event has valid options', (t: Context): void => {
           {
             kind: 'create',
             options: {
-              model: '#modelId',
+              modelId: '#modelId',
               ref: {
                 customModel: '#customModelId',
               },
-              assign: ['#property1', '#property2'],
+              assign: [
+                {
+                  leftHandSide: '#propertyId',
+                  ref: {
+                    path: ['#customModelVariableId', `#attribute_#property.id`],
+                  },
+                },
+              ],
             },
           },
         ],
@@ -391,7 +404,14 @@ test('Throw when a assign event has options', (t: Context): void => {
               ref: {
                 object: '#customModelId',
               },
-              assign: ['#property1', '#property2'],
+              assign: [
+                {
+                  leftHandSide: '#propertyId',
+                  ref: {
+                    path: ['#customModelVariableId', `#attribute_#property.id`],
+                  },
+                },
+              ],
             },
           },
         ],

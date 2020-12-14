@@ -8,7 +8,9 @@ import {
 
 const assignSchema = Joi.object({
   leftHandSide: Joi.string().required(),
-  path: Joi.array().items(Joi.string()),
+  ref: Joi.object({
+    path: Joi.array().items(Joi.string()),
+  }),
 });
 
 export const actionSchema = Joi.object({
@@ -38,7 +40,7 @@ export const actionSchema = Joi.object({
                   modelId: Joi.string()
                     .allow('')
                     .required(),
-                  assign: Joi.array().items(Joi.string()),
+                  assign: Joi.array().items(assignSchema),
                   ref: Joi.object({
                     customModel: Joi.string().required(),
                   }),
