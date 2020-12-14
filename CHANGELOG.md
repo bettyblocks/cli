@@ -1,3 +1,10 @@
+## [23.19.2](https://github.com/bettyblocks/cli/compare/v23.19.1...v23.19.2) (2020-12-14)
+
+
+### Bug Fixes
+
+* configurable event options art 2744 ([#171](https://github.com/bettyblocks/cli/issues/171)) ([8009272](https://github.com/bettyblocks/cli/commit/8009272))
+
 ## [23.19.1](https://github.com/bettyblocks/cli/compare/v23.19.0...v23.19.1) (2020-11-30)
 
 
