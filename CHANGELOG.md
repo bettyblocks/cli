@@ -1,3 +1,10 @@
+# [23.20.0](https://github.com/bettyblocks/cli/compare/v23.19.2...v23.20.0) (2020-12-16)
+
+
+### Features
+
+* add icons for update form and create form ([8b8ab06](https://github.com/bettyblocks/cli/commit/8b8ab06))
+
 ## [23.19.2](https://github.com/bettyblocks/cli/compare/v23.19.1...v23.19.2) (2020-12-14)
 
 
