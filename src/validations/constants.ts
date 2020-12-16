@@ -26,6 +26,7 @@ export const ICONS = [
   'ColumnIcon',
   'ConditionalIcon',
   'ContainerIcon',
+  'CreateFormIcon',
   'DataContainer',
   'DataList',
   'DataTable',
@@ -95,6 +96,7 @@ export const ICONS = [
   'TimePickerIcon',
   'TitleIcon',
   'UnorderedListIcon',
+  'UpdateFormIcon',
   'UrlInputIcon',
 ];
 
