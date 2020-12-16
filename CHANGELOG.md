@@ -1,3 +1,10 @@
+# [23.21.0](https://github.com/bettyblocks/cli/compare/v23.20.0...v23.21.0) (2020-12-16)
+
+
+### Features
+
+* bump cli version in boilerplate package.json ([5dc22e6](https://github.com/bettyblocks/cli/commit/5dc22e6))
+
 # [23.20.0](https://github.com/bettyblocks/cli/compare/v23.19.2...v23.20.0) (2020-12-16)
 
 
