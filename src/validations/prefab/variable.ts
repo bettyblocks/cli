@@ -27,7 +27,9 @@ export const variableKindSchema = Joi.when('kind', {
 });
 
 export const variableSchema = Joi.object({
-  name: Joi.string().required(),
+  name: Joi.string()
+    .allow('')
+    .required(),
   kind: Joi.string()
     .valid(...VARIABLE_KIND)
     .required(),
