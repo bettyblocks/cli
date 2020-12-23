@@ -35,7 +35,8 @@ export const variableSchema = Joi.object({
     .required(),
   ref: Joi.object({
     id: Joi.string().required(),
-    endpointId: Joi.string().required(),
+    endpointId: Joi.string(),
+    actionId: Joi.string(),
   }).required(),
   options: variableKindSchema,
 });
