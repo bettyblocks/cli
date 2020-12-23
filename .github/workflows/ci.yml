@@ -14,7 +14,7 @@ jobs:
       - run: npm install -g yarn
       - run: yarn install --frozen-lockfile
       - name: Commit lint
-        run: yarn commitlint --from=master
+        run: yarn commitlint --from $(git rev-parse --short HEAD^1) --to $(git rev-parse --short HEAD^2)
       - name: Run prettier
         run: yarn prettier:write
       - name: Run build
