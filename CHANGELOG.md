@@ -1,3 +1,10 @@
+# [23.22.0](https://github.com/bettyblocks/cli/compare/v23.21.1...v23.22.0) (2020-12-24)
+
+
+### Features
+
+* support fields for login prefab ([#182](https://github.com/bettyblocks/cli/issues/182)) ([b77c124](https://github.com/bettyblocks/cli/commit/b77c124))
+
 ## [23.21.1](https://github.com/bettyblocks/cli/compare/v23.21.0...v23.21.1) (2020-12-24)
 
 
