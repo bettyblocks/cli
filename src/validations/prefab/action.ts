@@ -17,7 +17,29 @@ export const actionSchema = Joi.object({
   events: Joi.when('useNewRuntime', {
     is: true,
     then: Joi.array()
-      .items(Joi.object({ kind: Joi.valid(EVENT_KIND_NEW_RUNTIME) }))
+      .items(
+        Joi.object({
+          kind: Joi.valid(EVENT_KIND_NEW_RUNTIME),
+          options: Joi.when('kind', {
+            switch: [
+              {
+                is: 'authenticate_user',
+                then: Joi.object({
+                  authenticationProfileId: Joi.string()
+                    .allow('')
+                    .required(),
+                  ref: Joi.object({
+                    username: Joi.string().required(),
+                    password: Joi.string().required(),
+                    jwtAs: Joi.string().required(),
+                  }),
+                }),
+              },
+            ],
+            otherwise: Joi.forbidden(),
+          }),
+        }),
+      )
       .max(MAX_ACTION_EVENTS),
     otherwise: Joi.array()
       .items(
@@ -55,6 +77,16 @@ export const actionSchema = Joi.object({
                   }),
                 }),
               },
+              {
+                is: 'action',
+                then: Joi.object({
+                  assign: Joi.array().items(assignSchema),
+                  ref: Joi.object({
+                    modelAction: Joi.string().required(),
+                    resultAs: Joi.string(),
+                  }),
+                }),
+              },
             ],
             otherwise: Joi.forbidden(),
           }),
@@ -63,9 +95,20 @@ export const actionSchema = Joi.object({
       .max(MAX_ACTION_EVENTS),
   }),
   name: Joi.string().required(),
+  options: Joi.object({
+    ref: Joi.object({
+      result: Joi.string().required(),
+    }),
+  }),
   useNewRuntime: Joi.boolean().required(),
-  ref: Joi.object({
-    id: Joi.string().required(),
-    endpointId: Joi.string().required(),
+  ref: Joi.when('useNewRuntime', {
+    is: false,
+    then: Joi.object({
+      id: Joi.string().required(),
+      endpointId: Joi.string().required(),
+    }),
+    otherwise: Joi.object({
+      id: Joi.string().required(),
+    }),
   }).required(),
 });
