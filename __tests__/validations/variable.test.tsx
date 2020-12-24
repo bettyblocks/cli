@@ -39,7 +39,7 @@ test('Throw when variable kind is unsupported', (t: Context): void => {
     variables: [
       ({
         name: 'foo',
-        kind: 'string',
+        kind: 'integer',
         ref: {
           endpointId: '#endpointId',
           id: '#variableId',
@@ -52,7 +52,7 @@ test('Throw when variable kind is unsupported', (t: Context): void => {
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "variables[0].kind" must be one of [construct, object] at prefab: Prefab
+Property: "variables[0].kind" must be one of [construct, object, string] at prefab: Prefab
 `,
   });
 });
@@ -154,34 +154,6 @@ Property: "variables[0].ref.id" is required at prefab: Prefab
   });
 });
 
-test('Throw when construct variable does not have a endpointId ref', (t: Context): void => {
-  const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
-    variables: [
-      {
-        kind: 'construct',
-        name: 'foo',
-        ref: {
-          id: '#variableId',
-        },
-        options: {
-          modelId: '',
-          ref: { customModelId: '#customModelId' },
-        },
-      } as PrefabVariable,
-    ],
-    name: 'Prefab',
-    structure: [],
-  } as Prefab;
-
-  t.throws(() => validatePrefabs([prefab]), {
-    message: `
-Property: "variables[0].ref.endpointId" is required at prefab: Prefab
-`,
-  });
-});
-
 test('Throw when construct variable does not have a customModelId ref', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
@@ -226,6 +198,55 @@ test('Pass for valid construct variable', (t: Context): void => {
         options: {
           modelId: '',
           ref: { customModelId: 'baz' },
+        },
+      } as PrefabVariable,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Pass when using a string variable', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [
+      {
+        kind: 'string',
+        name: 'password',
+        ref: {
+          id: '#passwordVariableId',
+          actionId: '#loginActionId',
+        },
+      } as PrefabVariable,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
+test('Pass when using a object variable', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    variables: [
+      {
+        kind: 'object',
+        name: 'form_object',
+        ref: {
+          id: '#objectVariableId',
+          endpointId: '#endpointId',
+        },
+        options: {
+          modelId: '',
         },
       } as PrefabVariable,
     ],

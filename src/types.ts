@@ -236,7 +236,12 @@ export interface PrefabAction {
   name: string;
   ref: {
     id: string;
-    endpointId: string;
+    endpointId?: string;
+  };
+  options?: {
+    ref: {
+      result: string;
+    };
   };
   useNewRuntime: boolean;
   events?: PrefabActionStep[];
@@ -257,7 +262,7 @@ interface PrefabActionUpdateStepOption {
   assign: PrefabActionAssign[];
 }
 
-export interface PrefabActionCreateStepOption {
+interface PrefabActionCreateStepOption {
   modelId: string;
   assign: PrefabActionAssign[];
   ref: {
@@ -265,10 +270,19 @@ export interface PrefabActionCreateStepOption {
   };
 }
 
-export interface PrefabActionDeleteStepOption {
+interface PrefabActionDeleteStepOption {
   ref: {
     object: string;
     customModel: string;
+  };
+}
+
+interface AuthenticateUserStepOption {
+  authenticationProfileId: string;
+  ref: {
+    username: string;
+    password: string;
+    jwtAs: string;
   };
 }
 
@@ -277,17 +291,19 @@ export interface PrefabActionStep {
   options?:
     | PrefabActionUpdateStepOption
     | PrefabActionCreateStepOption
-    | PrefabActionDeleteStepOption;
+    | PrefabActionDeleteStepOption
+    | AuthenticateUserStepOption;
 }
 
-export type PrefabVariableKind = 'construct';
+export type PrefabVariableKind = 'construct' | 'object' | 'string';
 
 export interface PrefabVariable {
   kind: PrefabVariableKind;
   name: string;
   ref: {
-    endpointId: string;
+    actionId?: string;
+    endpointId?: string;
     id: string;
   };
-  options: unknown;
+  options?: unknown;
 }

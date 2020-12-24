@@ -131,7 +131,7 @@ test('Throw when action has no endpointId inside ref', (t: Context): void => {
     actions: [
       {
         name: 'foo',
-        useNewRuntime: true,
+        useNewRuntime: false,
         ref: { id: 'bar' },
       } as PrefabAction,
     ],
@@ -186,7 +186,6 @@ test('Pass when actions contains an event of a kind supported by the new runtime
         name: 'action_1',
         ref: {
           id: 'foo',
-          endpointId: 'bar',
         },
         useNewRuntime: true,
         events: [
@@ -357,6 +356,46 @@ test('Pass when a delete event has valid options', (t: Context): void => {
   t.pass();
 });
 
+test('Pass when a authenticate_user event has valid options', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [
+      {
+        name: 'Login user action',
+        ref: {
+          id: '#loginActionId',
+        },
+        options: {
+          ref: {
+            result: '#jwt',
+          },
+        },
+        useNewRuntime: true,
+        events: [
+          {
+            kind: 'authenticate_user',
+            options: {
+              authenticationProfileId: '',
+              ref: {
+                username: '#usernameVariableId',
+                password: '#passwordVariableId',
+                jwtAs: '#jwt',
+              },
+            },
+          },
+        ],
+      } as PrefabAction,
+    ],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  validatePrefabs([prefab]);
+
+  t.pass();
+});
+
 test('Pass when a update event has no options', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
@@ -468,7 +507,6 @@ test('Pass when action object does not contain any events', (t: Context): void =
         name: 'action_1',
         ref: {
           id: 'foo',
-          endpointId: 'bar',
         },
         useNewRuntime: true,
       } as PrefabAction,
@@ -491,7 +529,6 @@ test('Throw when component option has a value and a ref object with a value', (t
         name: 'action_1',
         ref: {
           id: 'foo',
-          endpointId: 'bar',
         },
         useNewRuntime: true,
       } as PrefabAction,
@@ -714,7 +751,6 @@ test('Throw when multiple action reference the same id', (t: Context): void => {
         name: 'action_1',
         ref: {
           id: 'foo',
-          endpointId: 'bar',
         },
         useNewRuntime: true,
       },
@@ -722,7 +758,6 @@ test('Throw when multiple action reference the same id', (t: Context): void => {
         name: 'action_2',
         ref: {
           id: 'foo',
-          endpointId: 'bar',
         },
         useNewRuntime: true,
       },

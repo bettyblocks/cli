@@ -37,7 +37,7 @@ export const actionSchema = Joi.object({
               },
             ],
             otherwise: Joi.forbidden(),
-          }).required(),
+          }),
         }),
       )
       .max(MAX_ACTION_EVENTS),
@@ -89,7 +89,7 @@ export const actionSchema = Joi.object({
               },
             ],
             otherwise: Joi.forbidden(),
-          }).required(),
+          }),
         }),
       )
       .max(MAX_ACTION_EVENTS),
@@ -101,8 +101,14 @@ export const actionSchema = Joi.object({
     }),
   }),
   useNewRuntime: Joi.boolean().required(),
-  ref: Joi.object({
-    id: Joi.string().required(),
-    endpointId: Joi.string(),
+  ref: Joi.when('useNewRuntime', {
+    is: false,
+    then: Joi.object({
+      id: Joi.string().required(),
+      endpointId: Joi.string().required(),
+    }),
+    otherwise: Joi.object({
+      id: Joi.string().required(),
+    }),
   }).required(),
 });
