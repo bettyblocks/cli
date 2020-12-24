@@ -1,3 +1,12 @@
+## [23.21.1](https://github.com/bettyblocks/cli/compare/v23.21.0...v23.21.1) (2020-12-24)
+
+
+### Bug Fixes
+
+* allow empty string for variable name ([#175](https://github.com/bettyblocks/cli/issues/175)) ([5e58d83](https://github.com/bettyblocks/cli/commit/5e58d83))
+* replace travis with github actions ([e5f6591](https://github.com/bettyblocks/cli/commit/e5f6591))
+* switch to github actions ([#177](https://github.com/bettyblocks/cli/issues/177)) ([34c7261](https://github.com/bettyblocks/cli/commit/34c7261))
+
 # [23.21.0](https://github.com/bettyblocks/cli/compare/v23.20.0...v23.21.0) (2020-12-16)
 
 
