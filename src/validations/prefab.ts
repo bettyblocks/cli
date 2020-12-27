@@ -51,7 +51,7 @@ const validate = (prefab: Prefab): void => {
     findDuplicates(variables, 'action', { ref: 'id' });
   }
 
-  if (typeof error !== 'undefined') {
+  if (error) {
     throw new Error(
       chalk.red(`\nProperty: ${error.message} at prefab: ${prefab.name}\n`),
     );

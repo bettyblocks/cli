@@ -6,13 +6,24 @@ const parametersSchema = Joi.when('type', {
   is: 'Global',
   then: Joi.array()
     .items(
-      Joi.object({
-        name: Joi.string().required(),
-        parameter: Joi.string().required(),
-        ref: Joi.object({
-          component: Joi.string().required(),
-        }).required(),
-      }),
+      Joi.alternatives()
+        .try(
+          Joi.object({
+            name: Joi.string().required(),
+            parameter: Joi.string().required(),
+            ref: Joi.object({
+              componentId: Joi.string().required(),
+            }).required(),
+          }),
+          Joi.object({
+            path: Joi.string().required(),
+            parameter: Joi.string().required(),
+            id: Joi.array()
+              .items(Joi.string().required())
+              .required(),
+          }),
+        )
+        .required(),
     )
     .required(),
   otherwise: Joi.forbidden(),
