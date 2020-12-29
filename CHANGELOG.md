@@ -1,3 +1,10 @@
+# [23.24.0](https://github.com/bettyblocks/cli/compare/v23.23.0...v23.24.0) (2020-12-29)
+
+
+### Features
+
+* support delete action event ([#185](https://github.com/bettyblocks/cli/issues/185)) ([3937c3d](https://github.com/bettyblocks/cli/commit/3937c3d))
+
 # [23.23.0](https://github.com/bettyblocks/cli/compare/v23.22.0...v23.23.0) (2020-12-29)
 
 
