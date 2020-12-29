@@ -73,7 +73,6 @@ export const actionSchema = Joi.object({
                 then: Joi.object({
                   ref: Joi.object({
                     object: Joi.string().required(),
-                    customModel: Joi.string().required(),
                   }),
                 }),
               },
