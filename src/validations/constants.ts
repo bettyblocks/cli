@@ -65,6 +65,7 @@ export const ICONS = [
   'Layout3333Icon',
   'Layout84Icon',
   'ListItemIcon',
+  'LoginFormIcon',
   'MultiLineIcon',
   'MultiSelectIcon',
   'NavbarIcon',
