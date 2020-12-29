@@ -340,7 +340,6 @@ test('Pass when a delete event has valid options', (t: Context): void => {
             options: {
               ref: {
                 object: '#objectVariableId',
-                customModel: '#customModelId',
               },
             },
           },
