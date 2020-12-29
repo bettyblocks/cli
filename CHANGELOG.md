@@ -1,3 +1,10 @@
+# [23.23.0](https://github.com/bettyblocks/cli/compare/v23.22.0...v23.23.0) (2020-12-29)
+
+
+### Features
+
+* login form icon ([#184](https://github.com/bettyblocks/cli/issues/184)) ([1f215b6](https://github.com/bettyblocks/cli/commit/1f215b6))
+
 # [23.22.0](https://github.com/bettyblocks/cli/compare/v23.21.1...v23.22.0) (2020-12-24)
 
 
