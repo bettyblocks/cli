@@ -16,10 +16,11 @@ const parametersSchema = Joi.when('type', {
             }).required(),
           }),
           Joi.object({
-            path: Joi.string().required(),
+            path: Joi.string().allow(null),
             parameter: Joi.string().required(),
             id: Joi.array()
-              .items(Joi.string().required())
+              .items(Joi.string())
+              .allow(null)
               .required(),
           }),
         )
