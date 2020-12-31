@@ -2,25 +2,28 @@ import Joi from 'joi';
 
 import { INTERACTION_TYPE } from '../constants';
 
+const baseParameterSchema = Joi.object().keys({
+  parameter: Joi.string().required(),
+});
+
 const parametersSchema = Joi.when('type', {
   is: 'Global',
   then: Joi.array()
     .items(
       Joi.alternatives()
         .try(
-          Joi.object({
+          baseParameterSchema.keys({
             name: Joi.string().required(),
-            parameter: Joi.string().required(),
             ref: Joi.object({
               componentId: Joi.string().required(),
             }).required(),
           }),
-          Joi.object({
-            path: Joi.string().allow(null),
-            parameter: Joi.string().required(),
+          baseParameterSchema.keys({
+            path: Joi.string().required(),
+          }),
+          baseParameterSchema.keys({
             id: Joi.array()
               .items(Joi.string())
-              .allow(null)
               .required(),
           }),
         )
