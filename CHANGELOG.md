@@ -1,3 +1,10 @@
+# [23.25.0](https://github.com/bettyblocks/cli/compare/v23.24.0...v23.25.0) (2020-12-31)
+
+
+### Features
+
+* support either component ref or id option in global interaction ([#183](https://github.com/bettyblocks/cli/issues/183)) ([9c3e968](https://github.com/bettyblocks/cli/commit/9c3e968))
+
 # [23.24.0](https://github.com/bettyblocks/cli/compare/v23.23.0...v23.24.0) (2020-12-29)
 
 
