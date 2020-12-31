@@ -204,13 +204,23 @@ interface BasePrefabInteraction<T extends InteractionType> {
   type: T;
 }
 
-export interface PrefabInteractionParameter {
+interface ParameterOptionWithId {
+  path: string;
+  parameter: string;
+  id: string[];
+}
+
+interface ParameterOptionWithComponentRef {
   name: string;
   parameter: string;
   ref: {
-    component: string;
+    componentId: string;
   };
 }
+
+export type PrefabInteractionParameter =
+  | ParameterOptionWithId
+  | ParameterOptionWithComponentRef;
 
 export type PrefabInteraction =
   | BasePrefabInteraction<InteractionType.Custom>
