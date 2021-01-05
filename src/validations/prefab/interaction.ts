@@ -12,8 +12,8 @@ const parametersSchema = Joi.when('type', {
         ref: Joi.object({
           componentId: Joi.string().required(),
         }),
-        path: Joi.array().items(Joi.string().required()),
-        id: Joi.array().items(Joi.string().required()),
+        path: Joi.array().items(Joi.string()),
+        id: Joi.array().items(Joi.string()),
       })
         .xor('name', 'path', 'id')
         .with('name', 'ref'),
