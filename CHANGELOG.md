@@ -1,3 +1,10 @@
+## [23.25.1](https://github.com/bettyblocks/cli/compare/v23.25.0...v23.25.1) (2021-01-05)
+
+
+### Bug Fixes
+
+* parameter interaction validation and add tests ([#186](https://github.com/bettyblocks/cli/issues/186)) ([6798dc2](https://github.com/bettyblocks/cli/commit/6798dc2))
+
 # [23.25.0](https://github.com/bettyblocks/cli/compare/v23.24.0...v23.25.0) (2020-12-31)
 
 
