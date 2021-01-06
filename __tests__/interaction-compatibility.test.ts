@@ -18,6 +18,18 @@ test('extract compatibility for: () => boolean', (t: Context): void => {
   });
 });
 
+test('extract compatibility for: () => void', (t: Context): void => {
+  const code = 'function noop(): void { return; }';
+
+  const compatibility = toCompatibility(code);
+
+  t.deepEqual(compatibility, {
+    name: 'noop',
+    parameters: {},
+    type: InteractionOptionType.Void,
+  });
+});
+
 test('extract compatibility for: ({ event, price, quantity }: { event: Event, price: number, quantity: number }) => number', (t: Context): void => {
   const code = `
     function subtotal({ event, price, quantity }: { event: Event, price: number, quantity: number }): number { 
@@ -70,15 +82,6 @@ test('fail extraction when passing incompatible type for: subtotal({ event, pric
   t.throws(() => toCompatibility(code), {
     name: 'TypeError',
     message: 'unsupported type: PriceType',
-  });
-});
-
-test('fail extraction: () => void', (t: Context): void => {
-  const code = 'function f(): void { }';
-
-  t.throws(() => toCompatibility(code), {
-    name: 'TypeError',
-    message: 'unsupported type: void',
   });
 });
 
