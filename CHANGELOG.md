@@ -1,3 +1,10 @@
+# [23.26.0](https://github.com/bettyblocks/cli/compare/v23.25.1...v23.26.0) (2021-01-06)
+
+
+### Features
+
+* global void type interactions are now valid ([#187](https://github.com/bettyblocks/cli/issues/187)) ([dfedb7a](https://github.com/bettyblocks/cli/commit/dfedb7a))
+
 ## [23.25.1](https://github.com/bettyblocks/cli/compare/v23.25.0...v23.25.1) (2021-01-05)
 
 
