@@ -28,6 +28,7 @@ const compatibilityValues: InteractionOptionType[] = [
   InteractionOptionType.Number,
   InteractionOptionType.String,
   InteractionOptionType.Event,
+  InteractionOptionType.Void,
 ];
 
 const isInteractionOptionType = (
@@ -76,6 +77,10 @@ const compatibilityLiteral = (node: TypeNode): StringLiteral => {
     }
     case 'string': {
       return createStringLiteral(InteractionOptionType.String);
+    }
+
+    case 'void': {
+      return createStringLiteral(InteractionOptionType.Void);
     }
     default: {
       throw new TypeError(`unsupported type: ${text}`);

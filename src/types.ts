@@ -153,6 +153,7 @@ export enum InteractionOptionType {
   Number = 'Number',
   String = 'String',
   Event = 'Event',
+  Void = 'Void',
 }
 
 // TODO: Add support
