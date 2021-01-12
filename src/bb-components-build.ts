@@ -2,7 +2,7 @@
 
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
-import { outputJson, pathExists, promises } from 'fs-extra';
+import { outputJson, pathExists, promises, remove } from 'fs-extra';
 
 import extractComponentCompatibility from './components/compatibility';
 import extractInteractionCompatibility from './interactions/compatibility';
@@ -166,11 +166,27 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
     await mkdir(distDir, { recursive: true });
 
-    await Promise.all([
+    const outputPromises = [
       outputJson(`${distDir}/prefabs.json`, prefabs),
       outputJson(`${distDir}/templates.json`, components),
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
-    ]);
+    ];
+
+    const pagePrefabs = prefabs.filter(
+      (prefab: Prefab): boolean => prefab.type === 'page',
+    );
+
+    if (pagePrefabs.length > 0) {
+      outputPromises.push(
+        outputJson(`${distDir}/pagePrefabs.json`, pagePrefabs),
+      );
+    }
+
+    if (pagePrefabs.length === 0 && pathExists(`${distDir}/pagePrefabs.json`)) {
+      remove(`${distDir}/pagePrefabs.json`);
+    }
+
+    await Promise.all(outputPromises);
 
     console.info(chalk.green('Success, the component set has been built'));
   } catch ({ file, name, message }) {
