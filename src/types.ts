@@ -187,6 +187,8 @@ export interface Prefab {
   interactions?: PrefabInteraction[];
   structure: PrefabComponent[];
   variables?: PrefabVariable[];
+  type?: string;
+  description?: string;
 }
 
 export enum InteractionType {
