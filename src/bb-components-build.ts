@@ -166,15 +166,15 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
     await mkdir(distDir, { recursive: true });
 
+    const defaultPrefabs = prefabs.filter(prefab => prefab.type !== 'page');
+
     const outputPromises = [
-      outputJson(`${distDir}/prefabs.json`, prefabs),
+      outputJson(`${distDir}/prefabs.json`, defaultPrefabs),
       outputJson(`${distDir}/templates.json`, components),
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ];
 
-    const pagePrefabs = prefabs.filter(
-      (prefab: Prefab): boolean => prefab.type === 'page',
-    );
+    const pagePrefabs = prefabs.filter(prefab => prefab.type === 'page');
 
     if (pagePrefabs.length > 0) {
       outputPromises.push(
