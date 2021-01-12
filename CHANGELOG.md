@@ -1,3 +1,10 @@
+# [23.27.0](https://github.com/bettyblocks/cli/compare/v23.26.0...v23.27.0) (2021-01-12)
+
+
+### Features
+
+* build page prefabs to separate file ([dc7b15d](https://github.com/bettyblocks/cli/commit/dc7b15d))
+
 # [23.26.0](https://github.com/bettyblocks/cli/compare/v23.25.1...v23.26.0) (2021-01-06)
 
 
