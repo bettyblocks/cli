@@ -2,7 +2,7 @@
 
 import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { readJSON } from 'fs-extra';
+import { readJSON, pathExists } from 'fs-extra';
 
 import uploadBlob, {
   BlockBlobUploadResponseExtended,
@@ -93,9 +93,12 @@ const publish = async (
 
 (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
-  const [{ url }] = await Promise.all(
-    ['prefabs.json', 'templates.json', 'interactions.json'].map(publish),
-  );
+  const files = ['prefabs.json', 'templates.json', 'interactions.json'];
+
+  if (pathExists(`${distDir}/pagePrefabs.json`)) {
+    files.push('pagePrefabs.json');
+  }
+  const [{ url }] = await Promise.all(files.map(publish));
 
   console.log(
     chalk.green(
