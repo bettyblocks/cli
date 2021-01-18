@@ -1,3 +1,10 @@
+# [23.28.0](https://github.com/bettyblocks/cli/compare/v23.27.0...v23.28.0) (2021-01-18)
+
+
+### Features
+
+* publish page prefabs ([#189](https://github.com/bettyblocks/cli/issues/189)) ([ff62d11](https://github.com/bettyblocks/cli/commit/ff62d11))
+
 # [23.27.0](https://github.com/bettyblocks/cli/compare/v23.26.0...v23.27.0) (2021-01-12)
 
 
