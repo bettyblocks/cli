@@ -3,7 +3,7 @@ import {
   createNodeArray,
   createObjectLiteral,
   createPropertyAssignment,
-  createStatement,
+  createExpressionStatement,
   createStringLiteral,
   ExpressionStatement,
   isFunctionDeclaration,
@@ -19,6 +19,7 @@ import {
   transpileModule,
   TypeNode,
   visitNode,
+  ModuleKind,
 } from 'typescript';
 
 import { InteractionCompatibility, InteractionOptionType } from '../types';
@@ -29,6 +30,7 @@ const compatibilityValues: InteractionOptionType[] = [
   InteractionOptionType.String,
   InteractionOptionType.Event,
   InteractionOptionType.Void,
+  InteractionOptionType.Page,
 ];
 
 const isInteractionOptionType = (
@@ -82,6 +84,11 @@ const compatibilityLiteral = (node: TypeNode): StringLiteral => {
     case 'void': {
       return createStringLiteral(InteractionOptionType.Void);
     }
+
+    case 'Page': {
+      return createStringLiteral(InteractionOptionType.Page);
+    }
+
     default: {
       throw new TypeError(`unsupported type: ${text}`);
     }
@@ -157,7 +164,7 @@ const generateCompatibility = (
   parameters: ParameterDeclaration,
 ): NodeArray<ExpressionStatement> =>
   createNodeArray([
-    createStatement(
+    createExpressionStatement(
       createObjectLiteral([
         createPropertyAssignment(
           createStringLiteral('name'),
@@ -189,7 +196,7 @@ const compatibilityTransformer = (): TransformerFactory<
           throw new RangeError('file does not contain an interaction');
         }
 
-        if (statements.length > 1) {
+        if (statements.length > 2) {
           throw new RangeError('file contains multiple statements');
         }
 
@@ -212,12 +219,13 @@ const compatibilityTransformer = (): TransformerFactory<
             throw new TypeError(`return type of ${name} is undefined`);
           }
 
-          node.statements = generateCompatibility(
+          const newStatements = generateCompatibility(
             name,
             type,
             parameters[0] || {},
           );
 
+          node.statements = newStatements;
           return node;
         }
       }
@@ -230,15 +238,21 @@ expected expression of the kind
 `);
     },
   );
-
 export default (code: string): InteractionCompatibility => {
-  const { outputText } = transpileModule(code, {
+  const result = transpileModule(code, {
     transformers: { before: [compatibilityTransformer()] },
+    compilerOptions: { module: ModuleKind.CommonJS },
   });
 
-  const interaction = JSON.parse(
-    outputText.replace(/^[^{]+/, '').replace(/[^}]+$/, ''),
-  );
+  const { outputText } = result;
+
+  const matches = outputText.match(/(\{\s"name".+\})/g);
+
+  if (!matches) throw new Error('this is impossible');
+
+  const [metaData] = matches;
+
+  const interaction = JSON.parse(metaData);
 
   if (isInteraction(interaction)) {
     return interaction;

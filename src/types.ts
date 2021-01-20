@@ -154,6 +154,7 @@ export enum InteractionOptionType {
   String = 'String',
   Event = 'Event',
   Void = 'Void',
+  Page = 'Page',
 }
 
 // TODO: Add support
