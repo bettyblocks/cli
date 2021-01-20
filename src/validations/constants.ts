@@ -91,6 +91,7 @@ export const ICONS = [
   'StepIcon',
   'StepperIcon',
   'SubmitButtonIcon',
+  'SwitchIcon',
   'TabIcon',
   'TabsIcon',
   'Table',
