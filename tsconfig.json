@@ -11,8 +11,8 @@
     "typeRoots": ["./node_modules/@types"],
     "baseUrl": ".",
     "watch": false,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "__tests__", "src/interactions"]
+  "exclude": ["node_modules", "__tests__", "src/interactions"],
 }
