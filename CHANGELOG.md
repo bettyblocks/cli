@@ -1,3 +1,11 @@
+# [23.30.0](https://github.com/bettyblocks/cli/compare/v23.29.0...v23.30.0) (2021-01-21)
+
+
+### Features
+
+* add list with data icon ([3440376](https://github.com/bettyblocks/cli/commit/3440376))
+* add switch icon ([0131c28](https://github.com/bettyblocks/cli/commit/0131c28))
+
 # [23.29.0](https://github.com/bettyblocks/cli/compare/v23.28.0...v23.29.0) (2021-01-19)
 
 
