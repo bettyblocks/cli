@@ -33,6 +33,18 @@ test('Pass when actions is empty list', (t: Context): void => {
   t.pass();
 });
 
+test('Pass when action has no name', (t: Context): void => {
+  const prefab = {
+    category: 'CONTENT',
+    icon: 'TitleIcon',
+    actions: [{} as PrefabAction],
+    name: 'Prefab',
+    structure: [],
+  } as Prefab;
+
+  t.pass();
+});
+
 test('Throw when action has no useNewRuntime', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
