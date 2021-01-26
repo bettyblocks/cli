@@ -1,3 +1,10 @@
+# [23.31.0](https://github.com/bettyblocks/cli/compare/v23.30.0...v23.31.0) (2021-01-26)
+
+
+### Features
+
+* **ART-2788:** Make action-name optional in prefabs. ([#192](https://github.com/bettyblocks/cli/issues/192)) ([9c5bf63](https://github.com/bettyblocks/cli/commit/9c5bf63))
+
 # [23.30.0](https://github.com/bettyblocks/cli/compare/v23.29.0...v23.30.0) (2021-01-21)
 
 
