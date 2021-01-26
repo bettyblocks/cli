@@ -93,7 +93,7 @@ export const actionSchema = Joi.object({
       )
       .max(MAX_ACTION_EVENTS),
   }),
-  name: Joi.string().required(),
+  name: Joi.string(),
   options: Joi.object({
     ref: Joi.object({
       result: Joi.string().required(),

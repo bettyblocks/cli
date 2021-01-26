@@ -33,7 +33,7 @@ test('Pass when actions is empty list', (t: Context): void => {
   t.pass();
 });
 
-test('Throw when action has no name', (t: Context): void => {
+test('Pass when action has no name', (t: Context): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -42,11 +42,7 @@ test('Throw when action has no name', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
-    message: `
-Property: "actions[0].name" is required at prefab: Prefab
-`,
-  });
+  t.pass();
 });
 
 test('Throw when action has no useNewRuntime', (t: Context): void => {
