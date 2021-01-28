@@ -28,10 +28,8 @@ export default (filename: string): Interaction => {
 
       interaction.name = functionName;
 
-      interaction.function = node.getText();
-
       // return type
-      const typeNode = node.type && node.type;
+      const typeNode = node.type;
       if (!typeNode)
         throw new Error(`You forgot to declare a type for ${interactionName}`);
 
@@ -40,13 +38,6 @@ export default (filename: string): Interaction => {
       );
 
       interaction.type = Case.pascal(returnType) as InteractionOptionType;
-
-      // function body
-      const functionBody = node.getText(sourceFile);
-      if (!functionBody)
-        throw new Error(
-          `You forgot to add code to your interaction for ${interactionName}`,
-        );
 
       if (node.parameters.length > 1) {
         throw new Error(`Only one parameter is allowed for ${interactionName}`);
@@ -76,10 +67,18 @@ export default (filename: string): Interaction => {
         string,
         InteractionOptionType
       >;
+
+      // function body
+      const functionBody = node.getText(sourceFile);
+      if (!functionBody) {
+        throw new Error(
+          `You forgot to add code to your interaction for ${interactionName}`,
+        );
+      }
+
+      interaction.function = ts.transpileModule(node.getText(), {}).outputText;
     }
   });
-
-  console.log(interaction);
 
   return interaction as Interaction;
 };
