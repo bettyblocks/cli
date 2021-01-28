@@ -68,6 +68,8 @@ export const ICONS = [
   'ListItemIcon',
   'ListWithDataIcon',
   'LoginFormIcon',
+  'MenuIcon',
+  'MenuItemIcon',
   'MultiLineIcon',
   'MultiSelectIcon',
   'NavbarIcon',
