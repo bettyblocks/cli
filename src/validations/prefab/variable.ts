@@ -33,7 +33,6 @@ export const variableSchema = Joi.object({
   kind: Joi.string()
     .valid(...VARIABLE_KIND)
     .required(),
-  pageId: Joi.string().allow(''),
   ref: Joi.object({
     id: Joi.string().required(),
     endpointId: Joi.string(),
