@@ -39,7 +39,7 @@ test('Throw when variable kind is unsupported', (t: Context): void => {
     variables: [
       ({
         name: 'foo',
-        kind: 'integer',
+        kind: 'collection',
         ref: {
           endpointId: '#endpointId',
           id: '#variableId',
@@ -52,7 +52,7 @@ test('Throw when variable kind is unsupported', (t: Context): void => {
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
-Property: "variables[0].kind" must be one of [construct, object, string] at prefab: Prefab
+Property: "variables[0].kind" must be one of [construct, object, string, integer] at prefab: Prefab
 `,
   });
 });
