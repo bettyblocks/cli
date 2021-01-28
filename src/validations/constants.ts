@@ -180,4 +180,4 @@ export const EVENT_KIND = [
   'zip',
 ];
 
-export const VARIABLE_KIND = ['construct', 'object', 'string'];
+export const VARIABLE_KIND = ['construct', 'object', 'string', 'integer'];
