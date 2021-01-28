@@ -1,3 +1,10 @@
+## [23.32.1](https://github.com/bettyblocks/cli/compare/v23.32.0...v23.32.1) (2021-01-28)
+
+
+### Bug Fixes
+
+* add Integer to allowed variable_kinds and allow pageId for variable ([#194](https://github.com/bettyblocks/cli/issues/194)) ([a970605](https://github.com/bettyblocks/cli/commit/a970605))
+
 # [23.32.0](https://github.com/bettyblocks/cli/compare/v23.31.0...v23.32.0) (2021-01-28)
 
 
