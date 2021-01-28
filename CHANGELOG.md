@@ -1,3 +1,10 @@
+# [23.32.0](https://github.com/bettyblocks/cli/compare/v23.31.0...v23.32.0) (2021-01-28)
+
+
+### Features
+
+* add menu icons to validation ([4e27050](https://github.com/bettyblocks/cli/commit/4e27050))
+
 # [23.31.0](https://github.com/bettyblocks/cli/compare/v23.30.0...v23.31.0) (2021-01-26)
 
 
