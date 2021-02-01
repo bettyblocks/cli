@@ -1,3 +1,10 @@
+## [23.32.2](https://github.com/bettyblocks/cli/compare/v23.32.1...v23.32.2) (2021-02-01)
+
+
+### Bug Fixes
+
+* remove travis file ([#197](https://github.com/bettyblocks/cli/issues/197)) ([3c1c8db](https://github.com/bettyblocks/cli/commit/3c1c8db))
+
 ## [23.32.1](https://github.com/bettyblocks/cli/compare/v23.32.0...v23.32.1) (2021-01-28)
 
 
