@@ -135,7 +135,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
           return {
             function: code,
-            ...extractInteractionCompatibility(code),
+            ...extractInteractionCompatibility(`${srcDir}/${file}`),
           };
         } catch (error) {
           error.file = file;

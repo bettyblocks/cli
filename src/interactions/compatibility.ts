@@ -1,248 +1,106 @@
-/* eslint-disable no-param-reassign */
-import {
-  createNodeArray,
-  createObjectLiteral,
-  createPropertyAssignment,
-  createStatement,
-  createStringLiteral,
-  ExpressionStatement,
-  isFunctionDeclaration,
-  isSourceFile,
-  Node,
-  NodeArray,
-  ParameterDeclaration,
-  PropertyAssignment,
-  SourceFile,
-  StringLiteral,
-  Transformer,
-  TransformerFactory,
-  transpileModule,
-  TypeNode,
-  visitNode,
-} from 'typescript';
+import * as ts from 'typescript';
+import path from 'path';
+import Case from 'case';
+import { Interaction, InteractionOptionType } from '../types';
 
-import { InteractionCompatibility, InteractionOptionType } from '../types';
+const allowedTypes = ['number', 'string', 'boolean', 'Page', 'Event', 'void'];
 
-const compatibilityValues: InteractionOptionType[] = [
-  InteractionOptionType.Boolean,
-  InteractionOptionType.Number,
-  InteractionOptionType.String,
-  InteractionOptionType.Event,
-  InteractionOptionType.Void,
-];
+export default (filename: string): Interaction => {
+  if (!filename)
+    throw new Error(`unable to determine interaction name from ${filename}`);
 
-const isInteractionOptionType = (
-  value: unknown,
-): value is InteractionOptionType =>
-  typeof value === 'string' &&
-  compatibilityValues.includes(value as InteractionOptionType);
+  const program = ts.createProgram([filename], {});
+  const typeChecker = program.getTypeChecker();
+  const sourceFile = program.getSourceFile(filename);
 
-const isParameters = (value: unknown): boolean => {
-  if (typeof value === 'object' && value !== null) {
-    const names = Object.keys(value);
-    const types = Object.values(value);
+  if (!sourceFile) throw new Error('no source file');
 
-    return (
-      names.every((name: unknown): boolean => typeof name === 'string') &&
-      types.every(isInteractionOptionType)
-    );
-  }
-
-  return false;
-};
-
-const isInteraction = (value: unknown): value is InteractionCompatibility => {
-  if (typeof value === 'object' && value !== null) {
-    const { name, parameters, type } = value as InteractionCompatibility;
-
-    return (
-      typeof name === 'string' &&
-      isParameters(parameters) &&
-      isInteractionOptionType(type)
-    );
-  }
-
-  return false;
-};
-
-const compatibilityLiteral = (node: TypeNode): StringLiteral => {
-  const text = node.getText();
-
-  switch (text) {
-    case 'boolean': {
-      return createStringLiteral(InteractionOptionType.Boolean);
-    }
-    case 'number': {
-      return createStringLiteral(InteractionOptionType.Number);
-    }
-    case 'string': {
-      return createStringLiteral(InteractionOptionType.String);
-    }
-
-    case 'void': {
-      return createStringLiteral(InteractionOptionType.Void);
-    }
-    default: {
-      throw new TypeError(`unsupported type: ${text}`);
-    }
-  }
-};
-
-interface TypeDefinition {
-  name: Node;
-  type: Node;
-}
-
-const createParameter = ({
-  name,
-  type,
-}: TypeDefinition): PropertyAssignment => {
-  const text = name.getText();
-
-  if (typeof type === 'undefined') {
-    throw new TypeError(`typeof ${text} is undefined`);
-  }
-
-  return createPropertyAssignment(
-    createStringLiteral(text),
-    compatibilityLiteral(type as TypeNode),
-  );
-};
-
-const parseParameters = ({
-  name,
-  type,
-}: ParameterDeclaration): PropertyAssignment[] => {
-  if (typeof type === 'undefined' && typeof name === 'undefined') {
-    return [];
-  }
-
-  if (typeof type === 'undefined') {
-    throw new TypeError(`type of parameter ${name.getText()} is undefined`);
-  }
-
-  const namedParameters: string[] = [];
-  const types: TypeDefinition[] = [];
-
-  name.forEachChild(child =>
-    child.getChildren().forEach(param => namedParameters.push(param.getText())),
+  const interactionName = Case.camel(
+    path.basename(filename).replace(/.ts/, ''),
   );
 
-  type.forEachChild(child => {
-    const [childName, , childType] = child.getChildren();
-    types.push({
-      name: childName,
-      type: childType,
-    });
-  });
+  const interaction: Partial<Interaction> = {};
 
-  const typeDefinitions: PropertyAssignment[] = [];
-
-  type.forEachChild(child => {
-    const [childName, , childType] = child.getChildren();
-    if (childType.getText() !== 'Event') {
-      typeDefinitions[typeDefinitions.length] = createParameter({
-        name: childName,
-        type: childType,
-      });
-    }
-  });
-
-  return typeDefinitions;
-};
-
-const generateCompatibility = (
-  name: string,
-  type: TypeNode,
-  parameters: ParameterDeclaration,
-): NodeArray<ExpressionStatement> =>
-  createNodeArray([
-    createStatement(
-      createObjectLiteral([
-        createPropertyAssignment(
-          createStringLiteral('name'),
-          createStringLiteral(name),
-        ),
-        createPropertyAssignment(
-          createStringLiteral('parameters'),
-          createObjectLiteral(parseParameters(parameters)),
-        ),
-        createPropertyAssignment(
-          createStringLiteral('type'),
-          compatibilityLiteral(type),
-        ),
-      ]),
-    ),
-  ]);
-
-const compatibilityTransformer = (): TransformerFactory<
-  SourceFile
-> => (): Transformer<SourceFile> => (sourceFile: SourceFile): SourceFile =>
-  visitNode(
-    sourceFile,
-    (node: Node): Node => {
-      if (isSourceFile(node)) {
-        const { statements } = node;
-        const [statement] = statements.filter(isFunctionDeclaration);
-
-        if (statements.length === 0) {
-          throw new RangeError('file does not contain an interaction');
-        }
-
-        if (statements.length > 1) {
-          throw new RangeError('file contains multiple statements');
-        }
-
-        if (statement && isFunctionDeclaration(statement)) {
-          const { parameters, type, name: nameNode } = statement;
-
-          if (parameters.length > 1) {
-            throw new TypeError(
-              `function statement has too many parameters, expected 0 or 1 but received ${parameters.length}`,
-            );
-          }
-
-          if (typeof nameNode === 'undefined') {
-            throw new TypeError(`function name indentifier is not defined`);
-          }
-
-          const name = nameNode.getText();
-
-          if (typeof type === 'undefined') {
-            throw new TypeError(`return type of ${name} is undefined`);
-          }
-
-          node.statements = generateCompatibility(
-            name,
-            type,
-            parameters[0] || {},
-          );
-
-          return node;
-        }
+  // Loop through the root AST nodes of the file
+  ts.forEachChild(sourceFile, node => {
+    if (ts.isFunctionDeclaration(node)) {
+      // name
+      const functionName = node.name ? node.name.text : '';
+      if (functionName !== interactionName) {
+        throw new RangeError('file contains multiple statements');
       }
 
-      throw new TypeError(`
-expected expression of the kind
-  function interaction({ event, argument }: { event: Event, argument: ArgumentType }): ReturnType {
-    // body
-  }
-`);
-    },
-  );
+      interaction.name = functionName;
+      interaction.parameters = {};
 
-export default (code: string): InteractionCompatibility => {
-  const { outputText } = transpileModule(code, {
-    transformers: { before: [compatibilityTransformer()] },
+      // return type
+      const typeNode = node.type;
+      if (!typeNode) {
+        throw new Error(`You forgot to declare a type for ${interactionName}`);
+      }
+
+      const returnType = typeChecker.typeToString(
+        typeChecker.getTypeFromTypeNode(typeNode),
+      );
+
+      interaction.type = Case.pascal(returnType) as InteractionOptionType;
+
+      if (node.parameters.length > 1) {
+        throw new Error(`Only one parameter is allowed for ${interactionName}`);
+      }
+
+      const [firstParameter] = node.parameters;
+
+      if (firstParameter) {
+        if (!firstParameter.type) {
+          throw new Error(
+            `You forgot to add a type to the parameter "${firstParameter.name.getText()}" for ${interactionName}`,
+          );
+        }
+
+        const t = typeChecker.getTypeFromTypeNode(firstParameter.type);
+
+        const parameters: Record<string, string> = JSON.parse(
+          typeChecker
+            .typeToString(t)
+            .replace(/;(?!.*;)/g, '')
+            .replace(/;/g, ',')
+            .replace(/(\w+)/g, '"$1"'),
+        );
+
+        Object.entries(parameters).forEach(([paramName, paramType]) => {
+          if (!allowedTypes.includes(paramType)) {
+            throw new TypeError(`unsupported type for: ${paramName}`);
+          }
+          parameters[paramName] = Case.pascal(paramType);
+        });
+
+        interaction.parameters = parameters as Record<
+          string,
+          InteractionOptionType
+        >;
+      }
+
+      // function body
+      const functionBody = node.getText(sourceFile);
+      if (!functionBody) {
+        throw new Error(
+          `You forgot to add code to your interaction for ${interactionName}`,
+        );
+      }
+
+      interaction.function = ts.transpileModule(node.getText(), {}).outputText;
+    }
   });
 
-  const interaction = JSON.parse(
-    outputText.replace(/^[^{]+/, '').replace(/[^}]+$/, ''),
-  );
-
-  if (isInteraction(interaction)) {
-    return interaction;
+  if (!interaction.function) {
+    throw new RangeError(`
+    expected expression of the kind
+      function ${interactionName}({ event, argument }: { event: Event, argument: ArgumentType }): ReturnType {
+        // body
+      }
+    `);
   }
 
-  throw new TypeError('object is not an Interaction');
+  return interaction as Interaction;
 };
