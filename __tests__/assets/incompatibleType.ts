@@ -1,4 +1,5 @@
-function subtotal({
+// @ts-nocheck
+function incompatibleType({
   event,
   price,
 }: {

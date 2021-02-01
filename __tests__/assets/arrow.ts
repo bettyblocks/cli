@@ -1,4 +1,4 @@
-const interaction = ({
+const arrow = ({
   event,
   price,
   quantity,

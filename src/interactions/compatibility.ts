@@ -3,6 +3,8 @@ import path from 'path';
 import Case from 'case';
 import { Interaction, InteractionOptionType } from '../types';
 
+const allowedTypes = ['number', 'string', 'boolean', 'Page', 'Event', 'void'];
+
 export default (filename: string): Interaction => {
   if (!filename)
     throw new Error(`unable to determine interaction name from ${filename}`);
@@ -24,14 +26,18 @@ export default (filename: string): Interaction => {
     if (ts.isFunctionDeclaration(node)) {
       // name
       const functionName = node.name ? node.name.text : '';
-      if (functionName !== interactionName) return;
+      if (functionName !== interactionName) {
+        throw new RangeError('file contains multiple statements');
+      }
 
       interaction.name = functionName;
+      interaction.parameters = {};
 
       // return type
       const typeNode = node.type;
-      if (!typeNode)
+      if (!typeNode) {
         throw new Error(`You forgot to declare a type for ${interactionName}`);
+      }
 
       const returnType = typeChecker.typeToString(
         typeChecker.getTypeFromTypeNode(typeNode),
@@ -44,29 +50,36 @@ export default (filename: string): Interaction => {
       }
 
       const [firstParameter] = node.parameters;
-      if (!firstParameter.type)
-        throw new Error(
-          `You forgot to add a type to the parameter for ${interactionName}`,
+
+      if (firstParameter) {
+        if (!firstParameter.type) {
+          throw new Error(
+            `You forgot to add a type to the parameter "${firstParameter.name.getText()}" for ${interactionName}`,
+          );
+        }
+
+        const t = typeChecker.getTypeFromTypeNode(firstParameter.type);
+
+        const parameters: Record<string, string> = JSON.parse(
+          typeChecker
+            .typeToString(t)
+            .replace(/;(?!.*;)/g, '')
+            .replace(/;/g, ',')
+            .replace(/(\w+)/g, '"$1"'),
         );
 
-      const t = typeChecker.getTypeFromTypeNode(firstParameter.type);
+        Object.entries(parameters).forEach(([paramName, paramType]) => {
+          if (!allowedTypes.includes(paramType)) {
+            throw new TypeError(`unsupported type for: ${paramName}`);
+          }
+          parameters[paramName] = Case.pascal(paramType);
+        });
 
-      const parameters: Record<string, string> = JSON.parse(
-        typeChecker
-          .typeToString(t)
-          .replace(/;(?!.*;)/g, '')
-          .replace(/;/g, ',')
-          .replace(/(\w+)/g, '"$1"'),
-      );
-
-      Object.entries(parameters).forEach(([paramName, paramType]) => {
-        parameters[paramName] = Case.pascal(paramType);
-      });
-
-      interaction.parameters = parameters as Record<
-        string,
-        InteractionOptionType
-      >;
+        interaction.parameters = parameters as Record<
+          string,
+          InteractionOptionType
+        >;
+      }
 
       // function body
       const functionBody = node.getText(sourceFile);
@@ -79,6 +92,15 @@ export default (filename: string): Interaction => {
       interaction.function = ts.transpileModule(node.getText(), {}).outputText;
     }
   });
+
+  if (!interaction.function) {
+    throw new RangeError(`
+    expected expression of the kind
+      function ${interactionName}({ event, argument }: { event: Event, argument: ArgumentType }): ReturnType {
+        // body
+      }
+    `);
+  }
 
   return interaction as Interaction;
 };

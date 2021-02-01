@@ -1,3 +1,3 @@
 function noop(): void {
-  return;
+  /** noop */
 }
