@@ -4,6 +4,8 @@ import Joi, { ObjectSchema, ValidationResult } from 'joi';
 import { Component } from '../types';
 import { findDuplicates } from '../utils/validation';
 
+import { STYLE_REFERENCE_TYPES } from './constants';
+
 const schema: ObjectSchema = Joi.object({
   name: Joi.string().required(),
   icon: Joi.string(), // DEPRECATED
@@ -17,6 +19,7 @@ const schema: ObjectSchema = Joi.object({
   triggers: Joi.array().items(Joi.string()),
   jsx: Joi.any().required(),
   styles: Joi.any().required(),
+  styleType: Joi.string().valid(...STYLE_REFERENCE_TYPES),
 });
 
 const validate = (component: Component): void => {

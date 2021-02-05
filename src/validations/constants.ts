@@ -135,6 +135,8 @@ export const OPTIONS = [
   'VARIABLE',
 ];
 
+export const STYLE_REFERENCE_TYPES = ['BUTTON', 'TEXT'];
+
 export const CONDITION_TYPE = ['HIDE', 'SHOW'];
 export const COMPARATORS = ['EQ'];
 export const MODAL_TYPE = ['MODEL_AND_PROPERTIES'];
