@@ -1,3 +1,10 @@
+# [23.33.0](https://github.com/bettyblocks/cli/compare/v23.32.2...v23.33.0) (2021-02-05)
+
+
+### Features
+
+* allow styleType on component ([d341f99](https://github.com/bettyblocks/cli/commit/d341f99))
+
 ## [23.32.2](https://github.com/bettyblocks/cli/compare/v23.32.1...v23.32.2) (2021-02-01)
 
 
