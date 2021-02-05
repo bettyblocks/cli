@@ -16,6 +16,22 @@ test('Throw when one of the components is invalid', (t: Context): void => {
   t.throws(() => validateComponents(components as Component[]));
 });
 
+test('Throw when component styleType is not a valid type', (t: Context): void => {
+  const components = [
+    {
+      name: 'HelloWorld',
+      type: 'ROW',
+      allowedTypes: ['COLUMN'],
+      orientation: 'VERTICAL',
+      jsx: '<div>jsx</div>',
+      styles: 'styles',
+      styleType: 'YEET',
+    },
+  ] as Component[];
+
+  t.throws(() => validateComponents(components));
+});
+
 test('Throw when two components have the same name', (t: Context): void => {
   const components = [
     {

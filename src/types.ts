@@ -36,6 +36,7 @@ export interface Component {
   name: string;
   orientation: Orientation;
   styles: string;
+  styleType: string;
   type: string;
 }
 
