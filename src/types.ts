@@ -97,6 +97,7 @@ export type Icon =
   | 'Layout48Icon'
   | 'Layout66Icon'
   | 'Layout84Icon'
+  | 'LogoutIcon'
   | 'ListItemIcon'
   | 'MultiLineIcon'
   | 'MultiSelectIcon'
