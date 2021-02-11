@@ -1,5 +1,4 @@
 import Joi from 'joi';
-
 import { INTERACTION_TYPE } from '../constants';
 
 const parametersSchema = Joi.when('type', {
@@ -8,15 +7,11 @@ const parametersSchema = Joi.when('type', {
     .items(
       Joi.object({
         parameter: Joi.string().required(),
-        name: Joi.string(),
+        name: Joi.string().required(),
         ref: Joi.object({
           componentId: Joi.string().required(),
-        }),
-        path: Joi.array().items(Joi.string()),
-        id: Joi.array().items(Joi.string()),
-      })
-        .xor('name', 'path', 'id')
-        .with('name', 'ref'),
+        }).required(),
+      }),
     )
     .required(),
   otherwise: Joi.forbidden(),
@@ -24,15 +19,20 @@ const parametersSchema = Joi.when('type', {
 
 const targetOptionNameSchema = Joi.when('type', {
   is: 'Global',
-  then: Joi.string().required(),
+  then: Joi.string(),
   otherwise: Joi.forbidden(),
+});
+
+const targetComponentIdSchema = Joi.when('type', {
+  is: 'Custom',
+  then: Joi.string().required(),
 });
 
 export const interactionSchema = Joi.object({
   name: Joi.string().required(),
   ref: Joi.object({
     sourceComponentId: Joi.string().required(),
-    targetComponentId: Joi.string().required(),
+    targetComponentId: targetComponentIdSchema,
   }).required(),
   targetOptionName: targetOptionNameSchema,
   sourceEvent: Joi.string().required(),

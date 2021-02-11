@@ -119,7 +119,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
   if (!exists) {
     return new Promise((resolve): void => {
-      resolve();
+      resolve([]);
     });
   }
 
@@ -134,6 +134,9 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
           getDiagnostics(`${srcDir}/${file}`);
 
           return {
+            // failing because it's a keyword
+            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+            // @ts-ignore
             function: code,
             ...extractInteractionCompatibility(`${srcDir}/${file}`),
           };

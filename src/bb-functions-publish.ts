@@ -271,7 +271,7 @@ console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
 
 new Promise((resolve): void => {
   if (skipBuild) {
-    resolve();
+    resolve(undefined);
   } else {
     const building = ora(
       `Building custom functions bundle (this can take a while) ...`,
@@ -281,7 +281,7 @@ new Promise((resolve): void => {
     });
     build.on('close', () => {
       building.succeed();
-      resolve();
+      resolve(undefined);
     });
   }
 })
