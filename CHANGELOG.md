@@ -1,3 +1,10 @@
+# [23.34.0](https://github.com/bettyblocks/cli/compare/v23.33.0...v23.34.0) (2021-02-11)
+
+
+### Features
+
+* add logout prefab ([#201](https://github.com/bettyblocks/cli/issues/201)) ([75a41b0](https://github.com/bettyblocks/cli/commit/75a41b0))
+
 # [23.33.0](https://github.com/bettyblocks/cli/compare/v23.32.2...v23.33.0) (2021-02-05)
 
 
