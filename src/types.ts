@@ -199,28 +199,28 @@ export enum InteractionType {
   Global = 'Global',
 }
 
-interface BasePrefabInteraction<T extends InteractionType> {
+export interface BasePrefabInteraction<T extends InteractionType> {
   name: string;
   ref: {
     sourceComponentId: string;
-    targetComponentId: string;
+    targetComponentId?: string;
   };
   targetOptionName: string;
   sourceEvent: string;
   type: T;
 }
 
-interface ParameterOptionWithId {
+export interface ParameterOptionWithId {
   parameter: string;
   id: string[];
 }
 
-interface ParameterOptionWithPath {
+export interface ParameterOptionWithPath {
   path: string[];
   parameter: string;
 }
 
-interface ParameterOptionWithComponentRef {
+export interface ParameterOptionWithComponentRef {
   name: string;
   parameter: string;
   ref: {
@@ -235,9 +235,9 @@ export type PrefabInteractionParameter =
 
 export type PrefabInteraction =
   | BasePrefabInteraction<InteractionType.Custom>
-  | BasePrefabInteraction<InteractionType.Global> & {
+  | (BasePrefabInteraction<InteractionType.Global> & {
       parameters: PrefabInteractionParameter[];
-    };
+    });
 
 export interface Versions {
   remoteVersionCLI: string;
