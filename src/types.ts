@@ -268,14 +268,14 @@ export interface PrefabAction {
   events?: PrefabActionStep[];
 }
 
-interface PrefabActionAssign {
+export interface PrefabActionAssign {
   leftHandSide: string;
   ref: {
     path: string[];
   };
 }
 
-interface PrefabActionUpdateStepOption {
+export interface PrefabActionUpdateStepOption {
   ref: {
     object: string;
     customModel?: string;
@@ -283,7 +283,7 @@ interface PrefabActionUpdateStepOption {
   assign: PrefabActionAssign[];
 }
 
-interface PrefabActionCreateStepOption {
+export interface PrefabActionCreateStepOption {
   modelId: string;
   assign: PrefabActionAssign[];
   ref: {
@@ -291,14 +291,14 @@ interface PrefabActionCreateStepOption {
   };
 }
 
-interface PrefabActionDeleteStepOption {
+export interface PrefabActionDeleteStepOption {
   ref: {
     object: string;
     customModel: string;
   };
 }
 
-interface AuthenticateUserStepOption {
+export interface AuthenticateUserStepOption {
   authenticationProfileId: string;
   ref: {
     username: string;
