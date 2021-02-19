@@ -77,6 +77,7 @@ export const ICONS = [
   'NavItemIcon',
   'NavSidebarIcon',
   'NumberInputIcon',
+  'OpenPageIcon',
   'OrderedListIcon',
   'PanelIcon',
   'PaperIcon',
