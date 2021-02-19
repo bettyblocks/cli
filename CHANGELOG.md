@@ -1,3 +1,10 @@
+# [23.35.0](https://github.com/bettyblocks/cli/compare/v23.34.0...v23.35.0) (2021-02-19)
+
+
+### Features
+
+* **ta-2245:** adds openPage button icon ([#202](https://github.com/bettyblocks/cli/issues/202)) ([35ab07e](https://github.com/bettyblocks/cli/commit/35ab07e))
+
 # [23.34.0](https://github.com/bettyblocks/cli/compare/v23.33.0...v23.34.0) (2021-02-11)
 
 
