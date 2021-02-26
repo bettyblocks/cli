@@ -1,3 +1,10 @@
+# [23.36.0](https://github.com/bettyblocks/cli/compare/v23.35.0...v23.36.0) (2021-02-26)
+
+
+### Features
+
+* remove THEME option type ([2916455](https://github.com/bettyblocks/cli/commit/2916455))
+
 # [23.35.0](https://github.com/bettyblocks/cli/compare/v23.34.0...v23.35.0) (2021-02-19)
 
 
