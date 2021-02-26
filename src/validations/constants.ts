@@ -131,7 +131,6 @@ export const OPTIONS = [
   'SIZE',
   'SIZES',
   'TEXT',
-  'THEME',
   'TOGGLE',
   'UNIT',
   'VARIABLE',
