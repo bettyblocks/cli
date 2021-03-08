@@ -1,3 +1,10 @@
+## [23.36.1](https://github.com/bettyblocks/cli/compare/v23.36.0...v23.36.1) (2021-03-08)
+
+
+### Bug Fixes
+
+* switch icon name to match ide one ([#205](https://github.com/bettyblocks/cli/issues/205)) ([3d75a7c](https://github.com/bettyblocks/cli/commit/3d75a7c))
+
 # [23.36.0](https://github.com/bettyblocks/cli/compare/v23.35.0...v23.36.0) (2021-02-26)
 
 
