@@ -29,6 +29,7 @@ import {
 export interface ComponentCompatibility {
   functions: string[];
   triggers: string[];
+  interactions: object;
 }
 
 const isComponentCompatibility = (

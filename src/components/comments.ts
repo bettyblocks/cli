@@ -1,5 +1,7 @@
 import * as ts from 'typescript';
-import jsdoc from 'jsdoc-api';
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+import * as jsdoc from 'jsdoc-api';
 
 /**
  * Retrieves the JSDoc-style comments associated with a specific AST node.
