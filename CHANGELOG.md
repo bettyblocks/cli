@@ -1,3 +1,10 @@
+# [23.37.0](https://github.com/bettyblocks/cli/compare/v23.36.1...v23.37.0) (2021-03-19)
+
+
+### Features
+
+* add host option to bb functions publish ([#207](https://github.com/bettyblocks/cli/issues/207)) ([2463219](https://github.com/bettyblocks/cli/commit/2463219))
+
 ## [23.36.1](https://github.com/bettyblocks/cli/compare/v23.36.0...v23.36.1) (2021-03-08)
 
 
