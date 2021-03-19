@@ -1,20 +1,8 @@
 import crypto from 'crypto';
-import { Component } from 'src/types';
 
-export default function(component: Component): string {
-  const { name, orientation, jsx, styles, type, allowedTypes } = component;
-
+export default function(map: unknown): string {
   return crypto
     .createHash('sha256')
-    .update(
-      JSON.stringify({
-        name,
-        orientation,
-        jsx,
-        styles,
-        type,
-        allowedTypes,
-      }),
-    )
+    .update(JSON.stringify(map))
     .digest('hex');
 }
