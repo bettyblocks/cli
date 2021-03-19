@@ -22,23 +22,23 @@ program
   .option('-b, --bump', 'Bump the revision number.')
   .option('-s, --skip', 'Skip building the custom functions bundle.')
   .option(
-    '-h, --host <hostname>',
+    '-h, --host <host>',
     'Set hostname to publish to. Defaults to <identifier>.bettyblocks.com',
   )
   .parse(process.argv);
 
 const bumpRevision = program.bump;
 const skipBuild = program.skip;
-const host = program.host;
+const { host } = program;
 
 /* execute command */
 
 const workingDir = process.cwd();
 const identifier = acquireFunctionsProject(workingDir);
 
-const targetHost = host
-  ? host
-  : 'https://{IDENTIFIER}.bettyblocks.com'.replace('{IDENTIFIER}', identifier);
+const targetHost =
+  host ||
+  'https://{IDENTIFIER}.bettyblocks.com'.replace('{IDENTIFIER}', identifier);
 
 type NamedObject = Record<string, string | object>;
 
