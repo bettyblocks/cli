@@ -9,8 +9,6 @@ import Webhead, { WebheadInstance, WebheadRequestParameters } from 'webhead';
 
 type NamedObject = Record<string, string | object>;
 
-const HOST = 'https://{IDENTIFIER}.bettyblocks.com';
-
 class IDE {
   private configFile: string;
 
@@ -20,9 +18,10 @@ class IDE {
 
   private loggedIn?: boolean;
 
-  constructor(identifier: string) {
+  constructor(identifier: string, host: string) {
     this.configFile = path.join(os.homedir(), '.bb-cli');
-    this.host = HOST.replace('{IDENTIFIER}', identifier);
+
+    this.host = host;
 
     if (!fs.pathExistsSync(this.configFile)) {
       fs.writeFileSync(

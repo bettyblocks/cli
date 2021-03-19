@@ -21,15 +21,24 @@ program
   .name('bb functions publish')
   .option('-b, --bump', 'Bump the revision number.')
   .option('-s, --skip', 'Skip building the custom functions bundle.')
+  .option(
+    '-h, --host <hostname>',
+    'Set hostname to publish to. Defaults to <identifier>.bettyblocks.com',
+  )
   .parse(process.argv);
 
 const bumpRevision = program.bump;
 const skipBuild = program.skip;
+const host = program.host;
 
 /* execute command */
 
 const workingDir = process.cwd();
 const identifier = acquireFunctionsProject(workingDir);
+
+const targetHost = host
+  ? host
+  : 'https://{IDENTIFIER}.bettyblocks.com'.replace('{IDENTIFIER}', identifier);
 
 type NamedObject = Record<string, string | object>;
 
@@ -189,7 +198,7 @@ const groomMetaData = async (): Promise<MetaData> => {
 const publishFunctions = async (
   metaData: MetaData,
 ): Promise<string | object | null> => {
-  const ide = new IDE(identifier);
+  const ide = new IDE(identifier, targetHost);
 
   const customFunctions = (await ide.get(
     'bootstrap/custom_functions',
@@ -267,7 +276,7 @@ const cleanMetaData = async (): Promise<void> => {
   fs.writeFileSync(functionsJsonFile, JSON.stringify(metaData, null, 2));
 };
 
-console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
+console.log(`Publishing to ${targetHost} ...`);
 
 new Promise((resolve): void => {
   if (skipBuild) {
