@@ -36,9 +36,7 @@ const { host } = program;
 const workingDir = process.cwd();
 const identifier = acquireFunctionsProject(workingDir);
 
-const targetHost =
-  host ||
-  'https://{IDENTIFIER}.bettyblocks.com'.replace('{IDENTIFIER}', identifier);
+const targetHost = host || `https://${identifier}.bettyblocks.com`;
 
 type NamedObject = Record<string, string | object>;
 
