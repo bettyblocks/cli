@@ -198,7 +198,7 @@ const groomMetaData = async (): Promise<MetaData> => {
 const publishFunctions = async (
   metaData: MetaData,
 ): Promise<string | object | null> => {
-  const ide = new IDE(identifier, targetHost);
+  const ide = new IDE(targetHost);
 
   const customFunctions = (await ide.get(
     'bootstrap/custom_functions',

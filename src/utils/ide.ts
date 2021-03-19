@@ -18,7 +18,7 @@ class IDE {
 
   private loggedIn?: boolean;
 
-  constructor(identifier: string, host: string) {
+  constructor(host: string) {
     this.configFile = path.join(os.homedir(), '.bb-cli');
 
     this.host = host;
