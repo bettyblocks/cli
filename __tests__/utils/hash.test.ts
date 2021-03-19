@@ -22,8 +22,13 @@ const ComponentA: Component = {
   styleType: '',
 };
 
-test('generate hash from component should be the same every time', (t: Context): void => {
+const foo = {
+  bar: 'baz',
+};
+
+test('generate hash from object should be the same every time', (t: Context): void => {
   t.is(hash(ComponentA), hash(ComponentA));
+  t.is(hash(foo), hash(foo));
 });
 
 test('generate hash from a component with a different name should return different hash', (t: Context): void => {
