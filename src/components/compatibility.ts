@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import {
   createArrayLiteral,
   createNodeArray,
@@ -22,9 +21,15 @@ import {
   Visitor,
 } from 'typescript';
 
+import {
+  walkCompilerAstAndFindComments,
+  createLiteralObjectExpression,
+} from './comments';
+
 export interface ComponentCompatibility {
   functions: string[];
   triggers: string[];
+  interactions: object;
 }
 
 const isComponentCompatibility = (
@@ -80,6 +85,7 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
 ): Transformer<SourceFile> => {
   const functions: string[] = [];
   const triggers: string[] = [];
+  const comments: object[] = [];
 
   const visit: Visitor = (node: Node): Node => {
     addCompatibility('defineFunction', functions, node);
@@ -90,8 +96,10 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
 
   return (node: SourceFile): SourceFile => {
     visitNode(node, visit);
+    walkCompilerAstAndFindComments(node, comments);
 
     if (isSourceFile(node)) {
+      // eslint-disable-next-line no-param-reassign
       node.statements = createNodeArray([
         createStatement(
           createObjectLiteral([
@@ -102,6 +110,10 @@ const compatibilityTransformer = (): TransformerFactory<SourceFile> => (
             createPropertyAssignment(
               createStringLiteral('triggers'),
               createArrayLiteral(triggers.map(n => createStringLiteral(n))),
+            ),
+            createPropertyAssignment(
+              createStringLiteral('interactions'),
+              createObjectLiteral(createLiteralObjectExpression(comments)),
             ),
           ]),
         ),

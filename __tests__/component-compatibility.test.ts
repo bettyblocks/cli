@@ -37,6 +37,7 @@ test('extract compatibility for simple button with custom trigger and function',
   t.deepEqual(compatibility, {
     triggers: ['CustomTrigger'],
     functions: ['CustomFunction'],
+    interactions: {},
   });
 });
 
@@ -133,6 +134,7 @@ test('extract compatibility for complex button with multiple triggers and functi
   t.deepEqual(compatibility, {
     triggers: ['CustomTrigger1', 'CustomTrigger2', 'CustomTrigger3'],
     functions: ['CustomFunction1', 'CustomFunction2', 'CustomFunction3'],
+    interactions: {},
   });
 });
 
@@ -189,6 +191,7 @@ test('extract compatibility for simple button with custom trigger with changing 
       'CustomTrigger7',
     ],
     functions: [],
+    interactions: {},
   });
 });
 
@@ -227,6 +230,7 @@ test('extract compatibility for simple button with custom inline triggers', (t: 
       'CustomTrigger4',
     ],
     functions: [],
+    interactions: {},
   });
 });
 
@@ -246,6 +250,12 @@ test('compatibility galore', (t: Context): void => {
     const handleClick2 = event => {
       B.triggerEvent('CustomTrigger2', event);
     };
+    /**
+     * @name Action
+     * @param {Number} arg1
+     * @param {String} arg2
+     * @returns {Void}
+     */
     const handleClick3 = () => {
       triggerEvent('CustomTrigger3');
     };
@@ -335,5 +345,14 @@ test('compatibility galore', (t: Context): void => {
       'CustomFunction9',
       'CustomFunction10',
     ],
+    interactions: {
+      Action: {
+        parameters: {
+          arg1: ['Number'],
+          arg2: ['String'],
+        },
+        returnType: ['Void'],
+      },
+    },
   });
 });
