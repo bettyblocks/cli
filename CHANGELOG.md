@@ -1,3 +1,10 @@
+# [23.38.0](https://github.com/bettyblocks/cli/compare/v23.37.0...v23.38.0) (2021-03-22)
+
+
+### Features
+
+* extract custom interaction parameters using jsdoc comments ([#206](https://github.com/bettyblocks/cli/issues/206)) ([a83f7fb](https://github.com/bettyblocks/cli/commit/a83f7fb))
+
 # [23.37.0](https://github.com/bettyblocks/cli/compare/v23.36.1...v23.37.0) (2021-03-19)
 
 
