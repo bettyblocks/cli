@@ -1,3 +1,10 @@
+# [23.39.0](https://github.com/bettyblocks/cli/compare/v23.38.0...v23.39.0) (2021-03-22)
+
+
+### Features
+
+* add hash to component pndjs 2328 work 385 ([#208](https://github.com/bettyblocks/cli/issues/208)) ([01a2f93](https://github.com/bettyblocks/cli/commit/01a2f93))
+
 # [23.38.0](https://github.com/bettyblocks/cli/compare/v23.37.0...v23.38.0) (2021-03-22)
 
 
