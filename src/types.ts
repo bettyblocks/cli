@@ -114,6 +114,7 @@ export interface Prefab {
   beforeCreate?: string;
   category: Category;
   name: string;
+  keywords?: string[];
   icon: Icon;
   interactions?: PrefabInteraction[];
   structure: PrefabComponent[];
