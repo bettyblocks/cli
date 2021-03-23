@@ -1,3 +1,10 @@
+# [23.40.0](https://github.com/bettyblocks/cli/compare/v23.39.0...v23.40.0) (2021-03-23)
+
+
+### Features
+
+* **ta-2353:** adds the keywords property to prefab type ([#209](https://github.com/bettyblocks/cli/issues/209)) ([8d01235](https://github.com/bettyblocks/cli/commit/8d01235))
+
 # [23.39.0](https://github.com/bettyblocks/cli/compare/v23.38.0...v23.39.0) (2021-03-22)
 
 
