@@ -1,3 +1,10 @@
+## [23.40.1](https://github.com/bettyblocks/cli/compare/v23.40.0...v23.40.1) (2021-03-24)
+
+
+### Bug Fixes
+
+* keywords type ([#210](https://github.com/bettyblocks/cli/issues/210)) ([8807fe3](https://github.com/bettyblocks/cli/commit/8807fe3))
+
 # [23.40.0](https://github.com/bettyblocks/cli/compare/v23.39.0...v23.40.0) (2021-03-23)
 
 
