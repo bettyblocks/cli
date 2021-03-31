@@ -14,8 +14,10 @@ import rootDir from './utils/rootDir';
 program
   .usage('[identifier]')
   .name('bb functions init')
+  .option('-a, --app', 'Initialize an app functions project.')
   .parse(process.argv);
 
+const initAppFunctions = program.app;
 const { args }: CommanderStatic = program;
 
 if (args.length !== 1) {
@@ -33,26 +35,37 @@ const targetDir = path.join(workingDir, identifier);
 
 fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
   if (err && err.code === 'ENOENT') {
-    const sourceDir = path.join(rootDir(), 'assets', 'functions', 'templates');
+    let type, actions, commands, sourceDir;
 
-    fs.copySync(sourceDir, targetDir);
-    fs.copySync(
-      path.join(
-        rootDir(),
-        'assets',
-        'functions',
-        'packer',
-        'webpack.config.js',
-      ),
-      path.join(targetDir, 'webpack.config.js'),
-    );
+    if (initAppFunctions) {
+      type = 'app functions';
+      actions = 'publish';
+      commands = '';
+      sourceDir = path.join(rootDir(), 'assets', 'app-functions', 'templates');
+      fs.copySync(sourceDir, targetDir);
+    } else {
+      type = 'functions';
+      actions = 'build and/or publish';
+      commands = 'bb functions build\n    ';
+      sourceDir = path.join(rootDir(), 'assets', 'functions', 'templates');
+      fs.copySync(sourceDir, targetDir);
+      fs.copySync(
+        path.join(
+          rootDir(),
+          'assets',
+          'functions',
+          'packer',
+          'webpack.config.js',
+        ),
+        path.join(targetDir, 'webpack.config.js'),
+      );
+    }
 
-    console.log(`Initialized functions project in ${targetDir}.
-You can use "bb functions" to build and/or publish it:
+    console.log(`Initialized ${type} project in ${targetDir}.
+You can use "bb functions" to ${actions} it:
 
     cd ${identifier}
-    bb functions build
-    bb functions publish
+    ${commands}bb functions publish
 `);
   } else {
     console.log(`The directory "${targetDir}" already exists. Abort.`);

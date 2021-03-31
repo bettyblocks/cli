@@ -1,0 +1,8 @@
+{
+  "sayHello": {
+    "returnType": "string",
+    "inputVariables": {
+      "name": "string"
+    }
+  }
+}
