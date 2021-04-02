@@ -1,3 +1,10 @@
+# [23.41.0](https://github.com/bettyblocks/cli/compare/v23.40.1...v23.41.0) (2021-04-02)
+
+
+### Features
+
+* support logging in with FusionAuth ([#213](https://github.com/bettyblocks/cli/issues/213)) ([b5216f7](https://github.com/bettyblocks/cli/commit/b5216f7))
+
 ## [23.40.1](https://github.com/bettyblocks/cli/compare/v23.40.0...v23.40.1) (2021-03-24)
 
 
