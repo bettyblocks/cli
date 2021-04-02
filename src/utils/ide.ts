@@ -136,18 +136,11 @@ class IDE {
         config.email = email;
         fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
 
-        let input;
-        if (cassieLogin) {
-          input = {
-            username: email,
-            password,
-          };
-        } else {
-          input = {
-            loginId: email,
-            password,
-          };
-        }
+        const identifier = cassieLogin ? 'username' : 'loginId';
+        const input = {
+          [identifier]: email,
+          password,
+        };
 
         await this.webhead.submit('form', input);
         await ensureAuth();
