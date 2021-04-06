@@ -9,8 +9,6 @@ import Webhead, { WebheadInstance, WebheadRequestParameters } from 'webhead';
 
 type NamedObject = Record<string, string | object>;
 
-const HOST = 'https://{IDENTIFIER}.bettyblocks.com';
-
 class IDE {
   private configFile: string;
 
@@ -20,9 +18,10 @@ class IDE {
 
   private loggedIn?: boolean;
 
-  constructor(identifier: string) {
+  constructor(host: string) {
     this.configFile = path.join(os.homedir(), '.bb-cli');
-    this.host = HOST.replace('{IDENTIFIER}', identifier);
+
+    this.host = host;
 
     if (!fs.pathExistsSync(this.configFile)) {
       fs.writeFileSync(
@@ -114,8 +113,11 @@ class IDE {
       await this.webhead.get('/login');
     }
 
-    const entireCredentials = async (): Promise<void> => {
-      if (this.webhead.$('form [name="username"]').length) {
+    const ensureAuth = async (): Promise<void> => {
+      const cassieLogin = !!this.webhead.$('form [name="username"]').length;
+      const fusionAuthLogin = !!this.webhead.$('form [name="loginId"]').length;
+
+      if (cassieLogin || fusionAuthLogin) {
         const config = fs.readJsonSync(this.configFile);
         const { email, password } = await prompts([
           {
@@ -134,16 +136,18 @@ class IDE {
         config.email = email;
         fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
 
-        await this.webhead.submit('form', {
-          username: email,
+        const identifier = cassieLogin ? 'username' : 'loginId';
+        const input = {
+          [identifier]: email,
           password,
-        });
+        };
 
-        await entireCredentials();
+        await this.webhead.submit('form', input);
+        await ensureAuth();
       }
     };
 
-    const entire2FA = async (): Promise<void> => {
+    const ensure2FA = async (): Promise<void> => {
       if (this.webhead.$('form [name="otp"]').length) {
         const { otp } = await prompts([
           {
@@ -154,12 +158,12 @@ class IDE {
         ]);
 
         await this.webhead.submit('form', { otp });
-        await entire2FA();
+        await ensure2FA();
       }
     };
 
-    await entireCredentials();
-    await entire2FA();
+    await ensureAuth();
+    await ensure2FA();
     this.loggedIn = true;
   }
 }

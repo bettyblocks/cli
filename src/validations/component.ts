@@ -17,6 +17,7 @@ const schema: ObjectSchema = Joi.object({
   orientation: Joi.string().required(),
   functions: Joi.array().items(Joi.string()),
   triggers: Joi.array().items(Joi.string()),
+  interactions: Joi.object(),
   jsx: Joi.any().required(),
   styles: Joi.any().required(),
   styleType: Joi.string().valid(...STYLE_REFERENCE_TYPES),

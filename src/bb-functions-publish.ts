@@ -17,10 +17,15 @@ program
   .name('bb functions publish')
   .option('-b, --bump', 'Bump the revision number.')
   .option('-s, --skip', 'Skip building the custom functions bundle.')
+  .option(
+    '-h, --host <host>',
+    'Set hostname to publish to. Defaults to <identifier>.bettyblocks.com',
+  )
   .parse(process.argv);
 
 const bumpRevision = program.bump;
 const skipBuild = program.skip;
+const { host } = program;
 
 /* execute command */
 
@@ -29,5 +34,5 @@ const workingDir = process.cwd();
 if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
   publishAppFunctions();
 } else {
-  publishCustomFunctions(bumpRevision, skipBuild);
+  publishCustomFunctions(host, bumpRevision, skipBuild);
 }

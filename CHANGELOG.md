@@ -1,3 +1,59 @@
+# [23.41.0](https://github.com/bettyblocks/cli/compare/v23.40.1...v23.41.0) (2021-04-02)
+
+
+### Features
+
+* support logging in with FusionAuth ([#213](https://github.com/bettyblocks/cli/issues/213)) ([b5216f7](https://github.com/bettyblocks/cli/commit/b5216f7))
+
+## [23.40.1](https://github.com/bettyblocks/cli/compare/v23.40.0...v23.40.1) (2021-03-24)
+
+
+### Bug Fixes
+
+* keywords type ([#210](https://github.com/bettyblocks/cli/issues/210)) ([8807fe3](https://github.com/bettyblocks/cli/commit/8807fe3))
+
+# [23.40.0](https://github.com/bettyblocks/cli/compare/v23.39.0...v23.40.0) (2021-03-23)
+
+
+### Features
+
+* **ta-2353:** adds the keywords property to prefab type ([#209](https://github.com/bettyblocks/cli/issues/209)) ([8d01235](https://github.com/bettyblocks/cli/commit/8d01235))
+
+# [23.39.0](https://github.com/bettyblocks/cli/compare/v23.38.0...v23.39.0) (2021-03-22)
+
+
+### Features
+
+* add hash to component pndjs 2328 work 385 ([#208](https://github.com/bettyblocks/cli/issues/208)) ([01a2f93](https://github.com/bettyblocks/cli/commit/01a2f93))
+
+# [23.38.0](https://github.com/bettyblocks/cli/compare/v23.37.0...v23.38.0) (2021-03-22)
+
+
+### Features
+
+* extract custom interaction parameters using jsdoc comments ([#206](https://github.com/bettyblocks/cli/issues/206)) ([a83f7fb](https://github.com/bettyblocks/cli/commit/a83f7fb))
+
+# [23.37.0](https://github.com/bettyblocks/cli/compare/v23.36.1...v23.37.0) (2021-03-19)
+
+
+### Features
+
+* add host option to bb functions publish ([#207](https://github.com/bettyblocks/cli/issues/207)) ([2463219](https://github.com/bettyblocks/cli/commit/2463219))
+
+## [23.36.1](https://github.com/bettyblocks/cli/compare/v23.36.0...v23.36.1) (2021-03-08)
+
+
+### Bug Fixes
+
+* switch icon name to match ide one ([#205](https://github.com/bettyblocks/cli/issues/205)) ([3d75a7c](https://github.com/bettyblocks/cli/commit/3d75a7c))
+
+# [23.36.0](https://github.com/bettyblocks/cli/compare/v23.35.0...v23.36.0) (2021-02-26)
+
+
+### Features
+
+* remove THEME option type ([2916455](https://github.com/bettyblocks/cli/commit/2916455))
+
 # [23.35.0](https://github.com/bettyblocks/cli/compare/v23.34.0...v23.35.0) (2021-02-19)
 
 

@@ -19,6 +19,7 @@ import { variableSchema } from './prefab/variable';
 
 const schema = Joi.object({
   name: Joi.string().required(),
+  keywords: Joi.array(),
   icon: Joi.string()
     .valid(...ICONS)
     .required(),

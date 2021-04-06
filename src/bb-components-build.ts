@@ -7,9 +7,10 @@ import { outputJson, pathExists, promises, remove } from 'fs-extra';
 import extractComponentCompatibility from './components/compatibility';
 import extractInteractionCompatibility from './interactions/compatibility';
 import getDiagnostics from './interactions/diagnostics';
-import { Component, Interaction, Prefab } from './types';
+import { Component, Interaction, Prefab, PrefabComponent } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import hash from './utils/hash';
 import readFilesByType from './utils/readFilesByType';
 import transpile from './utils/transpile';
 import { checkNameReferences } from './utils/validation';
@@ -167,13 +168,48 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
       interactions && validateInteractions(interactions),
     ]);
 
+    const componentsWithHash = components.map(component => {
+      return {
+        ...component,
+        componentHash: hash(component),
+      };
+    });
+
+    type PrefabComponentWithHash = PrefabComponent & { hash: string };
+
+    const prefabsWithHash = prefabs.map(prefab => {
+      const hashStructure = (
+        structure: PrefabComponent,
+      ): PrefabComponentWithHash => {
+        const newStructure = {
+          ...structure,
+          hash: hash(structure.options),
+        };
+
+        if (newStructure.descendants && newStructure.descendants.length > 0) {
+          newStructure.descendants = newStructure.descendants.map(
+            hashStructure,
+          );
+        }
+
+        return newStructure;
+      };
+
+      return {
+        ...prefab,
+        structure: prefab.structure.map(hashStructure),
+      };
+    });
+
     await mkdir(distDir, { recursive: true });
 
-    const defaultPrefabs = prefabs.filter(prefab => prefab.type !== 'page');
+    const defaultPrefabs = prefabsWithHash.filter(
+      prefab => prefab.type !== 'page',
+    );
 
     const outputPromises = [
       outputJson(`${distDir}/prefabs.json`, defaultPrefabs),
-      outputJson(`${distDir}/templates.json`, components),
+      outputJson(`${distDir}/templates.json`, componentsWithHash),
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ];
 

@@ -45,45 +45,6 @@ type Action = {
 
 type Actions = Action[];
 
-const groomMetaData = async (): Promise<MetaData> => {
-  console.log('Grooming functions.json ...');
-
-  const buildDir = path.join(os.tmpdir(), identifier);
-  const customJsFile = path.join(buildDir, 'dist', 'custom.js');
-  // eslint-disable-next-line no-new-func
-  const customFunctions = new Function(
-    `${fs.readFileSync(customJsFile, 'utf8')}; return custom`,
-  )();
-  const functionsJsonFile = path.join(workingDir, 'functions.json');
-  const metaData = fs.readJsonSync(functionsJsonFile);
-
-  const groomedMetaData = await Object.keys(customFunctions).reduce(
-    async (promise: Promise<MetaData>, name: string): Promise<MetaData> => {
-      return promise.then(async groomed => {
-        // eslint-disable-next-line no-param-reassign
-        groomed[name] = metaData[name];
-
-        if (!groomed[name]) {
-          // eslint-disable-next-line no-param-reassign
-          groomed = await resolveMissingFunction(
-            groomed,
-            metaData,
-            name,
-            customFunctions[name].toString(),
-          );
-        }
-
-        return groomed;
-      });
-    },
-    Promise.resolve({} as MetaData),
-  );
-
-  fs.writeFileSync(functionsJsonFile, JSON.stringify(groomedMetaData, null, 2));
-
-  return groomedMetaData;
-};
-
 const resolveMissingFunction = async (
   groomed: MetaData,
   metaData: MetaData,
@@ -174,11 +135,51 @@ const resolveMissingFunction = async (
   return groomed;
 };
 
+const groomMetaData = async (): Promise<MetaData> => {
+  console.log('Grooming functions.json ...');
+
+  const buildDir = path.join(os.tmpdir(), identifier);
+  const customJsFile = path.join(buildDir, 'dist', 'custom.js');
+  // eslint-disable-next-line no-new-func
+  const customFunctions = new Function(
+    `${fs.readFileSync(customJsFile, 'utf8')}; return custom`,
+  )();
+  const functionsJsonFile = path.join(workingDir, 'functions.json');
+  const metaData = fs.readJsonSync(functionsJsonFile);
+
+  const groomedMetaData = await Object.keys(customFunctions).reduce(
+    async (promise: Promise<MetaData>, name: string): Promise<MetaData> => {
+      return promise.then(async groomed => {
+        // eslint-disable-next-line no-param-reassign
+        groomed[name] = metaData[name];
+
+        if (!groomed[name]) {
+          // eslint-disable-next-line no-param-reassign
+          groomed = await resolveMissingFunction(
+            groomed,
+            metaData,
+            name,
+            customFunctions[name].toString(),
+          );
+        }
+
+        return groomed;
+      });
+    },
+    Promise.resolve({} as MetaData),
+  );
+
+  fs.writeFileSync(functionsJsonFile, JSON.stringify(groomedMetaData, null, 2));
+
+  return groomedMetaData;
+};
+
 const publishFunctions = async (
+  targetHost: string,
   metaData: MetaData,
   bumpRevision: boolean,
 ): Promise<string | object | null> => {
-  const ide = new IDE(identifier);
+  const ide = new IDE(targetHost);
 
   const customFunctions = (await ide.get(
     'bootstrap/custom_functions',
@@ -257,12 +258,14 @@ const cleanMetaData = async (): Promise<void> => {
 };
 
 const publishCustomFunctions = (
+  host: string,
   bumpRevision: boolean,
   skipBuild: boolean,
 ): void => {
-  identifier = acquireCustomFunctionsProject(workingDir);
+  const identifier = acquireCustomFunctionsProject(workingDir);
+  const targetHost = host || `https://${identifier}.bettyblocks.com`;
 
-  console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
+  console.log(`Publishing to ${targetHost} ...`);
 
   new Promise((resolve): void => {
     if (skipBuild) {
@@ -281,7 +284,9 @@ const publishCustomFunctions = (
     }
   })
     .then(groomMetaData)
-    .then((metaData: MetaData) => publishFunctions(metaData, bumpRevision))
+    .then((metaData: MetaData) =>
+      publishFunctions(targetHost, metaData, bumpRevision),
+    )
     .then(cleanMetaData)
     .then(() => {
       console.log('Done.');
