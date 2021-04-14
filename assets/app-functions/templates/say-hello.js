@@ -1,6 +1,6 @@
 import join from 'lodash/join';
 
-async function sayHello(ctx, { name }) {
+export const sayHello = async (ctx, { name }) => {
   if (name === 'oops') {
     throw 'Ooops. Something went wrong.';
   } else {
@@ -9,5 +9,3 @@ async function sayHello(ctx, { name }) {
     };
   }
 }
-
-export default sayHello;
