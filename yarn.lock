@@ -10675,10 +10675,10 @@ wcwidth@^1.0.0, wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-webhead@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/webhead/-/webhead-1.1.2.tgz#bd3c0c2fd89a954097ff5bacc9a2dd88407219a6"
-  integrity sha512-r0Ww/l7IQ1jUqfvZW1+sn7QuOO3S4JTL+BMlWbssacfFoNNNNlOCOSpPvjO19+KT2jczKm3EH1o/OScpt/88wg==
+webhead@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/webhead/-/webhead-1.1.3.tgz#04dd95e47ab5ceff01f29d9f81d73c270e3bbb5d"
+  integrity sha512-PYR/igWOWqO7XAPkPCUqAwQfqZrI1RAXD5a/T2ytxFBmUon/T8WRjyrBKMaNSkYns8tr2NYtgG4NS2BUxJleFw==
   dependencies:
     "@types/cheerio" "^0.22.22"
     cheerio "^1.0.0-rc.3"

@@ -86,7 +86,7 @@
     "ts-node": "^8.8.2",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.5.3",
-    "webhead": "^1.1.2"
+    "webhead": "^1.1.3"
   },
   "ava": {
     "extensions": [
