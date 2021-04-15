@@ -32,7 +32,7 @@ const { host } = program;
 const workingDir = process.cwd();
 
 if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
-  publishAppFunctions();
+  publishAppFunctions(host);
 } else {
   publishCustomFunctions(host, bumpRevision, skipBuild);
 }

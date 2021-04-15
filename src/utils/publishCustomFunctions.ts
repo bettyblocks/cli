@@ -178,7 +178,7 @@ const publishFunctions = async (
   targetHost: string,
   metaData: MetaData,
   bumpRevision: boolean,
-): Promise<string | object | null> => {
+): Promise<void> => {
   const ide = new IDE(targetHost);
 
   const customFunctions = (await ide.get(
@@ -227,7 +227,7 @@ const publishFunctions = async (
 
   const actions = (await ide.get('actions')) as Actions;
 
-  return actions.reduce(
+  actions.reduce(
     async (
       promise: Promise<string | object | null>,
       { id, use_new_runtime, description }: Action,
@@ -262,9 +262,9 @@ const publishCustomFunctions = (
   bumpRevision: boolean,
   skipBuild: boolean,
 ): void => {
-  const identifier = acquireCustomFunctionsProject(workingDir);
-  const targetHost = host || `https://${identifier}.bettyblocks.com`;
+  identifier = acquireCustomFunctionsProject(workingDir);
 
+  const targetHost = host || `https://${identifier}.bettyblocks.com`;
   console.log(`Publishing to ${targetHost} ...`);
 
   new Promise((resolve): void => {

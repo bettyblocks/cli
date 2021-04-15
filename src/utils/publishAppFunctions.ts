@@ -4,9 +4,11 @@
 
 import AdmZip from 'adm-zip';
 import fs from 'fs-extra';
+import ora from 'ora';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
+import Webhead from 'webhead';
 
 /* internal dependencies */
 
@@ -160,10 +162,11 @@ const resolveMissingFunction = async (
   return groomed;
 };
 
-const updateMetaData = async (
+const publishFunctions = async (
+  targetHost: string,
   metaData: MetaData,
-): Promise<string | object | null> => {
-  const ide = new IDE(identifier);
+): Promise<void> => {
+  const ide = new IDE(targetHost);
 
   const customFunctions = (await ide.get(
     'bootstrap/custom_functions',
@@ -174,7 +177,7 @@ const updateMetaData = async (
     {},
   );
 
-  return await Object.keys(metaData).reduce(
+  await Object.keys(metaData).reduce(
     async (promise: Promise<string | object | null>, name: string) => {
       await promise;
       const { replace, returnType, inputVariables } = metaData[name];
@@ -194,23 +197,27 @@ const updateMetaData = async (
     },
     Promise.resolve(null),
   );
-};
 
-const uploadFunctions = async (): Promise<void> => {
   const tmpDir = path.join(os.tmpdir(), identifier);
   const zipFile = tmpDir + '/app.zip';
 
-  console.log(`Creating ${zipFile} ...`);
-
+  let spinner = ora(`Creating ${zipFile} ...`).start();
   fs.ensureDirSync(tmpDir);
 
   const zip = new AdmZip();
   fs.readdirSync(workingDir).forEach(file => zip.addLocalFile(file));
   zip.writeZip(zipFile);
 
-  console.log(`Uploading app.zip to ${identifier}.bettyblocks.com ...`);
+  spinner.succeed();
 
-  // upload
+  await ide.webhead.get('/');
+  const text: any = ide.webhead.text() || '';
+  const uuid = (text.match(/Betty\.application_id = '([0-9a-f]+)'/) || [])[1];
+
+  await ide.fusionAuth.ensureLogin();
+  spinner = ora(`Uploading ${zipFile} ...`).start();
+  const success = await ide.fusionAuth.upload(uuid, zipFile);
+  spinner[success ? 'succeed' : 'fail']();
 };
 
 const cleanMetaData = async (): Promise<void> => {
@@ -224,14 +231,14 @@ const cleanMetaData = async (): Promise<void> => {
   fs.writeFileSync(functionsJsonFile, JSON.stringify(metaData, null, 2));
 };
 
-const publishAppFunctions = (): void => {
+const publishAppFunctions = (host: string): void => {
   identifier = acquireAppFunctionsProject(workingDir);
 
-  console.log(`Publishing to ${identifier}.bettyblocks.com ...`);
+  const targetHost = host || `https://${identifier}.bettyblocks.com`;
+  console.log(`Publishing to ${targetHost} ...`);
 
   groomMetaData()
-    .then(updateMetaData)
-    .then(uploadFunctions)
+    .then((metaData: MetaData) => publishFunctions(targetHost, metaData))
     .then(cleanMetaData)
     .then(() => {
       console.log('Done.');
