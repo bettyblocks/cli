@@ -132,13 +132,16 @@ class IDE {
       await this.webhead.get('/login');
     }
 
+    let email = '';
+    let password = '';
+
     const ensureAuth = async (): Promise<void> => {
       const cassieLogin = !!this.webhead.$('form [name="username"]').length;
       const fusionAuthLogin = !!this.webhead.$('form [name="loginId"]').length;
 
       if (cassieLogin || fusionAuthLogin) {
         const config = fs.readJsonSync(this.configFile);
-        const { email, password } = await prompts([
+        const credentials = await prompts([
           {
             type: 'text',
             name: 'email',
@@ -152,6 +155,9 @@ class IDE {
           },
         ]);
 
+        email = credentials.email;
+        password = credentials.password;
+
         config.email = email;
         fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
 
@@ -162,10 +168,6 @@ class IDE {
         };
 
         await this.webhead.submit('form', input);
-
-        if (fusionAuthLogin) {
-          await this.fusionAuth.login(email, password);
-        }
 
         await ensureAuth();
       }
@@ -194,16 +196,16 @@ class IDE {
           input,
         );
 
-        if (fusionAuth2FA) {
-          await this.fusionAuth.complete2FA(code);
-        }
-
         await ensure2FA();
       }
     };
 
     await ensureAuth();
     await ensure2FA();
+
+    this.fusionAuth.loginId = email;
+    this.fusionAuth.password = password;
+
     this.loggedIn = true;
   }
 }

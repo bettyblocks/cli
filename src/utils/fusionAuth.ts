@@ -2,6 +2,7 @@ import dns from 'dns';
 import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
+import prompts from 'prompts';
 import Webhead, { WebheadInstance } from 'webhead';
 
 const builderApiURL = '{HOST}/api/builder';
@@ -12,11 +13,13 @@ class FusionAuth {
 
   private host: string;
 
+  public loginId?: string;
+
+  public password?: string;
+
   private relogin: () => Promise<void>;
 
   private webhead: WebheadInstance;
-
-  private twoFactorId?: string;
 
   constructor(host: string, relogin: () => Promise<void>) {
     this.configFile = path.join(os.homedir(), '.bb-cli-fa');
@@ -33,31 +36,54 @@ class FusionAuth {
     });
 
     if (!response || !response.user) {
-      await this.relogin();
+      if (!this.loginId) {
+        await this.relogin();
+      }
+      await this.login();
     }
   }
 
-  async login(loginId: string, password: string): Promise<void> {
+  async login(): Promise<void> {
     const { token, refreshToken, twoFactorId }: any = await this.post(
       '/api/login',
-      { json: { loginId, password } },
+      {
+        json: {
+          loginId: this.loginId,
+          password: this.password,
+        },
+      },
+    );
+
+    if (token) {
+      this.storeTokens(token, refreshToken);
+    } else if (twoFactorId) {
+      await this.complete2FA(twoFactorId);
+    }
+  }
+
+  async complete2FA(twoFactorId: string): Promise<void> {
+    const { code } = await prompts([
+      {
+        type: 'text',
+        name: 'code',
+        message: 'Fill in your 2FA code',
+      },
+    ]);
+
+    const { token, refreshToken }: any = await this.post(
+      '/api/two-factor/login',
+      {
+        json: {
+          code,
+          twoFactorId,
+        },
+      },
     );
 
     if (token) {
       this.storeTokens(token, refreshToken);
     } else {
-      this.twoFactorId = twoFactorId;
-    }
-  }
-
-  async complete2FA(code: string): Promise<void> {
-    const { token, refreshToken }: any = await this.post(
-      '/api/two-factor/login',
-      { json: { code, twoFactorId: this.twoFactorId } },
-    );
-
-    if (token) {
-      this.storeTokens(token, refreshToken);
+      await this.complete2FA(twoFactorId);
     }
   }
 
