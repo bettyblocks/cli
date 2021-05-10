@@ -68,7 +68,7 @@ class IDE {
 
     this.fusionAuth = new FusionAuth(
       this.host,
-      async () => await this.relogin(),
+      async (): Promise<void> => this.relogin(),
     );
   }
 
