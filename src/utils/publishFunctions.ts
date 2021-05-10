@@ -71,7 +71,7 @@ const resolveMissingFunction = async (
         type: 'text',
         name: 'inputVariables',
         message: 'What are the input variables? (`name:type name:type ...`)',
-        defaultInputVariables,
+        initial: defaultInputVariables,
       } as prompts.PromptObject,
     ]);
 
