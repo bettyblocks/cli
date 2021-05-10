@@ -8,6 +8,7 @@ import ora from 'ora';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
+import vm from 'vm';
 
 /* internal dependencies */
 
@@ -140,10 +141,14 @@ const groomMetaData = async (): Promise<MetaData> => {
 
   const buildDir = path.join(os.tmpdir(), identifier);
   const customJsFile = path.join(buildDir, 'dist', 'custom.js');
-  // eslint-disable-next-line no-new-func
-  const customFunctions = new Function(
-    `${fs.readFileSync(customJsFile, 'utf8')}; return custom`,
-  )();
+
+  const customJs = fs.readFileSync(customJsFile, 'utf8');
+  const script = new vm.Script(`${customJs}; fn = custom;`);
+
+  const ctx = { fn: {} };
+  script.runInNewContext(ctx);
+  const customFunctions = ctx.fn as NamedObject;
+
   const functionsJsonFile = path.join(workingDir, 'functions.json');
   const metaData = fs.readJsonSync(functionsJsonFile);
 
