@@ -153,10 +153,8 @@ const groomMetaData = async (): Promise<MetaData> => {
     Promise.resolve({} as MetaData),
   );
 
-  fs.writeFileSync(
-    functionsJsonFile,
-    JSON.stringify(groomedMetaData, null, 2) + '\n',
-  );
+  const json = `${JSON.stringify(groomedMetaData, null, 2)}\n`;
+  fs.writeFileSync(functionsJsonFile, json);
 
   return groomedMetaData;
 };
@@ -198,7 +196,7 @@ const publishFunctions = async (
   );
 
   const tmpDir = path.join(os.tmpdir(), identifier);
-  const zipFile = tmpDir + '/app.zip';
+  const zipFile = `${tmpDir}/app.zip`;
 
   let spinner = ora(`Creating ${zipFile} ...`).start();
   fs.ensureDirSync(tmpDir);
@@ -210,6 +208,7 @@ const publishFunctions = async (
   spinner.succeed();
 
   await ide.webhead.get('/');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const text: any = ide.webhead.text() || '';
   const uuid = (text.match(/Betty\.application_id = '([0-9a-f]+)'/) || [])[1];
 
