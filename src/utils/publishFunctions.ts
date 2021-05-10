@@ -1,4 +1,5 @@
 import prompts from 'prompts';
+import IDE from './ide';
 
 export type NamedObject = Record<string, string | object>;
 
@@ -9,6 +10,14 @@ export type MetaData = {
     inputVariables: NamedObject;
   };
 };
+
+export type CustomFunction = {
+  id: string;
+  name: string;
+  revision: number;
+};
+
+export type CustomFunctions = CustomFunction[];
 
 const resolveMissingFunction = async (
   groomed: MetaData,
@@ -95,4 +104,49 @@ const resolveMissingFunction = async (
   return groomed;
 };
 
-export { resolveMissingFunction };
+const storeCustomFunctions = async (
+  ide: IDE,
+  metaData: MetaData,
+  bumpRevision?: boolean,
+): Promise<number> => {
+  const customFunctions = (await ide.get(
+    'bootstrap/custom_functions',
+  )) as CustomFunctions;
+
+  const revision =
+    customFunctions.reduce((rev, func) => Math.max(rev, func.revision), 0) +
+    (bumpRevision ? 1 : 0);
+
+  const ids: NamedObject = customFunctions.reduce(
+    (map, { id, name }) => ({ ...map, [name]: id }),
+    {},
+  );
+
+  await Object.keys(metaData).reduce(
+    async (promise: Promise<string | object | null>, name: string) => {
+      await promise;
+      const { replace, returnType, inputVariables } = metaData[name];
+      const id = ids[replace || name];
+      const method = id ? 'put' : 'post';
+      const action = id ? 'Updating' : 'Creating';
+      const params = {
+        name,
+        revision,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        return_type: returnType,
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        input_variables: inputVariables,
+      };
+      return ide[method](
+        `custom_functions/${id || 'new'}`,
+        { json: { record: params } },
+        `${action} custom function "${replace || name}" ...`,
+      );
+    },
+    Promise.resolve(null),
+  );
+
+  return revision;
+};
+
+export { resolveMissingFunction, storeCustomFunctions };

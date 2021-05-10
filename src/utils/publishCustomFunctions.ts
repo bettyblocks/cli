@@ -18,20 +18,13 @@ import {
   MetaData,
   NamedObject,
   resolveMissingFunction,
+  storeCustomFunctions,
 } from './publishFunctions';
 
 /* execute command */
 
 const workingDir = process.cwd();
 let identifier: string;
-
-type CustomFunction = {
-  id: string;
-  name: string;
-  revision: number;
-};
-
-type CustomFunctions = CustomFunction[];
 
 type Action = {
   id: string;
@@ -98,41 +91,7 @@ const publishFunctions = async (
   bumpRevision: boolean,
 ): Promise<void> => {
   const ide = new IDE(targetHost);
-
-  const customFunctions = (await ide.get(
-    'bootstrap/custom_functions',
-  )) as CustomFunctions;
-
-  const revision =
-    customFunctions.reduce((rev, func) => Math.max(rev, func.revision), 0) +
-    (bumpRevision ? 1 : 0);
-
-  const ids: NamedObject = customFunctions.reduce(
-    (map, { id, name }) => ({ ...map, [name]: id }),
-    {},
-  );
-
-  await Object.keys(metaData).reduce(
-    async (promise: Promise<string | object | null>, name: string) => {
-      await promise;
-      const { replace, returnType, inputVariables } = metaData[name];
-      const id = ids[replace || name];
-      const method = id ? 'put' : 'post';
-      const action = id ? 'Updating' : 'Creating';
-      const params = {
-        name,
-        revision,
-        return_type: returnType,
-        input_variables: inputVariables,
-      };
-      return ide[method](
-        `custom_functions/${id || 'new'}`,
-        { json: { record: params } },
-        `${action} custom function "${replace || name}" ...`,
-      );
-    },
-    Promise.resolve(null),
-  );
+  const revision = await storeCustomFunctions(ide, metaData, bumpRevision);
 
   const buildDir = path.join(os.tmpdir(), identifier);
   const customJsFile = path.join(buildDir, 'dist', 'custom.js');

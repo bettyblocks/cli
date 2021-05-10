@@ -15,8 +15,8 @@ import acquireAppFunctionsProject from './acquireAppFunctionsProject';
 
 import {
   MetaData,
-  NamedObject,
   resolveMissingFunction,
+  storeCustomFunctions,
 } from './publishFunctions';
 
 /* execute command */
@@ -76,36 +76,7 @@ const publishFunctions = async (
   metaData: MetaData,
 ): Promise<void> => {
   const ide = new IDE(targetHost);
-
-  const customFunctions = (await ide.get(
-    'bootstrap/custom_functions',
-  )) as CustomFunctions;
-
-  const ids: NamedObject = customFunctions.reduce(
-    (map, { id, name }) => ({ ...map, [name]: id }),
-    {},
-  );
-
-  await Object.keys(metaData).reduce(
-    async (promise: Promise<string | object | null>, name: string) => {
-      await promise;
-      const { replace, returnType, inputVariables } = metaData[name];
-      const id = ids[replace || name];
-      const method = id ? 'put' : 'post';
-      const action = id ? 'Updating' : 'Creating';
-      const params = {
-        name,
-        return_type: returnType,
-        input_variables: inputVariables,
-      };
-      return ide[method](
-        `custom_functions/${id || 'new'}`,
-        { json: { record: params } },
-        `${action} app function "${replace || name}" ...`,
-      );
-    },
-    Promise.resolve(null),
-  );
+  await storeCustomFunctions(ide, metaData);
 
   const tmpDir = path.join(os.tmpdir(), identifier);
   const zipFile = `${tmpDir}/app.zip`;
