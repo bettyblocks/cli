@@ -232,7 +232,7 @@ const publishFunctions = async (
 
   const actions = (await ide.get('actions')) as Actions;
 
-  actions.reduce(
+  await actions.reduce(
     async (
       promise: Promise<string | object | null>,
       { id, use_new_runtime, description }: Action,
