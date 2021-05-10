@@ -26,6 +26,9 @@ const schema = Joi.object({
   category: Joi.string().required(),
   type: Joi.string().valid('page'),
   description: Joi.string(),
+  detail: Joi.string(),
+  previewImage: Joi.string(),
+  previewUrl: Joi.string(),
   interactions: Joi.array()
     .items(interactionSchema)
     .max(MAX_INTERACTIONS),
