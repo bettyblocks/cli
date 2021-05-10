@@ -28,6 +28,7 @@ class FusionAuth {
   }
 
   async ensureLogin(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response: any = await this.get('/api/user', {
       headers: {
         Authorization: `Bearer ${this.jwt()}`,
@@ -43,6 +44,7 @@ class FusionAuth {
   }
 
   async login(): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { token, refreshToken, twoFactorId }: any = await this.post(
       '/api/login',
       {
@@ -69,6 +71,7 @@ class FusionAuth {
       },
     ]);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { token, refreshToken }: any = await this.post(
       '/api/two-factor/login',
       {
