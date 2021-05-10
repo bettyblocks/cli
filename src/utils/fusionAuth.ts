@@ -103,14 +103,14 @@ class FusionAuth {
   }
 
   async get(urlPath: string, options: object): Promise<string | object | null> {
-    return await this.request('get', urlPath, options);
+    return this.request('get', urlPath, options);
   }
 
   async post(
     urlPath: string,
     options: object,
   ): Promise<string | object | null> {
-    return await this.request('post', urlPath, options);
+    return this.request('post', urlPath, options);
   }
 
   private async request(
