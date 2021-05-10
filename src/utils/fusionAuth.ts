@@ -7,6 +7,8 @@ import Webhead, { WebheadInstance } from 'webhead';
 const builderApiURL = '{HOST}/api/builder';
 const fusionAuthURL = 'https://fusionauth-ce.betty.services';
 
+type response = string | object | null;
+
 class FusionAuth {
   private configFile: string;
 
@@ -105,14 +107,11 @@ class FusionAuth {
     return !!statusCode.toString().match(/^2/);
   }
 
-  async get(urlPath: string, options: object): Promise<string | object | null> {
+  async get(urlPath: string, options: object): Promise<response> {
     return this.request('get', urlPath, options);
   }
 
-  async post(
-    urlPath: string,
-    options: object,
-  ): Promise<string | object | null> {
+  async post(urlPath: string, options: object): Promise<response> {
     return this.request('post', urlPath, options);
   }
 
@@ -120,7 +119,7 @@ class FusionAuth {
     method: 'get' | 'post',
     urlPath: string,
     options: object,
-  ): Promise<string | object | null> {
+  ): Promise<response> {
     if (!this.webhead.url) {
       await this.webhead.get(fusionAuthURL);
     }
