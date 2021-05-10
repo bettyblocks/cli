@@ -35,7 +35,10 @@ const targetDir = path.join(workingDir, identifier);
 
 fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
   if (err && err.code === 'ENOENT') {
-    let type, actions, commands, sourceDir;
+    let type;
+    let actions;
+    let commands;
+    let sourceDir;
 
     if (initAppFunctions) {
       type = 'app functions';
