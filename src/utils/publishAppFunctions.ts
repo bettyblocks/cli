@@ -8,7 +8,6 @@ import ora from 'ora';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
-import Webhead from 'webhead';
 
 /* internal dependencies */
 
@@ -36,48 +35,6 @@ type CustomFunction = {
 };
 
 type CustomFunctions = CustomFunction[];
-
-const groomMetaData = async (): Promise<MetaData> => {
-  console.log('Grooming functions.json ...');
-
-  const functionsJsonFile = path.join(workingDir, 'functions.json');
-  const metaData = fs.readJsonSync(functionsJsonFile);
-  const appFunctions: string[] = [];
-
-  fs.readdirSync(workingDir).forEach(file => {
-    if (file.match(/\.js$/)) {
-      const name = file
-        .replace(/\.js$/, '')
-        .toLowerCase()
-        .replace(/[^a-zA-Z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
-      appFunctions.push(name);
-    }
-  });
-
-  const groomedMetaData = await appFunctions.reduce(
-    async (promise: Promise<MetaData>, name: string): Promise<MetaData> => {
-      return promise.then(async groomed => {
-        // eslint-disable-next-line no-param-reassign
-        groomed[name] = metaData[name];
-
-        if (!groomed[name]) {
-          // eslint-disable-next-line no-param-reassign
-          groomed = await resolveMissingFunction(groomed, metaData, name);
-        }
-
-        return groomed;
-      });
-    },
-    Promise.resolve({} as MetaData),
-  );
-
-  fs.writeFileSync(
-    functionsJsonFile,
-    JSON.stringify(groomedMetaData, null, 2) + '\n',
-  );
-
-  return groomedMetaData;
-};
 
 const resolveMissingFunction = async (
   groomed: MetaData,
@@ -160,6 +117,48 @@ const resolveMissingFunction = async (
   }
 
   return groomed;
+};
+
+const groomMetaData = async (): Promise<MetaData> => {
+  console.log('Grooming functions.json ...');
+
+  const functionsJsonFile = path.join(workingDir, 'functions.json');
+  const metaData = fs.readJsonSync(functionsJsonFile);
+  const appFunctions: string[] = [];
+
+  fs.readdirSync(workingDir).forEach(file => {
+    if (file.match(/\.js$/)) {
+      const name = file
+        .replace(/\.js$/, '')
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
+      appFunctions.push(name);
+    }
+  });
+
+  const groomedMetaData = await appFunctions.reduce(
+    async (promise: Promise<MetaData>, name: string): Promise<MetaData> => {
+      return promise.then(async groomed => {
+        // eslint-disable-next-line no-param-reassign
+        groomed[name] = metaData[name];
+
+        if (!groomed[name]) {
+          // eslint-disable-next-line no-param-reassign
+          groomed = await resolveMissingFunction(groomed, metaData, name);
+        }
+
+        return groomed;
+      });
+    },
+    Promise.resolve({} as MetaData),
+  );
+
+  fs.writeFileSync(
+    functionsJsonFile,
+    JSON.stringify(groomedMetaData, null, 2) + '\n',
+  );
+
+  return groomedMetaData;
 };
 
 const publishFunctions = async (

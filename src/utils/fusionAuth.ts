@@ -1,4 +1,3 @@
-import dns from 'dns';
 import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
@@ -103,24 +102,27 @@ class FusionAuth {
     return !!statusCode.toString().match(/^2/);
   }
 
-  async get(path: string, options: object): Promise<string | object | null> {
-    return await this.request('get', path, options);
+  async get(urlPath: string, options: object): Promise<string | object | null> {
+    return await this.request('get', urlPath, options);
   }
 
-  async post(path: string, options: object): Promise<string | object | null> {
-    return await this.request('post', path, options);
+  async post(
+    urlPath: string,
+    options: object,
+  ): Promise<string | object | null> {
+    return await this.request('post', urlPath, options);
   }
 
   private async request(
     method: 'get' | 'post',
-    path: string,
+    urlPath: string,
     options: object,
   ): Promise<string | object | null> {
     if (!this.webhead.url) {
       await this.webhead.get(fusionAuthURL);
     }
 
-    await this.webhead[method](path, options);
+    await this.webhead[method](urlPath, options);
     return this.webhead.json() || this.webhead.text();
   }
 
