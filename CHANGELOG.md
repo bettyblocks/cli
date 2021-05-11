@@ -1,3 +1,10 @@
+# [23.42.0](https://github.com/bettyblocks/cli/compare/v23.41.0...v23.42.0) (2021-05-11)
+
+
+### Features
+
+* add preview info to prefabs ([448bc0e](https://github.com/bettyblocks/cli/commit/448bc0e))
+
 # [23.41.0](https://github.com/bettyblocks/cli/compare/v23.40.1...v23.41.0) (2021-04-02)
 
 
