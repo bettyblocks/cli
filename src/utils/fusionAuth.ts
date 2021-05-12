@@ -2,12 +2,27 @@ import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
-import Webhead, { WebheadInstance } from 'webhead';
+import Webhead, { WebheadInstance, WebheadRequestOptions } from 'webhead';
 
 const builderApiURL = '{HOST}/api/builder';
 const fusionAuthURL = 'https://fusionauth-ce.betty.services';
 
-type response = string | object | null;
+type LoginResponse = {
+  token: string;
+  refreshToken: string;
+  twoFactorId: string;
+};
+
+type TwoFactorLoginResponse = {
+  token: string;
+  refreshToken: string;
+};
+
+type UserResponse = {
+  user: object;
+};
+
+type Response = LoginResponse | TwoFactorLoginResponse | UserResponse;
 
 class FusionAuth {
   private configFile: string;
@@ -30,12 +45,11 @@ class FusionAuth {
   }
 
   async ensureLogin(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response: any = await this.get('/api/user', {
+    const response = (await this.get('/api/user', {
       headers: {
         Authorization: `Bearer ${this.jwt()}`,
       },
-    });
+    })) as UserResponse;
 
     if (!response || !response.user) {
       if (!this.loginId) {
@@ -46,8 +60,7 @@ class FusionAuth {
   }
 
   async login(): Promise<void> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { token, refreshToken, twoFactorId }: any = await this.post(
+    const { token, refreshToken, twoFactorId } = (await this.post(
       '/api/login',
       {
         json: {
@@ -55,7 +68,7 @@ class FusionAuth {
           password: this.password,
         },
       },
-    );
+    )) as LoginResponse;
 
     if (token) {
       this.storeTokens(token, refreshToken);
@@ -69,20 +82,16 @@ class FusionAuth {
       {
         type: 'text',
         name: 'code',
-        message: 'Fill in your 2FA code',
+        message: 'Fill in your 2FA code (to upload code)',
       },
     ]);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { token, refreshToken }: any = await this.post(
-      '/api/two-factor/login',
-      {
-        json: {
-          code,
-          twoFactorId,
-        },
+    const { token, refreshToken } = (await this.post('/api/two-factor/login', {
+      json: {
+        code,
+        twoFactorId,
       },
-    );
+    })) as TwoFactorLoginResponse;
 
     if (token) {
       this.storeTokens(token, refreshToken);
@@ -107,19 +116,25 @@ class FusionAuth {
     return !!statusCode.toString().match(/^2/);
   }
 
-  async get(urlPath: string, options: object): Promise<response> {
+  async get(
+    urlPath: string,
+    options: WebheadRequestOptions,
+  ): Promise<Response> {
     return this.request('get', urlPath, options);
   }
 
-  async post(urlPath: string, options: object): Promise<response> {
+  async post(
+    urlPath: string,
+    options: WebheadRequestOptions,
+  ): Promise<Response> {
     return this.request('post', urlPath, options);
   }
 
   private async request(
     method: 'get' | 'post',
     urlPath: string,
-    options: object,
-  ): Promise<response> {
+    options: WebheadRequestOptions,
+  ): Promise<Response> {
     if (!this.webhead.url) {
       await this.webhead.get(fusionAuthURL);
     }

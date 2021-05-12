@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-// eslint-disable-next-line consistent-return
 const acquireAppFunctionsProject = (dir: string): string => {
   const expected = ['functions.json', 'package.json', '.app-functions'];
   const intersection = fs
@@ -12,9 +11,9 @@ const acquireAppFunctionsProject = (dir: string): string => {
     return path.basename(dir);
   }
 
-  console.log('The current directory is not an app functions project. Abort.');
-
-  process.exit();
+  throw new Error(
+    'The current directory is not an app functions project. Abort.',
+  );
 };
 
 export default acquireAppFunctionsProject;
