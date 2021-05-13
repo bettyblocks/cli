@@ -22,8 +22,6 @@ type UserResponse = {
   user: object;
 };
 
-type Response = LoginResponse | TwoFactorLoginResponse | UserResponse;
-
 class FusionAuth {
   private configFile: string;
 
@@ -45,11 +43,11 @@ class FusionAuth {
   }
 
   async ensureLogin(): Promise<void> {
-    const response = (await this.get('/api/user', {
+    const response = await this.get<UserResponse>('/api/user', {
       headers: {
         Authorization: `Bearer ${this.jwt()}`,
       },
-    })) as UserResponse;
+    });
 
     if (!response || !response.user) {
       if (!this.loginId) {
@@ -60,7 +58,7 @@ class FusionAuth {
   }
 
   async login(): Promise<void> {
-    const { token, refreshToken, twoFactorId } = (await this.post(
+    const { token, refreshToken, twoFactorId } = await this.post<LoginResponse>(
       '/api/login',
       {
         json: {
@@ -68,7 +66,7 @@ class FusionAuth {
           password: this.password,
         },
       },
-    )) as LoginResponse;
+    );
 
     if (token) {
       this.storeTokens(token, refreshToken);
@@ -86,12 +84,15 @@ class FusionAuth {
       },
     ]);
 
-    const { token, refreshToken } = (await this.post('/api/two-factor/login', {
-      json: {
-        code,
-        twoFactorId,
+    const { token, refreshToken } = await this.post<TwoFactorLoginResponse>(
+      '/api/two-factor/login',
+      {
+        json: {
+          code,
+          twoFactorId,
+        },
       },
-    })) as TwoFactorLoginResponse;
+    );
 
     if (token) {
       this.storeTokens(token, refreshToken);
@@ -116,25 +117,19 @@ class FusionAuth {
     return !!statusCode.toString().match(/^2/);
   }
 
-  async get(
-    urlPath: string,
-    options: WebheadRequestOptions,
-  ): Promise<Response> {
+  async get<T>(urlPath: string, options: WebheadRequestOptions): Promise<T> {
     return this.request('get', urlPath, options);
   }
 
-  async post(
-    urlPath: string,
-    options: WebheadRequestOptions,
-  ): Promise<Response> {
+  async post<T>(urlPath: string, options: WebheadRequestOptions): Promise<T> {
     return this.request('post', urlPath, options);
   }
 
-  private async request(
+  private async request<T>(
     method: 'get' | 'post',
     urlPath: string,
     options: WebheadRequestOptions,
-  ): Promise<Response> {
+  ): Promise<T> {
     if (!this.webhead.url) {
       await this.webhead.get(fusionAuthURL);
     }
