@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 // eslint-disable-next-line consistent-return
-const acquireFunctionsProject = (dir: string): string => {
+const acquireCustomFunctionsProject = (dir: string): string => {
   const expected = ['functions.json', 'package.json', 'src'];
   const intersection = fs
     .readdirSync(dir)
@@ -19,4 +19,4 @@ const acquireFunctionsProject = (dir: string): string => {
   process.exit();
 };
 
-export default acquireFunctionsProject;
+export default acquireCustomFunctionsProject;

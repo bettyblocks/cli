@@ -56,10 +56,12 @@
     "@betty-blocks/preview": "^1.1.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/git": "^9.0.0",
+    "@types/adm-zip": "^0.4.33",
     "@types/hapi__joi": "^16.0.0",
     "@types/prompts": "^2.0.8",
     "@types/react": "^16.9.9",
     "@types/serve-handler": "^6.1.0",
+    "adm-zip": "^0.5.3",
     "ava": "^3.7.1",
     "case": "^1.6.3",
     "chalk": "^2.4.2",
@@ -84,7 +86,7 @@
     "ts-node": "^8.8.2",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.5.3",
-    "webhead": "^1.1.2"
+    "webhead": "^1.1.3"
   },
   "ava": {
     "extensions": [

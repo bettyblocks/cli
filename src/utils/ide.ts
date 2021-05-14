@@ -5,7 +5,13 @@ import ora from 'ora';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
-import Webhead, { WebheadInstance, WebheadRequestParameters } from 'webhead';
+import Webhead, {
+  AnyObject,
+  WebheadInstance,
+  WebheadRequestParameters,
+} from 'webhead';
+
+import FusionAuth from './fusionAuth';
 
 type NamedObject = Record<string, string | object>;
 
@@ -14,7 +20,9 @@ class IDE {
 
   private host: string;
 
-  private webhead: WebheadInstance;
+  public webhead: WebheadInstance;
+
+  public fusionAuth: FusionAuth;
 
   private loggedIn?: boolean;
 
@@ -34,7 +42,7 @@ class IDE {
       jarFile: this.configFile,
       beforeSend: (
         { method, url, options }: WebheadRequestParameters,
-        { csrfToken }: { csrfToken: string },
+        { csrfToken }: AnyObject,
       ) => {
         if (method !== 'GET' && csrfToken) {
           // eslint-disable-next-line no-unused-expressions
@@ -45,7 +53,7 @@ class IDE {
       },
       complete: (
         _parameters: WebheadRequestParameters,
-        session: { csrfToken: string },
+        session: AnyObject,
         webhead: WebheadInstance,
       ) => {
         if (!session.csrfToken) {
@@ -57,6 +65,11 @@ class IDE {
         }
       },
     });
+
+    this.fusionAuth = new FusionAuth(
+      this.host,
+      async (): Promise<void> => this.relogin(),
+    );
   }
 
   async get(
@@ -104,6 +117,12 @@ class IDE {
     return this.webhead.json() || this.webhead.text();
   }
 
+  private async relogin(): Promise<void> {
+    this.loggedIn = false;
+    this.webhead.clearCookies();
+    await this.ensureLogin();
+  }
+
   private async ensureLogin(): Promise<void> {
     if (this.loggedIn) return;
 
@@ -113,13 +132,16 @@ class IDE {
       await this.webhead.get('/login');
     }
 
+    let email = '';
+    let password = '';
+
     const ensureAuth = async (): Promise<void> => {
       const cassieLogin = !!this.webhead.$('form [name="username"]').length;
       const fusionAuthLogin = !!this.webhead.$('form [name="loginId"]').length;
 
       if (cassieLogin || fusionAuthLogin) {
         const config = fs.readJsonSync(this.configFile);
-        const { email, password } = await prompts([
+        const credentials = await prompts([
           {
             type: 'text',
             name: 'email',
@@ -133,6 +155,9 @@ class IDE {
           },
         ]);
 
+        email = credentials.email;
+        password = credentials.password;
+
         config.email = email;
         fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
 
@@ -143,27 +168,44 @@ class IDE {
         };
 
         await this.webhead.submit('form', input);
+
         await ensureAuth();
       }
     };
 
     const ensure2FA = async (): Promise<void> => {
-      if (this.webhead.$('form [name="otp"]').length) {
-        const { otp } = await prompts([
+      const cassie2FA = !!this.webhead.$('form[name="otp"]').length;
+      const fusionAuth2FA = !!this.webhead.$('form[id="2fa-form"]').length;
+
+      if (cassie2FA || fusionAuth2FA) {
+        const { code } = await prompts([
           {
             type: 'text',
-            name: 'otp',
+            name: 'code',
             message: 'Fill in your 2FA code',
           },
         ]);
 
-        await this.webhead.submit('form', { otp });
+        const name = cassie2FA ? 'otp' : 'code';
+        const input = {
+          [name]: code,
+        };
+
+        await this.webhead.submit(
+          'form[name="otp"],form[id="2fa-form"]',
+          input,
+        );
+
         await ensure2FA();
       }
     };
 
     await ensureAuth();
     await ensure2FA();
+
+    this.fusionAuth.loginId = email;
+    this.fusionAuth.password = password;
+
     this.loggedIn = true;
   }
 }

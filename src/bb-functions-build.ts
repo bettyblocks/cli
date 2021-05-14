@@ -9,7 +9,7 @@ import program from 'commander';
 /* internal dependencies */
 
 import rootDir from './utils/rootDir';
-import acquireFunctionsProject from './utils/acquireFunctionsProject';
+import acquireCustomFunctionsProject from './utils/acquireCustomFunctionsProject';
 
 /* process arguments */
 
@@ -18,7 +18,7 @@ program.name('bb functions build').parse(process.argv);
 /* execute command */
 
 const workingDir = process.cwd();
-const identifier = acquireFunctionsProject(workingDir);
+const identifier = acquireCustomFunctionsProject(workingDir);
 
 console.log(
   `Building ${identifier}.bettyblocks.com bundle (this can take a while) ...`,
