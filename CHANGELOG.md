@@ -1,3 +1,10 @@
+# [23.43.0](https://github.com/bettyblocks/cli/compare/v23.42.0...v23.43.0) (2021-05-14)
+
+
+### Features
+
+* release publishing app functions and FusionAuth authentication ([2e532de](https://github.com/bettyblocks/cli/commit/2e532de))
+
 # [23.42.0](https://github.com/bettyblocks/cli/compare/v23.41.0...v23.42.0) (2021-05-11)
 
 
