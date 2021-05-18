@@ -1,3 +1,10 @@
+# [23.44.0](https://github.com/bettyblocks/cli/compare/v23.43.0...v23.44.0) (2021-05-18)
+
+
+### Features
+
+* update sayHello template to reflect latest ActionsJS ([#220](https://github.com/bettyblocks/cli/issues/220)) ([892837a](https://github.com/bettyblocks/cli/commit/892837a))
+
 # [23.43.0](https://github.com/bettyblocks/cli/compare/v23.42.0...v23.43.0) (2021-05-14)
 
 
