@@ -5,7 +5,7 @@ import prompts from 'prompts';
 import Webhead, { WebheadInstance, WebheadRequestOptions } from 'webhead';
 
 const builderApiURL = '{HOST}/api/builder';
-const fusionAuthURL = 'https://fusionauth-ce.betty.services';
+const fusionAuthURL = 'https://fusionauth{ZONEPOSTFIX}.betty.services';
 
 type LoginResponse = {
   token: string;
@@ -26,6 +26,7 @@ class FusionAuth {
   private configFile: string;
 
   private host: string;
+  private zone: string;
 
   public loginId?: string;
 
@@ -35,9 +36,10 @@ class FusionAuth {
 
   private webhead: WebheadInstance;
 
-  constructor(host: string, relogin: () => Promise<void>) {
+  constructor(host: string, zone: string, relogin: () => Promise<void>) {
     this.configFile = path.join(os.homedir(), '.bb-cli-fa');
     this.host = host;
+    this.zone = zone;
     this.relogin = relogin;
     this.webhead = Webhead();
   }
@@ -131,7 +133,7 @@ class FusionAuth {
     options: WebheadRequestOptions,
   ): Promise<T> {
     if (!this.webhead.url) {
-      await this.webhead.get(fusionAuthURL);
+      await this.webhead.get(this.fusionAuthURL());
     }
 
     await this.webhead[method](urlPath, options);
@@ -154,6 +156,17 @@ class FusionAuth {
 
   private builderApiURL(): string {
     return builderApiURL.replace('{HOST}', this.host);
+  }
+
+  private fusionAuthURL(): string {
+    let prefix = '';
+    if (this.zone === 'acceptance') {
+      prefix = '-ca';
+    } else if (this.zone === 'edge') {
+      prefix = '-ce';
+    }
+
+    return fusionAuthURL.replace('{ZONEPOSTFIX}', prefix);
   }
 }
 

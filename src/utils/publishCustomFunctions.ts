@@ -24,6 +24,7 @@ import {
 /* execute command */
 
 const workingDir = process.cwd();
+const domain = 'bettyblocks.com';
 let identifier: string;
 
 type Action = {
@@ -87,10 +88,11 @@ const groomMetaData = async (): Promise<MetaData> => {
 
 const publishFunctions = async (
   targetHost: string,
+  targetZone: string,
   metaData: MetaData,
   bumpRevision: boolean,
 ): Promise<void> => {
-  const ide = new IDE(targetHost);
+  const ide = new IDE(targetHost, targetZone);
   const revision = await storeCustomFunctions(ide, metaData, bumpRevision);
 
   const buildDir = path.join(os.tmpdir(), identifier);
@@ -141,9 +143,14 @@ const publishCustomFunctions = (
 ): void => {
   identifier = acquireCustomFunctionsProject(workingDir);
 
-  const targetHost = host || `https://${identifier}.bettyblocks.com`;
-  console.log(`Publishing to ${targetHost} ...`);
-
+  const targetHost = host || `https://${identifier}.${domain}`;
+  let targetZone = 'production';
+  if (targetHost.match('acceptance.' + domain)) {
+    targetZone = 'acceptance';
+  } else if (targetHost.match('edge.' + domain)) {
+    targetZone = 'edge';
+  }
+  console.log(`Publishing to ${targetHost} (${targetZone}) ...`);
   new Promise((resolve): void => {
     if (skipBuild) {
       resolve(undefined);
@@ -162,7 +169,7 @@ const publishCustomFunctions = (
   })
     .then(groomMetaData)
     .then((metaData: MetaData) =>
-      publishFunctions(targetHost, metaData, bumpRevision),
+      publishFunctions(targetHost, targetZone, metaData, bumpRevision),
     )
     .then(cleanMetaData)
     .then(() => {

@@ -22,6 +22,7 @@ import {
 /* execute command */
 
 const workingDir = process.cwd();
+const domain = 'bettyblocks.com';
 let identifier: string;
 
 type CustomFunction = {
@@ -42,7 +43,7 @@ const groomMetaData = async (): Promise<MetaData> => {
     if (file.match(/\.js$/)) {
       const name = file
         .replace(/\.js$/, '')
-        .toLowerCase()
+        // .toLowerCase()
         .replace(/[^a-zA-Z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
       appFunctions.push(name);
     }
@@ -73,9 +74,10 @@ const groomMetaData = async (): Promise<MetaData> => {
 
 const publishFunctions = async (
   targetHost: string,
+  targetZone: string,
   metaData: MetaData,
 ): Promise<void> => {
-  const ide = new IDE(targetHost);
+  const ide = new IDE(targetHost, targetZone);
   await storeCustomFunctions(ide, metaData);
 
   const tmpDir = path.join(os.tmpdir(), identifier);
@@ -115,11 +117,19 @@ const cleanMetaData = async (): Promise<void> => {
 const publishAppFunctions = (host: string): void => {
   identifier = acquireAppFunctionsProject(workingDir);
 
-  const targetHost = host || `https://${identifier}.bettyblocks.com`;
-  console.log(`Publishing to ${targetHost} ...`);
+  const targetHost = host || `https://${identifier}.${domain}`;
+  let targetZone = 'production';
+  if (targetHost.match('acceptance.' + domain)) {
+    targetZone = 'acceptance';
+  } else if (targetHost.match('edge.' + domain)) {
+    targetZone = 'edge';
+  }
+  console.log(`Publishing to ${targetHost} (${targetZone}) ...`);
 
   groomMetaData()
-    .then((metaData: MetaData) => publishFunctions(targetHost, metaData))
+    .then((metaData: MetaData) =>
+      publishFunctions(targetHost, targetZone, metaData),
+    )
     .then(cleanMetaData)
     .then(() => {
       console.log('Done.');

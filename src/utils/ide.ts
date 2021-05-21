@@ -19,6 +19,7 @@ class IDE {
   private configFile: string;
 
   private host: string;
+  private zone: string;
 
   public webhead: WebheadInstance;
 
@@ -26,10 +27,11 @@ class IDE {
 
   private loggedIn?: boolean;
 
-  constructor(host: string) {
+  constructor(host: string, zone: string) {
     this.configFile = path.join(os.homedir(), '.bb-cli');
 
     this.host = host;
+    this.zone = zone;
 
     if (!fs.pathExistsSync(this.configFile)) {
       fs.writeFileSync(
@@ -68,6 +70,7 @@ class IDE {
 
     this.fusionAuth = new FusionAuth(
       this.host,
+      this.zone,
       async (): Promise<void> => this.relogin(),
     );
   }
