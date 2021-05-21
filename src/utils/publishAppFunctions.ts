@@ -43,7 +43,7 @@ const groomMetaData = async (): Promise<MetaData> => {
     if (file.match(/\.js$/)) {
       const name = file
         .replace(/\.js$/, '')
-        // .toLowerCase()
+        .toLowerCase()
         .replace(/[^a-zA-Z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
       appFunctions.push(name);
     }
