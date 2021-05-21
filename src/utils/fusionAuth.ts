@@ -26,6 +26,7 @@ class FusionAuth {
   private configFile: string;
 
   private host: string;
+
   private zone: string;
 
   public loginId?: string;

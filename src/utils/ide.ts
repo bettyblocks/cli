@@ -19,6 +19,7 @@ class IDE {
   private configFile: string;
 
   private host: string;
+
   private zone: string;
 
   public webhead: WebheadInstance;

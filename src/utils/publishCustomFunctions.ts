@@ -145,9 +145,9 @@ const publishCustomFunctions = (
 
   const targetHost = host || `https://${identifier}.${domain}`;
   let targetZone = 'production';
-  if (targetHost.match('acceptance.' + domain)) {
+  if (targetHost.match('.acceptance.' + domain)) {
     targetZone = 'acceptance';
-  } else if (targetHost.match('edge.' + domain)) {
+  } else if (targetHost.match('.edge.' + domain)) {
     targetZone = 'edge';
   }
   console.log(`Publishing to ${targetHost} (${targetZone}) ...`);
