@@ -1,3 +1,10 @@
+# [23.45.0](https://github.com/bettyblocks/cli/compare/v23.44.0...v23.45.0) (2021-05-21)
+
+
+### Features
+
+* increase interaction limit to 30 ([#221](https://github.com/bettyblocks/cli/issues/221)) ([1ff3856](https://github.com/bettyblocks/cli/commit/1ff3856))
+
 # [23.44.0](https://github.com/bettyblocks/cli/compare/v23.43.0...v23.44.0) (2021-05-18)
 
 
