@@ -1,3 +1,10 @@
+# [23.46.0](https://github.com/bettyblocks/cli/compare/v23.45.0...v23.46.0) (2021-05-25)
+
+
+### Features
+
+* add Zone detection to functions publish ([#222](https://github.com/bettyblocks/cli/issues/222)) ([d1c2e8f](https://github.com/bettyblocks/cli/commit/d1c2e8f))
+
 # [23.45.0](https://github.com/bettyblocks/cli/compare/v23.44.0...v23.45.0) (2021-05-21)
 
 
