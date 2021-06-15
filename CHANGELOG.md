@@ -1,3 +1,10 @@
+# [23.47.0](https://github.com/bettyblocks/cli/compare/v23.46.0...v23.47.0) (2021-06-15)
+
+
+### Features
+
+* add-new-icons-for-componentset ([#226](https://github.com/bettyblocks/cli/issues/226)) ([36c7862](https://github.com/bettyblocks/cli/commit/36c7862))
+
 # [23.46.0](https://github.com/bettyblocks/cli/compare/v23.45.0...v23.46.0) (2021-05-25)
 
 
