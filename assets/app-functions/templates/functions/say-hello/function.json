@@ -1,0 +1,22 @@
+{
+  "description": "Say Hello to the world",
+  "name": "sayHello",
+  "label": "Say Hello",
+  "category": "Misc",
+  "icon": "AddIcon",
+  "options": [
+    {
+      "meta": {
+        "type": "String"
+      },
+      "name": "name",
+      "label": "Name",
+      "info": "The name that's going to be used to say hello to the world!",
+      "advanced": false,
+      "configuration": {
+        "placeholder": "Betty Blocks"
+      }
+    }
+  ],
+  "yields": "none"
+}
