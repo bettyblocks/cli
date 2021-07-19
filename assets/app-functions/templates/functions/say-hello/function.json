@@ -3,11 +3,12 @@
   "name": "sayHello",
   "label": "Say Hello",
   "category": "Misc",
-  "icon": "AddIcon",
+  "icon": "CreateIcon",
   "options": [
     {
       "meta": {
-        "type": "String"
+        "type": "String",
+        "io": "in"
       },
       "name": "name",
       "label": "Name",

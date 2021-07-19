@@ -9,13 +9,13 @@ export type FunctionDefinition = {
   name?: string;
 };
 
-export type FunctionSchema = {
+export type Schema = {
   $id: string;
 };
 
 const baseSchemaUrl =
-  'https://raw.githubusercontent.com/bettyblocks/json-schema/feature/add-first-draft-for-action-functions';
-const functionSchemaPath = '/schemas/actions/function.json';
+  'https://github.com/bettyblocks/json-schema/raw/feature/add-first-draft-for-action-functions';
+const functionSchemaId = '/schemas/actions/function.json';
 
 const functionExists = async (
   functionPath: string,
@@ -32,42 +32,58 @@ const functionExists = async (
   return json;
 };
 
-const fetchSchema = async (
-  baseUrl: string,
+const fetchRemoteSchema = async (
   functionPath: string,
-): Promise<FunctionSchema> => {
-  const fullUrl = baseSchemaUrl + functionPath;
-  return fetch(fullUrl).then(res => (res.json() as unknown) as FunctionSchema);
+  options: {
+    schemaUrl: string;
+  },
+): Promise<Schema> => {
+  const fullUrl = options.schemaUrl + functionPath;
+  console.log('Fetching:', fullUrl);
+  return fetch(fullUrl)
+    .then(res => {
+      return (res.json() as unknown) as Schema;
+    })
+    .catch(err => {
+      console.log(err);
+      return { $id: 'unknown' } as Schema;
+    });
 };
 
-const importNextSchema = async (validator: Validator): Promise<Validator> => {
+const importSchema = async (
+  validator: Validator,
+  schemaUrl: string,
+): Promise<Validator> => {
+  return importNextSchema(validator, functionSchemaId, { schemaUrl });
+};
+
+const importNextSchema = async (
+  validator: Validator,
+  schema: string,
+  options: { schemaUrl: string },
+): Promise<Validator> => {
+  const schemaJSON = await fetchRemoteSchema(schema, options);
+  validator.addSchema(schemaJSON);
+
   const nextSchema = validator.unresolvedRefs.shift();
   if (!nextSchema) {
     return validator;
+  } else {
+    return importNextSchema(validator, nextSchema, options);
   }
-
-  const schema = await fetchSchema(baseSchemaUrl, nextSchema);
-  validator.addSchema(schema);
-  return importNextSchema(validator);
 };
 
-const functionValidator = async (
-  schemaUrl: string,
-): Promise<{ validator: Validator; functionSchema: FunctionSchema }> => {
+const functionValidator = async (schemaUrl: string): Promise<Validator> => {
   const url = schemaUrl || baseSchemaUrl;
   console.log(`Fetching functions schema from ${url}`);
   const validator = new Validator();
-  const functionSchema = await fetchSchema(url, functionSchemaPath);
 
-  validator.addSchema(functionSchema);
-  await importNextSchema(validator);
-
-  return { validator, functionSchema };
+  return importSchema(validator, url);
 };
 
 const validateFunctionDefinition = async (
   validator: Validator,
-  functionSchema: FunctionSchema,
+  functionSchema: Schema,
   functionDefinition: FunctionDefinition,
 ): Promise<ValidatorResult> => {
   return validator.validate(functionDefinition, functionSchema);
@@ -76,8 +92,9 @@ const validateFunctionDefinition = async (
 const validateFunction = async (
   functionPath: string,
   validator: Validator,
-  functionSchema: FunctionSchema,
 ): Promise<void> => {
+  const functionSchema = validator.schemas[functionSchemaId] as Schema;
+
   functionExists(functionPath)
     .then(json => {
       const functionName = json.name || functionPath;
