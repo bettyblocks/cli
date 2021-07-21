@@ -12,20 +12,18 @@ import { functionValidator, validateFunction } from './utils/validateFunction';
 program
   .usage('[function-name]')
   .name('bb functions validate')
-  .option('-s', '--schema', 'Schema URL.')
   .parse(process.argv);
 
 const {
   args: [functionName],
 } = program;
-const { schema: schemaUrl } = program;
 /* execute command */
 
 const workingDir = process.cwd();
 const baseFunctionsPath = path.join(workingDir, 'functions');
 
 (async (): Promise<void> => {
-  const validator = await functionValidator(schemaUrl);
+  const validator = await functionValidator();
   if (functionName) {
     const functionPath = path.join(baseFunctionsPath, functionName);
     validateFunction(functionPath, validator);
