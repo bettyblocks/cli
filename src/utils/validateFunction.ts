@@ -18,9 +18,9 @@ export type Config = {
   functionSchemaPath: string;
 };
 
-const config = (fs.readJSONSync(
+const config = fs.readJSONSync(
   path.join(process.cwd(), 'config.json'),
-) as unknown) as Config;
+) as Config;
 const { schemaUrl: baseSchemaUrl, functionSchemaPath } = config;
 
 const functionExists = async (
@@ -41,7 +41,7 @@ const functionExists = async (
 const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {
   const res = await fetch(schemaUrl);
   const json = await res.json();
-  return (json as unknown) as Schema;
+  return json as Schema;
 };
 
 const importNextSchema = async (
