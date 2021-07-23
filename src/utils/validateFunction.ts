@@ -90,10 +90,11 @@ const validateFunction = async (
 }> => {
   return validateFunctionDefinition(validator, functionJson).then(
     ({ errors }) => {
-      if (errors.length) {
-        return { status: 'error', functionName: functionJson.name, errors };
-      }
-      return { status: 'ok', functionName: functionJson.name, errors: [] };
+      return {
+        status: errors.length === 0 ? 'ok' : 'error',
+        functionName: functionJson.name,
+        errors,
+      };
     },
   );
 };
