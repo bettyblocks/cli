@@ -18,10 +18,10 @@ const schema = {
   "required": ["name"]
 }
 
-test('load in entire schema for validator', async (t: Context): Promise<void> => {
-  const validator = new Validator();
-  validator.addSchema(schema, schema.$id);
+const validator = new Validator();
+validator.addSchema(schema, schema.$id);
 
+test('load in entire schema for validator', async (t: Context): Promise<void> => {
   const functionJson = {
     "name": "create",
     "icon": "CreateIcon"
@@ -34,9 +34,6 @@ test('load in entire schema for validator', async (t: Context): Promise<void> =>
 });
 
 test('invalidate empty schemas', async (t: Context): Promise<void> => {
-  const validator = new Validator();
-  validator.addSchema(schema, schema.$id);
-
   const {status, errors: [{message}]} = await validateFunction({}, validator);
 
   t.is(status, 'error');
@@ -44,9 +41,6 @@ test('invalidate empty schemas', async (t: Context): Promise<void> => {
 });
 
 test('invalidate schemas that do not have valid values for properties', async (t: Context): Promise<void> => {
-  const validator = new Validator();
-  validator.addSchema(schema, schema.$id);
-
   const functionJson = {
     "name": "create",
     "icon": "RandomIcon"

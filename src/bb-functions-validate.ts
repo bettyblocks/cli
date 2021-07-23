@@ -10,7 +10,9 @@ import { Validator } from 'jsonschema';
 
 import {
   Config,
+  isFunction,
   fetchFunction,
+  functionJsonPath,
   functionValidator,
   validateFunction,
 } from './utils/validateFunction';
@@ -34,10 +36,9 @@ const config = fs.readJSONSync(
 ) as Config;
 
 const validateFunctionByName = async (
-  functionName: string,
+  functionPath: string,
   validator: Validator,
 ): Promise<void> => {
-  const functionPath = path.join(baseFunctionsPath, functionName);
   const json = await fetchFunction(functionPath);
   validateFunction(json, validator).then(
     ({ status, functionName: name, errors }) => {
@@ -56,10 +57,24 @@ const validateFunctionByName = async (
 (async (): Promise<void> => {
   const validator = await functionValidator(config);
   if (inputFunctionName) {
-    validateFunctionByName(inputFunctionName, validator);
+    const functionPath = path.join(baseFunctionsPath, inputFunctionName);
+    if (isFunction(functionPath)) {
+      validateFunctionByName(functionPath, validator);
+    } else {
+      console.log(
+        `${chalk.red(
+          `x`,
+        )} Error: Function not found, missing ${functionJsonPath(
+          functionPath,
+        )}.`,
+      );
+    }
   } else {
     fs.readdirSync(baseFunctionsPath).forEach(functionDir => {
-      validateFunctionByName(functionDir, validator);
+      const functionPath = path.join(baseFunctionsPath, functionDir);
+      if (isFunction(functionPath)) {
+        validateFunctionByName(functionPath, validator);
+      }
     });
   }
 })();

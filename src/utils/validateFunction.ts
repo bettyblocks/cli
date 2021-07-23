@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
 type FunctionDefinition = {
-  name?: string;
+  name: string;
   [other: string]: unknown;
 };
 
@@ -17,16 +17,18 @@ export type Config = {
   functionSchemaPath: string;
 };
 
-const fetchFunction = async (
-  functionPath: string,
-): Promise<FunctionDefinition> => {
-  const filePath = path.join(functionPath, 'function.json');
+const functionJsonPath = (functionPath: string): string =>
+  path.join(functionPath, 'function.json');
+
+const isFunction = (functionPath: string): boolean =>
+  fs.pathExistsSync(functionJsonPath(functionPath));
+
+const fetchFunction = async (functionPath: string): Promise<object> => {
+  const filePath = functionJsonPath(functionPath);
   try {
-    const exists = await fs.pathExists(filePath);
-    if (!exists) throw new Error(`file not found ${filePath}`);
-    return (await fs.readJSON(filePath)) as FunctionDefinition;
+    return fs.readJSONSync(filePath);
   } catch (err) {
-    throw new Error(`could not load json from ${functionPath}: ${err}`);
+    throw new Error(`could not load json from ${filePath}: ${err}`);
   }
 };
 
@@ -64,10 +66,10 @@ const functionValidator = async (config: Config): Promise<Validator> => {
   return importSchema(validator, config);
 };
 
-const validateFunctionDefinition = async (
+const validateFunctionDefinition = (
   validator: Validator,
-  functionDefinition: FunctionDefinition,
-): Promise<ValidatorResult> => {
+  functionDefinition: object,
+): ValidatorResult => {
   const functionSchemaId = Object.keys(validator.schemas).find(k => {
     return k.match(/function\.json$/);
   });
@@ -81,22 +83,34 @@ const validateFunctionDefinition = async (
 };
 
 const validateFunction = async (
-  functionJson: FunctionDefinition,
+  functionJson: object,
   validator: Validator,
 ): Promise<{
   status: string;
   functionName?: string;
   errors: ValidationError[];
 }> => {
-  return validateFunctionDefinition(validator, functionJson).then(
-    ({ errors }) => {
-      return {
-        status: errors.length === 0 ? 'ok' : 'error',
-        functionName: functionJson.name,
-        errors,
-      };
-    },
-  );
+  const { errors } = validateFunctionDefinition(validator, functionJson);
+  const func = functionJson as FunctionDefinition;
+
+  if (errors.length) {
+    return {
+      status: 'error',
+      functionName: func.name,
+      errors,
+    };
+  }
+  return {
+    status: 'ok',
+    functionName: func.name,
+    errors,
+  };
 };
 
-export { fetchFunction, functionValidator, validateFunction };
+export {
+  isFunction,
+  fetchFunction,
+  functionJsonPath,
+  functionValidator,
+  validateFunction,
+};
