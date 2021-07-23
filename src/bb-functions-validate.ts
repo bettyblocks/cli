@@ -9,6 +9,7 @@ import { Validator } from 'jsonschema';
 /* internal dependencies */
 
 import {
+  Config,
   fetchFunction,
   functionValidator,
   validateFunction,
@@ -27,6 +28,10 @@ const {
 
 const workingDir = process.cwd();
 const baseFunctionsPath = path.join(workingDir, 'functions');
+
+const config = fs.readJSONSync(
+  path.join(process.cwd(), 'config.json'),
+) as Config;
 
 const validateFunctionByName = async (
   functionName: string,
@@ -49,7 +54,7 @@ const validateFunctionByName = async (
 };
 
 (async (): Promise<void> => {
-  const validator = await functionValidator();
+  const validator = await functionValidator(config);
   if (inputFunctionName) {
     validateFunctionByName(inputFunctionName, validator);
   } else {

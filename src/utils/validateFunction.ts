@@ -4,23 +4,18 @@ import fetch from 'node-fetch';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
 type FunctionDefinition = {
-  id?: string;
   name?: string;
+  [other: string]: unknown;
 };
 
 export type Schema = {
   $id: string;
 };
 
-type Config = {
+export type Config = {
   schemaUrl: string;
   functionSchemaPath: string;
 };
-
-const config = fs.readJSONSync(
-  path.join(process.cwd(), 'config.json'),
-) as Config;
-const { schemaUrl: baseSchemaUrl, functionSchemaPath } = config;
 
 const fetchFunction = async (
   functionPath: string,
@@ -55,15 +50,18 @@ const importNextSchema = async (
   return importNextSchema(validator, nextSchemaId);
 };
 
-const importSchema = async (validator: Validator): Promise<Validator> => {
-  const functionSchemaUrl = baseSchemaUrl + functionSchemaPath;
+const importSchema = async (
+  validator: Validator,
+  config: Config,
+): Promise<Validator> => {
+  const functionSchemaUrl = config.schemaUrl + config.functionSchemaPath;
   return importNextSchema(validator, functionSchemaUrl);
 };
 
-const functionValidator = async (): Promise<Validator> => {
+const functionValidator = async (config: Config): Promise<Validator> => {
   const validator = new Validator();
 
-  return importSchema(validator);
+  return importSchema(validator, config);
 };
 
 const validateFunctionDefinition = async (
@@ -88,14 +86,14 @@ const validateFunction = async (
 ): Promise<{
   status: string;
   functionName?: string;
-  errors?: ValidationError[];
+  errors: ValidationError[];
 }> => {
   return validateFunctionDefinition(validator, functionJson).then(
     ({ errors }) => {
       if (errors.length) {
         return { status: 'error', functionName: functionJson.name, errors };
       }
-      return { status: 'ok', functionName: functionJson.name };
+      return { status: 'ok', functionName: functionJson.name, errors: [] };
     },
   );
 };
