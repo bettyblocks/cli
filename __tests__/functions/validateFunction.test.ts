@@ -41,7 +41,6 @@ test('validate templates', async (t: Context): Promise<void> => {
     'assets/app-functions/templates',
     'functions/say-hello'
   );
-  console.log('FunctionPath:', functionPath);
 
   const functionJson = functionDefinition(functionPath);
   const {status} = await validateFunction(functionJson, validator);

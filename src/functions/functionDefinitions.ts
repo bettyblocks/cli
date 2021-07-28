@@ -16,6 +16,19 @@ const functionDefinitionPath = (functionPath: string): string =>
 const isFunctionDefinition = (functionPath: string): boolean =>
   fs.pathExistsSync(functionDefinitionPath(functionPath));
 
+const functionDirs = (functionsDir: string): string[] =>
+  fs.readdirSync(functionsDir).reduce(
+    (dirs, functionDir) => {
+      const functionPath = path.join(functionsDir, functionDir);
+      if (isFunctionDefinition(functionPath)) {
+        dirs.push(functionPath);
+      }
+
+      return dirs;
+    },
+    [] as string[],
+  );
+
 const functionDefinition = (functionPath: string): object => {
   const filePath = functionDefinitionPath(functionPath);
   try {
@@ -26,29 +39,24 @@ const functionDefinition = (functionPath: string): object => {
 };
 
 const functionDefinitions = (functionsDir: string): FunctionDefinitions => {
-  const functionDirs = fs.readdirSync(functionsDir);
+  return functionDirs(functionsDir).reduce(
+    (definitions, functionDir) => {
+      const functionJson = functionDefinition(
+        functionDir,
+      ) as FunctionDefinition;
 
-  return functionDirs.reduce(
-    (definitions, functionPath) => {
-      if (isFunctionDefinition(functionPath)) {
-        const functionJson = functionDefinition(
-          functionDefinitionPath(functionPath),
-        ) as FunctionDefinition;
-
-        return {
-          [functionJson.name]: functionJson,
-          ...definitions,
-        };
-      }
-
-      return definitions;
+      return {
+        [functionJson.name]: functionJson,
+        ...definitions,
+      };
     },
-    {} as { [key: string]: FunctionDefinition },
+    {} as FunctionDefinitions,
   );
 };
 
 export {
   isFunctionDefinition,
+  functionDirs,
   functionDefinitionPath,
   functionDefinition,
   functionDefinitions,
