@@ -10,7 +10,7 @@ import path from 'path';
 
 /* internal dependencies */
 
-import IDE from './ide';
+import IDE from '../utils/ide';
 import acquireAppFunctionsProject from './acquireAppFunctionsProject';
 
 import {

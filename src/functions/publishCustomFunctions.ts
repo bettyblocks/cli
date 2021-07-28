@@ -11,7 +11,7 @@ import vm from 'vm';
 
 /* internal dependencies */
 
-import IDE from './ide';
+import IDE from '../utils/ide';
 import acquireCustomFunctionsProject from './acquireCustomFunctionsProject';
 
 import {

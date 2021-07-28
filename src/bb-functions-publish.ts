@@ -8,8 +8,8 @@ import program from 'commander';
 
 /* internal dependencies */
 
-import publishAppFunctions from './utils/publishAppFunctions';
-import publishCustomFunctions from './utils/publishCustomFunctions';
+import publishAppFunctions from './functions/publishAppFunctions';
+import publishCustomFunctions from './functions/publishCustomFunctions';
 
 /* process arguments */
 
