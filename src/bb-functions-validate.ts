@@ -9,10 +9,13 @@ import { Validator } from 'jsonschema';
 /* internal dependencies */
 
 import {
-  Config,
   isFunction,
   fetchFunction,
   functionJsonPath,
+} from './functions/functionDefinitions';
+
+import {
+  Config,
   functionValidator,
   validateFunction,
 } from './functions/validations';

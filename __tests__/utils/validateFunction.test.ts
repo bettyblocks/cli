@@ -1,6 +1,7 @@
 import test, { ExecutionContext } from 'ava';
 import path from 'path';
-import { fetchFunction, validateFunction } from '../../src/functions/validations';
+import { fetchFunction } from '../../src/functions/functionDefinitions';
+import { validateFunction } from '../../src/functions/validations';
 import { Validator } from 'jsonschema';
 
 type Context = ExecutionContext<unknown>;
