@@ -15,7 +15,7 @@ import {
   functionJsonPath,
   functionValidator,
   validateFunction,
-} from './utils/validateFunction';
+} from './functions/validations';
 
 /* process arguments */
 program
@@ -39,19 +39,20 @@ const validateFunctionByName = async (
   functionPath: string,
   validator: Validator,
 ): Promise<void> => {
-  const json = await fetchFunction(functionPath);
-  validateFunction(json, validator).then(
-    ({ status, functionName: name, errors }) => {
-      if (status === 'ok') {
-        const mark = chalk.green(`√`);
-        console.log(`${mark} Validated: ${name}`);
-      } else {
-        const msg = chalk.red(`${errors}`);
-        const mark = chalk.red(`x`);
-        console.log(`${mark} Validated: ${name}\n\t${msg}`);
-      }
-    },
+  const json = fetchFunction(functionPath);
+  const { status, functionName: name, errors } = await validateFunction(
+    json,
+    validator,
   );
+
+  if (status === 'ok') {
+    const mark = chalk.green(`√`);
+    console.log(`${mark} Validated: ${name}`);
+  } else {
+    const msg = chalk.red(`${errors}`);
+    const mark = chalk.red(`x`);
+    console.log(`${mark} Validated: ${name}\n\t${msg}`);
+  }
 };
 
 (async (): Promise<void> => {

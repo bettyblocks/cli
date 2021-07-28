@@ -1,6 +1,6 @@
 import test, { ExecutionContext } from 'ava';
 import path from 'path';
-import { fetchFunction, validateFunction } from '../../src/functions/validateFunction';
+import { fetchFunction, validateFunction } from '../../src/functions/validations';
 import { Validator } from 'jsonschema';
 
 type Context = ExecutionContext<unknown>;
@@ -43,7 +43,7 @@ test('validate templates', async (t: Context): Promise<void> => {
   console.log('FunctionPath:', functionPath);
 
   const functionJson = await fetchFunction(functionPath);
-  const {status, errors} = await validateFunction(functionJson, validator);
+  const {status} = await validateFunction(functionJson, validator);
 
   t.is(status, 'ok');
 });

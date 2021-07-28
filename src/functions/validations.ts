@@ -3,9 +3,13 @@ import path from 'path';
 import fetch from 'node-fetch';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
-type FunctionDefinition = {
+export type FunctionDefinition = {
   name: string;
   [other: string]: unknown;
+};
+
+export type FunctionDefinitions = {
+  [key: string]: FunctionDefinition;
 };
 
 export type Schema = {
@@ -23,13 +27,35 @@ const functionJsonPath = (functionPath: string): string =>
 const isFunction = (functionPath: string): boolean =>
   fs.pathExistsSync(functionJsonPath(functionPath));
 
-const fetchFunction = async (functionPath: string): Promise<object> => {
+const fetchFunction = (functionPath: string): object => {
   const filePath = functionJsonPath(functionPath);
   try {
     return fs.readJSONSync(filePath);
   } catch (err) {
     throw new Error(`could not load json from ${filePath}: ${err}`);
   }
+};
+
+const functionDefinitions = (functionsDir: string): FunctionDefinitions => {
+  const functionDirs = fs.readdirSync(functionsDir);
+
+  return functionDirs.reduce(
+    (definitions, functionDir) => {
+      if (isFunction(functionDir)) {
+        const functionJson = fetchFunction(
+          functionJsonPath(functionDir),
+        ) as FunctionDefinition;
+
+        return {
+          [functionDir]: functionJson,
+          ...definitions,
+        };
+      }
+
+      return definitions;
+    },
+    {} as { [key: string]: FunctionDefinition },
+  );
 };
 
 const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {
@@ -111,6 +137,7 @@ export {
   isFunction,
   fetchFunction,
   functionJsonPath,
+  functionDefinitions,
   functionValidator,
   validateFunction,
 };
