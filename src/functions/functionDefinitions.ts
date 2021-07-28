@@ -10,14 +10,14 @@ export type FunctionDefinitions = {
   [key: string]: FunctionDefinition;
 };
 
-const functionJsonPath = (functionPath: string): string =>
+const functionDefinitionPath = (functionPath: string): string =>
   path.join(functionPath, 'function.json');
 
-const isFunction = (functionPath: string): boolean =>
-  fs.pathExistsSync(functionJsonPath(functionPath));
+const isFunctionDefinition = (functionPath: string): boolean =>
+  fs.pathExistsSync(functionDefinitionPath(functionPath));
 
-const fetchFunction = (functionPath: string): object => {
-  const filePath = functionJsonPath(functionPath);
+const functionDefinition = (functionPath: string): object => {
+  const filePath = functionDefinitionPath(functionPath);
   try {
     return fs.readJSONSync(filePath);
   } catch (err) {
@@ -29,10 +29,10 @@ const functionDefinitions = (functionsDir: string): FunctionDefinitions => {
   const functionDirs = fs.readdirSync(functionsDir);
 
   return functionDirs.reduce(
-    (definitions, functionDir) => {
-      if (isFunction(functionDir)) {
-        const functionJson = fetchFunction(
-          functionJsonPath(functionDir),
+    (definitions, functionPath) => {
+      if (isFunctionDefinition(functionPath)) {
+        const functionJson = functionDefinition(
+          functionDefinitionPath(functionPath),
         ) as FunctionDefinition;
 
         return {
@@ -47,4 +47,9 @@ const functionDefinitions = (functionsDir: string): FunctionDefinitions => {
   );
 };
 
-export { isFunction, fetchFunction, functionJsonPath, functionDefinitions };
+export {
+  isFunctionDefinition,
+  functionDefinitionPath,
+  functionDefinition,
+  functionDefinitions,
+};
