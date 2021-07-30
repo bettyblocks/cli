@@ -77,5 +77,5 @@ export {
   functionDefinition,
   functionDefinitions,
   isFunctionDefinition,
-  zipFunctionDefinitions
+  zipFunctionDefinitions,
 };

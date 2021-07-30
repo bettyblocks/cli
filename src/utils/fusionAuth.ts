@@ -136,7 +136,6 @@ class FusionAuth {
     if (!this.webhead.url) {
       await this.webhead.get(this.fusionAuthURL());
     }
-
     await this.webhead[method](urlPath, options);
     return this.webhead.json() || this.webhead.text();
   }

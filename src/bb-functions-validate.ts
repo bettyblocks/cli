@@ -14,11 +14,9 @@ import {
   functionDefinitionPath,
 } from './functions/functionDefinitions';
 
-import {
-  Config,
-  functionValidator,
-  validateFunction,
-} from './functions/validations';
+import { functionValidator, validateFunction } from './functions/validations';
+
+import { Config } from './functions/config';
 
 /* process arguments */
 program

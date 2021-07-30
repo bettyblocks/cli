@@ -18,7 +18,12 @@ export type CommandComponents =
   | 'help'
   | 'generate';
 
-export type CommandFunctions = 'init' | 'build' | 'publish' | 'validate';
+export type CommandFunctions =
+  | 'init'
+  | 'login'
+  | 'build'
+  | 'publish'
+  | 'validate';
 
 export type CommandInteractions = 'generate';
 
