@@ -17,7 +17,8 @@
     "prettier:base": "prettier --parser typescript --single-quote",
     "prettier:check": "yarn prettier:base --list-different \"src/**/*.{ts,tsx}\"",
     "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\"",
-    "test": "ava ./__tests__/**/*.test.{ts,tsx}"
+    "test": "ava ./__tests__/**/*.test.{ts,tsx}",
+    "all": "yarn test && yarn lint --fix && yarn prettier:write"
   },
   "husky": {
     "hooks": {
