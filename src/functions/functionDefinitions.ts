@@ -1,5 +1,6 @@
 import fs from 'fs-extra';
 import path from 'path';
+import AdmZip from 'adm-zip';
 
 export type FunctionDefinition = {
   name: string;
@@ -54,10 +55,27 @@ const functionDefinitions = (functionsDir: string): FunctionDefinitions => {
   );
 };
 
+const zipFunctionDefinitions = (functionsDir: string): string => {
+  const zip = new AdmZip();
+  const tmpDir = '.tmp';
+  const zipFile = `${tmpDir}/app.zip`;
+
+  fs.ensureDirSync(tmpDir);
+
+  functionDirs(functionsDir).forEach(functionDir => {
+    zip.addLocalFolder(functionDir);
+  });
+
+  zip.writeZip(zipFile);
+
+  return zipFile;
+};
+
 export {
-  isFunctionDefinition,
   functionDirs,
   functionDefinitionPath,
   functionDefinition,
   functionDefinitions,
+  isFunctionDefinition,
+  zipFunctionDefinitions
 };
