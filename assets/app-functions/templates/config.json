@@ -1,4 +1,11 @@
 {
   "schemaUrl": "https://github.com",
-  "functionSchemaPath": "/bettyblocks/json-schema/raw/master/schemas/actions/function.json"
+  "functionSchemaPath": "/bettyblocks/json-schema/raw/master/schemas/actions/function.json",
+  "cacheDir": ".tmp/",
+  "fusionAuthUrl": "https://fusionauth{ZONEPOSTFIX}.betty.services",
+  "builderApiUrl": "{HOST}/api/builder",
+  "domain": "bettyblocks.com",
+  "identifier": "templates",
+  "host": "https://templates.bettyblocks.com",
+  "zone": "production"
 }
