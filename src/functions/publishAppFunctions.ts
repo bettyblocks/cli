@@ -20,7 +20,7 @@ import { Config, readConfig } from './config';
 const workingDir = process.cwd();
 
 const publishFunctions = async (config: Config): Promise<void> => {
-  const ide = new IDE(config.host, config.zone);
+  const ide = new IDE(config);
   await ide.fusionAuth.ensureLogin();
 
   let spinner = ora(`Creating functions zip ...`).start();

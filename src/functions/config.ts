@@ -40,7 +40,7 @@ const updateConfig = (config: Config): Config => {
 };
 
 const fetchApplicationId = async (config: Config): Promise<string> => {
-  const ide = new IDE(config.host, config.zone);
+  const ide = new IDE(config);
   await ide.get('/');
   await ide.webhead.get('/');
   const text: string = ide.webhead.text() || '';

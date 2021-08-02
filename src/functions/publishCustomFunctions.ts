@@ -13,6 +13,7 @@ import vm from 'vm';
 
 import IDE from '../utils/ide';
 import acquireCustomFunctionsProject from './acquireCustomFunctionsProject';
+import { Config } from './config';
 
 import {
   MetaData,
@@ -87,12 +88,11 @@ const groomMetaData = async (): Promise<MetaData> => {
 };
 
 const publishFunctions = async (
-  targetHost: string,
-  targetZone: string,
+  config: Config,
   metaData: MetaData,
   bumpRevision: boolean,
 ): Promise<void> => {
-  const ide = new IDE(targetHost, targetZone);
+  const ide = new IDE(config);
   const revision = await storeCustomFunctions(ide, metaData, bumpRevision);
 
   const buildDir = path.join(os.tmpdir(), identifier);
@@ -136,21 +136,39 @@ const cleanMetaData = async (): Promise<void> => {
   fs.writeFileSync(functionsJsonFile, JSON.stringify(metaData, null, 2));
 };
 
+const prepareConfig = (targetHost: string): Config => {
+  identifier = acquireCustomFunctionsProject(workingDir);
+
+  const host = targetHost || `https://${identifier}.${domain}`;
+  let fusionAuthUrl = `https://fusionauth{ZONEPOSTFIX}.betty.services`;
+  let zonePostfix = '';
+  let zone = 'production';
+  if (host.match(`.acceptance.${domain}`)) {
+    zonePostfix = '-ca';
+    zone = 'acceptance';
+  } else if (host.match(`.edge.${domain}`)) {
+    zonePostfix = '-ce';
+    zone = 'edge';
+  }
+
+  fusionAuthUrl = fusionAuthUrl.replace('ZONEPOSTFIX', zonePostfix);
+
+  return {
+    fusionAuthUrl,
+    host,
+    zone,
+    identifier,
+  } as Config;
+};
+
 const publishCustomFunctions = (
   host: string,
   bumpRevision: boolean,
   skipBuild: boolean,
 ): void => {
-  identifier = acquireCustomFunctionsProject(workingDir);
+  const config = prepareConfig(host);
 
-  const targetHost = host || `https://${identifier}.${domain}`;
-  let targetZone = 'production';
-  if (targetHost.match(`.acceptance.${domain}`)) {
-    targetZone = 'acceptance';
-  } else if (targetHost.match(`.edge.${domain}`)) {
-    targetZone = 'edge';
-  }
-  console.log(`Publishing to ${targetHost} (${targetZone}) ...`);
+  console.log(`Publishing to ${config.host} (${config.zone}) ...`);
   new Promise((resolve): void => {
     if (skipBuild) {
       resolve(undefined);
@@ -169,7 +187,7 @@ const publishCustomFunctions = (
   })
     .then(groomMetaData)
     .then((metaData: MetaData) =>
-      publishFunctions(targetHost, targetZone, metaData, bumpRevision),
+      publishFunctions(config, metaData, bumpRevision),
     )
     .then(cleanMetaData)
     .then(() => {
