@@ -4,7 +4,8 @@ import path from 'path';
 import prompts from 'prompts';
 import Webhead, { WebheadInstance, WebheadRequestOptions } from 'webhead';
 
-const builderApiURL = '{HOST}/api/builder';
+import { Config } from '../functions/config';
+
 const fusionAuthURL = 'https://fusionauth{ZONEPOSTFIX}.betty.services';
 
 type LoginResponse = {
@@ -104,16 +105,23 @@ class FusionAuth {
     }
   }
 
-  async upload(uuid: string, zipFile: string): Promise<boolean> {
+  async upload(
+    config: Config,
+    zipFile: string,
+    functions: object,
+  ): Promise<boolean> {
     await this.ensureLogin();
 
     const { statusCode } = await this.webhead.post(
-      `${this.builderApiURL()}/artifacts/actions/${uuid}/functions`,
+      `${config.builderApiUrl}/artifacts/actions/${config.applicationId}/functions`,
       {
         headers: {
           Authorization: `Bearer ${this.jwt()}`,
         },
-        multiPartData: [{ name: 'file', file: zipFile }],
+        multiPartData: [
+          { name: 'file', file: zipFile },
+          { name: 'functions', contents: JSON.stringify(functions) },
+        ],
       },
     );
 
@@ -152,10 +160,6 @@ class FusionAuth {
     }
 
     return jwt || null;
-  }
-
-  private builderApiURL(): string {
-    return builderApiURL.replace('{HOST}', this.host);
   }
 
   private fusionAuthURL(): string {
