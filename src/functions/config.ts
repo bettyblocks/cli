@@ -3,95 +3,132 @@ import path from 'path';
 
 import IDE from '../utils/ide';
 
-export type Config = {
+const configPath = (): string => path.join(process.cwd(), 'config.json');
+
+const readConfig = (): Cfg | undefined => {
+  const cfgPath = configPath();
+  if (fs.pathExistsSync(cfgPath)) {
+    return fs.readJsonSync(cfgPath) as Cfg;
+  }
+
+  return {} as Cfg;
+};
+
+const defaultConfig = (): Cfg => {
+  return {
+    schemaUrl: 'https://github.com',
+    functionSchemaPath:
+      '/bettyblocks/json-schema/raw/master/schemas/actions/function.json',
+    cacheDir: '.tmp/',
+    fusionAuthUrl: 'https://fusionauth{ZONEPOSTFIX}.betty.services',
+    builderApiUrl: '{HOST}/api/builder',
+    domain: 'bettyblocks.com',
+  } as Cfg;
+};
+
+class Config {
+  private config: Cfg;
+
+  private _identifier?: string;
+
+  private _zone?: string;
+
+  private _host?: string;
+
+  private _applicationId?: string;
+
+  constructor() {
+    this.config = {
+      ...defaultConfig(),
+      ...readConfig(),
+    };
+  }
+
+  get identifier(): string {
+    if (!this._identifier) {
+      this._identifier =
+        this.config.identifier || path.basename(process.cwd()).split('.')[0];
+    }
+
+    return this._identifier;
+  }
+
+  get zone(): string {
+    if (!this._zone) {
+      this._zone =
+        this.config.host ||
+        path.basename(process.cwd()).split('.')[1] ||
+        'production';
+    }
+
+    return this._zone;
+  }
+
+  get host(): string {
+    if (!this._host) {
+      this._host = this.config.host || this.defaultHost();
+    }
+
+    return this._host;
+  }
+
+  get fusionAuthUrl(): string {
+    let postfix = '';
+    if (this.zone === 'acceptance') {
+      postfix = '-ca';
+    } else if (this.zone === 'edge') {
+      postfix = '-ce';
+    }
+
+    return this.config.fusionAuthUrl.replace('{ZONEPOSTFIX}', postfix);
+  }
+
+  get builderApiUrl(): string {
+    return this.config.builderApiUrl.replace('{HOST}', this.host);
+  }
+
+  async applicationId(): Promise<string | undefined> {
+    if (!this._applicationId) {
+      const ide = new IDE(this);
+      await ide.get(this.host);
+      await ide.webhead.get('/');
+      const text: string = ide.webhead.text() || '';
+      [this._applicationId] =
+        text.match(/Betty\.application_id = '([0-9a-f]+)'/) || [];
+    }
+
+    return this._applicationId;
+  }
+
+  get schemaUrl(): string {
+    return this.config.schemaUrl;
+  }
+
+  get functionSchemaPath(): string {
+    return this.config.functionSchemaPath;
+  }
+
+  private defaultHost(): string {
+    let subdomain = this.identifier;
+    if (this.zone !== 'production') {
+      subdomain = `${subdomain}.${this.zone}`;
+    }
+
+    return `https://${subdomain}.${this.config.domain}`;
+  }
+}
+
+export type Cfg = {
   schemaUrl: string;
   functionSchemaPath: string;
   cacheDir: string;
   fusionAuthUrl: string;
   builderApiUrl: string;
   domain: string;
-  identifier: string;
-  host: string;
-  zone: string;
-  applicationId: string;
+  identifier?: string;
+  host?: string;
+  zone?: string;
+  applicationId?: string;
 };
 
-const fusionAuthUrl = (defaultUrl: string, zone: string): string => {
-  let postfix = '';
-  if (zone === 'acceptance') {
-    postfix = '-ca';
-  } else if (zone === 'edge') {
-    postfix = '-ce';
-  }
-
-  return defaultUrl.replace('{ZONEPOSTFIX}', postfix);
-};
-
-const builderApiUrl = (defaultUrl: string, host: string): string =>
-  defaultUrl.replace('{HOST}', host);
-
-const configPath = path.join(process.cwd(), 'config.json');
-
-const readConfig = (): Config => fs.readJsonSync(configPath) as Config;
-
-const updateConfig = (config: Config): Config => {
-  fs.writeJsonSync(configPath, config, { spaces: 2, EOL: '\n' });
-  return config;
-};
-
-const fetchApplicationId = async (config: Config): Promise<string> => {
-  const ide = new IDE(config);
-  await ide.get('/');
-  await ide.webhead.get('/');
-  const text: string = ide.webhead.text() || '';
-  const uuid = (text.match(/Betty\.application_id = '([0-9a-f]+)'/) || [])[1];
-  return uuid;
-};
-
-const setApplicationId = async (): Promise<Config> => {
-  const config = readConfig();
-
-  if (!config.applicationId) {
-    config.applicationId = await fetchApplicationId(config);
-  }
-
-  return updateConfig(config);
-};
-
-const initConfig = async (): Promise<Config> => {
-  const config = readConfig();
-  let identifier;
-  let zone;
-  let zonePostfix;
-
-  if (!config.identifier) {
-    [identifier, zone] = path.basename(process.cwd()).split('.');
-    console.log('Setting identifier: ', identifier);
-    config.identifier = identifier;
-  }
-
-  if (!config.zone) {
-    console.log('Setting zone: ', zone);
-    config.zone = zone || 'production';
-  }
-
-  if (!config.host) {
-    if (zone !== 'production') {
-      zonePostfix = zone;
-    }
-    const host = `https://${[
-      config.identifier,
-      zonePostfix,
-      config.domain,
-    ].join('.')}`;
-    console.log('Setting host: ', host);
-    config.host = host;
-  }
-
-  config.fusionAuthUrl = fusionAuthUrl(config.fusionAuthUrl, config.zone);
-  config.builderApiUrl = builderApiUrl(config.builderApiUrl, config.host);
-
-  return updateConfig(config);
-};
-
-export { initConfig, readConfig, updateConfig, setApplicationId };
+export default Config;

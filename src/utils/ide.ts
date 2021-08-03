@@ -12,7 +12,7 @@ import Webhead, {
 } from 'webhead';
 
 import FusionAuth from './fusionAuth';
-import { Config } from '../functions/config';
+import Config from '../functions/config';
 
 type NamedObject = Record<string, string | object>;
 

@@ -4,7 +4,7 @@ import path from 'path';
 import prompts from 'prompts';
 import Webhead, { WebheadInstance, WebheadRequestOptions } from 'webhead';
 
-import { Config } from '../functions/config';
+import Config from '../functions/config';
 
 type LoginResponse = {
   token: string;
@@ -106,19 +106,18 @@ class FusionAuth {
     functions: object,
   ): Promise<boolean> {
     await this.ensureLogin();
+    const applicationId = await config.applicationId();
+    const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
 
-    const { statusCode } = await this.webhead.post(
-      `${config.builderApiUrl}/artifacts/actions/${config.applicationId}/functions`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.jwt()}`,
-        },
-        multiPartData: [
-          { name: 'file', file: zipFile },
-          { name: 'functions', contents: JSON.stringify(functions) },
-        ],
+    const { statusCode } = await this.webhead.post(url, {
+      headers: {
+        Authorization: `Bearer ${this.jwt()}`,
       },
-    );
+      multiPartData: [
+        { name: 'file', file: zipFile },
+        { name: 'functions', contents: JSON.stringify(functions) },
+      ],
+    });
 
     return !!statusCode.toString().match(/^2/);
   }

@@ -12,8 +12,7 @@ import vm from 'vm';
 /* internal dependencies */
 
 import IDE from '../utils/ide';
-import acquireCustomFunctionsProject from './acquireCustomFunctionsProject';
-import { Config } from './config';
+import Config from './config';
 
 import {
   MetaData,
@@ -25,8 +24,6 @@ import {
 /* execute command */
 
 const workingDir = process.cwd();
-const domain = 'bettyblocks.com';
-let identifier: string;
 
 type Action = {
   id: string;
@@ -36,10 +33,10 @@ type Action = {
 
 type Actions = Action[];
 
-const groomMetaData = async (): Promise<MetaData> => {
+const groomMetaData = async (config: Config): Promise<MetaData> => {
   console.log('Grooming functions.json ...');
 
-  const buildDir = path.join(os.tmpdir(), identifier);
+  const buildDir = path.join(os.tmpdir(), config.identifier);
   const customJsFile = path.join(buildDir, 'dist', 'custom.js');
 
   const customJs = fs.readFileSync(customJsFile, 'utf8');
@@ -95,7 +92,7 @@ const publishFunctions = async (
   const ide = new IDE(config);
   const revision = await storeCustomFunctions(ide, metaData, bumpRevision);
 
-  const buildDir = path.join(os.tmpdir(), identifier);
+  const buildDir = path.join(os.tmpdir(), config.identifier);
   const customJsFile = path.join(buildDir, 'dist', 'custom.js');
 
   await ide.post(
@@ -136,37 +133,12 @@ const cleanMetaData = async (): Promise<void> => {
   fs.writeFileSync(functionsJsonFile, JSON.stringify(metaData, null, 2));
 };
 
-const prepareConfig = (targetHost: string): Config => {
-  identifier = acquireCustomFunctionsProject(workingDir);
-
-  const host = targetHost || `https://${identifier}.${domain}`;
-  let fusionAuthUrl = `https://fusionauth{ZONEPOSTFIX}.betty.services`;
-  let zonePostfix = '';
-  let zone = 'production';
-  if (host.match(`.acceptance.${domain}`)) {
-    zonePostfix = '-ca';
-    zone = 'acceptance';
-  } else if (host.match(`.edge.${domain}`)) {
-    zonePostfix = '-ce';
-    zone = 'edge';
-  }
-
-  fusionAuthUrl = fusionAuthUrl.replace('ZONEPOSTFIX', zonePostfix);
-
-  return {
-    fusionAuthUrl,
-    host,
-    zone,
-    identifier,
-  } as Config;
-};
-
 const publishCustomFunctions = (
   host: string,
   bumpRevision: boolean,
   skipBuild: boolean,
 ): void => {
-  const config = prepareConfig(host);
+  const config = new Config();
 
   console.log(`Publishing to ${config.host} (${config.zone}) ...`);
   new Promise((resolve): void => {
@@ -185,7 +157,7 @@ const publishCustomFunctions = (
       });
     }
   })
-    .then(groomMetaData)
+    .then(() => groomMetaData(config))
     .then((metaData: MetaData) =>
       publishFunctions(config, metaData, bumpRevision),
     )

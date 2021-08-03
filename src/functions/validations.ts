@@ -2,14 +2,10 @@ import fetch from 'node-fetch';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
 import { FunctionDefinition } from './functionDefinitions';
+import Config from './config';
 
 export type Schema = {
   $id: string;
-};
-
-export type Config = {
-  schemaUrl: string;
-  functionSchemaPath: string;
 };
 
 const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {

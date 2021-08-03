@@ -31,7 +31,7 @@ const { host } = program;
 
 const workingDir = process.cwd();
 
-if (fs.existsSync(path.join(workingDir, 'config.json'))) {
+if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
   publishAppFunctions();
 } else {
   publishCustomFunctions(host, bumpRevision, skipBuild);

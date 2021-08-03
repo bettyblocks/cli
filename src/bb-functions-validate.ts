@@ -16,7 +16,7 @@ import {
 
 import { functionValidator, validateFunction } from './functions/validations';
 
-import { Config } from './functions/config';
+import Config from './functions/config';
 
 /* process arguments */
 program
@@ -32,9 +32,7 @@ const {
 const workingDir = process.cwd();
 const baseFunctionsPath = path.join(workingDir, 'functions');
 
-const config = fs.readJSONSync(
-  path.join(process.cwd(), 'config.json'),
-) as Config;
+const config = new Config();
 
 const validateFunctionByName = async (
   functionPath: string,

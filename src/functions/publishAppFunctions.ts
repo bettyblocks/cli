@@ -13,7 +13,7 @@ import {
   functionDefinitions,
 } from './functionDefinitions';
 
-import { Config, readConfig } from './config';
+import Config from './config';
 
 /* execute command */
 
@@ -36,7 +36,7 @@ const publishFunctions = async (config: Config): Promise<void> => {
 };
 
 const publishAppFunctions = (): void => {
-  const config = readConfig();
+  const config = new Config();
   console.log(`Publishing to ${config.host} (${config.zone}) ...`);
 
   publishFunctions(config).then(() => {
