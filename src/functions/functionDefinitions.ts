@@ -86,9 +86,8 @@ const zipFunctionDefinitions = (functionsDir: string): string => {
 
   fs.ensureDirSync(tmpDir);
 
-  functionDirs(functionsDir).forEach(functionDir => {
-    zip.addLocalFolder(functionDir);
-  });
+  zip.addLocalFile(path.join(process.cwd(), 'package.json'));
+  zip.addLocalFolder(functionsDir);
 
   zip.writeZip(zipFilePath);
 

@@ -93,7 +93,8 @@ class Config {
       await ide.get(this.host);
       await ide.webhead.get('/');
       const text: string = ide.webhead.text() || '';
-      [this._applicationId] =
+
+      [, this._applicationId] =
         text.match(/Betty\.application_id = '([0-9a-f]+)'/) || [];
     }
 
