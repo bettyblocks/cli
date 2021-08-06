@@ -1,3 +1,17 @@
+# [23.48.0](https://github.com/bettyblocks/cli/compare/v23.47.0...v23.48.0) (2021-07-28)
+
+
+### Features
+
+* add `bb functions validate` command ([#228](https://github.com/bettyblocks/cli/issues/228)) ([77aeb2f](https://github.com/bettyblocks/cli/commit/77aeb2f))
+
+# [23.47.0](https://github.com/bettyblocks/cli/compare/v23.46.0...v23.47.0) (2021-06-15)
+
+
+### Features
+
+* add-new-icons-for-componentset ([#226](https://github.com/bettyblocks/cli/issues/226)) ([36c7862](https://github.com/bettyblocks/cli/commit/36c7862))
+
 # [23.46.0](https://github.com/bettyblocks/cli/compare/v23.45.0...v23.46.0) (2021-05-25)
 
 

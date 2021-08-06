@@ -1,6 +1,6 @@
 {
   "name": "@betty-blocks/cli",
-  "version": "23.46.0",
+  "version": "23.48.0",
   "description": "A Betty Blocks CLI",
   "main": "build/index.js",
   "author": "Niek Nijland <niek.nijland@bettyblocks.com>",
@@ -40,6 +40,7 @@
     "@typescript-eslint/parser": "^2.3.2",
     "app-root-path": "^2.2.1",
     "eslint": "^6.8.0",
+    "fetch-mock": "^9.11.0",
     "husky": "^3.0.5",
     "jest": "^25.1.0",
     "semantic-release": "^17.2.3",
