@@ -1,6 +1,6 @@
 import test, { ExecutionContext } from 'ava';
-import { validateFunction } from '../../src/utils/validateFunction';
-import { ValidationError, Validator } from 'jsonschema';
+import { validateFunction } from '../../src/functions/validations';
+import { Validator } from 'jsonschema';
 
 type Context = ExecutionContext<unknown>;
 
