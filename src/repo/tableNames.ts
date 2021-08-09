@@ -1,0 +1,21 @@
+export const ACTIONS = 'betty_model_actions';
+export const APPLICATIONS = 'betty_applications';
+export const APPLICATION_PAGES = 'meta_api_application_pages';
+export const AUTHENICATION_PROFILES = 'betty_authentication_profiles';
+export const COMPONENTS = 'meta_api_page_components';
+export const COMPONENT_ACTIONS = 'meta_api_page_component_actions';
+export const COMPONENT_BLUEPRINTS = 'meta_api_page_component_blueprints';
+export const COMPONENT_OPTIONS = 'meta_api_page_component_options';
+export const COMPONENT_STYLES = 'meta_api_page_component_styles';
+export const COMPONENT_STYLE_REFERENCES =
+  'meta_api_page_component_style_references';
+export const CUSTOM_MODEL_ATTRIBUTE = 'betty_construct_attribute_definitions';
+export const ENDPOINTS = 'betty_endpoints';
+export const MODELS = 'betty_models';
+export const PAGES = 'meta_api_pages';
+export const PARTIALS = 'meta_api_partials';
+export const PROPERTIES = 'betty_model_properties';
+export const TRANSLATIONS = 'meta_api_translations';
+export const TRANSLATION_LOCALES = 'meta_api_translation_locales';
+export const THEMES = 'meta_api_themes';
+export const VARIABLES = 'betty_variables';
