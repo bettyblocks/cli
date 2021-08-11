@@ -71,11 +71,7 @@ export const doTranspile = (
 export const formatCode = (code: string): string =>
   code.startsWith('(function') ? code : `(function () {\n${code}})()`;
 
-export const compose = ({
-  jsx,
-  styles,
-  interactions,
-}: ComponentDeclaration): string => {
+export const compose = ({ jsx, styles }: ComponentDeclaration): string => {
   return `
   return (function() {
     const styles = ${styles}
@@ -142,7 +138,7 @@ export const compose = ({
       };
   
       const globalEventEmitter = B.useGlobalEventEmitter();
-      ${interactions}
+      // TODO: return interactions
   
   
       return React.cloneElement(${jsx});
