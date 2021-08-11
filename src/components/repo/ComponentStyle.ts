@@ -1,5 +1,4 @@
 import { BaseModel } from './BaseModel';
-import { COMPONENT_STYLES } from './tableNames';
 
 export enum StyleType {
   BUTTON = 'button',
@@ -45,22 +44,14 @@ export interface ButtonStyle {
 
 export type ComponentStyleContent = TextStyle | ButtonStyle;
 
-export class ComponentStyle extends BaseModel {
-  public id!: string;
+export interface ComponentStyle extends BaseModel {
+  id: string;
 
-  public name!: string;
+  name: string;
 
-  public applicationId!: string;
+  applicationId: string;
 
-  public componentType!: string;
+  componentType: string;
 
-  public content!: ComponentStyleContent;
-
-  static get tableName(): string {
-    return COMPONENT_STYLES;
-  }
-
-  static get jsonAttributes(): string[] {
-    return ['content'];
-  }
+  content: ComponentStyleContent;
 }

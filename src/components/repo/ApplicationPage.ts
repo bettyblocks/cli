@@ -7,12 +7,12 @@ export interface ApplicationPageAttributes {
   notFoundId: string;
 }
 
-export class ApplicationPage extends BaseModel {
-  public id!: string;
+export interface ApplicationPage extends BaseModel {
+  id: string;
 
-  public applicationId!: string;
+  applicationId: string;
 
-  public notFoundId!: string;
+  notFoundId: string;
 
-  public notFoundPage!: Page | null;
+  notFoundPage: Page | null;
 }

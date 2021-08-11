@@ -20,35 +20,35 @@ export function resolveOptions(
   return options.map(o => ({ ...o, componentId } as ComponentOption));
 }
 
-export class Component extends BaseModel {
-  public id!: string;
+export interface Component extends BaseModel {
+  id: string;
 
-  public applicationId!: string;
+  applicationId: string;
 
-  public index!: number;
+  index: number;
 
-  public jsx!: string;
+  jsx: string;
 
-  public partialId!: string | null;
+  partialId: string | null;
 
-  public partialReferenceId!: string | null;
+  partialReferenceId: string | null;
 
-  public parentId!: string | null;
+  parentId: string | null;
 
-  public styles!: string;
+  styles: string;
 
-  public componentStyleReference!: ComponentStyleReference;
+  componentStyleReference: ComponentStyleReference;
 
-  public componentBlueprintId!: string;
+  componentBlueprintId: string;
 
-  public options!: ComponentOption[] | null;
+  options: ComponentOption[] | null;
 
   // TODO: Remove when working on PAGE-51
-  public oldOptions!: ComponentOption[];
+  oldOptions: ComponentOption[];
 
-  public descendants!: string[];
+  descendants: string[];
 
-  public sourceInteractions!: ComponentInteraction[];
+  sourceInteractions: ComponentInteraction[];
 
-  public targetInteractions!: ComponentInteraction[];
+  targetInteractions: ComponentInteraction[];
 }

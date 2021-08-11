@@ -1466,6 +1466,11 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
+"@types/jsesc@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@types/jsesc/-/jsesc-3.0.1.tgz#ed1720ae08eae2f64341452e1693a84324029d99"
+  integrity sha512-F2g93pJlhV0RlW9uSUAM/hIxywlwlZcuRB/nZ82GaMPaO8mdexYbJ8Qt3UGbUS1M19YFQykEetrWW004M+vPCg==
+
 "@types/json-schema@^7.0.3":
   version "7.0.3"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.3.tgz"

@@ -127,14 +127,14 @@ export type ComponentInteractionTypes =
   | ComponentInteractionLogin
   | ComponentInteractionToggle;
 
-export class BaseComponentInteraction<
+export interface BaseComponentInteraction<
   Type extends ComponentInteractionType
 > extends BaseModel {
-  public id!: string;
+  id: string;
 
-  public applicationId!: string;
+  applicationId: string;
 
-  public configuration!: Type extends ComponentInteractionType.Global
+  configuration: Type extends ComponentInteractionType.Global
     ? GlobalConfiguration
     : Type extends ComponentInteractionType.Custom
     ? CustomConfiguration
@@ -144,11 +144,11 @@ export class BaseComponentInteraction<
     ? ToggleConfiguration
     : never;
 
-  public sourceComponentId!: string;
+  sourceComponentId: string;
 
-  public targetComponentId!: string;
+  targetComponentId: string;
 
-  public type!: Type;
+  type: Type;
 }
 
 export type ComponentInteraction = BaseComponentInteraction<

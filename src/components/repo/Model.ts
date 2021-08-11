@@ -25,22 +25,22 @@ export interface ModelPermissions {
   update: ModelPermissionsRoleMap;
 }
 
-export class Model extends BaseModel {
-  public applicationId!: string;
+export interface Model extends BaseModel {
+  applicationId: string;
 
-  public createdAt!: Date;
+  createdAt: Date;
 
-  public helpText?: string | null;
+  helpText?: string | null;
 
-  public id!: string;
+  id: string;
 
-  public name!: string;
+  name: string;
 
-  public options!: ModelOptions;
+  options: ModelOptions;
 
-  public permissions?: ModelPermissions;
+  permissions?: ModelPermissions;
 
-  public tableName!: string;
+  tableName: string;
 
-  public updatedAt!: Date;
+  updatedAt: Date;
 }

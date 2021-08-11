@@ -7,11 +7,11 @@ import {
   transpileModule,
 } from 'typescript';
 
-import { ComponentDeclaration } from '../declarations';
+import { ComponentDeclaration, ComponentDeclarationMap } from '../declarations';
 
 import defineFunction from './defineFunction';
 import triggerEvent from './triggerEvent';
-import { ComponentInteraction } from '../../repo';
+import { Component, ComponentInteraction } from '../repo';
 
 import { assembleTransformers } from './common';
 
@@ -41,9 +41,14 @@ export const transpile = (
     },
   });
 
-  const firstDiagnostic = diagnostics[0];
+  let firstDiagnostic = null;
 
-  const messageText = firstDiagnostic.messageText || '';
+  if (diagnostics) [firstDiagnostic] = diagnostics;
+
+  let messageText = '';
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (firstDiagnostic) messageText = firstDiagnostic.messageText as any;
 
   if (messageText) {
     throw new Error(messageText as string);
@@ -146,9 +151,14 @@ export const compose = ({
     `;
 };
 
-const compileDeclaration = (declaration: ComponentDeclaration): string => {
-  const { name, sourceInteractions } = declaration;
-  const code = doTranspile(compose(declaration), sourceInteractions);
+export const compile = (
+  { jsx, styles }: Component,
+  declarations: ComponentDeclarationMap,
+): string => {
+  const key = jsx + styles;
+  const { name } = declarations[key];
 
-  return `var ${name} = ${formatCode(code)}`;
+  const args = [name].join(',');
+
+  return `React.createElement(${args})`;
 };

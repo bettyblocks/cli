@@ -14,18 +14,18 @@ export interface ApplicationAttributes {
   bwbOptions: string;
 }
 
-export class Application extends BaseModel {
-  public createdAt!: Date;
+export interface Application extends BaseModel {
+  createdAt: Date;
 
-  public id!: string;
+  id: string;
 
-  public identifier!: string;
+  identifier: string;
 
-  public name!: string;
+  name: string;
 
-  public options!: ApplicationOptions;
+  options: ApplicationOptions;
 
-  public updatedAt!: Date;
+  updatedAt: Date;
 
-  public bwbOptions!: BwbOptions;
+  bwbOptions: BwbOptions;
 }

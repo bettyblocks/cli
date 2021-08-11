@@ -19,22 +19,22 @@ export interface CustomModelAttributeOptions {
   validatesMinLength?: bigint;
 }
 
-export class CustomModelAttribute extends BaseModel {
-  public applicationId!: string;
+export interface CustomModelAttribute extends BaseModel {
+  applicationId: string;
 
-  public createdAt!: Date;
+  createdAt: Date;
 
-  public id!: string;
+  id: string;
 
-  public kind!: string;
+  kind: string;
 
-  public constructId!: string;
+  constructId: string;
 
-  public name!: string;
+  name: string;
 
-  public updatedAt!: Date;
+  updatedAt: Date;
 
-  public options!: CustomModelAttributeOptions;
+  options: CustomModelAttributeOptions;
 
-  public property?: Property;
+  property?: Property;
 }

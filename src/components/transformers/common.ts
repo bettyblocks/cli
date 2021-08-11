@@ -54,7 +54,7 @@ import {
   isSpecialEvent,
   isToggleInteraction,
   Parameter,
-} from '../../repo';
+} from '../repo';
 
 const EVENT_PARAMETER_NAME = 'e';
 

@@ -3,7 +3,7 @@ import {
   ComponentInteractionCustom,
   ComponentInteractionType,
   isSpecialEvent,
-} from '../repo';
+} from './repo';
 
 const typeToFunctionName = {
   [ComponentInteractionType.Custom]: 'customFunctionCall',

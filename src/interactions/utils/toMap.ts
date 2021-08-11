@@ -1,11 +1,11 @@
-import { Component } from '../../repo/Component';
+import { Component } from '../../components/repo/Component';
 import {
   ComponentStyle,
   ComponentStyleContent,
   Theme,
   Reference,
-} from '../../repo';
-import defaultTheme from '../../repo/defaultTheme';
+} from '../../components/repo';
+import defaultTheme from '../../components/repo/defaultTheme';
 
 export const toComponentMap = (
   components: Component[],

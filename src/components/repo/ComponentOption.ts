@@ -30,22 +30,22 @@ export interface ComponentOptionConfiguration {
   condition: Condition | null;
 }
 
-export class ComponentOption extends BaseModel {
-  public action!: Action;
+export interface ComponentOption extends BaseModel {
+  action: Action;
 
-  public id!: string;
+  id: string;
 
-  public applicationId!: string;
+  applicationId: string;
 
-  public componentId!: string;
+  componentId: string;
 
-  public key!: string;
+  key: string;
 
-  public value!: string;
+  value: string;
 
-  public type!: string;
+  type: string;
 
-  public configuration!: ComponentOptionConfiguration;
+  configuration: ComponentOptionConfiguration;
 
-  public component!: Component;
+  component: Component;
 }

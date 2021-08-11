@@ -16,20 +16,20 @@ export interface PropertyOptions {
   pageBuilderFormat?: string;
 }
 
-export class Property extends BaseModel {
-  public applicationId!: string;
+export interface Property extends BaseModel {
+  applicationId: string;
 
-  public createdAt!: Date;
+  createdAt: Date;
 
-  public id!: string;
+  id: string;
 
-  public kind!: string;
+  kind: string;
 
-  public modelId!: string;
+  modelId: string;
 
-  public name!: string;
+  name: string;
 
-  public options!: PropertyOptions;
+  options: PropertyOptions;
 
-  public updatedAt!: Date;
+  updatedAt: Date;
 }

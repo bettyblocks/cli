@@ -1,5 +1,5 @@
 import injectInteractions from './inject';
-import { Component, ComponentInteraction } from '../repo';
+import { Component, ComponentInteraction } from './repo';
 
 export interface ComponentDeclaration {
   interactions: string;

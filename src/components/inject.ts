@@ -14,7 +14,7 @@ import {
   OptionArgument,
   Parameter,
   PageArgumentParameters,
-} from '../repo';
+} from './repo';
 import defineTriggerEvent from './triggerEvent';
 
 export interface InteractionsCategorized {
