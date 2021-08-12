@@ -9,8 +9,9 @@ import path from 'path';
 
 import IDE from '../utils/ide';
 import {
-  zipFunctionDefinitions,
   functionDefinitions,
+  stringifyDefinitions,
+  zipFunctionDefinitions,
 } from './functionDefinitions';
 
 import Config from './config';
@@ -29,9 +30,10 @@ const publishFunctions = async (config: Config): Promise<void> => {
   spinner.succeed();
 
   const functions = functionDefinitions(functionsDir);
+  const json = stringifyDefinitions(functions);
 
   spinner = ora(`Uploading functions ...`).start();
-  const success = await ide.fusionAuth.upload(config, zipFile, functions);
+  const success = await ide.fusionAuth.upload(config, zipFile, json);
   spinner[success ? 'succeed' : 'fail']();
 };
 

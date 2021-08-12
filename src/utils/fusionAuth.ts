@@ -103,7 +103,7 @@ class FusionAuth {
   async upload(
     config: Config,
     zipFile: string,
-    functions: object,
+    functionsJson: string,
   ): Promise<boolean> {
     await this.ensureLogin();
     const applicationId = await config.applicationId();
@@ -115,7 +115,7 @@ class FusionAuth {
       },
       multiPartData: [
         { name: 'file', file: zipFile },
-        { name: 'functions', contents: JSON.stringify(functions) },
+        { name: 'functions', contents: functionsJson },
       ],
     });
 

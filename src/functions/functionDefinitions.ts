@@ -73,6 +73,52 @@ const functionDefinitions = (functionsDir: string): FunctionDefinitions => {
   );
 };
 
+const stringifyDefinitions = (definitions: FunctionDefinitions): string => {
+  const updatedDefinitions = Object.keys(definitions).reduce((acc, name) => {
+    const definition = definitions[name];
+    return {
+      ...acc,
+      [name]: {
+        ...definition,
+        options: JSON.stringify(definition.options),
+      },
+    };
+  }, {});
+
+  return JSON.stringify(updatedDefinitions);
+};
+
+/* @doc newFunctionDefinition
+  Creates a new folder for the given name and fills that folder with a function.json file
+  and an index.js.
+*/
+const newFunctionDefinition = (
+  functionsDir: string,
+  functionName: string,
+): void => {
+  const functionDefName = functionName.replace(/-./g, x => x.toUpperCase()[1]);
+  const functionDir = path.join(functionsDir, functionName);
+  fs.mkdirpSync(functionDir);
+  fs.writeJSONSync(
+    functionDefinitionPath(functionDir),
+    {
+      name: functionDefName,
+      description: 'Description',
+      label: functionName,
+      category: 'Misc',
+      icon: 'CreateIcon',
+      options: [],
+      yields: 'none',
+    },
+    { spaces: 2 },
+  );
+
+  fs.writeFileSync(
+    path.join(functionDir, 'index.js'),
+    `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
+  );
+};
+
 /* @doc zipFunctionDefinitions
   Takes functionsDir as path to a directory with function definitions.
   Scans each directory for a function.json file, and if present adds it
@@ -100,5 +146,7 @@ export {
   functionDefinition,
   functionDefinitions,
   isFunctionDefinition,
+  newFunctionDefinition,
+  stringifyDefinitions,
   zipFunctionDefinitions,
 };
