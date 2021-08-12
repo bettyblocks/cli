@@ -1,3 +1,10 @@
+# [23.50.0](https://github.com/bettyblocks/cli/compare/v23.49.0...v23.50.0) (2021-08-12)
+
+
+### Features
+
+* add `bb functions new` and update `bb functions publish` ([#234](https://github.com/bettyblocks/cli/issues/234)) ([3ae7999](https://github.com/bettyblocks/cli/commit/3ae7999))
+
 # [23.49.0](https://github.com/bettyblocks/cli/compare/v23.48.0...v23.49.0) (2021-08-09)
 
 
