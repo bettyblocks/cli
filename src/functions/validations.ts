@@ -1,35 +1,11 @@
-import fs from 'fs-extra';
-import path from 'path';
 import fetch from 'node-fetch';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
-type FunctionDefinition = {
-  name: string;
-  [other: string]: unknown;
-};
+import { FunctionDefinition } from './functionDefinitions';
+import Config from './config';
 
 export type Schema = {
   $id: string;
-};
-
-export type Config = {
-  schemaUrl: string;
-  functionSchemaPath: string;
-};
-
-const functionJsonPath = (functionPath: string): string =>
-  path.join(functionPath, 'function.json');
-
-const isFunction = (functionPath: string): boolean =>
-  fs.pathExistsSync(functionJsonPath(functionPath));
-
-const fetchFunction = async (functionPath: string): Promise<object> => {
-  const filePath = functionJsonPath(functionPath);
-  try {
-    return fs.readJSONSync(filePath);
-  } catch (err) {
-    throw new Error(`could not load json from ${filePath}: ${err}`);
-  }
 };
 
 const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {
@@ -107,10 +83,4 @@ const validateFunction = async (
   };
 };
 
-export {
-  isFunction,
-  fetchFunction,
-  functionJsonPath,
-  functionValidator,
-  validateFunction,
-};
+export { functionValidator, validateFunction };

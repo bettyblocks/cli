@@ -9,7 +9,7 @@ import program from 'commander';
 /* internal dependencies */
 
 import rootDir from './utils/rootDir';
-import acquireCustomFunctionsProject from './utils/acquireCustomFunctionsProject';
+import acquireCustomFunctionsProject from './functions/acquireCustomFunctionsProject';
 
 /* process arguments */
 

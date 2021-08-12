@@ -17,7 +17,8 @@
     "prettier:base": "prettier --parser typescript --single-quote",
     "prettier:check": "yarn prettier:base --list-different \"src/**/*.{ts,tsx}\"",
     "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\"",
-    "test": "ava ./__tests__/**/*.test.{ts,tsx}"
+    "test": "ava ./__tests__/**/*.test.{ts,tsx}",
+    "all": "yarn test && yarn lint --fix && yarn prettier:write"
   },
   "husky": {
     "hooks": {
@@ -39,7 +40,6 @@
     "@typescript-eslint/parser": "^2.3.2",
     "app-root-path": "^2.2.1",
     "eslint": "^6.8.0",
-    "fetch-mock": "^9.11.0",
     "husky": "^3.0.5",
     "jest": "^25.1.0",
     "semantic-release": "^17.2.3",

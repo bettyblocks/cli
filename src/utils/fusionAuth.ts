@@ -4,8 +4,7 @@ import path from 'path';
 import prompts from 'prompts';
 import Webhead, { WebheadInstance, WebheadRequestOptions } from 'webhead';
 
-const builderApiURL = '{HOST}/api/builder';
-const fusionAuthURL = 'https://fusionauth{ZONEPOSTFIX}.betty.services';
+import Config from '../functions/config';
 
 type LoginResponse = {
   token: string;
@@ -25,9 +24,7 @@ type UserResponse = {
 class FusionAuth {
   private configFile: string;
 
-  private host: string;
-
-  private zone: string;
+  private config: Config;
 
   public loginId?: string;
 
@@ -37,10 +34,9 @@ class FusionAuth {
 
   private webhead: WebheadInstance;
 
-  constructor(host: string, zone: string, relogin: () => Promise<void>) {
+  constructor(config: Config, relogin: () => Promise<void>) {
     this.configFile = path.join(os.homedir(), '.bb-cli-fa');
-    this.host = host;
-    this.zone = zone;
+    this.config = config;
     this.relogin = relogin;
     this.webhead = Webhead();
   }
@@ -104,18 +100,24 @@ class FusionAuth {
     }
   }
 
-  async upload(uuid: string, zipFile: string): Promise<boolean> {
+  async upload(
+    config: Config,
+    zipFile: string,
+    functionsJson: string,
+  ): Promise<boolean> {
     await this.ensureLogin();
+    const applicationId = await config.applicationId();
+    const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
 
-    const { statusCode } = await this.webhead.post(
-      `${this.builderApiURL()}/artifacts/actions/${uuid}/functions`,
-      {
-        headers: {
-          Authorization: `Bearer ${this.jwt()}`,
-        },
-        multiPartData: [{ name: 'file', file: zipFile }],
+    const { statusCode } = await this.webhead.post(url, {
+      headers: {
+        Authorization: `Bearer ${this.jwt()}`,
       },
-    );
+      multiPartData: [
+        { name: 'file', file: zipFile },
+        { name: 'functions', contents: functionsJson },
+      ],
+    });
 
     return !!statusCode.toString().match(/^2/);
   }
@@ -134,9 +136,8 @@ class FusionAuth {
     options: WebheadRequestOptions,
   ): Promise<T> {
     if (!this.webhead.url) {
-      await this.webhead.get(this.fusionAuthURL());
+      await this.webhead.get(this.config.fusionAuthUrl);
     }
-
     await this.webhead[method](urlPath, options);
     return this.webhead.json() || this.webhead.text();
   }
@@ -153,21 +154,6 @@ class FusionAuth {
     }
 
     return jwt || null;
-  }
-
-  private builderApiURL(): string {
-    return builderApiURL.replace('{HOST}', this.host);
-  }
-
-  private fusionAuthURL(): string {
-    let prefix = '';
-    if (this.zone === 'acceptance') {
-      prefix = '-ca';
-    } else if (this.zone === 'edge') {
-      prefix = '-ce';
-    }
-
-    return fusionAuthURL.replace('{ZONEPOSTFIX}', prefix);
   }
 }
 

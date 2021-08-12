@@ -8,8 +8,8 @@ import program from 'commander';
 
 /* internal dependencies */
 
-import publishAppFunctions from './utils/publishAppFunctions';
-import publishCustomFunctions from './utils/publishCustomFunctions';
+import publishAppFunctions from './functions/publishAppFunctions';
+import publishCustomFunctions from './functions/publishCustomFunctions';
 
 /* process arguments */
 
@@ -32,7 +32,7 @@ const { host } = program;
 const workingDir = process.cwd();
 
 if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
-  publishAppFunctions(host);
+  publishAppFunctions();
 } else {
   publishCustomFunctions(host, bumpRevision, skipBuild);
 }

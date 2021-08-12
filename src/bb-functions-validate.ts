@@ -9,13 +9,14 @@ import { Validator } from 'jsonschema';
 /* internal dependencies */
 
 import {
-  Config,
-  isFunction,
-  fetchFunction,
-  functionJsonPath,
-  functionValidator,
-  validateFunction,
-} from './utils/validateFunction';
+  isFunctionDefinition,
+  functionDefinition,
+  functionDefinitionPath,
+} from './functions/functionDefinitions';
+
+import { functionValidator, validateFunction } from './functions/validations';
+
+import Config from './functions/config';
 
 /* process arguments */
 program
@@ -31,40 +32,39 @@ const {
 const workingDir = process.cwd();
 const baseFunctionsPath = path.join(workingDir, 'functions');
 
-const config = fs.readJSONSync(
-  path.join(process.cwd(), 'config.json'),
-) as Config;
+const config = new Config();
 
 const validateFunctionByName = async (
   functionPath: string,
   validator: Validator,
 ): Promise<void> => {
-  const json = await fetchFunction(functionPath);
-  validateFunction(json, validator).then(
-    ({ status, functionName: name, errors }) => {
-      if (status === 'ok') {
-        const mark = chalk.green(`√`);
-        console.log(`${mark} Validated: ${name}`);
-      } else {
-        const msg = chalk.red(`${errors}`);
-        const mark = chalk.red(`x`);
-        console.log(`${mark} Validated: ${name}\n\t${msg}`);
-      }
-    },
+  const json = functionDefinition(functionPath);
+  const { status, functionName: name, errors } = await validateFunction(
+    json,
+    validator,
   );
+
+  if (status === 'ok') {
+    const mark = chalk.green(`√`);
+    console.log(`${mark} Validated: ${name}`);
+  } else {
+    const msg = chalk.red(`${errors}`);
+    const mark = chalk.red(`x`);
+    console.log(`${mark} Validated: ${name}\n\t${msg}`);
+  }
 };
 
 (async (): Promise<void> => {
   const validator = await functionValidator(config);
   if (inputFunctionName) {
     const functionPath = path.join(baseFunctionsPath, inputFunctionName);
-    if (isFunction(functionPath)) {
+    if (isFunctionDefinition(functionPath)) {
       validateFunctionByName(functionPath, validator);
     } else {
       console.log(
         `${chalk.red(
           `x`,
-        )} Error: Function not found, missing ${functionJsonPath(
+        )} Error: Function not found, missing ${functionDefinitionPath(
           functionPath,
         )}.`,
       );
@@ -72,7 +72,7 @@ const validateFunctionByName = async (
   } else {
     fs.readdirSync(baseFunctionsPath).forEach(functionDir => {
       const functionPath = path.join(baseFunctionsPath, functionDir);
-      if (isFunction(functionPath)) {
+      if (isFunctionDefinition(functionPath)) {
         validateFunctionByName(functionPath, validator);
       }
     });

@@ -1,4 +1,6 @@
 import test, { ExecutionContext } from 'ava';
+import path from 'path';
+import { functionDefinition } from '../../src/functions/functionDefinitions';
 import { validateFunction } from '../../src/functions/validations';
 import { Validator } from 'jsonschema';
 
@@ -31,6 +33,19 @@ test('load in entire schema for validator', async (t: Context): Promise<void> =>
 
   t.is(status, 'ok');
   t.is(errors.length, 0);
+});
+
+test('validate templates', async (t: Context): Promise<void> => {
+  const functionPath = path.join(
+    process.cwd(),
+    'assets/app-functions/templates',
+    'functions/say-hello'
+  );
+
+  const functionJson = functionDefinition(functionPath);
+  const {status} = await validateFunction(functionJson, validator);
+
+  t.is(status, 'ok');
 });
 
 test('invalidate empty schemas', async (t: Context): Promise<void> => {

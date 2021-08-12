@@ -12,15 +12,14 @@ import Webhead, {
 } from 'webhead';
 
 import FusionAuth from './fusionAuth';
+import Config from '../functions/config';
 
 type NamedObject = Record<string, string | object>;
 
 class IDE {
   private configFile: string;
 
-  private host: string;
-
-  private zone: string;
+  private config: Config;
 
   public webhead: WebheadInstance;
 
@@ -28,11 +27,10 @@ class IDE {
 
   private loggedIn?: boolean;
 
-  constructor(host: string, zone: string) {
+  constructor(config: Config) {
     this.configFile = path.join(os.homedir(), '.bb-cli');
 
-    this.host = host;
-    this.zone = zone;
+    this.config = config;
 
     if (!fs.pathExistsSync(this.configFile)) {
       fs.writeFileSync(
@@ -70,8 +68,7 @@ class IDE {
     });
 
     this.fusionAuth = new FusionAuth(
-      this.host,
-      this.zone,
+      this.config,
       async (): Promise<void> => this.relogin(),
     );
   }
@@ -110,7 +107,7 @@ class IDE {
     const spinner = label ? ora(label).start() : undefined;
 
     const { statusCode } = await this.webhead[method](
-      `${this.host}/api/${requestPath}`,
+      `${this.config.host}/api/${requestPath}`,
       options,
     );
 
@@ -130,7 +127,7 @@ class IDE {
   private async ensureLogin(): Promise<void> {
     if (this.loggedIn) return;
 
-    await this.webhead.get(this.host);
+    await this.webhead.get(this.config.host);
 
     if (this.webhead.text().match('redirect_location')) {
       await this.webhead.get('/login');

@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 const acquireAppFunctionsProject = (dir: string): string => {
-  const expected = ['functions.json', 'package.json', '.app-functions'];
+  const expected = ['functions', 'package.json', '.app-functions'];
   const intersection = fs
     .readdirSync(dir)
     .filter(file => expected.includes(file));

@@ -1,5 +1,5 @@
 import prompts from 'prompts';
-import IDE from './ide';
+import IDE from '../utils/ide';
 
 export type NamedObject = Record<string, string | object>;
 

@@ -7,7 +7,7 @@
   "options": [
     {
       "meta": {
-        "type": "Text",
+        "type": "String",
         "io": "in"
       },
       "name": "name",
