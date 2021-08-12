@@ -98,25 +98,29 @@ const newFunctionDefinition = (
 ): void => {
   const functionDefName = functionName.replace(/-./g, x => x.toUpperCase()[1]);
   const functionDir = path.join(functionsDir, functionName);
-  fs.mkdirpSync(functionDir);
-  fs.writeJSONSync(
-    functionDefinitionPath(functionDir),
-    {
-      name: functionDefName,
-      description: 'Description',
-      label: functionName,
-      category: 'Misc',
-      icon: 'CreateIcon',
-      options: [],
-      yields: 'none',
-    },
-    { spaces: 2 },
-  );
+  try {
+    fs.mkdirpSync(functionDir);
+    fs.writeJSONSync(
+      functionDefinitionPath(functionDir),
+      {
+        name: functionDefName,
+        description: 'Description',
+        label: functionName,
+        category: 'Misc',
+        icon: 'CreateIcon',
+        options: [],
+        yields: 'none',
+      },
+      { spaces: 2 },
+    );
 
-  fs.writeFileSync(
-    path.join(functionDir, 'index.js'),
-    `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
-  );
+    fs.writeFileSync(
+      path.join(functionDir, 'index.js'),
+      `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
+    );
+  } catch (err) {
+    throw new Error(`could not initialize new function ${functionDir}: ${err}`);
+  }
 };
 
 /* @doc zipFunctionDefinitions

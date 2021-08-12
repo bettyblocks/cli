@@ -12,10 +12,8 @@ const {
   args: [inputFunctionName],
 } = program;
 
-(async (): Promise<void> => {
-  const workingDir = process.cwd();
-  const functionsDir = path.join(workingDir, 'functions');
-  newFunctionDefinition(functionsDir, inputFunctionName);
+const workingDir = process.cwd();
+const functionsDir = path.join(workingDir, 'functions');
+newFunctionDefinition(functionsDir, inputFunctionName);
 
-  console.log(`Function ${inputFunctionName} was created!`);
-})();
+console.log(`Function ${inputFunctionName} was created!`);
