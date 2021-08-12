@@ -1,3 +1,4 @@
+import fs from 'fs-extra';
 import test, { ExecutionContext } from 'ava';
 import path from 'path';
 
@@ -6,12 +7,14 @@ import {
   functionDefinitions,
   functionDefinitionPath,
   isFunctionDefinition,
+  newFunctionDefinition,
   stringifyDefinitions
 } from '../../src/functions/functionDefinitions';
 
 type Context = ExecutionContext<unknown>;
 
-const functionsPath = path.join(process.cwd(), '__tests__/support/functions');
+const supportDir = path.join(process.cwd(), '__tests__/support/');
+const functionsPath = path.join(supportDir, 'functions');
 
 test('functionDefinitionPath', async (t: Context): Promise<void> => {
   t.is(functionDefinitionPath('/functions/loop'), '/functions/loop/function.json');
@@ -32,6 +35,21 @@ test('functionDefinition', async (t: Context): Promise<void> => {
   });
 });
 
+test('creating a new functionDefinition', async (t: Context): Promise<void> => {
+  const tmpFunctionsDir = 'tmpFunctions' + Math.random().toString()
+  const tmpFunctionsPath = path.join(supportDir, tmpFunctionsDir);
+  newFunctionDefinition(tmpFunctionsPath, 'ciao-mondo');
+
+  const functionPath = path.join(tmpFunctionsPath, 'ciao-mondo');
+  const definition = functionDefinition(functionPath);
+
+  fs.removeSync(tmpFunctionsPath);
+
+  t.like(definition, {
+    name: 'ciaoMondo'
+  });
+});
+
 test('functionDefinitions for a directory with functions', async (t: Context): Promise<void> => {
   t.like(functionDefinitions(functionsPath), {
     sayHello: {
@@ -41,7 +59,7 @@ test('functionDefinitions for a directory with functions', async (t: Context): P
 });
 
 test('functionDefinitions for a directory without functions', async (t: Context): Promise<void> => {
-  const wrongFunctionsPath = path.join(process.cwd(), '__tests__/support');
+  const wrongFunctionsPath = supportDir;
   t.deepEqual(functionDefinitions(wrongFunctionsPath), {});
 });
 

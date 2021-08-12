@@ -21,6 +21,7 @@ export type CommandComponents =
 export type CommandFunctions =
   | 'init'
   | 'login'
+  | 'new'
   | 'build'
   | 'publish'
   | 'validate';
