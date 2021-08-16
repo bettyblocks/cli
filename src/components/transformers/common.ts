@@ -51,7 +51,6 @@ import {
   isCustomInteraction,
   isGlobalInteraction,
   isLoginInteraction,
-  isSpecialEvent,
   isToggleInteraction,
   Parameter,
 } from '../repo';
@@ -673,16 +672,3 @@ export const transformSpecialEvent = (
 
   throw Error(`Interaction of type '${type}' is not implemented`);
 };
-
-/*
-  Create transformers for the TypeScript transpiler based on source interactions
-*/
-export const assembleTransformers = (
-  sourceInteractions: ComponentInteraction[],
-): Factory[] =>
-  sourceInteractions
-    .filter(
-      ({ configuration: { sourceEvent } }: ComponentInteraction): boolean =>
-        isSpecialEvent(sourceEvent),
-    )
-    .map(transformSpecialEvent);

@@ -28,12 +28,14 @@ const { mkdir, readFile } = promises;
 program
   .usage('[path]')
   .name('bb components build')
+  .option('-t, --transpile', 'enable new transpilation')
   .parse(process.argv);
 
 const { args }: CommanderStatic = program;
+const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
-
+const enableNewTranspile: boolean = options.transpile;
 /* execute command */
 
 const readComponents: () => Promise<Component[]> = async (): Promise<
@@ -57,7 +59,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 
         // eslint-disable-next-line no-new-func
         const transpiledFunction = Function(
-          `return ${transpile(code, ['jsx', 'styles'])}`,
+          `return ${transpile(code, ['jsx', 'styles'], enableNewTranspile)}`,
         )();
 
         if (!transpiledFunction) {

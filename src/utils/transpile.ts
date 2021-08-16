@@ -2,7 +2,7 @@ import generate from '@babel/generator';
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
 import { stringLiteral, File } from '@babel/types';
-import { compile, compose, doTranspile } from '../components/transformers';
+import { doTranspile } from '../components/transformers';
 
 const generateInnerCode = (ast: File, keys: string[]): void => {
   traverse(ast, {
@@ -19,11 +19,14 @@ const generateInnerCode = (ast: File, keys: string[]): void => {
   });
 };
 
-export default (code: string, keys: string[]): string => {
-  console.log(
-    compose({ jsx: doTranspile(code, []), styles: '', name: 'test' }),
-  );
-  const ast: File = parse(code, {
+export default (
+  code: string,
+  keys: string[],
+  enableNewTranspile?: boolean,
+): string => {
+  const source = enableNewTranspile ? doTranspile(code) : code;
+
+  const ast: File = parse(source, {
     plugins: ['jsx'],
   });
 
