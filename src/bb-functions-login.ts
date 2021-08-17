@@ -11,5 +11,5 @@ program.name('bb functions login').parse(process.argv);
   const ide = new IDE(config);
   await ide.fusionAuth.ensureLogin();
 
-  console.log('Logged in!');
+  console.log('You are now in!');
 })();
