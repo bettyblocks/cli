@@ -24,7 +24,7 @@ program
   .name('bb functions')
   .command('init [identifier]', 'initialize functions project')
   .command('login', 'login using the same credentials as the IDE')
-  .command('new', 'Initialize a new function')
+  .command('new [function-name]', 'Initialize a new function')
   .command('build', 'build functions bundle file of current working directory')
   .command('publish', 'publish functions of current working directory')
   .command('validate', 'validate functions of current working directory')
