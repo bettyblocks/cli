@@ -56,7 +56,7 @@ class Config {
   get zone(): string {
     if (!this._zone) {
       this._zone =
-        this.config.host ||
+        this.config.zone ||
         path.basename(process.cwd()).split('.')[1] ||
         'production';
     }
