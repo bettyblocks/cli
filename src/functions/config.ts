@@ -1,33 +1,97 @@
 import fs from 'fs-extra';
 import path from 'path';
+import os from 'os';
+import prompts from 'prompts';
 
-import IDE from '../utils/ide';
-
-const configPath = (): string => path.join(process.cwd(), 'config.json');
-
-const readConfig = (): Cfg | undefined => {
-  const cfgPath = configPath();
-  if (fs.pathExistsSync(cfgPath)) {
-    return fs.readJsonSync(cfgPath) as Cfg;
-  }
-
-  return {} as Cfg;
+type GlobalConfig = {
+  [key: string]: string;
 };
 
-const defaultConfig = (): Cfg => {
-  return {
-    schemaUrl: 'https://github.com',
-    functionSchemaPath:
-      '/bettyblocks/json-schema/raw/master/schemas/actions/function.json',
-    cacheDir: '.tmp/',
-    fusionAuthUrl: 'https://fusionauth{ZONEPOSTFIX}.betty.services',
-    builderApiUrl: '{HOST}/api/builder',
-    domain: 'bettyblocks.com',
-  } as Cfg;
+export type LocalConfig = {
+  schemaUrl: string;
+  functionSchemaPath: string;
+  cacheDir: string;
+  fusionAuthUrl: string;
+  builderApiUrl: string;
+  domain: string;
+  identifier?: string;
+  host?: string;
+  zone?: string;
+  applicationId?: string;
 };
 
 class Config {
-  private config: Cfg;
+  /* static */
+  public static localConfigPath = path.join(process.cwd(), 'config.json');
+
+  public static globalConfigPath = path.join(os.homedir(), '.bb-cli.json');
+
+  public static writeToGlobalConfig(key: string, value: string): void {
+    const map = this.readGlobalConfig();
+
+    this.writeGlobalConfig({
+      ...map,
+      [key]: value,
+    });
+  }
+
+  public static readGlobalConfig(): GlobalConfig {
+    this.ensureGlobalConfigExists();
+    return fs.readJSONSync(this.globalConfigPath) as GlobalConfig;
+  }
+
+  private static ensureGlobalConfigExists(): void {
+    if (!fs.existsSync(this.globalConfigPath)) {
+      fs.writeJSONSync(this.globalConfigPath, {}, { spaces: 2 });
+    }
+  }
+
+  private static writeGlobalConfig(map: GlobalConfig): void {
+    this.ensureGlobalConfigExists();
+    fs.writeJSONSync(this.globalConfigPath, map, { spaces: 2 });
+  }
+
+  private static async promptApplicationId(
+    identifier: string,
+  ): Promise<string> {
+    const { applicationId } = await prompts([
+      {
+        type: 'text',
+        name: 'applicationId',
+        message: `Please supply the ID for your application (${identifier})`,
+      },
+    ]);
+
+    if (!applicationId) {
+      return this.promptApplicationId(identifier);
+    }
+    this.writeToGlobalConfig(identifier, applicationId);
+    return applicationId;
+  }
+
+  private static readConfig = (): LocalConfig | undefined => {
+    const cfgPath = Config.localConfigPath;
+    if (fs.pathExistsSync(cfgPath)) {
+      return fs.readJsonSync(cfgPath) as LocalConfig;
+    }
+
+    return {} as LocalConfig;
+  };
+
+  private static defaultConfig = (): LocalConfig => {
+    return {
+      schemaUrl: 'https://github.com',
+      functionSchemaPath:
+        '/bettyblocks/json-schema/raw/master/schemas/actions/function.json',
+      cacheDir: '.tmp/',
+      fusionAuthUrl: 'https://fusionauth{ZONEPOSTFIX}.betty.services',
+      builderApiUrl: '{HOST}/api/builder',
+      domain: 'bettyblocks.com',
+    } as LocalConfig;
+  };
+
+  /* instance */
+  private config: LocalConfig;
 
   private _identifier?: string;
 
@@ -39,8 +103,8 @@ class Config {
 
   constructor() {
     this.config = {
-      ...defaultConfig(),
-      ...readConfig(),
+      ...Config.defaultConfig(),
+      ...Config.readConfig(),
     };
   }
 
@@ -89,16 +153,19 @@ class Config {
 
   async applicationId(): Promise<string | undefined> {
     if (!this._applicationId) {
-      const ide = new IDE(this);
-      await ide.get(this.host);
-      await ide.webhead.get('/');
-      const text: string = ide.webhead.text() || '';
-
-      [, this._applicationId] =
-        text.match(/Betty\.application_id = '([0-9a-f]+)'/) || [];
+      this._applicationId =
+        this.config.applicationId || (await this.fetchApplicationId());
     }
 
     return this._applicationId;
+  }
+
+  async fetchApplicationId(): Promise<string> {
+    const map = Config.readGlobalConfig();
+    if (map[this.identifier]) {
+      return map[this.identifier];
+    }
+    return Config.promptApplicationId(this.identifier);
   }
 
   get schemaUrl(): string {
@@ -118,18 +185,5 @@ class Config {
     return `https://${subdomain}.${this.config.domain}`;
   }
 }
-
-export type Cfg = {
-  schemaUrl: string;
-  functionSchemaPath: string;
-  cacheDir: string;
-  fusionAuthUrl: string;
-  builderApiUrl: string;
-  domain: string;
-  identifier?: string;
-  host?: string;
-  zone?: string;
-  applicationId?: string;
-};
 
 export default Config;
