@@ -1,47 +1,30 @@
-import os from 'os';
-import path from 'path';
-import fs from 'fs-extra';
 import prompts from 'prompts';
 import fetch from 'node-fetch';
-import Config from '../functions/config';
+import Config, { GlobalConfig } from '../functions/config';
 
-type LoginResponse = {
-  token: string;
-  refreshToken: string;
-  twoFactorId: string;
+const readAuthConfig = (): GlobalConfig => {
+  return Config.readGlobalConfig();
 };
 
-type UserConfig = {
-  email?: string;
-};
-
-const tokenDir = path.join(os.homedir(), '.bb-cli-login');
-const userConfigPath = path.join(tokenDir, 'config.json');
-fs.mkdirpSync(tokenDir);
-
-const readConfig = (): UserConfig => {
-  if (fs.existsSync(userConfigPath)) {
-    return fs.readJSONSync(userConfigPath) as UserConfig;
-  }
-  return {} as UserConfig;
-};
-
-const storeConfig = (config: UserConfig): void => {
-  fs.writeJSONSync(userConfigPath, config, { spaces: 2 });
+const storeAuthConfig = (auth: object): void => {
+  Config.writeToGlobalConfig('auth', {
+    ...readAuthConfig().auth,
+    ...auth
+  });
 };
 
 const promptCredentials = async (): Promise<{
   email: string;
   password: string;
 }> => {
-  const config = readConfig();
+  const config = readAuthConfig();
 
   const { email, password } = await prompts([
     {
       type: 'text',
       name: 'email',
       message: 'Fill in your e-mail address',
-      initial: config.email,
+      initial: config.auth.email,
     },
     {
       type: 'password',
@@ -55,7 +38,7 @@ const promptCredentials = async (): Promise<{
     process.exit();
   }
 
-  storeConfig({ ...config, email });
+  storeAuthConfig({ email });
 
   return { email, password };
 };
@@ -93,31 +76,34 @@ class FusionAuth {
     });
 
     if (result.token) {
-      this.storeTokens({ jwt: result.token });
+      this.storeToken(result.token);
       return true;
     }
     return false;
   }
 
-  tokenPath(): string {
-    const tPath = path.join(tokenDir, `${this.config.zone}.json`);
-    return tPath;
+  jwt(): string | undefined {
+    return readAuthConfig().auth[this.jwtKey()];
   }
 
-  storeTokens(tokens: object): void {
-    fs.writeJSONSync(this.tokenPath(), tokens, { spaces: 2 });
+  storeToken(token: string): void {
+    storeAuthConfig({
+      [this.jwtKey()]: token,
+    });
   }
 
   clearToken(): void {
-    const fullPath = this.tokenPath();
-
-    if (fs.existsSync(fullPath)) {
-      fs.removeSync(fullPath);
-    }
+    storeAuthConfig({
+      [this.jwtKey()]: undefined,
+    });
   }
 
   tokenExists(): boolean {
-    return !!fs.existsSync(this.tokenPath());
+    return !!this.jwt();
+  }
+
+  jwtKey(): string {
+    return `jwt-${this.config.zone}`;
   }
 }
 

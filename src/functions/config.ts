@@ -3,8 +3,12 @@ import path from 'path';
 import os from 'os';
 import prompts from 'prompts';
 
-type GlobalConfig = {
-  [key: string]: string;
+export type GlobalConfig = {
+  auth: {
+    email: string;
+    [key: string]: string | undefined;
+  };
+  applicationMap: { [key: string]: string };
 };
 
 export type LocalConfig = {
@@ -26,11 +30,11 @@ class Config {
 
   public static globalConfigPath = path.join(os.homedir(), '.bb-cli.json');
 
-  public static writeToGlobalConfig(key: string, value: string): void {
-    const map = this.readGlobalConfig();
+  public static writeToGlobalConfig(key: string, value: string | object): void {
+    const config = this.readGlobalConfig();
 
     this.writeGlobalConfig({
-      ...map,
+      ...config,
       [key]: value,
     });
   }
@@ -42,7 +46,10 @@ class Config {
 
   private static ensureGlobalConfigExists(): void {
     if (!fs.existsSync(this.globalConfigPath)) {
-      fs.writeJSONSync(this.globalConfigPath, {}, { spaces: 2 });
+      fs.writeJSONSync(this.globalConfigPath, {
+        auth: {},
+        applicationMap: {}
+      }, { spaces: 2 });
     }
   }
 
@@ -65,7 +72,10 @@ class Config {
     if (!applicationId) {
       return this.promptApplicationId(identifier);
     }
-    this.writeToGlobalConfig(identifier, applicationId);
+    this.writeToGlobalConfig('applicationMap', {
+      ...Config.readGlobalConfig().applicationMap,
+      [identifier]: applicationId
+    });
     return applicationId;
   }
 
@@ -162,8 +172,8 @@ class Config {
 
   async fetchApplicationId(): Promise<string> {
     const map = Config.readGlobalConfig();
-    if (map[this.identifier]) {
-      return map[this.identifier];
+    if (map.applicationMap[this.identifier]) {
+      return map.applicationMap[this.identifier];
     }
     return Config.promptApplicationId(this.identifier);
   }
