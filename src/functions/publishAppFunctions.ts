@@ -42,12 +42,14 @@ const uploadAppFunctions = async (
       Authorization: `Bearer ${fusionAuth.jwt()}`,
     },
   }).then(async res => {
-    if (res.status === 403) {
+    if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();
       return uploadAppFunctions(functionDefinitionsFile, functionsJson, config);
     }
     if (res.status !== 201) {
-      throw new Error(`Couldn't publish functions, Error: ${await res.text()}`);
+      throw new Error(
+        `Couldn't publish functions, Error: ${res.status},${await res.text()}`,
+      );
     }
 
     return true;

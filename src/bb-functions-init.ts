@@ -15,23 +15,14 @@ program
   .usage('[identifier]')
   .name('bb functions init')
   .option('-a, --app', 'Initialize an app functions project.')
-  .option('-id, --application-id', 'The id of the application.')
   .parse(process.argv);
 
 const initAppFunctions = program.app;
-const id = program.applicationId;
 const { args }: CommanderStatic = program;
 
 if (args.length !== 1) {
   console.log(
     chalk.red('Please provide the identifier (subdomain) of your application.'),
-  );
-  process.exit();
-}
-
-if (initAppFunctions && !id) {
-  console.log(
-    chalk.red('Please provide the id your application with the `-id` flag.'),
   );
   process.exit();
 }
@@ -55,11 +46,6 @@ fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
       commands = '';
       sourceDir = path.join(rootDir(), 'assets', 'app-functions', 'templates');
       fs.copySync(sourceDir, targetDir);
-      fs.writeJSONSync(
-        path.join(targetDir, 'config.json'),
-        { applicationId: id },
-        { spaces: 2 },
-      );
     } else {
       type = 'functions';
       actions = 'build and/or publish';

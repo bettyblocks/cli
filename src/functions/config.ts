@@ -39,6 +39,17 @@ class Config {
     });
   }
 
+  public static registerApplicationId(
+    identifier: string,
+    zone: string,
+    applicationId: string,
+  ): void {
+    this.writeToGlobalConfig('applicationMap', {
+      ...Config.readGlobalConfig().applicationMap,
+      [this.applicationIdKey(identifier, zone)]: applicationId,
+    });
+  }
+
   public static readGlobalConfig(): GlobalConfig {
     this.ensureGlobalConfigExists();
     return fs.readJSONSync(this.globalConfigPath) as GlobalConfig;
@@ -78,10 +89,7 @@ class Config {
       return this.promptApplicationId(identifier, zone);
     }
 
-    this.writeToGlobalConfig('applicationMap', {
-      ...Config.readGlobalConfig().applicationMap,
-      [this.applicationIdKey(identifier, zone)]: applicationId,
-    });
+    this.registerApplicationId(identifier, zone, applicationId);
     return applicationId;
   }
 
