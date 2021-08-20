@@ -1,24 +1,12 @@
 import program from 'commander';
-import os from 'os';
-import fs from 'fs-extra';
-import path from 'path';
+import Config from './functions/config';
+import FusionAuth from './utils/login';
 
 /* process arguments */
 program.name('bb functions logout').parse(process.argv);
+const config = new Config();
+const fusionAuth = new FusionAuth(config);
 
-const confCassie = path.join(os.homedir(), '.bb-cli');
-const confFA = path.join(os.homedir(), '.bb-cli-fa');
+fusionAuth.clearTokens();
 
-try {
-  if (fs.existsSync(confCassie)) {
-    fs.removeSync(confCassie);
-  }
-
-  if (fs.existsSync(confFA)) {
-    fs.removeSync(confFA);
-  }
-
-  console.log('You are now logged out!');
-} catch (err) {
-  console.log(`Could not log you out. Please contact support. Error: ${err}`);
-}
+console.log('You are now logged out!');

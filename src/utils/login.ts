@@ -2,6 +2,15 @@ import prompts from 'prompts';
 import fetch from 'node-fetch';
 import Config, { GlobalConfig } from '../functions/config';
 
+type LoginResponse = {
+  token: string;
+  twoFactorId: string;
+};
+
+type TwoFactorLoginResponse = {
+  token: string;
+};
+
 const readAuthConfig = (): GlobalConfig => {
   return Config.readGlobalConfig();
 };
@@ -9,7 +18,7 @@ const readAuthConfig = (): GlobalConfig => {
 const storeAuthConfig = (auth: object): void => {
   Config.writeToGlobalConfig('auth', {
     ...readAuthConfig().auth,
-    ...auth
+    ...auth,
   });
 };
 
@@ -50,40 +59,70 @@ class FusionAuth {
     this.config = config;
   }
 
+  logout(): void {
+    this.clearTokens();
+  }
+
   async login(): Promise<boolean> {
-    this.clearToken();
+    this.clearTokens();
 
     await this.ensureLogin();
 
     return this.tokenExists();
   }
 
-  async ensureLogin(): Promise<boolean> {
+  async ensureLogin(): Promise<void> {
     const { email, password } = await promptCredentials();
 
-    const result = await fetch(`${this.config.fusionAuthUrl}/api/login`, {
+    return fetch(`${this.config.fusionAuthUrl}/api/login`, {
       method: 'POST',
       body: JSON.stringify({
         loginId: email,
         password,
       }),
       headers: { 'Content-Type': 'application/json' },
-    }).then(resp => {
-      if (resp.ok) {
-        return resp.json();
+    }).then(async resp => {
+      if (resp.status === 200) {
+        const { token } = (await resp.json()) as LoginResponse;
+        return this.storeToken(token);
       }
+      if (resp.status === 242) {
+        const { twoFactorId } = (await resp.json()) as LoginResponse;
+        return this.ensure2FA(twoFactorId);
+      }
+
       return this.ensureLogin();
     });
-
-    if (result.token) {
-      this.storeToken(result.token);
-      return true;
-    }
-    return false;
   }
 
   jwt(): string | undefined {
     return readAuthConfig().auth[this.jwtKey()];
+  }
+
+  async ensure2FA(twoFactorId: string): Promise<void> {
+    const { code } = await prompts([
+      {
+        type: 'text',
+        name: 'code',
+        message: 'Fill in your 2FA code',
+      },
+    ]);
+
+    return fetch(`${this.config.fusionAuthUrl}/api/two-factor/login`, {
+      method: 'POST',
+      body: JSON.stringify({
+        code,
+        twoFactorId,
+      }),
+      headers: { 'Content-Type': 'application/json' },
+    }).then(async resp => {
+      if (resp.ok) {
+        const { token } = (await resp.json()) as TwoFactorLoginResponse;
+        this.storeToken(token);
+      } else {
+        await this.ensure2FA(twoFactorId);
+      }
+    });
   }
 
   storeToken(token: string): void {
@@ -92,7 +131,7 @@ class FusionAuth {
     });
   }
 
-  clearToken(): void {
+  clearTokens(): void {
     storeAuthConfig({
       [this.jwtKey()]: undefined,
     });
@@ -103,7 +142,7 @@ class FusionAuth {
   }
 
   jwtKey(): string {
-    return `jwt-${this.config.zone}`;
+    return `jwt.${this.config.zone}`;
   }
 }
 

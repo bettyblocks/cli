@@ -46,10 +46,14 @@ class Config {
 
   private static ensureGlobalConfigExists(): void {
     if (!fs.existsSync(this.globalConfigPath)) {
-      fs.writeJSONSync(this.globalConfigPath, {
-        auth: {},
-        applicationMap: {}
-      }, { spaces: 2 });
+      fs.writeJSONSync(
+        this.globalConfigPath,
+        {
+          auth: {},
+          applicationMap: {},
+        },
+        { spaces: 2 },
+      );
     }
   }
 
@@ -60,24 +64,33 @@ class Config {
 
   private static async promptApplicationId(
     identifier: string,
+    zone: string,
   ): Promise<string> {
     const { applicationId } = await prompts([
       {
         type: 'text',
         name: 'applicationId',
-        message: `Please supply the ID for your application (${identifier})`,
+        message: `Please supply the ID for your application (${identifier} ${zone})`,
       },
     ]);
 
     if (!applicationId) {
-      return this.promptApplicationId(identifier);
+      return this.promptApplicationId(identifier, zone);
     }
+
     this.writeToGlobalConfig('applicationMap', {
       ...Config.readGlobalConfig().applicationMap,
-      [identifier]: applicationId
+      [this.applicationIdKey(identifier, zone)]: applicationId,
     });
     return applicationId;
   }
+
+  private static applicationIdKey = (
+    identifier: string,
+    zone: string,
+  ): string => {
+    return `${identifier}.${zone}`;
+  };
 
   private static readConfig = (): LocalConfig | undefined => {
     const cfgPath = Config.localConfigPath;
@@ -172,10 +185,11 @@ class Config {
 
   async fetchApplicationId(): Promise<string> {
     const map = Config.readGlobalConfig();
-    if (map.applicationMap[this.identifier]) {
-      return map.applicationMap[this.identifier];
+    const key = Config.applicationIdKey(this.identifier, this.zone);
+    if (map.applicationMap[key]) {
+      return map.applicationMap[key];
     }
-    return Config.promptApplicationId(this.identifier);
+    return Config.promptApplicationId(this.identifier, this.zone);
   }
 
   get schemaUrl(): string {
