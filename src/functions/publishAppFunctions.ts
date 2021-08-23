@@ -2,12 +2,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* npm dependencies */
 
-import ora from 'ora';
 import path from 'path';
+import fs from 'fs-extra';
+import fetch from 'node-fetch';
+import FormData from 'form-data';
 
 /* internal dependencies */
 
-import IDE from '../utils/ide';
+import FusionAuth from '../utils/login';
 import {
   functionDefinitions,
   stringifyDefinitions,
@@ -20,30 +22,55 @@ import Config from './config';
 
 const workingDir = process.cwd();
 
-const publishFunctions = async (config: Config): Promise<void> => {
-  const ide = new IDE(config);
-  await ide.fusionAuth.ensureLogin();
+const uploadAppFunctions = async (
+  functionDefinitionsFile: string,
+  functionsJson: string,
+  config: Config,
+): Promise<boolean> => {
+  const fusionAuth = new FusionAuth(config);
 
-  let spinner = ora(`Creating functions zip ...`).start();
-  const functionsDir = path.join(workingDir, 'functions');
-  const zipFile = zipFunctionDefinitions(functionsDir);
-  spinner.succeed();
+  const form = new FormData();
+  form.append('functions', functionsJson);
+  form.append('file', fs.createReadStream(functionDefinitionsFile));
 
-  const functions = functionDefinitions(functionsDir);
-  const json = stringifyDefinitions(functions);
+  const applicationId = await config.applicationId();
+  const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
+  return fetch(url, {
+    method: 'POST',
+    body: form,
+    headers: {
+      Authorization: `Bearer ${fusionAuth.jwt()}`,
+    },
+  }).then(async res => {
+    if (res.status === 401 || res.status === 403) {
+      await fusionAuth.ensureLogin();
+      return uploadAppFunctions(functionDefinitionsFile, functionsJson, config);
+    }
+    if (res.status !== 201) {
+      throw new Error(
+        `Couldn't publish functions, Error: ${res.status},${await res.text()}`,
+      );
+    }
 
-  spinner = ora(`Uploading functions ...`).start();
-  const success = await ide.fusionAuth.upload(config, zipFile, json);
-  spinner[success ? 'succeed' : 'fail']();
+    return true;
+  });
 };
 
-const publishAppFunctions = (): void => {
+const publishFunctions = async (config: Config): Promise<void> => {
+  const functionsDir = path.join(workingDir, 'functions');
+  const zipFile = zipFunctionDefinitions(functionsDir);
+
+  const functions = functionDefinitions(functionsDir);
+  const functionsJson = stringifyDefinitions(functions);
+
+  await uploadAppFunctions(zipFile, functionsJson, config);
+};
+
+const publishAppFunctions = async (): Promise<void> => {
   const config = new Config();
   console.log(`Publishing to ${config.host} (${config.zone}) ...`);
-
-  publishFunctions(config).then(() => {
-    console.log('Done.');
-  });
+  await publishFunctions(config);
+  console.log('Done.');
 };
 
 export default publishAppFunctions;
