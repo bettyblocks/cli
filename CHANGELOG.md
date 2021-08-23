@@ -1,3 +1,10 @@
+# [23.51.0](https://github.com/bettyblocks/cli/compare/v23.50.0...v23.51.0) (2021-08-23)
+
+
+### Features
+
+* allow any 200-ish to be seen as successful login ([#239](https://github.com/bettyblocks/cli/issues/239)) ([ca1fa74](https://github.com/bettyblocks/cli/commit/ca1fa74))
+
 # [23.50.0](https://github.com/bettyblocks/cli/compare/v23.49.0...v23.50.0) (2021-08-12)
 
 
