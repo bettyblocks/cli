@@ -85,7 +85,8 @@ class FusionAuth {
       if (resp.status === 242) {
         const { twoFactorId } = (await resp.json()) as LoginResponse;
         return this.ensure2FA(twoFactorId);
-      } else if (resp.ok) {
+      }
+      if (resp.ok) {
         const { token } = (await resp.json()) as LoginResponse;
         return this.storeToken(token);
       }
