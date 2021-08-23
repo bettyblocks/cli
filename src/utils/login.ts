@@ -82,13 +82,12 @@ class FusionAuth {
       }),
       headers: { 'Content-Type': 'application/json' },
     }).then(async resp => {
-      if (resp.status === 200) {
-        const { token } = (await resp.json()) as LoginResponse;
-        return this.storeToken(token);
-      }
       if (resp.status === 242) {
         const { twoFactorId } = (await resp.json()) as LoginResponse;
         return this.ensure2FA(twoFactorId);
+      } else if (resp.ok) {
+        const { token } = (await resp.json()) as LoginResponse;
+        return this.storeToken(token);
       }
 
       return this.ensureLogin();
