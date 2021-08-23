@@ -109,7 +109,7 @@ const newFunctionDefinition = (
         category: 'Misc',
         icon: 'CreateIcon',
         options: [],
-        yields: 'none',
+        yields: 'NONE',
       },
       { spaces: 2 },
     );
