@@ -1,3 +1,10 @@
+# [23.52.0](https://github.com/bettyblocks/cli/compare/v23.51.0...v23.52.0) (2021-08-23)
+
+
+### Features
+
+* uppercase yield defaults ([416e250](https://github.com/bettyblocks/cli/commit/416e250))
+
 # [23.51.0](https://github.com/bettyblocks/cli/compare/v23.50.0...v23.51.0) (2021-08-23)
 
 
