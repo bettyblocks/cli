@@ -1,3 +1,10 @@
+# [23.53.0](https://github.com/bettyblocks/cli/compare/v23.52.0...v23.53.0) (2021-08-25)
+
+
+### Features
+
+* added the locale type ([#241](https://github.com/bettyblocks/cli/issues/241)) ([3fa4cf7](https://github.com/bettyblocks/cli/commit/3fa4cf7))
+
 # [23.52.0](https://github.com/bettyblocks/cli/compare/v23.51.0...v23.52.0) (2021-08-23)
 
 
