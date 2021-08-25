@@ -92,6 +92,7 @@ export enum InteractionOptionType {
   Event = 'Event',
   Void = 'Void',
   Page = 'Page',
+  Locale = 'Locale',
 }
 
 // TODO: Add support

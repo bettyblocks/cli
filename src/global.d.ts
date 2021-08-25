@@ -3,4 +3,8 @@ declare interface Page {
   url: string;
 }
 
+declare interface Locale {
+  localeId: string;
+}
+
 declare module 'jsdoc-api';

@@ -3,7 +3,15 @@ import path from 'path';
 import Case from 'case';
 import { Interaction, InteractionOptionType } from '../types';
 
-const allowedTypes = ['number', 'string', 'boolean', 'Page', 'Event', 'void'];
+const allowedTypes = [
+  'boolean',
+  'Event',
+  'Locale',
+  'number',
+  'Page',
+  'string',
+  'void',
+];
 
 export default (filename: string): Interaction => {
   if (!filename)
