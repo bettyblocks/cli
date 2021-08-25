@@ -7,9 +7,6 @@ import {
   transpileModule,
 } from 'typescript';
 
-import defineFunction from './defineFunction';
-import triggerEvent from './triggerEvent';
-
 const { React } = JsxEmit;
 const { ES5 } = ScriptTarget;
 
@@ -50,5 +47,4 @@ export const transpile = (
 };
 
 // @FIXME: This is just to make sure the tests don't break (defineFunction and eventHanlders)
-export const doTranspile = (code: string): string =>
-  transpile(code, [defineFunction(), triggerEvent()]);
+export const doTranspile = (code: string): string => transpile(code, []);

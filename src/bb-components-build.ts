@@ -67,6 +67,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
         }
 
         return {
+          ...(enableNewTranspile ? { jsx: '' } : {}),
           ...transpiledFunction,
           ...compatibility,
         };
