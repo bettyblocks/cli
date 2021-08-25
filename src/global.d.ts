@@ -5,6 +5,8 @@ declare interface Page {
 
 declare interface Locale {
   localeId: string;
+  name: string;
+  code: string;
 }
 
 declare module 'jsdoc-api';
