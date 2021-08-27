@@ -36,15 +36,19 @@ export const transpile = (
 
   let messageText = '';
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  if (firstDiagnostic) messageText = firstDiagnostic.messageText as any;
+  if (firstDiagnostic) {
+    if (typeof firstDiagnostic.messageText === 'string') {
+      messageText = firstDiagnostic.messageText;
+    } else {
+      messageText = firstDiagnostic.messageText.messageText;
+    }
+  }
 
   if (messageText) {
-    throw new Error(messageText as string);
+    throw new Error(messageText);
   }
 
   return outputText;
 };
 
-// @FIXME: This is just to make sure the tests don't break (defineFunction and eventHanlders)
 export const doTranspile = (code: string): string => transpile(code, []);
