@@ -18,6 +18,7 @@ import { checkNameReferences } from './utils/validation';
 import validateComponents from './validations/component';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
+import { doTranspile } from './components/transformers';
 
 /* npm dependencies */
 
@@ -59,15 +60,24 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 
         // eslint-disable-next-line no-new-func
         const transpiledFunction = Function(
-          `return ${transpile(code, ['jsx', 'styles'], enableNewTranspile)}`,
+          `return ${transpile(code, ['jsx', 'styles'])}`,
         )();
 
         if (!transpiledFunction) {
           throw new Error("Component doesn't return anything");
         }
 
+        if (enableNewTranspile) {
+          transpiledFunction.transpiledJsx = doTranspile(
+            transpiledFunction.jsx,
+          );
+
+          transpiledFunction.transpiledStyles = doTranspile(
+            transpiledFunction.styles,
+          );
+        }
+
         return {
-          ...(enableNewTranspile ? { jsx: '' } : {}),
           ...transpiledFunction,
           ...compatibility,
         };
