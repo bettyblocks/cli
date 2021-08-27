@@ -1,10 +1,8 @@
-/* npm dependencies */
-
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
 import { outputJson, pathExists, promises, remove } from 'fs-extra';
-
 import extractComponentCompatibility from './components/compatibility';
+import { doTranspile } from './components/transformers';
 import extractInteractionCompatibility from './interactions/compatibility';
 import getDiagnostics from './interactions/diagnostics';
 import { Component, Interaction, Prefab, PrefabComponent } from './types';
@@ -14,13 +12,9 @@ import hash from './utils/hash';
 import readFilesByType from './utils/readFilesByType';
 import transpile from './utils/transpile';
 import { checkNameReferences } from './utils/validation';
-/* internal dependencies */
 import validateComponents from './validations/component';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
-import { doTranspile } from './components/transformers';
-
-/* npm dependencies */
 
 const { mkdir, readFile } = promises;
 
@@ -37,6 +31,7 @@ const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
 const enableNewTranspile: boolean = options.transpile;
+
 /* execute command */
 
 const readComponents: () => Promise<Component[]> = async (): Promise<
@@ -148,9 +143,6 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
           getDiagnostics(`${srcDir}/${file}`);
 
           return {
-            // failing because it's a keyword
-            // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-            // @ts-ignore
             function: code,
             ...extractInteractionCompatibility(`${srcDir}/${file}`),
           };
@@ -242,11 +234,12 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
     console.info(chalk.green('Success, the component set has been built'));
   } catch ({ file, name, message }) {
-    process.exitCode = 1;
     if (file) {
       console.error(chalk.red(`\n${name} in ${file}: ${message}\n`));
     } else {
       console.error(chalk.red(`\n${name}: ${message}\n`));
     }
+
+    process.exit(1);
   }
 })();

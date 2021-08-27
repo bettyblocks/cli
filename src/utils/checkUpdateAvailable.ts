@@ -1,7 +1,6 @@
 import { readJson, mkdir, writeJson, pathExists } from 'fs-extra';
 import { promisify } from 'util';
 import { exec } from 'child_process';
-import { join } from 'path';
 import { tmpdir } from 'os';
 import { lt } from 'semver';
 import chalk from 'chalk';
@@ -41,27 +40,12 @@ const getRemoteVersionCLI = async (): Promise<string> => {
   return remoteVersionCLI;
 };
 
-const getRemoteVersionPreview = async (): Promise<string> => {
-  const { stdout: output, stderr: error } = await execPromise(
-    `npm show @betty-blocks/preview version`,
-  );
-  const remoteVersionPreview = output.toString().trim();
-
-  if (error) {
-    throw error;
-  }
-
-  return remoteVersionPreview;
-};
-
 const writeToFile = async (): Promise<void> => {
   const remoteVersionCLI = await getRemoteVersionCLI();
-  const remoteVersionPreview = await getRemoteVersionPreview();
 
   await writeJson(`${TEMP_FOLDER}/versions.json`, {
     versions: {
       remoteVersionCLI,
-      remoteVersionPreview,
     },
     timestamp: Date.now(),
   });
@@ -103,22 +87,6 @@ export const checkUpdateAvailableCLI = async (): Promise<void> => {
     const { remoteVersionCLI } = await readFile();
 
     logUpdateAvailable(versionCLI, remoteVersionCLI, nameCLI);
-  } catch {
-    console.error('Unable to check for a new version');
-  }
-};
-
-export const checkUpdateAvailablePreview = async (
-  path: string,
-): Promise<void> => {
-  const previewPkg = join(path, '../package.json');
-
-  try {
-    const { version: localVersion, name } = await readJson(previewPkg);
-    const { remoteVersionPreview, remoteVersionCLI } = await readFile();
-
-    logUpdateAvailable(versionCLI, remoteVersionCLI, nameCLI);
-    logUpdateAvailable(localVersion, remoteVersionPreview, name);
   } catch {
     console.error('Unable to check for a new version');
   }

@@ -14,7 +14,6 @@ export type CommandComponents =
   | 'build'
   | 'serve'
   | 'publish'
-  | 'preview'
   | 'help'
   | 'generate';
 
