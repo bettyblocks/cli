@@ -1,3 +1,15 @@
+# [24.0.0](https://github.com/bettyblocks/cli/compare/v23.53.0...v24.0.0) (2021-08-27)
+
+
+### Bug Fixes
+
+* remove components preview ([5b3fca4](https://github.com/bettyblocks/cli/commit/5b3fca4))
+
+
+### BREAKING CHANGES
+
+* users can no longer use the components preview
+
 # [23.53.0](https://github.com/bettyblocks/cli/compare/v23.52.0...v23.53.0) (2021-08-25)
 
 
