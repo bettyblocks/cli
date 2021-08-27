@@ -21,6 +21,8 @@ const schema: ObjectSchema = Joi.object({
   jsx: Joi.any().required(),
   styles: Joi.any().required(),
   styleType: Joi.string().valid(...STYLE_REFERENCE_TYPES),
+  transpiledJsx: Joi.string(),
+  transpiledStyles: Joi.string(),
 });
 
 const validate = (component: Component): void => {

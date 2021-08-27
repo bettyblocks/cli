@@ -188,6 +188,7 @@ export interface ServeOptions {
   ssl: boolean;
   sslCert: string;
   sslKey: string;
+  transpile?: boolean;
 }
 
 export interface PrefabAction {
