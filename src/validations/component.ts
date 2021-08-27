@@ -18,12 +18,11 @@ const schema: ObjectSchema = Joi.object({
   functions: Joi.array().items(Joi.string()),
   triggers: Joi.array().items(Joi.string()),
   interactions: Joi.object(),
-  jsx: Joi.any()
-    .when('transpiled', { is: undefined, then: Joi.required() })
-    .required(),
+  jsx: Joi.any().required(),
   styles: Joi.any().required(),
   styleType: Joi.string().valid(...STYLE_REFERENCE_TYPES),
-  transpiled: Joi.string(),
+  transpiledJsx: Joi.string(),
+  transpiledStyles: Joi.string(),
 });
 
 const validate = (component: Component): void => {
