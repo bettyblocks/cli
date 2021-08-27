@@ -1,5 +1,6 @@
 import {
   CustomTransformerFactory,
+  flattenDiagnosticMessageText,
   JsxEmit,
   ScriptTarget,
   SourceFile,
@@ -30,18 +31,24 @@ export const transpile = (
     },
   });
 
-  let firstDiagnostic = null;
-
-  if (diagnostics) [firstDiagnostic] = diagnostics;
-
   let messageText = '';
-
-  if (firstDiagnostic) {
-    if (typeof firstDiagnostic.messageText === 'string') {
-      messageText = firstDiagnostic.messageText;
-    } else {
-      messageText = firstDiagnostic.messageText.messageText;
-    }
+  if (diagnostics) {
+    diagnostics.forEach(diagnostic => {
+      if (diagnostic.file) {
+        const {
+          line,
+          character,
+        } = diagnostic.file.getLineAndCharacterOfPosition(
+          diagnostic.start || 0,
+        );
+        messageText += ` ${diagnostic.file.fileName} (${line + 1},${character +
+          1})`;
+      }
+      messageText += `: ${flattenDiagnosticMessageText(
+        diagnostic.messageText,
+        '\n',
+      )}`;
+    });
   }
 
   if (messageText) {
