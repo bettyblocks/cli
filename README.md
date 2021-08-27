@@ -10,9 +10,7 @@ $ npm install -g @betty-blocks/cli@23
 
 ## Introduction
 
-Welcome to the GitHub repository for the Betty Blocks Component System command-line interface (CLI). This CLI lets you develop Component Sets for Betty Blocks, a no-code platform for business users. Not using Betty Blocks yet? Find out more at [https://www.bettyblocks.com](https://www.bettyblocks.com).
-
-This project is the first part of the Betty Blocks Component System available as open-source software. This package was initially used internally by Betty Blocks to build Components for the [Page Builder](https://docs.bettyblocks.com/en/articles/998115-what-is-the-page-builder).
+Welcome to the GitHub repository for the Betty Blocks command-line interface (CLI). This CLI lets you develop for Betty Blocks, a no-code platform for business users. Not using Betty Blocks yet? Find out more at [https://www.bettyblocks.com](https://www.bettyblocks.com).
 
 ## Contents
 

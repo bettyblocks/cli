@@ -11,7 +11,6 @@ const availableCommands: CommandComponents[] = [
   'create',
   'build',
   'serve',
-  'preview',
   'publish',
   'help',
   'generate',
@@ -30,10 +29,6 @@ program
   .command(
     'serve [path]',
     'serve the component set at a specific path, defaults to CWD',
-  )
-  .command(
-    'preview [options]',
-    'preview the component set at a specific path, defaults to CWD',
   )
   .command(
     'publish [options] [path]',
