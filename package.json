@@ -35,7 +35,6 @@
     "@types/fs-extra": "^8.0.0",
     "@types/node": "^12.6.8",
     "@types/promise-sequential": "^1.1.0",
-    "@types/scheduler": "^0.16.2",
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "app-root-path": "^2.2.1",
