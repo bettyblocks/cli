@@ -11,10 +11,9 @@ import {
 const { React } = JsxEmit;
 const { ES5 } = ScriptTarget;
 
-export const transpile = (
-  code: string,
-  before: (TransformerFactory<SourceFile> | CustomTransformerFactory)[],
-): string => {
+type Transformer = TransformerFactory<SourceFile> | CustomTransformerFactory;
+
+export const transpile = (code: string, before: Transformer[]): string => {
   const { diagnostics, outputText } = transpileModule(code, {
     compilerOptions: {
       allowJs: true,
@@ -58,4 +57,7 @@ export const transpile = (
   return outputText;
 };
 
-export const doTranspile = (code: string): string => transpile(code, []);
+export const doTranspile = (
+  code: string,
+  transformers: Transformer[] = [],
+): string => transpile(code, transformers);

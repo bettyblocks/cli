@@ -3,6 +3,7 @@ import program, { CommanderStatic } from 'commander';
 import { outputJson, pathExists, promises, remove } from 'fs-extra';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
+import { stripHandlers } from './components/transformers/stripHandlers';
 import extractInteractionCompatibility from './interactions/compatibility';
 import getDiagnostics from './interactions/diagnostics';
 import { Component, Interaction, Prefab, PrefabComponent } from './types';
@@ -65,6 +66,11 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
         if (enableNewTranspile) {
           transpiledFunction.transpiledJsx = doTranspile(
             transpiledFunction.jsx,
+          );
+
+          transpiledFunction.transpiledDevJsx = doTranspile(
+            transpiledFunction.jsx,
+            [stripHandlers],
           );
 
           transpiledFunction.transpiledStyles = doTranspile(

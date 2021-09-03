@@ -22,6 +22,7 @@ const schema: ObjectSchema = Joi.object({
   styles: Joi.any().required(),
   styleType: Joi.string().valid(...STYLE_REFERENCE_TYPES),
   transpiledJsx: Joi.string(),
+  transpiledDevJsx: Joi.string(),
   transpiledStyles: Joi.string(),
 });
 
