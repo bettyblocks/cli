@@ -33,6 +33,8 @@ const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
 const enableNewTranspile: boolean = options.transpile;
 
+type FileError = Error & { file: string };
+
 /* execute command */
 
 const readComponents: () => Promise<Component[]> = async (): Promise<
@@ -83,7 +85,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
           ...compatibility,
         };
       } catch (error) {
-        error.file = file;
+        (error as FileError).file = file;
         throw error;
       }
     },
@@ -117,7 +119,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
 
         return transpiledFunction;
       } catch (error) {
-        error.file = file;
+        (error as FileError).file = file;
         throw error;
       }
     },
@@ -144,16 +146,11 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     interactionFiles.map(
       async (file: string): Promise<Interaction> => {
         try {
-          const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
-
           getDiagnostics(`${srcDir}/${file}`);
 
-          return {
-            function: code,
-            ...extractInteractionCompatibility(`${srcDir}/${file}`),
-          };
+          return extractInteractionCompatibility(`${srcDir}/${file}`);
         } catch (error) {
-          error.file = file;
+          (error as FileError).file = file;
 
           throw error;
         }

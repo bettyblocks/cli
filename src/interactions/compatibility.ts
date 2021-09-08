@@ -14,14 +14,11 @@ const allowedTypes = [
 ];
 
 export default (filename: string): Interaction => {
-  if (!filename)
-    throw new Error(`unable to determine interaction name from ${filename}`);
-
   const program = ts.createProgram([filename], {});
   const typeChecker = program.getTypeChecker();
   const sourceFile = program.getSourceFile(filename);
 
-  if (!sourceFile) throw new Error('no source file');
+  if (!sourceFile) throw new Error(`Something went wrong reading ${filename}`);
 
   const interactionName = Case.camel(
     path.basename(filename).replace(/.ts/, ''),
@@ -29,22 +26,22 @@ export default (filename: string): Interaction => {
 
   const interaction: Partial<Interaction> = {};
 
-  // Loop through the root AST nodes of the file
   ts.forEachChild(sourceFile, node => {
     if (ts.isFunctionDeclaration(node)) {
-      // name
       const functionName = node.name ? node.name.text : '';
+
       if (functionName !== interactionName) {
-        throw new RangeError('file contains multiple statements');
+        throw new RangeError(
+          'Function name does not match file name or file contains multiple function declarations',
+        );
       }
 
       interaction.name = functionName;
       interaction.parameters = {};
 
-      // return type
       const typeNode = node.type;
       if (!typeNode) {
-        throw new Error(`You forgot to declare a type for ${interactionName}`);
+        throw new Error(`Missing return type for ${interactionName}`);
       }
 
       const returnType = typeChecker.typeToString(
@@ -54,7 +51,9 @@ export default (filename: string): Interaction => {
       interaction.type = Case.pascal(returnType) as InteractionOptionType;
 
       if (node.parameters.length > 1) {
-        throw new Error(`Only one parameter is allowed for ${interactionName}`);
+        throw new Error(
+          `Expected 0 or 1 parameters for ${interactionName}, got ${node.parameters.length}`,
+        );
       }
 
       const [firstParameter] = node.parameters;
@@ -62,7 +61,7 @@ export default (filename: string): Interaction => {
       if (firstParameter) {
         if (!firstParameter.type) {
           throw new Error(
-            `You forgot to add a type to the parameter "${firstParameter.name.getText()}" for ${interactionName}`,
+            `Missing required type "${firstParameter.name.getText()}" for ${interactionName}`,
           );
         }
 
@@ -78,7 +77,9 @@ export default (filename: string): Interaction => {
 
         Object.entries(parameters).forEach(([paramName, paramType]) => {
           if (!allowedTypes.includes(paramType)) {
-            throw new TypeError(`unsupported type for: ${paramName}`);
+            throw new TypeError(
+              `Unsupported type ${paramType} for ${paramName}`,
+            );
           }
           parameters[paramName] = Case.pascal(paramType);
         });

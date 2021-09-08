@@ -42,7 +42,7 @@ const read = async (fileName: string): Promise<void> => {
   try {
     return readJSON(`${distDir}/${fileName}`);
   } catch (error) {
-    const { code, message }: Error & { code: 'ENOENT' | string } = error;
+    const { code, message } = error as Error & { code: 'ENOENT' | string };
 
     throw new Error(
       chalk.red(
@@ -64,7 +64,9 @@ const upload = async (
   } catch (error) {
     const defaultMessage =
       'There was an error trying to publish your component set';
-    const { body, message } = error;
+    const { body, message } = error as Error & {
+      body: { code: string; message: string };
+    };
 
     if (!body) {
       throw new Error(chalk.red([defaultMessage, message].join('\n')));
@@ -95,7 +97,7 @@ const publish = async (
   await checkUpdateAvailableCLI();
   const files = ['prefabs.json', 'templates.json', 'interactions.json'];
 
-  if (pathExists(`${distDir}/pagePrefabs.json`)) {
+  if (await pathExists(`${distDir}/pagePrefabs.json`)) {
     files.push('pagePrefabs.json');
   }
   const [{ url }] = await Promise.all(files.map(publish));
