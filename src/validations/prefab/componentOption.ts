@@ -54,6 +54,7 @@ const optionConfigurationSchema = Joi.when('type', {
     ...optionConfigurationSchemaBase,
     apiVersion: Joi.string()
       .pattern(/^v[\d]{1,}/)
+      .invalid('v1')
       .default('v2'),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
