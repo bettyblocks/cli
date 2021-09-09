@@ -19,7 +19,7 @@ import { walkCompilerAstAndFindComments } from './comments';
 export interface ComponentCompatibility {
   functions: string[];
   triggers: string[];
-  interactions: Record<string, unknown>;
+  interactions: object;
 }
 
 function generateComponentCompatibility(code: string): ComponentCompatibility {
@@ -78,26 +78,17 @@ function generateComponentCompatibility(code: string): ComponentCompatibility {
       visitNode(node, visit);
       walkCompilerAstAndFindComments(node, comments);
 
-      componentCompatibility.functions = [
-        ...componentCompatibility.functions,
-        ...functions,
-      ];
+      componentCompatibility.functions = functions;
 
-      componentCompatibility.triggers = [
-        ...componentCompatibility.triggers,
-        ...triggers,
-      ];
+      componentCompatibility.triggers = triggers;
 
-      componentCompatibility.interactions = {
-        ...componentCompatibility.interactions,
-        ...comments.reduce((acc, comment) => {
-          const [[key, value]] = Object.entries(comment);
-          return {
-            ...acc,
-            [key]: value,
-          };
-        }, {}),
-      };
+      componentCompatibility.interactions = comments.reduce((acc, comment) => {
+        const [[key, value]] = Object.entries(comment);
+        return {
+          ...acc,
+          [key]: value,
+        };
+      }, {});
 
       return node;
     };
