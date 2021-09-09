@@ -1,4 +1,4 @@
-import * as ts from 'typescript';
+import ts from 'typescript';
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import * as jsdoc from 'jsdoc-api';
@@ -82,25 +82,4 @@ export function walkCompilerAstAndFindComments(
   return node.forEachChild(child =>
     walkCompilerAstAndFindComments(child, foundComments),
   );
-}
-
-function createParams(params: object): ts.ObjectLiteralElementLike[] {
-  return Object.entries(params).map(([key, value]) => {
-    const result = Array.isArray(value)
-      ? ts.createArrayLiteral(value.map(n => ts.createStringLiteral(n)))
-      : ts.createObjectLiteral(createParams(value));
-    return ts.createPropertyAssignment(ts.createStringLiteral(key), result);
-  });
-}
-
-export function createLiteralObjectExpression(
-  params: object[],
-): ts.ObjectLiteralElementLike[] {
-  return params.map(param => {
-    const [[key, value]] = Object.entries(param);
-    return ts.createPropertyAssignment(
-      ts.createStringLiteral(key),
-      ts.createObjectLiteral(createParams(value)),
-    );
-  });
 }

@@ -80,13 +80,14 @@ test('fail when passing an arrow function instead of a function', (t: Context): 
 test('fail extraction when passing incompatible type for: subtotal({ event, price }: { event: Event, price: PriceType }): number => number', (t: Context): void => {
   t.throws(() => toCompatibility('__tests__/assets/incompatibleType.ts'), {
     name: 'TypeError',
-    message: 'unsupported type for: price',
+    message: 'Unsupported type any for price',
   });
 });
 
 test('fail extraction with multiple function statements', (t: Context): void => {
   t.throws(() => toCompatibility('__tests__/assets/multiple.ts'), {
     name: 'RangeError',
-    message: 'file contains multiple statements',
+    message:
+      'Function name does not match file name or file contains multiple function declarations',
   });
 });

@@ -65,10 +65,10 @@ const getBlockURL = async (
   try {
     await url.create(Aborter.none, { access: 'blob' });
   } catch (error) {
-    const { statusCode }: RestError = error;
+    const { statusCode } = error as RestError;
 
     if (statusCode !== 409) {
-      throw chalk.red(error);
+      throw chalk.red((error as RestError).message);
     }
   }
 

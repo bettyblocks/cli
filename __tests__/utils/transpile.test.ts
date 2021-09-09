@@ -47,7 +47,7 @@ test('it should not inject a click triggerEvent', (t: ExecutionContext<
   t.is(expected, transpiled);
 });
 
-test('it should inject a click triggerEvent', (t: ExecutionContext<
+test.skip('it should inject a click triggerEvent', (t: ExecutionContext<
   unknown
 >) => {
   const codeWithoutTriggerEvent = `const test = () => {
