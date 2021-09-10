@@ -94,7 +94,7 @@ export default (filename: string): Interaction => {
       const functionBody = node.getText(sourceFile);
       if (!functionBody) {
         throw new Error(
-          `You forgot to add code to your interaction for ${interactionName}`,
+          `${interactionName} does not contain a function declaration`,
         );
       }
 

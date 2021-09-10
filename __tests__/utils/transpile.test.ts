@@ -1,6 +1,7 @@
 import test, { ExecutionContext } from 'ava';
 import { doTranspile } from '../../src/components/transformers';
 import { stripHandlers } from '../../src/components/transformers/stripHandlers';
+import { assembleTransformers } from '../../src/components/transformers/triggerEventCallback';
 
 const code = 'const test = <div onClick={e => console.log(e)}></div>';
 
@@ -47,17 +48,18 @@ test('it should not inject a click triggerEvent', (t: ExecutionContext<
   t.is(expected, transpiled);
 });
 
-test.skip('it should inject a click triggerEvent', (t: ExecutionContext<
+test('it should inject a click triggerEvent', (t: ExecutionContext<
   unknown
 >) => {
   const codeWithoutTriggerEvent = `const test = () => {
     return <div></div>;
 };`;
 
-  const transpiled = doTranspile(codeWithoutTriggerEvent);
+  const transformers = assembleTransformers(['onClick']);
+  const transpiled = doTranspile(codeWithoutTriggerEvent, transformers);
 
   const expected = `var test = function () {
-    return React.createElement("div", { onClick: function (e) { B.triggerEvent('Click', e) } });
+    return React.createElement("div", { onClick: function (e) { B.triggerEvent("onClick", e); } });
 };
 `;
 

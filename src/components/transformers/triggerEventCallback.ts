@@ -1,26 +1,7 @@
 import {
-  createArrowFunction,
-  createBlock,
-  createCall,
-  createIdentifier,
-  createJsxAttribute,
-  createJsxExpression,
-  createParameter,
-  createParen,
-  createReturn,
-  createStatement,
-  createVariableDeclaration,
-  createVariableStatement,
   CustomTransformerFactory,
   Expression,
   Identifier,
-  isIdentifier,
-  isJsxAttribute,
-  isJsxExpression,
-  isJsxOpeningElement,
-  isJsxSelfClosingElement,
-  isOmittedExpression,
-  isStringLiteral,
   JsxAttribute,
   JsxAttributeLike,
   JsxAttributes,
@@ -35,13 +16,36 @@ import {
   TransformationContext,
   Transformer,
   TransformerFactory,
+  Visitor,
+  factory,
+  isIdentifier,
+  isJsxAttribute,
+  isJsxExpression,
+  isJsxOpeningElement,
+  isJsxSelfClosingElement,
+  isOmittedExpression,
+  isStringLiteral,
+  visitEachChild,
+  visitNode,
+} from 'typescript';
+
+const {
+  createArrowFunction,
+  createBlock,
+  createCallExpression,
+  createExpressionStatement,
+  createIdentifier,
+  createJsxAttribute,
+  createJsxExpression,
+  createParameterDeclaration,
+  createParenthesizedExpression,
+  createReturnStatement,
+  createVariableDeclaration,
+  createVariableStatement,
   updateJsxAttributes,
   updateJsxOpeningElement,
   updateJsxSelfClosingElement,
-  visitEachChild,
-  visitNode,
-  Visitor,
-} from 'typescript';
+} = factory;
 
 const EVENT_PARAMETER_NAME = 'e';
 
@@ -110,7 +114,12 @@ export const createParameters = (
 ): ParameterDeclaration[] =>
   parameterNames.map(
     (parameterName: string): ParameterDeclaration =>
-      createParameter([], [], undefined, createIdentifier(parameterName)),
+      createParameterDeclaration(
+        [],
+        [],
+        undefined,
+        createIdentifier(parameterName),
+      ),
   );
 
 /*
@@ -140,11 +149,9 @@ export const addParameters = (
 export const createHandler = ({
   statements,
   handlerName,
-  parameterNames,
 }: {
   statements: Statement[];
   handlerName: string;
-  parameterNames: string[];
 }): JsxAttribute =>
   createJsxAttribute(
     createIdentifier(handlerName),
@@ -153,9 +160,7 @@ export const createHandler = ({
       createArrowFunction(
         [],
         [],
-        createParameters([
-          ...new Set([EVENT_PARAMETER_NAME, ...parameterNames]),
-        ]),
+        createParameters([...new Set([EVENT_PARAMETER_NAME])]),
         undefined,
         undefined,
         createBlock(statements),
@@ -169,8 +174,8 @@ export const createHandler = ({
 export const createCalls = (functions: FunctionCallConfig[]): Statement[] =>
   functions.map(
     (config: FunctionCallConfig): Statement =>
-      createStatement(
-        createCall(
+      createExpressionStatement(
+        createCallExpression(
           createIdentifier(config.name),
           [],
           config.arguments
@@ -190,12 +195,10 @@ export const newJsxAttribute = ({
   functions,
   handlerName,
   node,
-  parameterNames,
 }: {
   functions: FunctionCallConfig[];
   handlerName: string;
   node: EligibleJsxElement;
-  parameterNames: string[];
 }): EligibleJsxElement => {
   return updateEligibleJsxElementAttributes(
     node,
@@ -204,7 +207,6 @@ export const newJsxAttribute = ({
       createHandler({
         statements: createCalls(functions),
         handlerName,
-        parameterNames,
       }),
     ]),
   );
@@ -237,12 +239,10 @@ export const overwriteJsxAttribute = ({
   functions,
   handlerName,
   node,
-  parameterNames,
 }: {
   functions: FunctionCallConfig[];
   handlerName: string;
   node: EligibleJsxElement;
-  parameterNames: string[];
 }): EligibleJsxElement => {
   const attributes = updateJsxAttributes(
     node.attributes,
@@ -253,7 +253,6 @@ export const overwriteJsxAttribute = ({
           ? createHandler({
               statements: createCalls(functions),
               handlerName,
-              parameterNames,
             })
           : attributeLike,
     ),
@@ -280,8 +279,9 @@ export const wrapExpression = ({
     createVariableDeclaration(
       variableName,
       undefined,
-      createCall(
-        createParen(expression),
+      undefined,
+      createCallExpression(
+        createParenthesizedExpression(expression),
         [],
         [createIdentifier(EVENT_PARAMETER_NAME)],
       ),
@@ -290,7 +290,7 @@ export const wrapExpression = ({
 
   const calls = createCalls(functions);
 
-  const returnStatement = createReturn(createIdentifier(variableName));
+  const returnStatement = createReturnStatement(createIdentifier(variableName));
 
   return [declaration, ...calls, returnStatement];
 };
@@ -335,7 +335,6 @@ export const wrapJsxAttribute = ({
               variableNameGenerator,
             }),
             handlerName,
-            parameterNames: [EVENT_PARAMETER_NAME],
           });
         }
 
@@ -352,9 +351,8 @@ export const wrapJsxAttribute = ({
 */
 export const addCallToHandler = (options: {
   functions: FunctionCallConfig[];
-  handlerName: string;
   node: EligibleJsxElement;
-  parameterNames: string[];
+  handlerName: string;
   variableNameGenerator?: () => string;
 }): EligibleJsxElement => {
   const { handlerName, node } = options;
@@ -433,11 +431,6 @@ export const addCallToHandler = (options: {
 };
 
 /*
-  Get an interaction handler name based on a source event
-*/
-export const eventToHandlerName = (event: string): string => `on${event}`;
-
-/*
   Transform the first match (node) in the AST tree based on a predicate
 */
 export const visitFirstMatch = (
@@ -479,18 +472,17 @@ export const visitFirstEligibleJsxElement = (
 */
 export const addHandler = ({
   functions,
-  ...options
+  handlerName,
 }: {
   functions: FunctionCallConfig[];
   handlerName: string;
-  parameterNames: string[];
 }): Factory =>
   visitFirstEligibleJsxElement(
     (node: EligibleJsxElement): EligibleJsxElement =>
       addCallToHandler({
         functions,
+        handlerName,
         node,
-        ...options,
       }),
   );
 
@@ -498,81 +490,44 @@ export const addHandler = ({
   Add an event listener attribute to a JSX element, linked to a general handler
 */
 export const transformGeneral = ({
-  functionNames,
-  id,
   callName,
   callArguments,
-  ...options
+  handlerName,
 }: {
-  functionNames: string[];
-  handlerName: string;
-  parameterNames: string[];
-  id: string;
   callName: string;
   callArguments: string[];
+  handlerName: string;
 }): Factory =>
   addHandler({
     functions: [
-      ...functionNames.map((name: string) => ({
-        name,
-      })),
       {
-        name: `${callName}${id}`,
+        name: `${callName}`,
         arguments: callArguments,
       },
     ],
-    ...options,
+    handlerName,
   });
 
 /*
   Add an event listener attribute to a JSX element, linked to a custom handler
 */
-export const transformCustom = ({
-  id,
-  functionNames,
-  ...options
-}: {
-  id: string;
-  functionNames: string[];
-  handlerName: string;
-  parameterNames: string[];
-}): Factory =>
+export const transformCustom = ({ event }: { event: string }): Factory =>
   transformGeneral({
-    id,
-    functionNames,
     callName: 'B.triggerEvent',
-    callArguments: ['null', EVENT_PARAMETER_NAME],
-    ...options,
+    callArguments: [`"${event}"`, EVENT_PARAMETER_NAME],
+    handlerName: event,
   });
 
-export const transformSpecialEvent = (
-  interaction: Record<any, any>,
-): Factory => {
-  const { id, type, configuration } = interaction;
-  const { sourceEvent } = configuration;
-  const isSubmitEvent = sourceEvent === 'Submit';
-
+export const transformSpecialEvent = (event: string): Factory => {
   const handlerData = {
-    id,
-    functionNames: isSubmitEvent ? ['e.preventDefault'] : [],
-    handlerName: eventToHandlerName(sourceEvent),
-    parameterNames: isSubmitEvent ? ['e'] : [],
+    event,
   };
 
-  // if (isCustomInteraction(interaction)) {
-  //   return transformCustom(handlerData);
-  // }
-
-  throw Error(`Interaction of type '${type}' is not implemented`);
+  return transformCustom(handlerData);
 };
 
 /*
-  Create transformers for the TypeScript transpiler based on source interactions
+  Create transformers for the TypeScript transpiler based on events to be injected
 */
-// export const assembleTransformers = (events: string[]): Factory[] =>
-//   sourceInteractions
-//     .filter(
-//       ({ configuration: { sourceEvent } }: ComponentInteraction): boolean =>
-//         isSpecialEvent(sourceEvent),
-//     )
-//     .map(transformSpecialEvent);
+export const assembleTransformers = (events: string[]): Factory[] =>
+  events.map(transformSpecialEvent);
