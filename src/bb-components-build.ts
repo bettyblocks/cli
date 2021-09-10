@@ -67,7 +67,11 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
         }
 
         if (enableNewTranspile) {
-          const transformers = assembleTransformers(['onClick']);
+          const events = ['onClick', 'onChange'].filter(
+            event => compatibility.triggers.indexOf(event) === -1,
+          );
+
+          const transformers = assembleTransformers(events);
 
           transpiledFunction.transpiledJsx = doTranspile(
             transpiledFunction.jsx,
