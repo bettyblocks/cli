@@ -55,7 +55,10 @@ const optionConfigurationSchema = Joi.when('type', {
     apiVersion: Joi.string()
       .pattern(/^v[\d]{1,}/)
       .invalid('v1')
-      .default('v2'),
+      .default('v2')
+      .messages({
+        'any.invalid': 'API version 1 is no longer supported.',
+      }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
 }).default({});
