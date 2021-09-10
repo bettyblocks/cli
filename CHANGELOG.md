@@ -1,3 +1,19 @@
+# [25.0.0](https://github.com/bettyblocks/cli/compare/v24.0.0...v25.0.0) (2021-09-10)
+
+
+### Bug Fixes
+
+* unable to reload v2 property option page 787 ([#247](https://github.com/bettyblocks/cli/issues/247)) ([cf1b1b9](https://github.com/bettyblocks/cli/commit/cf1b1b9))
+
+
+### BREAKING CHANGES
+
+* users can no longer use apiVersion v1 for options with
+type 'PROPERTY'
+
+Co-authored-by: Lars Hisken <lars.hisken@bettyblocks.com>
+Co-authored-by: DylanBetty <dylan.carver@bettyblocks.com>
+
 # [24.0.0](https://github.com/bettyblocks/cli/compare/v23.53.0...v24.0.0) (2021-08-27)
 
 
