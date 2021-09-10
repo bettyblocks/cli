@@ -540,7 +540,7 @@ export const transformCustom = ({
   transformGeneral({
     id,
     functionNames,
-    callName: 'customFunctionCall',
+    callName: 'B.triggerEvent',
     callArguments: ['null', EVENT_PARAMETER_NAME],
     ...options,
   });
@@ -561,17 +561,6 @@ export const transformSpecialEvent = (
 
   // if (isCustomInteraction(interaction)) {
   //   return transformCustom(handlerData);
-  // }
-
-  // if (isGlobalInteraction(interaction)) {
-  //   return transformGlobal({
-  //     ...handlerData,
-  //     parameters: interaction.configuration.parameters,
-  //   });
-  // }
-
-  // if (isLoginInteraction(interaction)) {
-  //   return transformLogin(handlerData);
   // }
 
   throw Error(`Interaction of type '${type}' is not implemented`);
