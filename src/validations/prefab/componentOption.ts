@@ -19,8 +19,10 @@ const refSchema = Joi.when('type', {
   otherwise: Joi.forbidden(),
 });
 
-const optionConfigurationSchema = Joi.object({
-  apiVersion: Joi.string(),
+const optionConfigurationSchemaBase = {
+  apiVersion: Joi.string()
+    .pattern(/^v[\d]{1,}/)
+    .default('v1'),
   allowedInput: Joi.array().items(
     Joi.object({
       name: Joi.string().allow(''),
@@ -44,7 +46,22 @@ const optionConfigurationSchema = Joi.object({
     generateCustomModel: Joi.boolean(),
     modelRequired: Joi.boolean(),
   }),
-});
+};
+
+const optionConfigurationSchema = Joi.when('type', {
+  is: 'PROPERTY',
+  then: Joi.object({
+    ...optionConfigurationSchemaBase,
+    apiVersion: Joi.string()
+      .pattern(/^v[\d]{1,}/)
+      .invalid('v1')
+      .default('v2')
+      .messages({
+        'any.invalid': 'API version 1 is no longer supported.',
+      }),
+  }),
+  otherwise: Joi.object(optionConfigurationSchemaBase),
+}).default({});
 
 export const optionSchema = Joi.object({
   label: Joi.string().required(),
