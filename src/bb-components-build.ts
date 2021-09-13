@@ -76,7 +76,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 
           transpiledFunction.transpiledDevJsx = doTranspile(
             transpiledFunction.jsx,
-            [stripHandlers, ...transformers],
+            [stripHandlers],
           );
 
           transpiledFunction.transpiledStyles = doTranspile(
