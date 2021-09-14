@@ -43,7 +43,7 @@ const promptCredentials = async (): Promise<{
   ]);
 
   if (!email.match(/@/)) {
-    console.log(`Can't login without an email :)`);
+    console.log(`Can't login without an email.`);
     process.exit();
   }
 

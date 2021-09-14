@@ -1,11 +1,23 @@
 import fetch from 'node-fetch';
+import path from 'path';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
-import { FunctionDefinition } from './functionDefinitions';
+import {
+  FunctionDefinition,
+  functionDefinition,
+  functionDefinitions,
+} from './functionDefinitions';
 import Config from './config';
 
 export type Schema = {
   $id: string;
+};
+
+export type ValidationResult = {
+  path: string;
+  status: string;
+  functionName?: string;
+  errors: ValidationError[] | { message: string }[];
 };
 
 const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {
@@ -44,7 +56,7 @@ const functionValidator = async (config: Config): Promise<Validator> => {
 
 const validateFunctionDefinition = (
   validator: Validator,
-  functionDefinition: object,
+  definition: object,
 ): ValidatorResult => {
   const functionSchemaId = Object.keys(validator.schemas).find(k => {
     return k.match(/function\.json$/);
@@ -55,32 +67,67 @@ const validateFunctionDefinition = (
   }
 
   const functionSchema = validator.schemas[functionSchemaId] as Schema;
-  return validator.validate(functionDefinition, functionSchema);
+  return validator.validate(definition, functionSchema);
 };
 
 const validateFunction = async (
   functionJson: object,
   validator: Validator,
-): Promise<{
-  status: string;
-  functionName?: string;
-  errors: ValidationError[];
-}> => {
-  const { errors } = validateFunctionDefinition(validator, functionJson);
-  const func = functionJson as FunctionDefinition;
+): Promise<ValidationResult> => {
+  const { path: definitionPath, schema } = functionJson as FunctionDefinition;
+  const { errors } = validateFunctionDefinition(validator, schema);
 
-  if (errors.length) {
-    return {
-      status: 'error',
-      functionName: func.name,
-      errors,
-    };
-  }
+  const status = errors.length ? 'error' : 'ok';
+
   return {
-    status: 'ok',
-    functionName: func.name,
+    status,
+    path: definitionPath,
+    functionName: schema.name,
     errors,
   };
 };
 
-export { functionValidator, validateFunction };
+class FunctionValidator {
+  private schemaValidator: Validator;
+
+  private config: Config;
+
+  private functionsDir: string;
+
+  constructor(config: Config, functionsDir: string) {
+    this.config = config;
+    this.schemaValidator = new Validator();
+    this.functionsDir = functionsDir;
+  }
+
+  async initSchema(): Promise<void> {
+    await importSchema(this.schemaValidator, this.config);
+  }
+
+  async validateFunction(functionName: string): Promise<ValidationResult> {
+    const functionPath = path.join(this.functionsDir, functionName);
+    try {
+      const definition = functionDefinition(functionPath);
+      return validateFunction(definition, this.schemaValidator);
+    } catch (err) {
+      return {
+        status: 'error',
+        path: functionPath,
+        functionName,
+        errors: [{ message: `${err}` }],
+      };
+    }
+  }
+
+  async validateFunctions(): Promise<ValidationResult[]> {
+    const definitions = functionDefinitions(this.functionsDir);
+
+    const validations = definitions.map(definition => {
+      return validateFunction(definition, this.schemaValidator);
+    });
+
+    return Promise.all(validations);
+  }
+}
+
+export { FunctionValidator, functionValidator, validateFunction };

@@ -1,21 +1,12 @@
 /* npm dependencies */
 
 import chalk from 'chalk';
-import fs from 'fs-extra';
 import path from 'path';
 import program from 'commander';
-import { Validator } from 'jsonschema';
 
 /* internal dependencies */
 
-import {
-  isFunctionDefinition,
-  functionDefinition,
-  functionDefinitionPath,
-} from './functions/functionDefinitions';
-
-import { functionValidator, validateFunction } from './functions/validations';
-
+import { FunctionValidator, ValidationResult } from './functions/validations';
 import Config from './functions/config';
 
 /* process arguments */
@@ -34,47 +25,31 @@ const baseFunctionsPath = path.join(workingDir, 'functions');
 
 const config = new Config();
 
-const validateFunctionByName = async (
-  functionPath: string,
-  validator: Validator,
-): Promise<void> => {
-  const json = functionDefinition(functionPath);
-  const { status, functionName: name, errors } = await validateFunction(
-    json,
-    validator,
-  );
-
+const logResult = ({
+  path: functionPath,
+  status,
+  functionName,
+  errors,
+}: ValidationResult): void => {
   if (status === 'ok') {
-    const mark = chalk.green(`√`);
-    console.log(`${mark} Validated: ${name}`);
+    const mark = chalk.green(`✔`);
+    console.log(`${mark} Validated: ${functionName}`);
   } else {
     const msg = chalk.red(`${errors}`);
-    const mark = chalk.red(`x`);
-    console.log(`${mark} Validated: ${name}\n\t${msg}`);
+    const mark = chalk.red(`✖`);
+    console.log(`${mark} Validated: ${functionName || functionPath}\n\t${msg}`);
   }
 };
 
 (async (): Promise<void> => {
-  const validator = await functionValidator(config);
+  const validator = new FunctionValidator(config, baseFunctionsPath);
+  await validator.initSchema();
+
   if (inputFunctionName) {
-    const functionPath = path.join(baseFunctionsPath, inputFunctionName);
-    if (isFunctionDefinition(functionPath)) {
-      validateFunctionByName(functionPath, validator);
-    } else {
-      console.log(
-        `${chalk.red(
-          `x`,
-        )} Error: Function not found, missing ${functionDefinitionPath(
-          functionPath,
-        )}.`,
-      );
-    }
+    const result = await validator.validateFunction(inputFunctionName);
+    logResult(result);
   } else {
-    fs.readdirSync(baseFunctionsPath).forEach(functionDir => {
-      const functionPath = path.join(baseFunctionsPath, functionDir);
-      if (isFunctionDefinition(functionPath)) {
-        validateFunctionByName(functionPath, validator);
-      }
-    });
+    const results = await validator.validateFunctions();
+    results.forEach(result => logResult(result));
   }
 })();

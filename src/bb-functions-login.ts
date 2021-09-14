@@ -12,8 +12,8 @@ program.name('bb functions login').parse(process.argv);
   const loggedIn = await fusionAuth.login();
 
   if (loggedIn) {
-    console.log(`You are now logged in :)`);
+    console.log(`You are now logged in.`);
   } else {
-    console.log(`Couldn't log you in :(`);
+    console.log(`Couldn't log you in.`);
   }
 })();
