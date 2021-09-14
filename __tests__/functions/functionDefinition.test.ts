@@ -31,7 +31,9 @@ test('isFunctionDefinition', async (t: Context): Promise<void> => {
 test('functionDefinition', async (t: Context): Promise<void> => {
   const functionPath = path.join(functionsPath, 'say-hello');
   t.like(functionDefinition(functionPath), {
-    name: 'sayHello'
+    schema: {
+      name: 'sayHello'
+    }
   });
 });
 
@@ -41,26 +43,25 @@ test('creating a new functionDefinition', async (t: Context): Promise<void> => {
   newFunctionDefinition(tmpFunctionsPath, 'ciao-mondo');
 
   const functionPath = path.join(tmpFunctionsPath, 'ciao-mondo');
-  const definition = functionDefinition(functionPath);
+  const {schema} = functionDefinition(functionPath);
 
   fs.removeSync(tmpFunctionsPath);
-
-  t.like(definition, {
+  t.like(schema, {
     name: 'ciaoMondo'
   });
 });
 
 test('functionDefinitions for a directory with functions', async (t: Context): Promise<void> => {
-  t.like(functionDefinitions(functionsPath), {
-    sayHello: {
+  const [{schema}] = functionDefinitions(functionsPath)
+  t.like(schema, {
       name: 'sayHello'
     }
-  });
+  );
 });
 
 test('functionDefinitions for a directory without functions', async (t: Context): Promise<void> => {
   const wrongFunctionsPath = supportDir;
-  t.deepEqual(functionDefinitions(wrongFunctionsPath), {});
+  t.deepEqual(functionDefinitions(wrongFunctionsPath), []);
 });
 
 test('stringifying function definitions', async (t: Context): Promise<void> => {

@@ -3,12 +3,11 @@ import path from 'path';
 import AdmZip from 'adm-zip';
 
 export type FunctionDefinition = {
-  name: string;
-  [other: string]: unknown;
-};
-
-export type FunctionDefinitions = {
-  [key: string]: FunctionDefinition;
+  path: string;
+  schema: {
+    name: string;
+    [other: string]: unknown;
+  };
 };
 
 /* @doc functionDefinitionPath
@@ -44,10 +43,13 @@ const functionDirs = (functionsDir: string): string[] =>
   Reads the function.json from the given directory.
   Returns the parsed function.json as object.
 */
-const functionDefinition = (functionPath: string): object => {
+const functionDefinition = (functionPath: string): FunctionDefinition => {
   const filePath = functionDefinitionPath(functionPath);
   try {
-    return fs.readJSONSync(filePath);
+    return {
+      path: filePath,
+      schema: fs.readJSONSync(filePath),
+    } as FunctionDefinition;
   } catch (err) {
     throw new Error(`could not load json from ${filePath}: ${err}`);
   }
@@ -57,30 +59,19 @@ const functionDefinition = (functionPath: string): object => {
   Returns an object containing all function.json definitions
   inside the given functionsDir, indexed by function name.
 */
-const functionDefinitions = (functionsDir: string): FunctionDefinitions => {
-  return functionDirs(functionsDir).reduce(
-    (definitions, functionDir) => {
-      const functionJson = functionDefinition(
-        functionDir,
-      ) as FunctionDefinition;
-
-      return {
-        [functionJson.name]: functionJson,
-        ...definitions,
-      };
-    },
-    {} as FunctionDefinitions,
+const functionDefinitions = (functionsDir: string): FunctionDefinition[] => {
+  return functionDirs(functionsDir).map(
+    functionDir => functionDefinition(functionDir) as FunctionDefinition,
   );
 };
 
-const stringifyDefinitions = (definitions: FunctionDefinitions): string => {
-  const updatedDefinitions = Object.keys(definitions).reduce((acc, name) => {
-    const definition = definitions[name];
+const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
+  const updatedDefinitions = definitions.reduce((acc, { schema }) => {
     return {
       ...acc,
-      [name]: {
-        ...definition,
-        options: JSON.stringify(definition.options),
+      [schema.name]: {
+        ...schema,
+        options: JSON.stringify(schema.options),
       },
     };
   }, {});
