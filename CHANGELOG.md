@@ -1,3 +1,10 @@
+# [25.1.0](https://github.com/bettyblocks/cli/compare/v25.0.0...v25.1.0) (2021-09-14)
+
+
+### Features
+
+* add style name to structure in prefab ([#248](https://github.com/bettyblocks/cli/issues/248)) ([6c659c8](https://github.com/bettyblocks/cli/commit/6c659c8))
+
 # [25.0.0](https://github.com/bettyblocks/cli/compare/v24.0.0...v25.0.0) (2021-09-10)
 
 
