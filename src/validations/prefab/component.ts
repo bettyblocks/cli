@@ -10,6 +10,11 @@ import { optionSchema } from './componentOption';
 
 const componentSchema = Joi.object({
   name: Joi.string().required(),
+  style: Joi.object({
+    name: Joi.string()
+      .max(255)
+      .alphanum(),
+  }),
   ref: Joi.object({
     id: Joi.string().required(),
   }),

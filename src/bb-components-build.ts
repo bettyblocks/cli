@@ -180,20 +180,24 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
       };
     });
 
-    type PrefabComponentWithHash = PrefabComponent & { hash: string };
+    type BuildPrefabComponent = PrefabComponent & {
+      hash: string;
+      style: PrefabComponent['style'];
+    };
 
-    const prefabsWithHash = prefabs.map(prefab => {
-      const hashStructure = (
+    const buildPrefabs = prefabs.map(prefab => {
+      const buildStructure = (
         structure: PrefabComponent,
-      ): PrefabComponentWithHash => {
+      ): BuildPrefabComponent => {
         const newStructure = {
           ...structure,
+          style: structure.style || {},
           hash: hash(structure.options),
         };
 
         if (newStructure.descendants && newStructure.descendants.length > 0) {
           newStructure.descendants = newStructure.descendants.map(
-            hashStructure,
+            buildStructure,
           );
         }
 
@@ -202,13 +206,13 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
       return {
         ...prefab,
-        structure: prefab.structure.map(hashStructure),
+        structure: prefab.structure.map(buildStructure),
       };
     });
 
     await mkdir(distDir, { recursive: true });
 
-    const defaultPrefabs = prefabsWithHash.filter(
+    const defaultPrefabs = buildPrefabs.filter(
       prefab => prefab.type !== 'page',
     );
 

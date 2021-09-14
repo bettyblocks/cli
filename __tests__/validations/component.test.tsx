@@ -120,6 +120,35 @@ test('Throw when one of the prefabs options is invalid', (t: Context): void => {
   t.throws(() => validatePrefabs(prefabs));
 });
 
+test('Throw when style name is non-alphanumeric', (t: Context): void => {
+  const prefabs = ([
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          style: {
+            name: 'invalidCharacter%',
+          },
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown) as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+
 test('Dont throw when prefab component has a ref', (t: Context): void => {
   const prefabs = ([
     {
