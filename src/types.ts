@@ -52,6 +52,9 @@ export interface PrefabComponent {
   actions?: PrefabAction[];
   descendants: PrefabComponent[];
   name: string;
+  style?: {
+    name?: string;
+  };
   options: PrefabComponentOption[];
   ref?: {
     id: string;
