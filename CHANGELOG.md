@@ -1,3 +1,10 @@
+## [25.1.1](https://github.com/bettyblocks/cli/compare/v25.1.0...v25.1.1) (2021-09-15)
+
+
+### Bug Fixes
+
+* remove unused 'io' option in blueprint template ([#242](https://github.com/bettyblocks/cli/issues/242)) ([684e4c0](https://github.com/bettyblocks/cli/commit/684e4c0))
+
 # [25.1.0](https://github.com/bettyblocks/cli/compare/v25.0.0...v25.1.0) (2021-09-14)
 
 
