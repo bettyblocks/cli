@@ -71,6 +71,10 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
             event => compatibility.triggers.indexOf(event) === -1,
           );
 
+          if (events.length > 0) {
+            compatibility.triggers = [...compatibility.triggers, ...events];
+          }
+
           const transformers = assembleTransformers(events);
 
           transpiledFunction.transpiledJsx = doTranspile(
