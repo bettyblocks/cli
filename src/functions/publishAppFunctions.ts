@@ -4,6 +4,7 @@
 
 import path from 'path';
 import fs from 'fs-extra';
+import chalk from 'chalk';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 
@@ -21,6 +22,34 @@ import Config from './config';
 /* execute command */
 
 const workingDir = process.cwd();
+
+type FunctionResult = {
+  name: string;
+  status: 'ok' | 'error';
+  id?: string;
+  error?: string;
+};
+
+type PublishResponse = {
+  created: FunctionResult[];
+  updated: FunctionResult[];
+  deleted: FunctionResult[];
+};
+
+const logResult = (
+  { status, name, error }: FunctionResult,
+  operation: string,
+): void => {
+  if (status === 'ok') {
+    console.log(`${chalk.green(`✔`)} ${operation} ${name}.`);
+  } else {
+    console.log(
+      `${chalk.red(`✖`)} ${operation} ${name} failed. Errors: ${JSON.stringify(
+        error,
+      )}.`,
+    );
+  }
+};
 
 const uploadAppFunctions = async (
   functionDefinitionsFile: string,
@@ -51,6 +80,12 @@ const uploadAppFunctions = async (
         `Couldn't publish functions, Error: ${res.status},${await res.text()}`,
       );
     }
+
+    const { created, updated, deleted } = (await res.json()) as PublishResponse;
+
+    created.forEach(result => logResult(result, 'Create'));
+    updated.forEach(result => logResult(result, 'Update'));
+    deleted.forEach(result => logResult(result, 'Delete'));
 
     return true;
   });

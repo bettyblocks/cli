@@ -41,11 +41,11 @@ const logResult = ({
 }: ValidationResult): void => {
   if (status === 'ok') {
     const mark = chalk.green(`✔`);
-    console.log(`${mark} Validated: ${functionName}`);
+    console.log(`${mark} Validate: ${functionName}`);
   } else {
     const msg = chalk.red(`${errors}`);
     const mark = chalk.red(`✖`);
-    console.log(`${mark} Validated: ${functionName}\n\t${msg}`);
+    console.log(`${mark} Validate: ${functionName}\n\t${msg}`);
   }
 };
 
