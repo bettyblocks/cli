@@ -4,33 +4,63 @@
 import chalk from 'chalk';
 import Joi from 'joi';
 
-import { Prefab, PrefabComponent } from '../../types';
+import {
+  Prefab,
+  PrefabComponent,
+  ComponentStyleMap,
+  Component,
+} from '../../types';
 import { findDuplicates } from '../../utils/validation';
 import { optionSchema } from './componentOption';
 
-const componentSchema = Joi.object({
-  name: Joi.string().required(),
-  style: Joi.object({
-    name: Joi.string()
+type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
+
+const styleValidator: StyleValidator = {
+  BUTTON: Joi.object({
+    backgroundColor: Joi.string()
       .max(255)
       .alphanum(),
   }),
-  ref: Joi.object({
-    id: Joi.string().required(),
-  }),
-  options: Joi.array()
-    .items(optionSchema)
-    .required(),
-  descendants: Joi.array()
-    .items(Joi.custom(validateComponent))
-    .required(),
-});
+};
 
-export function validateComponent(
+const componentSchema = (
+  componentStyleMap: ComponentStyleMap,
+  styleType?: keyof StyleValidator,
+): Joi.ObjectSchema => {
+  const canValidateStyle =
+    styleType && styleValidator[styleType as keyof StyleValidator];
+
+  return Joi.object({
+    name: Joi.string().required(),
+    style: Joi.object({
+      name: Joi.string()
+        .max(255)
+        .alphanum(),
+      overwrites: canValidateStyle || Joi.any(),
+    }),
+    ref: Joi.object({
+      id: Joi.string().required(),
+    }),
+    options: Joi.array()
+      .items(optionSchema)
+      .required(),
+    descendants: Joi.array()
+      .items(Joi.custom(validateComponent(componentStyleMap)))
+      .required(),
+  });
+};
+
+export const validateComponent = (componentStyleMap: ComponentStyleMap) => (
   component: PrefabComponent,
-): Prefab | unknown {
+): Prefab | unknown => {
   const { name, options } = component;
-  const { error } = componentSchema.validate(component);
+
+  const styleType: Component['styleType'] =
+    componentStyleMap[name] && componentStyleMap[name].styleType;
+  const { error } = componentSchema(
+    componentStyleMap,
+    styleType as keyof StyleValidator,
+  ).validate(component);
 
   findDuplicates(options, 'option key', 'key');
 
@@ -43,4 +73,4 @@ export function validateComponent(
   }
 
   return component;
-}
+};

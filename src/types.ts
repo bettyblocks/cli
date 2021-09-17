@@ -54,12 +54,20 @@ export interface PrefabComponent {
   name: string;
   style?: {
     name?: string;
+    overwrites?: {
+      backgroundColor?: string;
+    };
   };
   options: PrefabComponentOption[];
   ref?: {
     id: string;
   };
 }
+
+export type ComponentStyleMap = Record<
+  PrefabComponent['name'],
+  { styleType: Component['styleType'] }
+>;
 
 export type Icon = typeof ICONS[number];
 

@@ -5,7 +5,13 @@ import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
 import extractInteractionCompatibility from './interactions/compatibility';
 import getDiagnostics from './interactions/diagnostics';
-import { Component, Interaction, Prefab, PrefabComponent } from './types';
+import {
+  Component,
+  Interaction,
+  Prefab,
+  PrefabComponent,
+  ComponentStyleMap,
+} from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import hash from './utils/hash';
@@ -167,9 +173,17 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
     checkNameReferences(prefabs, components);
 
+    const componentStyleMap: ComponentStyleMap = components.reduce((acc, c) => {
+      if (c.styleType) {
+        return { ...acc, [c.name]: { styleType: c.styleType } };
+      }
+
+      return acc;
+    }, {});
+
     await Promise.all([
       validateComponents(components),
-      validatePrefabs(prefabs),
+      validatePrefabs(prefabs, componentStyleMap),
       interactions && validateInteractions(interactions),
     ]);
 
