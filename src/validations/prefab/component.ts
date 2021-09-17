@@ -15,11 +15,29 @@ import { optionSchema } from './componentOption';
 
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 
+const isString = Joi.string().max(255);
+const isArray = Joi.array()
+  .max(4)
+  .items(isString.required());
+
 const styleValidator: StyleValidator = {
   BUTTON: Joi.object({
-    backgroundColor: Joi.string()
-      .max(255)
-      .alphanum(),
+    backgroundColor: isString,
+    borderColor: isString,
+    borderRadius: [isString, isArray],
+    borderStyle: isString,
+    borderWidth: [isString, isArray],
+    boxShadow: isString,
+    color: isString,
+    fontFamily: isString,
+    fontSize: isString,
+    fontStyle: isString,
+    fontWeight: isString,
+    letterSpacing: isString,
+    lineHeight: isString,
+    padding: [isString, isArray],
+    textDecoration: isString,
+    textTransform: isString,
   }),
 };
 

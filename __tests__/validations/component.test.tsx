@@ -120,6 +120,105 @@ test('Throw when one of the prefabs options is invalid', (t: Context): void => {
   t.throws(() => validatePrefabs(prefabs));
 });
 
+test('Does not throw when prefabs style override options are valid', (t: Context): void => {
+  const prefabs = ([
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'Button',
+          style: {
+            name: 'filled',
+            overwrites: {
+              backgroundColor: 'blue',
+              padding: ['1', '1'],
+            },
+          },
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown) as Prefab[];
+
+  t.notThrows(() =>
+    validatePrefabs(prefabs, { Button: { styleType: 'BUTTON' } }),
+  );
+});
+
+test('Throw when one of the prefabs style override string options is invalid', (t: Context): void => {
+  const prefabs = ([
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'Button',
+          style: {
+            name: 'filled',
+            overwrites: {
+              backgroundColor: 1,
+            },
+          },
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown) as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs, { Button: { styleType: 'BUTTON' } }));
+});
+
+test('Throw when one of the prefabs style override array options is invalid', (t: Context): void => {
+  const prefabs = ([
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'Button',
+          style: {
+            name: 'filled',
+            overwrites: {
+              padding: ['1', '1', '1', '1', '1'],
+            },
+          },
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown) as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs, { Button: { styleType: 'BUTTON' } }));
+});
+
 test('Throw when style name is non-alphanumeric', (t: Context): void => {
   const prefabs = ([
     {
