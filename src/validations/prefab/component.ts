@@ -24,7 +24,7 @@ const styleValidator: StyleValidator = {
 };
 
 const componentSchema = (
-  componentStyleMap: ComponentStyleMap,
+  componentStyleMap?: ComponentStyleMap,
   styleType?: keyof StyleValidator,
 ): Joi.ObjectSchema => {
   const canValidateStyle =
@@ -50,13 +50,15 @@ const componentSchema = (
   });
 };
 
-export const validateComponent = (componentStyleMap: ComponentStyleMap) => (
+export const validateComponent = (componentStyleMap?: ComponentStyleMap) => (
   component: PrefabComponent,
 ): Prefab | unknown => {
   const { name, options } = component;
 
-  const styleType: Component['styleType'] =
-    componentStyleMap[name] && componentStyleMap[name].styleType;
+  const styleType: Component['styleType'] | undefined =
+    componentStyleMap &&
+    componentStyleMap[name] &&
+    componentStyleMap[name].styleType;
   const { error } = componentSchema(
     componentStyleMap,
     styleType as keyof StyleValidator,

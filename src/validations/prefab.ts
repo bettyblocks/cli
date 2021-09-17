@@ -18,7 +18,7 @@ import { interactionSchema } from './prefab/interaction';
 import { variableSchema } from './prefab/variable';
 
 const schemaProvider = (
-  componentStyleMap: ComponentStyleMap,
+  componentStyleMap?: ComponentStyleMap,
 ): Joi.ObjectSchema => {
   return Joi.object({
     name: Joi.string().required(),
@@ -48,7 +48,7 @@ const schemaProvider = (
   });
 };
 
-const validate = (componentStyleMap: ComponentStyleMap) => (
+const validate = (componentStyleMap?: ComponentStyleMap) => (
   prefab: Prefab,
 ): void => {
   const { actions, variables } = prefab;
@@ -72,7 +72,7 @@ const validate = (componentStyleMap: ComponentStyleMap) => (
 
 export default (
   prefabs: Prefab[],
-  componentStyleMap: ComponentStyleMap,
+  componentStyleMap?: ComponentStyleMap,
 ): void => {
   prefabs.forEach(validate(componentStyleMap));
 
