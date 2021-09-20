@@ -22,13 +22,22 @@ const isArray = Joi.array()
 
 const styleValidator: StyleValidator = {
   BUTTON: Joi.object({
-    backgroundColor: isString,
-    borderColor: isString,
+    backgroundColor: Joi.object({
+      type: isString,
+      value: isString,
+    }),
+    borderColor: Joi.object({
+      type: isString,
+      value: isString,
+    }),
     borderRadius: [isString, isArray],
     borderStyle: isString,
     borderWidth: [isString, isArray],
     boxShadow: isString,
-    color: isString,
+    color: Joi.object({
+      type: isString,
+      value: isString,
+    }),
     fontFamily: isString,
     fontSize: isString,
     fontStyle: isString,

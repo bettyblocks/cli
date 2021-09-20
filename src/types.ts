@@ -55,13 +55,22 @@ export interface PrefabComponent {
   style?: {
     name?: string;
     overwrite?: {
-      backgroundColor?: string;
-      borderColor?: string;
+      backgroundColor?: {
+        value: string;
+        type: string;
+      };
+      borderColor?: {
+        value: string;
+        type: string;
+      };
       borderRadius?: string | string[];
       borderStyle?: string;
       borderWidth?: string | string[];
       boxShadow?: string;
-      color?: string;
+      color?: {
+        value: string;
+        type: string;
+      };
       fontFamily?: string;
       fontSize?: string;
       fontStyle?: string;
