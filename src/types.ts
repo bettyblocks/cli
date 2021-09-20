@@ -54,7 +54,7 @@ export interface PrefabComponent {
   name: string;
   style?: {
     name?: string;
-    overwrites?: {
+    overwrite?: {
       backgroundColor?: string;
     };
   };

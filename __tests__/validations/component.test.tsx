@@ -131,7 +131,7 @@ test('Does not throw when prefabs style override options are valid', (t: Context
           name: 'Button',
           style: {
             name: 'filled',
-            overwrites: {
+            overwrite: {
               backgroundColor: 'blue',
               padding: ['1', '1'],
             },
@@ -166,7 +166,7 @@ test('Throw when one of the prefabs style override string options is invalid', (
           name: 'Button',
           style: {
             name: 'filled',
-            overwrites: {
+            overwrite: {
               backgroundColor: 1,
             },
           },
@@ -198,7 +198,7 @@ test('Throw when one of the prefabs style override array options is invalid', (t
           name: 'Button',
           style: {
             name: 'filled',
-            overwrites: {
+            overwrite: {
               padding: ['1', '1', '1', '1', '1'],
             },
           },

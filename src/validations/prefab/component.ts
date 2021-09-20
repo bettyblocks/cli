@@ -54,7 +54,7 @@ const componentSchema = (
       name: Joi.string()
         .max(255)
         .alphanum(),
-      overwrites: canValidateStyle || Joi.any(),
+      overwrite: canValidateStyle || Joi.any(),
     }),
     ref: Joi.object({
       id: Joi.string().required(),
