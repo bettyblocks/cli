@@ -56,6 +56,21 @@ export interface PrefabComponent {
     name?: string;
     overwrite?: {
       backgroundColor?: string;
+      borderColor?: string;
+      borderRadius?: string | string[];
+      borderStyle?: string;
+      borderWidth?: string | string[];
+      boxShadow?: string;
+      color?: string;
+      fontFamily?: string;
+      fontSize?: string;
+      fontStyle?: string;
+      fontWeight?: string;
+      letterSpacing?: string;
+      lineHeight?: string;
+      padding?: string | string[];
+      textDecoration?: string;
+      textTransform?: string;
     };
   };
   options: PrefabComponentOption[];
