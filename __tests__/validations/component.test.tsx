@@ -133,7 +133,14 @@ test('Does not throw when prefabs style override options are valid', (t: Context
             name: 'filled',
             overwrite: {
               backgroundColor: 'blue',
-              padding: ['1', '1'],
+              padding: ['1'],
+              borderRadius: ['0.3125rem'],
+              borderWidth: ['0.0625rem'],
+              boxShadow:
+                '0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12)',
+              fontFamily: 'serif',
+              fontWeight: '300',
+              lineHeight: '1',
             },
           },
           options: [
