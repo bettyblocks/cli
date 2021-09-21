@@ -44,35 +44,37 @@ const shadows = [
 ];
 
 const isString = Joi.string().max(255);
+const remOrPx = /^\d{1,}\.{0,1}\d*(rem|px)$/;
+const optionType = ['STATIC', 'THEME_COLOR'];
 
 const styleValidator: StyleValidator = {
   BUTTON: Joi.object({
     backgroundColor: Joi.object({
-      type: isString,
+      type: optionType,
       value: isString,
     }),
     borderColor: Joi.object({
-      type: isString,
+      type: optionType,
       value: isString,
     }),
     borderRadius: Joi.array()
       .max(1)
-      .items(isString.required()),
+      .items(isString.required().pattern(remOrPx)),
     borderStyle: isString,
     borderWidth: Joi.array()
       .max(1)
-      .items(isString.required()),
+      .items(isString.required().pattern(remOrPx)),
 
     boxShadow: shadows,
     color: Joi.object({
-      type: isString,
+      type: optionType,
       value: isString,
     }),
     fontFamily: ['Roboto', 'serif', 'sans-serif', 'monospace'],
-    fontSize: isString,
-    fontStyle: isString,
+    fontSize: isString.pattern(remOrPx),
+    fontStyle: ['italic', 'none'],
     fontWeight: ['300', '400', '500', '700'],
-    letterSpacing: isString,
+    letterSpacing: isString.pattern(remOrPx),
     lineHeight: Joi.string()
       .max(255)
       .pattern(/^[0-9]*$/),
@@ -80,10 +82,10 @@ const styleValidator: StyleValidator = {
       isString,
       Joi.array()
         .max(4)
-        .items(isString.required()),
+        .items(isString.required().pattern(remOrPx)),
     ],
-    textDecoration: isString,
-    textTransform: isString,
+    textDecoration: ['underline', 'none'],
+    textTransform: ['uppercase', 'none'],
   }),
 };
 

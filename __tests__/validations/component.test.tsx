@@ -120,7 +120,7 @@ test('Throw when one of the prefabs options is invalid', (t: Context): void => {
   t.throws(() => validatePrefabs(prefabs));
 });
 
-test('Does not throw when prefabs style override options are valid', (t: Context): void => {
+test('Does not throw when button prefabs style override options are valid', (t: Context): void => {
   const prefabs = ([
     {
       name: 'Component name',
@@ -132,15 +132,32 @@ test('Does not throw when prefabs style override options are valid', (t: Context
           style: {
             name: 'filled',
             overwrite: {
-              backgroundColor: 'blue',
-              padding: ['1'],
-              borderRadius: ['0.3125rem'],
+              backgroundColor: {
+                type: 'THEME_COLOR',
+                value: 'primary',
+              },
+              color: {
+                type: 'STATIC',
+                value: 'white',
+              },
+              borderColor: {
+                type: 'STATIC',
+                value: 'yellow',
+              },
+              borderRadius: ['5px'],
+              borderStyle: 'dotted',
               borderWidth: ['0.0625rem'],
               boxShadow:
                 '0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12)',
               fontFamily: 'serif',
+              fontSize: '1rem',
+              fontStyle: 'italic',
               fontWeight: '300',
+              letterSpacing: '1px',
               lineHeight: '1',
+              padding: ['0.5rem', '1rem', '0.5rem', '1rem'],
+              textDecoration: 'underline',
+              textTransform: 'none',
             },
           },
           options: [
