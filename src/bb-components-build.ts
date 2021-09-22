@@ -174,11 +174,9 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     checkNameReferences(prefabs, components);
 
     const componentStyleMap: ComponentStyleMap = components.reduce((acc, c) => {
-      if (c.styleType) {
-        return { ...acc, [c.name]: { styleType: c.styleType } };
-      }
-
-      return acc;
+      return c.styleType
+        ? Object.assign(acc, { [c.name]: { styleType: c.styleType } })
+        : acc;
     }, {});
 
     await Promise.all([

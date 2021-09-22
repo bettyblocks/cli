@@ -44,7 +44,7 @@ const shadows = [
 ];
 
 const isString = Joi.string().max(255);
-const validRem = /^\d{1,5}\.{0,1}\d{0,5}rem$/;
+const validRem = /^\d{1,5}\.?\d{0,5}rem$/;
 const optionType = ['STATIC', 'THEME_COLOR'];
 
 const styleValidator: StyleValidator = {
@@ -77,7 +77,7 @@ const styleValidator: StyleValidator = {
     letterSpacing: isString.pattern(validRem),
     lineHeight: Joi.string()
       .max(255)
-      .pattern(/^[0-9]*$/),
+      .pattern(/^\d*$/),
     padding: [
       isString,
       Joi.array()
@@ -93,8 +93,7 @@ const componentSchema = (
   componentStyleMap?: ComponentStyleMap,
   styleType?: keyof StyleValidator,
 ): Joi.ObjectSchema => {
-  const canValidateStyle =
-    styleType && styleValidator[styleType as keyof StyleValidator];
+  const canValidateStyle = styleType && styleValidator[styleType];
 
   return Joi.object({
     name: Joi.string().required(),
