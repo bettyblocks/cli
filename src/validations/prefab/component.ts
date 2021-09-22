@@ -44,7 +44,7 @@ const shadows = [
 ];
 
 const isString = Joi.string().max(255);
-const remOrPx = /^\d{1,}\.{0,1}\d*(rem|px)$/;
+const validRem = /^\d{1,5}\.{0,1}\d{0,5}rem$/;
 const optionType = ['STATIC', 'THEME_COLOR'];
 
 const styleValidator: StyleValidator = {
@@ -59,11 +59,11 @@ const styleValidator: StyleValidator = {
     }),
     borderRadius: Joi.array()
       .max(1)
-      .items(isString.required().pattern(remOrPx)),
+      .items(isString.required().pattern(validRem)),
     borderStyle: isString,
     borderWidth: Joi.array()
       .max(1)
-      .items(isString.required().pattern(remOrPx)),
+      .items(isString.required().pattern(validRem)),
 
     boxShadow: shadows,
     color: Joi.object({
@@ -71,10 +71,10 @@ const styleValidator: StyleValidator = {
       value: isString,
     }),
     fontFamily: ['Roboto', 'serif', 'sans-serif', 'monospace'],
-    fontSize: isString.pattern(remOrPx),
+    fontSize: isString.pattern(validRem),
     fontStyle: ['italic', 'none'],
     fontWeight: ['300', '400', '500', '700'],
-    letterSpacing: isString.pattern(remOrPx),
+    letterSpacing: isString.pattern(validRem),
     lineHeight: Joi.string()
       .max(255)
       .pattern(/^[0-9]*$/),
@@ -82,7 +82,7 @@ const styleValidator: StyleValidator = {
       isString,
       Joi.array()
         .max(4)
-        .items(isString.required().pattern(remOrPx)),
+        .items(isString.required().pattern(validRem)),
     ],
     textDecoration: ['underline', 'none'],
     textTransform: ['uppercase', 'none'],

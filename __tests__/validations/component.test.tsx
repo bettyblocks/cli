@@ -144,7 +144,7 @@ test('Does not throw when button prefabs style override options are valid', (t: 
                 type: 'STATIC',
                 value: 'yellow',
               },
-              borderRadius: ['5px'],
+              borderRadius: ['0.3125rem'],
               borderStyle: 'dotted',
               borderWidth: ['0.0625rem'],
               boxShadow:
@@ -153,7 +153,7 @@ test('Does not throw when button prefabs style override options are valid', (t: 
               fontSize: '1rem',
               fontStyle: 'italic',
               fontWeight: '300',
-              letterSpacing: '1px',
+              letterSpacing: '0.0625rem',
               lineHeight: '1',
               padding: ['0.5rem', '1rem', '0.5rem', '1rem'],
               textDecoration: 'underline',
