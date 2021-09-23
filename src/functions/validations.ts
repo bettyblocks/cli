@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import path from 'path';
+import chalk from 'chalk';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
 import {
@@ -130,4 +131,25 @@ class FunctionValidator {
   }
 }
 
-export { FunctionValidator, functionValidator, validateFunction };
+const logValidationResult = ({
+  path: functionPath,
+  status,
+  functionName,
+  errors,
+}: ValidationResult): void => {
+  if (status === 'ok') {
+    const mark = chalk.green(`✔`);
+    console.log(`${mark} Validate: ${functionName}`);
+  } else {
+    const msg = chalk.red(`${errors}`);
+    const mark = chalk.red(`✖`);
+    console.log(`${mark} Validate: ${functionName || functionPath}\n\t${msg}`);
+  }
+};
+
+export {
+  FunctionValidator,
+  functionValidator,
+  validateFunction,
+  logValidationResult,
+};
