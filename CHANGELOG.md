@@ -1,3 +1,10 @@
+# [25.2.0](https://github.com/bettyblocks/cli/compare/v25.1.1...v25.2.0) (2021-09-23)
+
+
+### Features
+
+* make dynamic validation based on component styleType ([#250](https://github.com/bettyblocks/cli/issues/250)) ([4f1d606](https://github.com/bettyblocks/cli/commit/4f1d606))
+
 ## [25.1.1](https://github.com/bettyblocks/cli/compare/v25.1.0...v25.1.1) (2021-09-15)
 
 
