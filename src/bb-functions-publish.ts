@@ -58,22 +58,22 @@ const validateFunctions = async (): Promise<boolean> => {
   await validator.initSchema();
   const results = await validator.validateFunctions();
 
-  let validated = true;
+  let valid = true;
   results.forEach(result => {
     if (result.status === 'error') {
-      validated = false;
+      valid = false;
     }
     logResult(result);
   });
 
-  return validated;
+  return valid;
 };
 
 (async (): Promise<void> => {
   if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
-    const validated = await validateFunctions();
+    const valid = await validateFunctions();
 
-    if (validated) {
+    if (valid) {
       publishAppFunctions();
     } else {
       console.log(
