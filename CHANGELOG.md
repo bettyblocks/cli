@@ -1,3 +1,10 @@
+# [25.3.0](https://github.com/bettyblocks/cli/compare/v25.2.0...v25.3.0) (2021-09-23)
+
+
+### Features
+
+* add FunctionValidator class ([4755bb4](https://github.com/bettyblocks/cli/commit/4755bb4))
+
 # [25.2.0](https://github.com/bettyblocks/cli/compare/v25.1.1...v25.2.0) (2021-09-23)
 
 
