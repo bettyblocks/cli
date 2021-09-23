@@ -11,7 +11,10 @@ import program from 'commander';
 
 import publishAppFunctions from './functions/publishAppFunctions';
 import publishCustomFunctions from './functions/publishCustomFunctions';
-import { FunctionValidator, ValidationResult } from './functions/validations';
+import {
+  FunctionValidator,
+  logValidationResult,
+} from './functions/validations';
 import Config from './functions/config';
 
 /* process arguments */
@@ -34,21 +37,6 @@ const { host } = program;
 
 const workingDir = process.cwd();
 
-const logResult = ({
-  status,
-  functionName,
-  errors,
-}: ValidationResult): void => {
-  if (status === 'ok') {
-    const mark = chalk.green(`✔`);
-    console.log(`${mark} Validate: ${functionName}`);
-  } else {
-    const msg = chalk.red(`${errors}`);
-    const mark = chalk.red(`✖`);
-    console.log(`${mark} Validate: ${functionName}\n\t${msg}`);
-  }
-};
-
 const validateFunctions = async (): Promise<boolean> => {
   const baseFunctionsPath = path.join(workingDir, 'functions');
   console.log(`Validating functions in ${baseFunctionsPath}`);
@@ -63,7 +51,7 @@ const validateFunctions = async (): Promise<boolean> => {
     if (result.status === 'error') {
       valid = false;
     }
-    logResult(result);
+    logValidationResult(result);
   });
 
   return valid;
