@@ -54,12 +54,44 @@ export interface PrefabComponent {
   name: string;
   style?: {
     name?: string;
+    overwrite?: {
+      backgroundColor?: {
+        value: string;
+        type: string;
+      };
+      borderColor?: {
+        value: string;
+        type: string;
+      };
+      borderRadius?: string | string[];
+      borderStyle?: string;
+      borderWidth?: string | string[];
+      boxShadow?: string;
+      color?: {
+        value: string;
+        type: string;
+      };
+      fontFamily?: string;
+      fontSize?: string;
+      fontStyle?: string;
+      fontWeight?: string;
+      letterSpacing?: string;
+      lineHeight?: string;
+      padding?: string | string[];
+      textDecoration?: string;
+      textTransform?: string;
+    };
   };
   options: PrefabComponentOption[];
   ref?: {
     id: string;
   };
 }
+
+export type ComponentStyleMap = Record<
+  PrefabComponent['name'],
+  { styleType: Component['styleType'] }
+>;
 
 export type Icon = typeof ICONS[number];
 
