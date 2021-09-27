@@ -159,6 +159,13 @@ class Config {
     return this._zone;
   }
 
+  get buildDir(): string {
+    if (this.zone === 'production') {
+      return this.identifier;
+    }
+    return `${this.identifier}.${this.zone}`;
+  }
+
   get host(): string {
     if (!this._host) {
       this._host = this.config.host || this.defaultHost();

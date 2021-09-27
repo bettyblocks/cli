@@ -36,7 +36,7 @@ type Actions = Action[];
 const groomMetaData = async (config: Config): Promise<MetaData> => {
   console.log('Grooming functions.json ...');
 
-  const buildDir = path.join(os.tmpdir(), config.identifier);
+  const buildDir = path.join(os.tmpdir(), config.buildDir);
   const customJsFile = path.join(buildDir, 'dist', 'custom.js');
 
   const customJs = fs.readFileSync(customJsFile, 'utf8');
@@ -92,7 +92,7 @@ const publishFunctions = async (
   const ide = new IDE(config);
   const revision = await storeCustomFunctions(ide, metaData, bumpRevision);
 
-  const buildDir = path.join(os.tmpdir(), config.identifier);
+  const buildDir = path.join(os.tmpdir(), config.buildDir);
   const customJsFile = path.join(buildDir, 'dist', 'custom.js');
 
   await ide.post(
