@@ -1,3 +1,12 @@
+# [25.5.0](https://github.com/bettyblocks/cli/compare/v25.4.0...v25.5.0) (2021-10-11)
+
+
+### Features
+
+* log results of function publish ([8cbc5f1](https://github.com/bettyblocks/cli/commit/8cbc5f1))
+* move duplicate logResult code to validation module ([e6ae7eb](https://github.com/bettyblocks/cli/commit/e6ae7eb))
+* rename validated to valid ([f73f466](https://github.com/bettyblocks/cli/commit/f73f466))
+
 # [25.4.0](https://github.com/bettyblocks/cli/compare/v25.3.0...v25.4.0) (2021-09-27)
 
 
