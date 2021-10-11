@@ -1,3 +1,10 @@
+# [25.4.0](https://github.com/bettyblocks/cli/compare/v25.3.0...v25.4.0) (2021-09-27)
+
+
+### Features
+
+* use buildDir to build and publish CustomFunctions ([#255](https://github.com/bettyblocks/cli/issues/255)) ([c698125](https://github.com/bettyblocks/cli/commit/c698125))
+
 # [25.3.0](https://github.com/bettyblocks/cli/compare/v25.2.0...v25.3.0) (2021-09-23)
 
 
