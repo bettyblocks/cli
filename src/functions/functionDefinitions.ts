@@ -1,6 +1,7 @@
+import AdmZip from 'adm-zip';
+import camelCase from 'lodash/camelCase';
 import fs from 'fs-extra';
 import path from 'path';
-import AdmZip from 'adm-zip';
 
 export type FunctionDefinition = {
   path: string;
@@ -16,12 +17,25 @@ export type FunctionDefinition = {
 const functionDefinitionPath = (functionPath: string): string =>
   path.join(functionPath, 'function.json');
 
+/* @doc pathToFunction
+  Expands the function dir with `index.js`.
+*/
+const pathToFunction = (functionDir: string): string =>
+  path.join(functionDir, 'index.js');
+
 /* @doc isFunctionDefinition
   Checks the given functions dir for a file named function.json.
   Returns true if the file exists.
 */
 const isFunctionDefinition = (functionPath: string): boolean =>
   fs.pathExistsSync(functionDefinitionPath(functionPath));
+
+/* @doc isFunction
+  Checks the given functions dir for a file named index.js.
+  Returns true if the file exists.
+*/
+const isFunction = (functionDir: string): boolean =>
+  fs.pathExistsSync(pathToFunction(functionDir));
 
 /* @doc functionDirs
   Returns a list of directories inside the given functionsDir that have a function.json.
@@ -114,10 +128,49 @@ const newFunctionDefinition = (
   }
 };
 
+/* @doc fetchFunctions
+  Fetches all functions in the `/functions` folder, only includes function that
+  have both an `index.js` and `functions.json` file.
+  Returns an array of function names.
+*/
+const fetchFunctions = (functionsDir: string): string[] =>
+  fs.readdirSync(functionsDir).reduce<string[]>((names, name) => {
+    const functionPath = path.join(functionsDir, name);
+    if (isFunction(functionPath) && isFunctionDefinition(functionPath)) {
+      names.push(name);
+    }
+
+    return names;
+  }, []);
+
+/* @doc reExportFunctions
+  Returns an array of strings, each item being a re-exported function:
+  `export { default as functionName } from './function-name';
+ */
+const reExportFunctions = (functions: string[]): string[] =>
+  functions.reduce<string[]>((exportedFunctions, file) => {
+    exportedFunctions.push(
+      `export { default as ${camelCase(file)} } from './${file}';`,
+    );
+
+    return exportedFunctions;
+  }, []);
+
+/* @doc generateIndex
+  Fetches all functions and re-exports them. 
+  Returns the result as a Buffer. 
+*/
+const generateIndex = (): Buffer => {
+  const functions = fetchFunctions(path.join(process.cwd(), 'functions'));
+  const code = reExportFunctions(functions).join('\n');
+
+  return Buffer.from(code);
+};
+
 /* @doc zipFunctionDefinitions
   Takes functionsDir as path to a directory with function definitions.
   Scans each directory for a function.json file, and if present adds it
-  to the zip file.
+  to the zip file. Generates an index.js and adds it to the zip file.
   Returns path to the zip file.
  */
 const zipFunctionDefinitions = (functionsDir: string): string => {
@@ -128,6 +181,7 @@ const zipFunctionDefinitions = (functionsDir: string): string => {
   fs.ensureDirSync(tmpDir);
 
   zip.addLocalFile(path.join(process.cwd(), 'package.json'));
+  zip.addFile('index.js', generateIndex());
   zip.addLocalFolder(functionsDir);
 
   zip.writeZip(zipFilePath);
