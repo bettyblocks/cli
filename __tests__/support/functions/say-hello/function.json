@@ -7,8 +7,7 @@
   "options": [
     {
       "meta": {
-        "type": "String",
-        "io": "in"
+        "type": "Text"
       },
       "name": "name",
       "label": "Name",
@@ -19,5 +18,5 @@
       }
     }
   ],
-  "yields": "none"
+  "yields": "NONE"
 }
