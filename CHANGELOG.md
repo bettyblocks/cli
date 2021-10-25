@@ -1,3 +1,10 @@
+# [25.6.0](https://github.com/bettyblocks/cli/compare/v25.5.0...v25.6.0) (2021-10-25)
+
+
+### Features
+
+* update function json for tests ([5c03135](https://github.com/bettyblocks/cli/commit/5c03135))
+
 # [25.5.0](https://github.com/bettyblocks/cli/compare/v25.4.0...v25.5.0) (2021-10-11)
 
 
