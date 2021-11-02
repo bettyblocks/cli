@@ -1,3 +1,10 @@
+# [25.7.0](https://github.com/bettyblocks/cli/compare/v25.6.0...v25.7.0) (2021-11-02)
+
+
+### Features
+
+* add ICON option support ([#261](https://github.com/bettyblocks/cli/issues/261)) ([5f44d5a](https://github.com/bettyblocks/cli/commit/5f44d5a))
+
 # [25.6.0](https://github.com/bettyblocks/cli/compare/v25.5.0...v25.6.0) (2021-10-25)
 
 
