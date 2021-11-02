@@ -138,6 +138,7 @@ export const OPTIONS = [
   'TOGGLE',
   'UNIT',
   'VARIABLE',
+  'ICON',
 ];
 
 export const STYLE_REFERENCE_TYPES = ['BUTTON', 'TEXT'];
