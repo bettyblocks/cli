@@ -1,3 +1,10 @@
+# [25.8.0](https://github.com/bettyblocks/cli/compare/v25.7.0...v25.8.0) (2021-11-25)
+
+
+### Features
+
+* add actionjs component option ([a2f86d9](https://github.com/bettyblocks/cli/commit/a2f86d9))
+
 # [25.7.0](https://github.com/bettyblocks/cli/compare/v25.6.0...v25.7.0) (2021-11-02)
 
 
