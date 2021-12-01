@@ -32,15 +32,9 @@ const schemaProvider = (
     detail: Joi.string(),
     previewImage: Joi.string(),
     previewUrl: Joi.string(),
-    interactions: Joi.array()
-      .items(interactionSchema)
-      .max(MAX_INTERACTIONS),
-    actions: Joi.array()
-      .items(actionSchema)
-      .max(MAX_ACTIONS),
-    variables: Joi.array()
-      .items(variableSchema)
-      .max(MAX_VARIABLES),
+    interactions: Joi.array().items(interactionSchema).max(MAX_INTERACTIONS),
+    actions: Joi.array().items(actionSchema).max(MAX_ACTIONS),
+    variables: Joi.array().items(variableSchema).max(MAX_VARIABLES),
     beforeCreate: Joi.any(),
     structure: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap)))
@@ -48,27 +42,27 @@ const schemaProvider = (
   });
 };
 
-const validate = (componentStyleMap?: ComponentStyleMap) => (
-  prefab: Prefab,
-): void => {
-  const { actions, variables } = prefab;
-  const { error } = schemaProvider(componentStyleMap).validate(prefab);
+const validate =
+  (componentStyleMap?: ComponentStyleMap) =>
+  (prefab: Prefab): void => {
+    const { actions, variables } = prefab;
+    const { error } = schemaProvider(componentStyleMap).validate(prefab);
 
-  if (Array.isArray(actions)) {
-    findDuplicates(actions as PrefabAction[], 'action', { ref: 'id' });
-  }
+    if (Array.isArray(actions)) {
+      findDuplicates(actions, 'action', { ref: 'id' });
+    }
 
-  if (Array.isArray(variables)) {
-    findDuplicates(variables, 'variable', 'name');
-    findDuplicates(variables, 'action', { ref: 'id' });
-  }
+    if (Array.isArray(variables)) {
+      findDuplicates(variables, 'variable', 'name');
+      findDuplicates(variables, 'action', { ref: 'id' });
+    }
 
-  if (error) {
-    throw new Error(
-      chalk.red(`\nProperty: ${error.message} at prefab: ${prefab.name}\n`),
-    );
-  }
-};
+    if (error) {
+      throw new Error(
+        chalk.red(`\nProperty: ${error.message} at prefab: ${prefab.name}\n`),
+      );
+    }
+  };
 
 export default (
   prefabs: Prefab[],

@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-/* eslint-disable @typescript-eslint/camelcase */
 /* npm dependencies */
 
 import path from 'path';
@@ -63,14 +62,20 @@ const uploadAppFunctions = async (
   form.append('file', fs.createReadStream(functionDefinitionsFile));
 
   const applicationId = await config.applicationId();
+  if (!applicationId) {
+    throw new Error(
+      "Couldn't publish functions, Error: application id not found",
+    );
+  }
   const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
   return fetch(url, {
     method: 'POST',
     body: form,
     headers: {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       Authorization: `Bearer ${fusionAuth.jwt()}`,
     },
-  }).then(async res => {
+  }).then(async (res) => {
     if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();
       return uploadAppFunctions(functionDefinitionsFile, functionsJson, config);
@@ -83,9 +88,9 @@ const uploadAppFunctions = async (
 
     const { created, updated, deleted } = (await res.json()) as PublishResponse;
 
-    created.forEach(result => logResult(result, 'Create'));
-    updated.forEach(result => logResult(result, 'Update'));
-    deleted.forEach(result => logResult(result, 'Delete'));
+    created.forEach((result) => logResult(result, 'Create'));
+    updated.forEach((result) => logResult(result, 'Update'));
+    deleted.forEach((result) => logResult(result, 'Delete'));
 
     return true;
   });

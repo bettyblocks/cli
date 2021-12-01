@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument */
 /* npm dependencies */
 
 import fs from 'fs-extra';
@@ -47,7 +46,7 @@ const validateFunctions = async (): Promise<boolean> => {
   const results = await validator.validateFunctions();
 
   let valid = true;
-  results.forEach(result => {
+  results.forEach((result) => {
     if (result.status === 'error') {
       valid = false;
     }
@@ -57,12 +56,13 @@ const validateFunctions = async (): Promise<boolean> => {
   return valid;
 };
 
-(async (): Promise<void> => {
+// eslint-disable-next-line no-void
+void (async (): Promise<void> => {
   if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     const valid = await validateFunctions();
 
     if (valid) {
-      publishAppFunctions();
+      await publishAppFunctions();
     } else {
       console.log(
         `${chalk.red(

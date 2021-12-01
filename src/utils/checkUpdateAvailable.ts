@@ -34,6 +34,7 @@ const getRemoteVersionCLI = async (): Promise<string> => {
   const remoteVersionCLI = output.toString().trim();
 
   if (error) {
+    // eslint-disable-next-line @typescript-eslint/no-throw-literal
     throw error;
   }
 
@@ -62,9 +63,11 @@ const readFile = async (): Promise<Versions> => {
   const fileExist = await pathExists(`${TEMP_FOLDER}/versions.json`);
 
   if (fileExist) {
-    const { versions, timestamp } = await readJson(
-      `${TEMP_FOLDER}/versions.json`,
-    );
+    const { versions, timestamp }: { versions: Versions; timestamp: number } =
+      (await readJson(`${TEMP_FOLDER}/versions.json`)) as {
+        versions: Versions;
+        timestamp: number;
+      };
 
     if (timestamp + 86400000 < Date.now()) {
       console.log('Checking for new versions..');
@@ -86,6 +89,7 @@ export const checkUpdateAvailableCLI = async (): Promise<void> => {
   try {
     const { remoteVersionCLI } = await readFile();
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     logUpdateAvailable(versionCLI, remoteVersionCLI, nameCLI);
   } catch {
     console.error('Unable to check for a new version');

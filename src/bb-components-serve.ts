@@ -16,7 +16,7 @@ program
   .option(
     '-p, --port [port]',
     'Port to listen on.',
-    value => parsePort(value, 5001),
+    (value: string) => parsePort(value, 5001),
     5001,
   )
   .option('--host [host]', 'Host to listen on.', 'localhost')
@@ -27,11 +27,11 @@ program
 
 const options: ServeOptions = {
   rootDir: parseDir(program.args),
-  port: program.port,
-  host: program.host,
-  ssl: program.ssl,
-  sslKey: program.sslKey,
-  sslCert: program.sslCert,
+  port: program.port as number,
+  host: program.host as string,
+  ssl: program.ssl as boolean,
+  sslKey: program.sslKey as string,
+  sslCert: program.sslCert as string,
 };
 
 /* execute command */
@@ -42,7 +42,8 @@ serveComponentSet(options).then(
 
     console.info(chalk.green(`Serving the component set at ${url}`));
   },
-  error => {
+  (error) => {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(chalk.red(`\n${error}\n`));
     process.exit(1);
   },

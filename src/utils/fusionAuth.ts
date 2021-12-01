@@ -44,7 +44,7 @@ class FusionAuth {
   async ensureLogin(): Promise<void> {
     const response = await this.get<UserResponse>('/api/user', {
       headers: {
-        Authorization: `Bearer ${this.jwt()}`,
+        Authorization: `Bearer ${this.jwt() || ''}`,
       },
     });
 
@@ -75,13 +75,13 @@ class FusionAuth {
   }
 
   async complete2FA(twoFactorId: string): Promise<void> {
-    const { code } = await prompts([
+    const { code } = (await prompts([
       {
         type: 'text',
         name: 'code',
         message: 'Fill in your 2FA code (to upload code)',
       },
-    ]);
+    ])) as { code: string };
 
     const { token, refreshToken } = await this.post<TwoFactorLoginResponse>(
       '/api/two-factor/login',
@@ -107,11 +107,13 @@ class FusionAuth {
   ): Promise<boolean> {
     await this.ensureLogin();
     const applicationId = await config.applicationId();
-    const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
+    const url = `${config.builderApiUrl}/artifacts/actions/${
+      applicationId || ''
+    }/functions`;
 
     const { statusCode } = await this.webhead.post(url, {
       headers: {
-        Authorization: `Bearer ${this.jwt()}`,
+        Authorization: `Bearer ${this.jwt() || ''}`,
       },
       multiPartData: [
         { name: 'file', file: zipFile },
@@ -139,6 +141,7 @@ class FusionAuth {
       await this.webhead.get(this.config.fusionAuthUrl);
     }
     await this.webhead[method](urlPath, options);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.webhead.json() || this.webhead.text();
   }
 
@@ -150,9 +153,11 @@ class FusionAuth {
     let jwt;
 
     if (fs.pathExistsSync(this.configFile)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
       jwt = fs.readJsonSync(this.configFile).jwt;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return jwt || null;
   }
 }

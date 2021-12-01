@@ -77,13 +77,13 @@ class Config {
     identifier: string,
     zone: string,
   ): Promise<string> {
-    const { applicationId } = await prompts([
+    const { applicationId } = (await prompts([
       {
         type: 'text',
         name: 'applicationId',
         message: `Please supply the ID for your application (${identifier} ${zone})`,
       },
-    ]);
+    ])) as { applicationId: string };
 
     if (!applicationId) {
       return this.promptApplicationId(identifier, zone);

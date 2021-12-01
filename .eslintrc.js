@@ -1,9 +1,9 @@
 module.exports = {
   extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
     'airbnb-base',
+    'airbnb-typescript/base',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:prettier/recommended',
   ],
   plugins: ['@typescript-eslint', 'prettier'],
@@ -30,5 +30,7 @@ module.exports = {
       },
     },
   },
-  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: './tsconfig.json'
+  }
 };

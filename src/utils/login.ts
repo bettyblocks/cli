@@ -28,7 +28,7 @@ const promptCredentials = async (): Promise<{
 }> => {
   const config = readAuthConfig();
 
-  const { email, password } = await prompts([
+  const { email, password } = (await prompts([
     {
       type: 'text',
       name: 'email',
@@ -40,7 +40,7 @@ const promptCredentials = async (): Promise<{
       name: 'password',
       message: 'Fill in your password',
     },
-  ]);
+  ])) as { email: string; password: string };
 
   if (!email.match(/@/)) {
     console.log(`Can't login without an email.`);
@@ -81,7 +81,7 @@ class FusionAuth {
         password,
       }),
       headers: { 'Content-Type': 'application/json' },
-    }).then(async resp => {
+    }).then(async (resp) => {
       if (resp.status === 242) {
         const { twoFactorId } = (await resp.json()) as LoginResponse;
         return this.ensure2FA(twoFactorId);
@@ -100,13 +100,13 @@ class FusionAuth {
   }
 
   async ensure2FA(twoFactorId: string): Promise<void> {
-    const { code } = await prompts([
+    const { code } = (await prompts([
       {
         type: 'text',
         name: 'code',
         message: 'Fill in your 2FA code',
       },
-    ]);
+    ])) as { code: string };
 
     return fetch(`${this.config.fusionAuthUrl}/api/two-factor/login`, {
       method: 'POST',
@@ -115,7 +115,7 @@ class FusionAuth {
         twoFactorId,
       }),
       headers: { 'Content-Type': 'application/json' },
-    }).then(async resp => {
+    }).then(async (resp) => {
       if (resp.ok) {
         const { token } = (await resp.json()) as TwoFactorLoginResponse;
         this.storeToken(token);

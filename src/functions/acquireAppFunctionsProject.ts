@@ -5,7 +5,7 @@ const acquireAppFunctionsProject = (dir: string): string => {
   const expected = ['functions', 'package.json', '.app-functions'];
   const intersection = fs
     .readdirSync(dir)
-    .filter(file => expected.includes(file));
+    .filter((file) => expected.includes(file));
 
   if (intersection.length === expected.length) {
     return path.basename(dir);

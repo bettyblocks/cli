@@ -6,7 +6,7 @@ function fromStructure<
   KString extends string & keyof T,
   KObject extends Record<string, K>,
   K extends KString | KObject,
-  T extends object
+  T extends object,
 >(object: T, structure: K): string | void {
   if (typeof structure === 'string') {
     const value = object[structure as KString];
@@ -18,14 +18,14 @@ function fromStructure<
 
   const [[k, v]] = Object.entries(structure);
 
-  return fromStructure((object[k as KString] as unknown) as T, v);
+  return fromStructure(object[k as KString] as unknown as T, v);
 }
 
 export const findDuplicates = <
   KString extends string & keyof T,
   KObject extends Record<string, KString | KObject>,
   K extends KString | KObject,
-  T extends object
+  T extends object,
 >(
   list: T[],
   type: string,
@@ -58,20 +58,19 @@ export const findDuplicates = <
   }, new Set());
 };
 
-const checkComponentReferenceNames = (
-  names: Set<string>,
-  prefabName: string,
-) => ({ name, descendants }: PrefabComponent): void => {
-  if (!names.has(name)) {
-    throw new Error(
-      chalk.red(
-        `\nPrefab: ${prefabName} references to non-existing component "${name}"\n`,
-      ),
-    );
-  }
+const checkComponentReferenceNames =
+  (names: Set<string>, prefabName: string) =>
+  ({ name, descendants }: PrefabComponent): void => {
+    if (!names.has(name)) {
+      throw new Error(
+        chalk.red(
+          `\nPrefab: ${prefabName} references to non-existing component "${name}"\n`,
+        ),
+      );
+    }
 
-  descendants.forEach(checkComponentReferenceNames(names, prefabName));
-};
+    descendants.forEach(checkComponentReferenceNames(names, prefabName));
+  };
 
 export const checkNameReferences = (
   prefabs: Prefab[],

@@ -65,9 +65,11 @@ const getBlockURL = async (
   try {
     await url.create(Aborter.none, { access: 'blob' });
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { statusCode }: RestError = error;
 
     if (statusCode !== 409) {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal,@typescript-eslint/no-unsafe-argument
       throw chalk.red(error);
     }
   }

@@ -27,15 +27,16 @@ const baseFunctionsPath = path.join(workingDir, 'functions');
 
 const config = new Config();
 
-(async (): Promise<void> => {
+// eslint-disable-next-line no-void
+void (async (): Promise<void> => {
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
 
   if (inputFunctionName) {
-    const result = await validator.validateFunction(inputFunctionName);
+    const result = validator.validateFunction(inputFunctionName);
     logValidationResult(result);
   } else {
     const results = await validator.validateFunctions();
-    results.forEach(result => logValidationResult(result));
+    results.forEach((result) => logValidationResult(result));
   }
 })();

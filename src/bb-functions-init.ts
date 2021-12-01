@@ -17,6 +17,7 @@ program
   .option('-a, --app', 'Initialize an app functions project.')
   .parse(process.argv);
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const initAppFunctions = program.app;
 const { args }: CommanderStatic = program;
 

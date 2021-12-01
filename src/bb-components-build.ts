@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-return,@typescript-eslint/restrict-template-expressions */
 import chalk from 'chalk';
 import program, { CommanderStatic } from 'commander';
 import { outputJson, pathExists, promises, remove } from 'fs-extra';
@@ -36,7 +37,7 @@ const { args }: CommanderStatic = program;
 const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
-const enableNewTranspile: boolean = options.transpile;
+const enableNewTranspile = !!options.transpile;
 
 /* execute command */
 
@@ -59,7 +60,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 
         const compatibility = extractComponentCompatibility(code);
 
-        // eslint-disable-next-line no-new-func
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval
         const transpiledFunction = Function(
           `return ${transpile(code, ['jsx', 'styles'])}`,
         )();
@@ -106,7 +107,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     async (file: string): Promise<Prefab> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
-        // eslint-disable-next-line no-new-func
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval,@typescript-eslint/no-unsafe-assignment
         const transpiledFunction = Function(
           `return ${transpile(code, ['beforeCreate'])}`,
         )();
@@ -141,28 +142,28 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
   const interactionFiles: string[] = await readFilesByType(srcDir, 'ts');
 
   return Promise.all(
-    interactionFiles.map(
-      async (file: string): Promise<Interaction> => {
-        try {
-          const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+    interactionFiles.map(async (file: string): Promise<Interaction> => {
+      try {
+        const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
 
-          getDiagnostics(`${srcDir}/${file}`);
+        getDiagnostics(`${srcDir}/${file}`);
 
-          return {
-            function: code,
-            ...extractInteractionCompatibility(`${srcDir}/${file}`),
-          };
-        } catch (error) {
-          error.file = file;
+        return {
+          function: code,
+          ...extractInteractionCompatibility(`${srcDir}/${file}`),
+        };
+      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        error.file = file;
 
-          throw error;
-        }
-      },
-    ),
+        throw error;
+      }
+    }),
   );
 };
 
-(async (): Promise<void> => {
+// eslint-disable-next-line no-void
+void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
     const [prefabs, components, interactions] = await Promise.all([
@@ -185,7 +186,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
       interactions && validateInteractions(interactions),
     ]);
 
-    const componentsWithHash = components.map(component => {
+    const componentsWithHash = components.map((component) => {
       return {
         ...component,
         componentHash: hash(component),
@@ -197,7 +198,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
       style: PrefabComponent['style'];
     };
 
-    const buildPrefabs = prefabs.map(prefab => {
+    const buildPrefabs = prefabs.map((prefab) => {
       const buildStructure = (
         structure: PrefabComponent,
       ): BuildPrefabComponent => {
@@ -208,9 +209,8 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
         };
 
         if (newStructure.descendants && newStructure.descendants.length > 0) {
-          newStructure.descendants = newStructure.descendants.map(
-            buildStructure,
-          );
+          newStructure.descendants =
+            newStructure.descendants.map(buildStructure);
         }
 
         return newStructure;
@@ -225,7 +225,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     await mkdir(distDir, { recursive: true });
 
     const defaultPrefabs = buildPrefabs.filter(
-      prefab => prefab.type !== 'page',
+      (prefab) => prefab.type !== 'page',
     );
 
     const outputPromises = [
@@ -234,7 +234,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ];
 
-    const pagePrefabs = prefabs.filter(prefab => prefab.type === 'page');
+    const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');
 
     if (pagePrefabs.length > 0) {
       outputPromises.push(
@@ -242,8 +242,10 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
       );
     }
 
-    if (pagePrefabs.length === 0 && pathExists(`${distDir}/pagePrefabs.json`)) {
-      remove(`${distDir}/pagePrefabs.json`);
+    const existingPath = await pathExists(`${distDir}/pagePrefabs.json`);
+
+    if (pagePrefabs.length === 0 && existingPath) {
+      await remove(`${distDir}/pagePrefabs.json`);
     }
 
     await Promise.all(outputPromises);

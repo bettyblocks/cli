@@ -18,10 +18,7 @@ const LIST = [
 ];
 /* process arguments */
 
-program
-  .usage('[path]')
-  .name('bb components create')
-  .parse(process.argv);
+program.usage('[path]').name('bb components create').parse(process.argv);
 
 const { args }: CommanderStatic = program;
 
@@ -41,13 +38,14 @@ if (existsSync(dest)) {
   );
 }
 
-(async (): Promise<void> => {
+// eslint-disable-next-line no-void
+void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
     await copy(path.join(__dirname, '../assets/component-set'), dest);
 
-    Promise.all(
-      LIST.map(fileName =>
+    await Promise.all(
+      LIST.map((fileName) =>
         move(`${dest}/__${fileName}`, `${dest}/${fileName}`),
       ),
     );
@@ -60,6 +58,7 @@ if (existsSync(dest)) {
   } catch ({ message }) {
     throw Error(
       chalk.red(
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `\nCould not create component set in directory ${dest}: ${message}.\n`,
       ),
     );

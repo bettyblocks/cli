@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable no-param-reassign,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment */
 
 import fs from 'fs-extra';
 import ora from 'ora';
@@ -46,8 +46,9 @@ class IDE {
         { csrfToken }: AnyObject,
       ) => {
         if (method !== 'GET' && csrfToken) {
-          // eslint-disable-next-line no-unused-expressions
+          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
           options.headers || (options.headers = {});
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           options.headers['X-Csrf-Token'] = csrfToken;
         }
         return { method, url, options };
@@ -115,6 +116,7 @@ class IDE {
       spinner[statusCode.toString().match(/^2/) ? 'succeed' : 'fail']();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return this.webhead.json() || this.webhead.text();
   }
 

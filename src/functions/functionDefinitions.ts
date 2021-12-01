@@ -3,12 +3,14 @@ import camelCase from 'lodash/camelCase';
 import fs from 'fs-extra';
 import path from 'path';
 
+type Schema = {
+  name: string;
+  [other: string]: unknown;
+};
+
 export type FunctionDefinition = {
   path: string;
-  schema: {
-    name: string;
-    [other: string]: unknown;
-  };
+  schema: Schema;
 };
 
 /* @doc functionDefinitionPath
@@ -41,17 +43,14 @@ const isFunction = (functionDir: string): boolean =>
   Returns a list of directories inside the given functionsDir that have a function.json.
 */
 const functionDirs = (functionsDir: string): string[] =>
-  fs.readdirSync(functionsDir).reduce(
-    (dirs, functionDir) => {
-      const functionPath = path.join(functionsDir, functionDir);
-      if (isFunctionDefinition(functionPath)) {
-        dirs.push(functionPath);
-      }
+  fs.readdirSync(functionsDir).reduce((dirs, functionDir) => {
+    const functionPath = path.join(functionsDir, functionDir);
+    if (isFunctionDefinition(functionPath)) {
+      dirs.push(functionPath);
+    }
 
-      return dirs;
-    },
-    [] as string[],
-  );
+    return dirs;
+  }, [] as string[]);
 
 /* @doc functionDefinition
   Reads the function.json from the given directory.
@@ -62,9 +61,10 @@ const functionDefinition = (functionPath: string): FunctionDefinition => {
   try {
     return {
       path: filePath,
-      schema: fs.readJSONSync(filePath),
+      schema: fs.readJSONSync(filePath) as Schema,
     } as FunctionDefinition;
   } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not load json from ${filePath}: ${err}`);
   }
 };
@@ -74,8 +74,8 @@ const functionDefinition = (functionPath: string): FunctionDefinition => {
   inside the given functionsDir, indexed by function name.
 */
 const functionDefinitions = (functionsDir: string): FunctionDefinition[] => {
-  return functionDirs(functionsDir).map(
-    functionDir => functionDefinition(functionDir) as FunctionDefinition,
+  return functionDirs(functionsDir).map((functionDir) =>
+    functionDefinition(functionDir),
   );
 };
 
@@ -101,7 +101,10 @@ const newFunctionDefinition = (
   functionsDir: string,
   functionName: string,
 ): void => {
-  const functionDefName = functionName.replace(/-./g, x => x.toUpperCase()[1]);
+  const functionDefName = functionName.replace(
+    /-./g,
+    (x) => x.toUpperCase()[1],
+  );
   const functionDir = path.join(functionsDir, functionName);
   try {
     fs.mkdirpSync(functionDir);
@@ -124,6 +127,7 @@ const newFunctionDefinition = (
       `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
     );
   } catch (err) {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not initialize new function ${functionDir}: ${err}`);
   }
 };

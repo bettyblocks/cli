@@ -7,6 +7,7 @@ const generateInnerCode = (ast: File, keys: string[]): void => {
   traverse(ast, {
     // tslint:disable-next-line: function-name
     ObjectProperty(path) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
       if (keys.includes(path.node.key.name)) {
         const value: string = generate(path.node.value).code;
 

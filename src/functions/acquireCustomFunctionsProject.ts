@@ -6,7 +6,7 @@ const acquireCustomFunctionsProject = (dir: string): string => {
   const expected = ['functions.json', 'package.json', 'src'];
   const intersection = fs
     .readdirSync(dir)
-    .filter(file => expected.includes(file));
+    .filter((file) => expected.includes(file));
 
   if (intersection.length === expected.length) {
     return path.basename(dir);

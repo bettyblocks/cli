@@ -30,7 +30,7 @@ export default (filename: string): Interaction => {
   const interaction: Partial<Interaction> = {};
 
   // Loop through the root AST nodes of the file
-  ts.forEachChild(sourceFile, node => {
+  ts.forEachChild(sourceFile, (node) => {
     if (ts.isFunctionDeclaration(node)) {
       // name
       const functionName = node.name ? node.name.text : '';
@@ -68,13 +68,13 @@ export default (filename: string): Interaction => {
 
         const t = typeChecker.getTypeFromTypeNode(firstParameter.type);
 
-        const parameters: Record<string, string> = JSON.parse(
+        const parameters = JSON.parse(
           typeChecker
             .typeToString(t)
             .replace(/;(?!.*;)/g, '')
             .replace(/;/g, ',')
             .replace(/(\w+)/g, '"$1"'),
-        );
+        ) as Record<string, string>;
 
         Object.entries(parameters).forEach(([paramName, paramType]) => {
           if (!allowedTypes.includes(paramType)) {

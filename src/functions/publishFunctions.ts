@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access */
 import prompts from 'prompts';
 import IDE from '../utils/ide';
 
@@ -25,17 +26,17 @@ const resolveMissingFunction = async (
   name: string,
   defaultInputVariables?: string,
 ): Promise<MetaData> => {
-  const { replace } = await prompts({
+  const { replace } = (await prompts({
     type: 'toggle',
     name: 'replace',
     message: `Function "${name}" is missing. What do you want to do?`,
     initial: false,
     active: 'replace',
     inactive: 'add',
-  });
+  })) as { replace: boolean };
 
   if (replace) {
-    const choices = Object.keys(metaData).filter(key => !groomed[key]);
+    const choices = Object.keys(metaData).filter((key) => !groomed[key]);
     let replacedFunction;
 
     if (choices.length === 1) {
@@ -48,13 +49,15 @@ const resolveMissingFunction = async (
       if (confirm.value) [replacedFunction] = choices;
       else throw new Error('Abort.');
     } else {
-      replacedFunction = (await prompts({
-        type: 'select',
-        name: 'value',
-        message: 'Replace',
-        choices: choices.map(key => ({ title: key, value: key })),
-        initial: 0,
-      })).value;
+      replacedFunction = (
+        await prompts({
+          type: 'select',
+          name: 'value',
+          message: 'Replace',
+          choices: choices.map((key) => ({ title: key, value: key })),
+          initial: 0,
+        })
+      ).value;
     }
 
     // eslint-disable-next-line no-param-reassign
@@ -87,17 +90,17 @@ const resolveMissingFunction = async (
     // eslint-disable-next-line no-param-reassign
     groomed[name] = {
       returnType,
-      inputVariables: inputVariables.split(/(\s|,)/).reduce(
-        (variables: NamedObject, variable: string): NamedObject => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      inputVariables: inputVariables
+        .split(/(\s|,)/)
+        .reduce((variables: NamedObject, variable: string): NamedObject => {
           if (variable.length) {
             const [varName, varType] = variable.split(':');
             // eslint-disable-next-line no-param-reassign
             variables[varName] = varType;
           }
           return variables;
-        },
-        {} as NamedObject,
-      ),
+        }, {} as NamedObject),
     };
   }
 
@@ -132,12 +135,11 @@ const storeCustomFunctions = async (
       const params = {
         name,
         revision,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         return_type: returnType,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         input_variables: inputVariables,
       };
       return ide[method](
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `custom_functions/${id || 'new'}`,
         { json: { record: params } },
         `${action} custom function "${replace || name}" ...`,
