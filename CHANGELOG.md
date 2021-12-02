@@ -1,3 +1,10 @@
+# [25.9.0](https://github.com/bettyblocks/cli/compare/v25.8.0...v25.9.0) (2021-12-02)
+
+
+### Features
+
+* move test and lint to dev dependencies ([#264](https://github.com/bettyblocks/cli/issues/264)) ([ab44d76](https://github.com/bettyblocks/cli/commit/ab44d76))
+
 # [25.8.0](https://github.com/bettyblocks/cli/compare/v25.7.0...v25.8.0) (2021-11-25)
 
 
