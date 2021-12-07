@@ -1,3 +1,10 @@
+## [25.9.1](https://github.com/bettyblocks/cli/compare/v25.9.0...v25.9.1) (2021-12-07)
+
+
+### Bug Fixes
+
+* bump package versions for security reasons ([#265](https://github.com/bettyblocks/cli/issues/265)) ([4117476](https://github.com/bettyblocks/cli/commit/4117476))
+
 # [25.9.0](https://github.com/bettyblocks/cli/compare/v25.8.0...v25.9.0) (2021-12-02)
 
 
