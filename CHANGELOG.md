@@ -1,3 +1,10 @@
+# [25.11.0](https://github.com/bettyblocks/cli/compare/v25.10.0...v25.11.0) (2021-12-07)
+
+
+### Features
+
+* added model_relation_type ([#268](https://github.com/bettyblocks/cli/issues/268)) ([d12c35c](https://github.com/bettyblocks/cli/commit/d12c35c))
+
 # [25.10.0](https://github.com/bettyblocks/cli/compare/v25.9.1...v25.10.0) (2021-12-07)
 
 
