@@ -31,6 +31,6 @@ module.exports = {
     },
   },
   parserOptions: {
-    project: './tsconfig.json'
+    project: './tsconfig.build.json'
   }
 };
