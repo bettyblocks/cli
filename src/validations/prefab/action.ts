@@ -25,9 +25,7 @@ export const actionSchema = Joi.object({
               {
                 is: 'authenticate_user',
                 then: Joi.object({
-                  authenticationProfileId: Joi.string()
-                    .allow('')
-                    .required(),
+                  authenticationProfileId: Joi.string().allow('').required(),
                   ref: Joi.object({
                     username: Joi.string().required(),
                     password: Joi.string().required(),
@@ -59,9 +57,7 @@ export const actionSchema = Joi.object({
               {
                 is: 'create',
                 then: Joi.object({
-                  modelId: Joi.string()
-                    .allow('')
-                    .required(),
+                  modelId: Joi.string().allow('').required(),
                   assign: Joi.array().items(assignSchema),
                   ref: Joi.object({
                     customModel: Joi.string().required(),

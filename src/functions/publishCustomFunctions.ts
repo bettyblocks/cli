@@ -1,5 +1,4 @@
-/* eslint-disable camelcase */
-/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
 /* npm dependencies */
 
 import { spawn } from 'child_process';
@@ -51,7 +50,7 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
 
   const groomedMetaData = await Object.keys(customFunctions).reduce(
     async (promise: Promise<MetaData>, name: string): Promise<MetaData> => {
-      return promise.then(async groomed => {
+      return promise.then(async (groomed) => {
         // eslint-disable-next-line no-param-reassign
         groomed[name] = metaData[name];
 
@@ -61,7 +60,7 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
             .match(/await context\((["'])(.*?)\1\)/g);
 
           const defaultInputVariables = (matches || [])
-            .map(m => `${m.slice(15, -2)}:string`)
+            .map((m) => `${m.slice(15, -2)}:string`)
             .join(' ');
 
           // eslint-disable-next-line no-param-reassign
@@ -122,11 +121,11 @@ const publishFunctions = async (
   );
 };
 
-const cleanMetaData = async (): Promise<void> => {
+const cleanMetaData = (): void => {
   const functionsJsonFile = path.join(workingDir, 'functions.json');
   const metaData = fs.readJsonSync(functionsJsonFile);
 
-  Object.keys(metaData).forEach(name => {
+  Object.keys(metaData).forEach((name) => {
     delete metaData[name].replace;
   });
 
@@ -166,6 +165,7 @@ const publishCustomFunctions = (
       console.log('Done.');
     })
     .catch((err: NodeJS.ErrnoException) => {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.log(`${err}\nAbort.`);
       process.exit();
     });

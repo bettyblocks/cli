@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
 import * as ts from 'typescript';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import * as jsdoc from 'jsdoc-api';
 
@@ -27,7 +28,7 @@ function getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] {
   commentRanges.push(...(ts.getLeadingCommentRanges(text, node.pos) || []));
   // True if the comment starts with '/**' but not if it is '/**/'
   return commentRanges.filter(
-    comment =>
+    (comment) =>
       text.charCodeAt(comment.pos + 1) ===
         0x2a /* ts.CharacterCodes.asterisk */ &&
       text.charCodeAt(comment.pos + 2) ===
@@ -53,7 +54,7 @@ export function walkCompilerAstAndFindComments(
   // Note that this reinvokes the compiler's scanner -- the result is not cached.
   const comments: ts.CommentRange[] = getJSDocCommentRanges(node, buffer);
 
-  comments.forEach(c => {
+  comments.forEach((c) => {
     const source = buffer.slice(c.pos, c.end);
     const comment = jsdoc.explainSync({ source });
     const [{ name, params, returns }] = comment;
@@ -72,14 +73,15 @@ export function walkCompilerAstAndFindComments(
       },
       [],
     );
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const hasComment = foundComments.some((f: object) => Boolean(f[name]));
     if (!hasComment) {
       foundComments.push({ [name]: { parameters, returnType } });
     }
   });
-  return node.forEachChild(child =>
+  return node.forEachChild((child) =>
     walkCompilerAstAndFindComments(child, foundComments),
   );
 }
@@ -87,7 +89,7 @@ export function walkCompilerAstAndFindComments(
 function createParams(params: object): ts.ObjectLiteralElementLike[] {
   return Object.entries(params).map(([key, value]) => {
     const result = Array.isArray(value)
-      ? ts.createArrayLiteral(value.map(n => ts.createStringLiteral(n)))
+      ? ts.createArrayLiteral(value.map((n) => ts.createStringLiteral(n)))
       : ts.createObjectLiteral(createParams(value));
     return ts.createPropertyAssignment(ts.createStringLiteral(key), result);
   });
@@ -96,7 +98,7 @@ function createParams(params: object): ts.ObjectLiteralElementLike[] {
 export function createLiteralObjectExpression(
   params: object[],
 ): ts.ObjectLiteralElementLike[] {
-  return params.map(param => {
+  return params.map((param) => {
     const [[key, value]] = Object.entries(param);
     return ts.createPropertyAssignment(
       ts.createStringLiteral(key),

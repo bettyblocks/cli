@@ -4,10 +4,7 @@ import fs from 'fs-extra';
 import { newFunctionDefinition } from './functions/functionDefinitions';
 
 /* process arguments */
-program
-  .usage('[function-name]')
-  .name('bb functions new')
-  .parse(process.argv);
+program.usage('[function-name]').name('bb functions new').parse(process.argv);
 
 const {
   args: [inputFunctionName],
@@ -22,6 +19,7 @@ if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     console.log(`functions/${inputFunctionName} created`);
   } catch (err) {
     console.log(
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `functions/${inputFunctionName} could not be created. Error: ${err}`,
     );
   }

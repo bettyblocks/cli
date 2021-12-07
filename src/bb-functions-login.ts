@@ -5,7 +5,8 @@ import FusionAuth from './utils/login';
 /* process arguments */
 program.name('bb functions login').parse(process.argv);
 
-(async (): Promise<void> => {
+// eslint-disable-next-line no-void
+void (async (): Promise<void> => {
   const config = new Config();
   const fusionAuth = new FusionAuth(config);
 

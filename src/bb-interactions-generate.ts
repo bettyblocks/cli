@@ -7,10 +7,7 @@ import { pathExists, outputFile } from 'fs-extra';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 /* process arguments */
-program
-  .usage('[name]')
-  .name('bb interactions generate')
-  .parse(process.argv);
+program.usage('[name]').name('bb interactions generate').parse(process.argv);
 
 const { args }: CommanderStatic = program;
 
@@ -21,7 +18,8 @@ if (args.length === 0) {
 const name: string = args[0];
 
 /* generate file */
-(async (): Promise<void> => {
+// eslint-disable-next-line no-void
+void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   if (name.includes(' ')) {
     throw new Error(chalk.red(`\nName cannot contain spaces\n`));

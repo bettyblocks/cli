@@ -7,7 +7,7 @@ import {
 } from 'typescript';
 
 function reportDiagnostics(diagnostics: Diagnostic[]): void {
-  diagnostics.forEach(diagnostic => {
+  diagnostics.forEach((diagnostic) => {
     let message = 'Error';
     if (diagnostic.file) {
       const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
@@ -23,7 +23,7 @@ function reportDiagnostics(diagnostics: Diagnostic[]): void {
   });
 }
 
-export default function(filePath: string): void {
+export default function (filePath: string): void {
   const config = getDefaultCompilerOptions();
 
   config.strict = true;

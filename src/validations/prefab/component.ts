@@ -75,14 +75,10 @@ const styleValidator: StyleValidator = {
     fontStyle: ['italic', 'none'],
     fontWeight: ['300', '400', '500', '700'],
     letterSpacing: isString.pattern(validRem),
-    lineHeight: Joi.string()
-      .max(255)
-      .pattern(/^\d*$/),
+    lineHeight: Joi.string().max(255).pattern(/^\d*$/),
     padding: [
       isString,
-      Joi.array()
-        .max(4)
-        .items(isString.required().pattern(validRem)),
+      Joi.array().max(4).items(isString.required().pattern(validRem)),
     ],
     textDecoration: ['underline', 'none'],
     textTransform: ['uppercase', 'none'],
@@ -98,46 +94,42 @@ const componentSchema = (
   return Joi.object({
     name: Joi.string().required(),
     style: Joi.object({
-      name: Joi.string()
-        .max(255)
-        .alphanum(),
+      name: Joi.string().max(255).alphanum(),
       overwrite: canValidateStyle || Joi.any(),
     }),
     ref: Joi.object({
       id: Joi.string().required(),
     }),
-    options: Joi.array()
-      .items(optionSchema)
-      .required(),
+    options: Joi.array().items(optionSchema).required(),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap)))
       .required(),
   });
 };
 
-export const validateComponent = (componentStyleMap?: ComponentStyleMap) => (
-  component: PrefabComponent,
-): Prefab | unknown => {
-  const { name, options } = component;
+export const validateComponent =
+  (componentStyleMap?: ComponentStyleMap) =>
+  (component: PrefabComponent): Prefab | unknown => {
+    const { name, options } = component;
 
-  const styleType: Component['styleType'] | undefined =
-    componentStyleMap &&
-    componentStyleMap[name] &&
-    componentStyleMap[name].styleType;
-  const { error } = componentSchema(
-    componentStyleMap,
-    styleType as keyof StyleValidator,
-  ).validate(component);
+    const styleType: Component['styleType'] | undefined =
+      componentStyleMap &&
+      componentStyleMap[name] &&
+      componentStyleMap[name].styleType;
+    const { error } = componentSchema(
+      componentStyleMap,
+      styleType as keyof StyleValidator,
+    ).validate(component);
 
-  findDuplicates(options, 'option key', 'key');
+    findDuplicates(options, 'option key', 'key');
 
-  if (typeof error !== 'undefined') {
-    const { message } = error;
+    if (typeof error !== 'undefined') {
+      const { message } = error;
 
-    throw new Error(
-      chalk.red(`\nBuild error in component ${name}: ${message}\n`),
-    );
-  }
+      throw new Error(
+        chalk.red(`\nBuild error in component ${name}: ${message}\n`),
+      );
+    }
 
-  return component;
-};
+    return component;
+  };

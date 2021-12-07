@@ -33,16 +33,13 @@ export const transpile = (
 
   let messageText = '';
   if (diagnostics) {
-    diagnostics.forEach(diagnostic => {
+    diagnostics.forEach((diagnostic) => {
       if (diagnostic.file) {
-        const {
-          line,
-          character,
-        } = diagnostic.file.getLineAndCharacterOfPosition(
-          diagnostic.start || 0,
-        );
-        messageText += ` ${diagnostic.file.fileName} (${line + 1},${character +
-          1})`;
+        const { line, character } =
+          diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start || 0);
+        messageText += ` ${diagnostic.file.fileName} (${line + 1},${
+          character + 1
+        })`;
       }
       messageText += `: ${flattenDiagnosticMessageText(
         diagnostic.messageText,

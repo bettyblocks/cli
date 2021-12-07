@@ -11,9 +11,7 @@ const schema: ObjectSchema = Joi.object({
   icon: Joi.string(), // DEPRECATED
   category: Joi.string(), // DEPRECATED
   type: Joi.string().required(),
-  allowedTypes: Joi.array()
-    .items(Joi.string())
-    .required(),
+  allowedTypes: Joi.array().items(Joi.string()).required(),
   orientation: Joi.string().required(),
   functions: Joi.array().items(Joi.string()),
   triggers: Joi.array().items(Joi.string()),

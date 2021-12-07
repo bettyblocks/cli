@@ -11,7 +11,7 @@ import { CommandBB } from './types';
 
 /* setup */
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-unsafe-assignment
 const { version }: { version: string } = require('../package.json');
 
 const availableCommands: CommandBB[] = [

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/restrict-template-expressions */
 import fetch from 'node-fetch';
 import path from 'path';
 import chalk from 'chalk';
@@ -59,7 +60,7 @@ const validateFunctionDefinition = (
   validator: Validator,
   definition: object,
 ): ValidatorResult => {
-  const functionSchemaId = Object.keys(validator.schemas).find(k => {
+  const functionSchemaId = Object.keys(validator.schemas).find((k) => {
     return k.match(/function\.json$/);
   });
 
@@ -71,10 +72,10 @@ const validateFunctionDefinition = (
   return validator.validate(definition, functionSchema);
 };
 
-const validateFunction = async (
+const validateFunction = (
   functionJson: object,
   validator: Validator,
-): Promise<ValidationResult> => {
+): ValidationResult => {
   const { path: definitionPath, schema } = functionJson as FunctionDefinition;
   const { errors } = validateFunctionDefinition(validator, schema);
 
@@ -105,7 +106,7 @@ class FunctionValidator {
     await importSchema(this.schemaValidator, this.config);
   }
 
-  async validateFunction(functionName: string): Promise<ValidationResult> {
+  validateFunction(functionName: string): ValidationResult {
     const functionPath = path.join(this.functionsDir, functionName);
     try {
       const definition = functionDefinition(functionPath);
@@ -123,7 +124,7 @@ class FunctionValidator {
   async validateFunctions(): Promise<ValidationResult[]> {
     const definitions = functionDefinitions(this.functionsDir);
 
-    const validations = definitions.map(definition => {
+    const validations = definitions.map((definition) => {
       return validateFunction(definition, this.schemaValidator);
     });
 

@@ -50,8 +50,10 @@ const serveComponentSet = (options: ServeOptions): Promise<void> => {
         ],
       });
 
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createServer(serverOptions, listener)
-      .on('error', error => reject(error.message))
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      .on('error', (error) => reject(error.message))
       .listen(options.port, options.host, () => resolve());
   });
 };

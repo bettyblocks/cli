@@ -6,9 +6,7 @@ export const variableKindSchema = Joi.when('kind', {
     {
       is: 'construct',
       then: Joi.object({
-        modelId: Joi.string()
-          .allow('')
-          .required(),
+        modelId: Joi.string().allow('').required(),
         ref: Joi.object({
           customModelId: Joi.string().required(),
         }).required(),
@@ -17,9 +15,7 @@ export const variableKindSchema = Joi.when('kind', {
     {
       is: 'object',
       then: Joi.object({
-        modelId: Joi.string()
-          .allow('')
-          .required(),
+        modelId: Joi.string().allow('').required(),
       }),
     },
   ],
@@ -27,9 +23,7 @@ export const variableKindSchema = Joi.when('kind', {
 });
 
 export const variableSchema = Joi.object({
-  name: Joi.string()
-    .allow('')
-    .required(),
+  name: Joi.string().allow('').required(),
   kind: Joi.string()
     .valid(...VARIABLE_KIND)
     .required(),
