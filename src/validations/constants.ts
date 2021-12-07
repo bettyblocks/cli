@@ -129,6 +129,7 @@ export const OPTIONS = [
   'FONT',
   'FORM_DATA',
   'MODEL',
+  'MODEL_AND_RELATION',
   'MODELS',
   'NUMBER',
   'PROPERTY',
