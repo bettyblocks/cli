@@ -1,3 +1,10 @@
+# [25.10.0](https://github.com/bettyblocks/cli/compare/v25.9.1...v25.10.0) (2021-12-07)
+
+
+### Features
+
+* update linting and prettier ([#266](https://github.com/bettyblocks/cli/issues/266)) ([19fcc64](https://github.com/bettyblocks/cli/commit/19fcc64))
+
 ## [25.9.1](https://github.com/bettyblocks/cli/compare/v25.9.0...v25.9.1) (2021-12-07)
 
 
