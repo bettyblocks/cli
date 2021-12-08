@@ -1,3 +1,15 @@
+# [25.12.0](https://github.com/bettyblocks/cli/compare/v25.11.0...v25.12.0) (2021-12-08)
+
+
+### Bug Fixes
+
+* run `yarn lint` and fix issues ([a00d32c](https://github.com/bettyblocks/cli/commit/a00d32c))
+
+
+### Features
+
+* add applicationId to `api/login` ([806a5bc](https://github.com/bettyblocks/cli/commit/806a5bc))
+
 # [25.11.0](https://github.com/bettyblocks/cli/compare/v25.10.0...v25.11.0) (2021-12-07)
 
 
