@@ -1,6 +1,7 @@
 import prompts from 'prompts';
 import fetch from 'node-fetch';
 import Config, { GlobalConfig } from '../functions/config';
+import acquireAppFunctionsProject from 'src/functions/acquireAppFunctionsProject';
 
 type LoginResponse = {
   token: string;
@@ -52,6 +53,17 @@ const promptCredentials = async (): Promise<{
   return { email, password };
 };
 
+const applicationIdToUuid = (applicationId: string): string | false => {
+  const reg = new RegExp(/(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})/);
+  const matches = applicationId.match(reg);
+
+  if (matches) {
+    return matches.slice(1, 6).join('-');
+  }
+
+  return '';
+};
+
 class FusionAuth {
   private config: Config;
 
@@ -63,22 +75,24 @@ class FusionAuth {
     this.clearTokens();
   }
 
-  async login(): Promise<boolean> {
+  async login(applicationId: string): Promise<boolean> {
     this.clearTokens();
 
-    await this.ensureLogin();
+    await this.ensureLogin(applicationId);
 
     return this.tokenExists();
   }
 
-  async ensureLogin(): Promise<void> {
+  async ensureLogin(applicationId: string): Promise<void> {
     const { email, password } = await promptCredentials();
+    const appUuid = applicationIdToUuid(applicationId);
 
     return fetch(`${this.config.fusionAuthUrl}/api/login`, {
       method: 'POST',
       body: JSON.stringify({
         loginId: email,
         password,
+        applicationId: appUuid,
       }),
       headers: { 'Content-Type': 'application/json' },
     }).then(async (resp) => {
@@ -91,7 +105,7 @@ class FusionAuth {
         return this.storeToken(token);
       }
 
-      return this.ensureLogin();
+      return this.ensureLogin(applicationId);
     });
   }
 

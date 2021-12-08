@@ -9,8 +9,14 @@ program.name('bb functions login').parse(process.argv);
 void (async (): Promise<void> => {
   const config = new Config();
   const fusionAuth = new FusionAuth(config);
+  const applicationId = await config.applicationId();
 
-  const loggedIn = await fusionAuth.login();
+  if (!applicationId) {
+    console.log(`Can't log in without an application ID`);
+    return;
+  }
+
+  const loggedIn = await fusionAuth.login(applicationId);
 
   if (loggedIn) {
     console.log(`You are now logged in.`);
