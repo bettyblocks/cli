@@ -77,7 +77,7 @@ const uploadAppFunctions = async (
     },
   }).then(async (res) => {
     if (res.status === 401 || res.status === 403) {
-      await fusionAuth.ensureLogin();
+      await fusionAuth.ensureLogin(applicationId);
       return uploadAppFunctions(functionDefinitionsFile, functionsJson, config);
     }
     if (res.status !== 201) {
