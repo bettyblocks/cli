@@ -1,6 +1,7 @@
 import prompts from 'prompts';
 import fetch from 'node-fetch';
 import Config, { GlobalConfig } from '../functions/config';
+import acquireAppFunctionsProject from 'src/functions/acquireAppFunctionsProject';
 
 type LoginResponse = {
   token: string;
@@ -52,8 +53,9 @@ const promptCredentials = async (): Promise<{
   return { email, password };
 };
 
-const applicationIdToUuid = (applicationId: string): string => {
-  const matches = applicationId.match(/(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})/);
+const applicationIdToUuid = (applicationId: string): string | false => {
+  const reg = new RegExp(/(\w{8})(\w{4})(\w{4})(\w{4})(\w{12})/);
+  const matches = applicationId.match(reg);
 
   if (matches) {
     return matches.slice(1, 6).join('-');
