@@ -1,3 +1,10 @@
+# [25.13.0](https://github.com/bettyblocks/cli/compare/v25.12.0...v25.13.0) (2021-12-09)
+
+
+### Features
+
+* trigger build ([fba776c](https://github.com/bettyblocks/cli/commit/fba776c))
+
 # [25.12.0](https://github.com/bettyblocks/cli/compare/v25.11.0...v25.12.0) (2021-12-08)
 
 
