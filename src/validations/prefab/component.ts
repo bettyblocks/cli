@@ -104,6 +104,39 @@ const componentSchema = (
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap)))
       .required(),
+
+    // lifecycle hooks
+    $afterDelete: Joi.array().items(
+      Joi.object({
+        query: Joi.string()
+          .valid('DeleteAction', 'DeleteActionVariable', 'UpdateActionVariable')
+          .required(),
+        input: Joi.object()
+          .pattern(
+            /./,
+            Joi.object({
+              ref: Joi.array().items(Joi.string()),
+            }),
+          )
+          .required(),
+      }),
+    ),
+
+    $onUpdate: Joi.array().items(
+      Joi.object({
+        query: Joi.string()
+          .valid('DeleteAction', 'DeleteActionVariable', 'UpdateActionVariable')
+          .required(),
+        input: Joi.object()
+          .pattern(
+            /./,
+            Joi.object({
+              ref: Joi.array().items(Joi.string()).required(),
+            }),
+          )
+          .required(),
+      }),
+    ),
   });
 };
 
