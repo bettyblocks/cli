@@ -1,3 +1,10 @@
+# [25.14.0](https://github.com/bettyblocks/cli/compare/v25.13.0...v25.14.0) (2021-12-13)
+
+
+### Features
+
+* add lifecycle $afterDelete and $onUpdate to prefabs ([#272](https://github.com/bettyblocks/cli/issues/272)) ([8a53b85](https://github.com/bettyblocks/cli/commit/8a53b85))
+
 # [25.13.0](https://github.com/bettyblocks/cli/compare/v25.12.0...v25.13.0) (2021-12-09)
 
 
