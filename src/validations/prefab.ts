@@ -3,14 +3,13 @@
 
 import chalk from 'chalk';
 import Joi from 'joi';
-
-import { Prefab, PrefabAction, ComponentStyleMap } from '../types';
+import { ComponentStyleMap, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
 import {
   ICONS,
   MAX_ACTIONS,
-  MAX_VARIABLES,
   MAX_INTERACTIONS,
+  MAX_VARIABLES,
 } from './constants';
 import { actionSchema } from './prefab/action';
 import { validateComponent } from './prefab/component';
