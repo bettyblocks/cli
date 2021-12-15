@@ -16,6 +16,17 @@
       "configuration": {
         "placeholder": "Betty Blocks"
       }
+    },
+    {
+      "meta": {
+        "type": "Output",
+        "output": {
+          "type": "Text"
+        }
+      },
+      "name": "greet",
+      "label": "As",
+      "info": "The resulting greet to the world."
     }
   ],
   "yields": "NONE"
