@@ -1,3 +1,10 @@
+## [25.14.1](https://github.com/bettyblocks/cli/compare/v25.14.0...v25.14.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* include output option for sayHello example function ([ae97559](https://github.com/bettyblocks/cli/commit/ae97559))
+
 # [25.14.0](https://github.com/bettyblocks/cli/compare/v25.13.0...v25.14.0) (2021-12-13)
 
 
