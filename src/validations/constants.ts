@@ -115,6 +115,7 @@ export const ICONS = [
 export const OPTIONS = [
   'ACTION',
   'ACTION_JS',
+  'ACTION_JS_VARIABLE',
   'ACTION_INPUT',
   'ACTION_INPUT_OBJECTS',
   'ACTION_PROPERTIES',
