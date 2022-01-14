@@ -81,7 +81,7 @@ class Config {
       {
         type: 'text',
         name: 'applicationId',
-        message: `Please supply the ID for your application (${identifier} ${zone})`,
+        message: `Please provide the UUID for '${identifier}' (${zone})`,
       },
     ])) as { applicationId: string };
 
