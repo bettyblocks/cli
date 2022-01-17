@@ -1,3 +1,10 @@
+# [25.15.0](https://github.com/bettyblocks/cli/compare/v25.14.2...v25.15.0) (2022-01-17)
+
+
+### Features
+
+* reword application id prompt ([37cccdd](https://github.com/bettyblocks/cli/commit/37cccdd))
+
 ## [25.14.2](https://github.com/bettyblocks/cli/compare/v25.14.1...v25.14.2) (2022-01-10)
 
 
