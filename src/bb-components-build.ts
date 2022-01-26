@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-return,@typescript-eslint/restrict-template-expressions */
 import chalk from 'chalk';
+import path from 'path';
 import program, { CommanderStatic } from 'commander';
+import webpack from 'webpack';
+import { createFsFromVolume, Volume } from 'memfs';
 import { outputJson, pathExists, promises, remove } from 'fs-extra';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
@@ -93,6 +96,66 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
   return Promise.all(components);
 };
 
+const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
+  const absoluteRootDir = path.resolve(process.cwd(), rootDir);
+  const srcDir = `${absoluteRootDir}/src/prefabs`;
+
+  const fs = createFsFromVolume(new Volume());
+
+  const compiler = webpack({
+    entry: (): Promise<string[]> => {
+      return readFilesByType(srcDir, 'ts').then((filenames) =>
+        filenames.map((name) => `${srcDir}/${name}`),
+      );
+    },
+    output: {
+      path: `${absoluteRootDir}/dist/tsPrefabs`,
+    },
+    mode: 'development',
+    devtool: false,
+  });
+
+  compiler.outputFileSystem = fs;
+
+  const compile = () =>
+    new Promise<void>((resolve, reject) => {
+      compiler.run((err, stats) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+
+        if (stats?.hasErrors()) {
+          const messages = stats.compilation.errors.map((e) => e.message);
+
+          reject(new Error(messages.join('/n')));
+          return;
+        }
+
+        const source = fs.readFileSync(
+          `${absoluteRootDir}/dist/tsPrefabs/main.js`,
+          'utf-8',
+        );
+
+        console.log({ source });
+
+        // eslint-disable-next-line no-eval
+        const exported = eval(source.toString());
+
+        console.log({ exported });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        const prefab = exported();
+
+        console.log(JSON.stringify(prefab));
+      });
+    });
+
+  await compile();
+
+  return [];
+};
+
 const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const srcDir = `${rootDir}/src/prefabs`;
   const exists: boolean = await pathExists(srcDir);
@@ -166,7 +229,8 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
-    const [prefabs, components, interactions] = await Promise.all([
+    const [, prefabs, components, interactions] = await Promise.all([
+      readtsPrefabs(),
       readPrefabs(),
       readComponents(),
       readInteractions(),
