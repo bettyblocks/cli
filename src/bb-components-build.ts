@@ -2,9 +2,7 @@
 import chalk from 'chalk';
 import path from 'path';
 import program, { CommanderStatic } from 'commander';
-import vm from 'vm';
-import webpack from 'webpack';
-import { createFsFromVolume, Volume } from 'memfs';
+import ts from 'typescript';
 import { outputJson, pathExists, promises, remove } from 'fs-extra';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
@@ -100,56 +98,40 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
+  const prefabsDir = `${absoluteRootDir}/.prefabs`;
 
-  const fs = createFsFromVolume(new Volume());
+  const exists: boolean = await pathExists(srcDir);
 
-  const compiler = webpack({
-    entry: (): Promise<string[]> => {
-      return readFilesByType(srcDir, 'ts').then((filenames) =>
-        filenames.map((name) => `${srcDir}/${name}`),
-      );
+  if (!exists) {
+    throw new Error(chalk.red('\nPrefabs folder not found\n'));
+  }
+
+  const prefabFiles: string[] = await readFilesByType(srcDir, 'ts');
+
+  const prefabProgram = ts.createProgram(
+    prefabFiles.map((file) => `${srcDir}/${file}`),
+    {
+      outDir: '.prefabs',
     },
-    output: {
-      path: `${absoluteRootDir}/dist/tsPrefabs`,
-    },
-    mode: 'development',
-    devtool: false,
+  );
+
+  prefabProgram.emit();
+
+  const prefabs: Array<Promise<Prefab>> = prefabFiles.map((filename) => {
+    return new Promise((resolve) => {
+      const file = `${prefabsDir}/${filename.replace('.ts', '.js')}`;
+      import(file)
+        .then((prefab) => {
+          // JSON schema validation
+          resolve(prefab.default);
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    });
   });
 
-  compiler.outputFileSystem = fs;
-
-  const compile = () =>
-    new Promise<Prefab[]>((resolve, reject) => {
-      compiler.run((err, stats) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        if (stats?.hasErrors()) {
-          const messages = stats.compilation.errors.map((e) => e.message);
-
-          reject(new Error(messages.join('/n')));
-          return;
-        }
-
-        const source = fs.readFileSync(
-          `${absoluteRootDir}/dist/tsPrefabs/main.js`,
-          'utf-8',
-        );
-
-        const registry = {};
-
-        const result = vm.runInContext(
-          source.toString(),
-          vm.createContext({ PREFABS_REGISTRY: registry }),
-        );
-
-        resolve(Object.values(registry));
-      });
-    });
-
-  return compile();
+  return Promise.all(prefabs);
 };
 
 const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
