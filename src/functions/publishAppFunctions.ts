@@ -35,6 +35,10 @@ type PublishResponse = {
   deleted: FunctionResult[];
 };
 
+type PublishOptions = {
+  compile: boolean;
+};
+
 const logResult = (
   { status, name, error }: FunctionResult,
   operation: string,
@@ -59,6 +63,7 @@ const uploadAppFunctions = async (
 
   const form = new FormData();
   form.append('functions', functionsJson);
+  form.append('options', JSON.stringify({ compile: config.compile }));
   form.append('file', fs.createReadStream(functionDefinitionsFile));
 
   const applicationId = await config.applicationId();
@@ -106,9 +111,12 @@ const publishFunctions = async (config: Config): Promise<void> => {
   await uploadAppFunctions(zipFile, functionsJson, config);
 };
 
-const publishAppFunctions = async (): Promise<void> => {
-  const config = new Config();
-  console.log(`Publishing to ${config.host} (${config.zone}) ...`);
+const publishAppFunctions = async ({
+  compile,
+}: PublishOptions): Promise<void> => {
+  const config = new Config({ compile });
+
+  console.log(`Publishing to ${config.host}(${config.zone})`);
   await publishFunctions(config);
   console.log('Done.');
 };
