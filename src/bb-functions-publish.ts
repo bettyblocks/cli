@@ -22,15 +22,14 @@ program
   .name('bb functions publish')
   .option('-b, --bump', 'Bump the revision number.')
   .option('-s, --skip', 'Skip building the custom functions bundle.')
+  .option('-c, --compile', 'Compile the application.')
   .option(
     '-h, --host <host>',
     'Set hostname to publish to. Defaults to <identifier>.bettyblocks.com',
   )
   .parse(process.argv);
 
-const bumpRevision = program.bump;
-const skipBuild = program.skip;
-const { host } = program;
+const { host, compile, skip, bump } = program;
 
 /* execute command */
 
@@ -62,7 +61,7 @@ void (async (): Promise<void> => {
     const valid = await validateFunctions();
 
     if (valid) {
-      await publishAppFunctions();
+      await publishAppFunctions({ compile });
     } else {
       console.log(
         `${chalk.red(
@@ -71,6 +70,6 @@ void (async (): Promise<void> => {
       );
     }
   } else {
-    publishCustomFunctions(host, bumpRevision, skipBuild);
+    publishCustomFunctions(host, bump, skip);
   }
 })();
