@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-return,@typescript-eslint/restrict-template-expressions */
 import chalk from 'chalk';
+import path from 'path';
 import program, { CommanderStatic } from 'commander';
+import ts from 'typescript';
 import { outputJson, pathExists, promises, remove } from 'fs-extra';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
@@ -93,6 +95,45 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
   return Promise.all(components);
 };
 
+const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
+  const absoluteRootDir = path.resolve(process.cwd(), rootDir);
+  const srcDir = `${absoluteRootDir}/src/prefabs`;
+  const prefabsDir = `${absoluteRootDir}/.prefabs`;
+
+  const exists: boolean = await pathExists(srcDir);
+
+  if (!exists) {
+    throw new Error(chalk.red('\nPrefabs folder not found\n'));
+  }
+
+  const prefabFiles: string[] = await readFilesByType(srcDir, 'ts');
+
+  const prefabProgram = ts.createProgram(
+    prefabFiles.map((file) => `${srcDir}/${file}`),
+    {
+      outDir: '.prefabs',
+    },
+  );
+
+  prefabProgram.emit();
+
+  const prefabs: Array<Promise<Prefab>> = prefabFiles.map((filename) => {
+    return new Promise((resolve) => {
+      const file = `${prefabsDir}/${filename.replace('.ts', '.js')}`;
+      import(file)
+        .then((prefab) => {
+          // JSON schema validation
+          resolve(prefab.default);
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    });
+  });
+
+  return Promise.all(prefabs);
+};
+
 const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const srcDir = `${rootDir}/src/prefabs`;
   const exists: boolean = await pathExists(srcDir);
@@ -166,11 +207,15 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
-    const [prefabs, components, interactions] = await Promise.all([
-      readPrefabs(),
-      readComponents(),
-      readInteractions(),
-    ]);
+    const [newPrefabs, oldPrefabs, components, interactions] =
+      await Promise.all([
+        readtsPrefabs(),
+        readPrefabs(),
+        readComponents(),
+        readInteractions(),
+      ]);
+
+    const prefabs = oldPrefabs.concat(newPrefabs);
 
     checkNameReferences(prefabs, components);
 
