@@ -1,3 +1,10 @@
+# [25.16.0](https://github.com/bettyblocks/cli/compare/v25.15.0...v25.16.0) (2022-01-31)
+
+
+### Features
+
+* adds typescript prefab support ([#278](https://github.com/bettyblocks/cli/issues/278)) ([f8e7835](https://github.com/bettyblocks/cli/commit/f8e7835))
+
 # [25.15.0](https://github.com/bettyblocks/cli/compare/v25.14.2...v25.15.0) (2022-01-17)
 
 
