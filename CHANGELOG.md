@@ -1,3 +1,10 @@
+# [25.17.0](https://github.com/bettyblocks/cli/compare/v25.16.0...v25.17.0) (2022-02-01)
+
+
+### Features
+
+* adds jsx support to new prefabs ([#282](https://github.com/bettyblocks/cli/issues/282)) ([092f888](https://github.com/bettyblocks/cli/commit/092f888))
+
 # [25.16.0](https://github.com/bettyblocks/cli/compare/v25.15.0...v25.16.0) (2022-01-31)
 
 
