@@ -95,6 +95,23 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
   return Promise.all(components);
 };
 
+function reportDiagnostics(diagnostics: ts.Diagnostic[]): void {
+  diagnostics.forEach((diagnostic) => {
+    let message = 'Error';
+    if (diagnostic.file) {
+      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
+        diagnostic.start || 0,
+      );
+      message += ` ${diagnostic.file.fileName} (${line + 1},${character + 1})`;
+    }
+    message += `: ${ts.flattenDiagnosticMessageText(
+      diagnostic.messageText,
+      '\n',
+    )}`;
+    console.error(`\u001b[31m${message}\u001b[0m`);
+  });
+}
+
 const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
@@ -106,20 +123,37 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     throw new Error(chalk.red('\nPrefabs folder not found\n'));
   }
 
-  const prefabFiles: string[] = await readFilesByType(srcDir, 'ts');
+  const prefabTsFiles: string[] = await readFilesByType(srcDir, 'ts');
+  const prefabTsxFiles: string[] = await readFilesByType(srcDir, 'tsx');
+
+  const prefabFiles = [...prefabTsFiles, ...prefabTsxFiles];
 
   const prefabProgram = ts.createProgram(
     prefabFiles.map((file) => `${srcDir}/${file}`),
     {
+      jsx: 2,
       outDir: '.prefabs',
+      module: 1,
+      esModuleInterop: true,
+      allowSyntheticDefaultImports: false,
+      target: 99,
     },
   );
+
+  const diagnostics = [...ts.getPreEmitDiagnostics(prefabProgram)];
+
+  if (diagnostics.length > 0) {
+    reportDiagnostics(diagnostics);
+    process.exit(1);
+  }
 
   prefabProgram.emit();
 
   const prefabs: Array<Promise<Prefab>> = prefabFiles.map((filename) => {
     return new Promise((resolve) => {
-      const file = `${prefabsDir}/${filename.replace('.ts', '.js')}`;
+      const file = `${prefabsDir}/${filename
+        .replace('.tsx', '.js')
+        .replace('.ts', '.js')}`;
       import(file)
         .then((prefab) => {
           // JSON schema validation
