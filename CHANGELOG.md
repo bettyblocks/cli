@@ -1,3 +1,10 @@
+# [25.19.0](https://github.com/bettyblocks/cli/compare/v25.18.0...v25.19.0) (2022-02-03)
+
+
+### Features
+
+* log status of compilation flag ([c57db47](https://github.com/bettyblocks/cli/commit/c57db47))
+
 # [25.18.0](https://github.com/bettyblocks/cli/compare/v25.17.0...v25.18.0) (2022-02-03)
 
 
