@@ -1,3 +1,10 @@
+# [25.18.0](https://github.com/bettyblocks/cli/compare/v25.17.0...v25.18.0) (2022-02-03)
+
+
+### Features
+
+* add option to pass compile flag to publish command ([ae8a567](https://github.com/bettyblocks/cli/commit/ae8a567))
+
 # [25.17.0](https://github.com/bettyblocks/cli/compare/v25.16.0...v25.17.0) (2022-02-01)
 
 
