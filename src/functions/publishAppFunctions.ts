@@ -33,6 +33,7 @@ type PublishResponse = {
   created: FunctionResult[];
   updated: FunctionResult[];
   deleted: FunctionResult[];
+  compiled: boolean;
 };
 
 type PublishOptions = {
@@ -91,11 +92,16 @@ const uploadAppFunctions = async (
       );
     }
 
-    const { created, updated, deleted } = (await res.json()) as PublishResponse;
+    const { created, updated, deleted, compiled } =
+      (await res.json()) as PublishResponse;
 
     created.forEach((result) => logResult(result, 'Create'));
     updated.forEach((result) => logResult(result, 'Update'));
     deleted.forEach((result) => logResult(result, 'Delete'));
+    if (config.compile) {
+      const compiledStatus = compiled ? 'ok' : 'error';
+      logResult({ status: compiledStatus, name: 'triggered' }, 'Compilation');
+    }
 
     return true;
   });
@@ -116,7 +122,7 @@ const publishAppFunctions = async ({
 }: PublishOptions): Promise<void> => {
   const config = new Config({ compile });
 
-  console.log(`Publishing to ${config.host}(${config.zone})`);
+  console.log(`Publishing to ${config.host} (${config.zone})`);
   await publishFunctions(config);
   console.log('Done.');
 };
