@@ -37,7 +37,7 @@ type PublishResponse = {
 };
 
 type PublishOptions = {
-  compile: boolean;
+  skipCompile: boolean;
 };
 
 const logResult = (
@@ -64,7 +64,7 @@ const uploadAppFunctions = async (
 
   const form = new FormData();
   form.append('functions', functionsJson);
-  form.append('options', JSON.stringify({ compile: config.compile }));
+  form.append('options', JSON.stringify({ compile: !config.skipCompile }));
   form.append('file', fs.createReadStream(functionDefinitionsFile));
 
   const applicationId = await config.applicationId();
@@ -98,7 +98,7 @@ const uploadAppFunctions = async (
     created.forEach((result) => logResult(result, 'Create'));
     updated.forEach((result) => logResult(result, 'Update'));
     deleted.forEach((result) => logResult(result, 'Delete'));
-    if (config.compile) {
+    if (!config.skipCompile) {
       const compiledStatus = compiled ? 'ok' : 'error';
       logResult({ status: compiledStatus, name: 'triggered' }, 'Compilation');
     }
@@ -118,9 +118,9 @@ const publishFunctions = async (config: Config): Promise<void> => {
 };
 
 const publishAppFunctions = async ({
-  compile,
+  skipCompile,
 }: PublishOptions): Promise<void> => {
-  const config = new Config({ compile });
+  const config = new Config({ skipCompile });
 
   console.log(`Publishing to ${config.host} (${config.zone})`);
   await publishFunctions(config);
