@@ -9,7 +9,7 @@ export type GlobalConfig = {
     [key: string]: string | undefined;
   };
   applicationMap: { [key: string]: string };
-  compile?: boolean;
+  skipCompile?: boolean;
 };
 
 export type LocalConfig = {
@@ -23,11 +23,11 @@ export type LocalConfig = {
   host?: string;
   zone?: string;
   applicationId?: string;
-  compile?: boolean;
+  skipCompile?: boolean;
 };
 
 export type CustomConfig = {
-  compile: boolean;
+  skipCompile: boolean;
 };
 
 class Config {
@@ -124,7 +124,7 @@ class Config {
       fusionAuthUrl: 'https://fusionauth{ZONEPOSTFIX}.betty.services',
       builderApiUrl: '{HOST}/api/builder',
       domain: 'bettyblocks.com',
-      compile: false,
+      skipCompile: false,
     } as LocalConfig;
   };
 
@@ -147,8 +147,8 @@ class Config {
     };
   }
 
-  get compile(): boolean {
-    return !!this.config.compile;
+  get skipCompile(): boolean {
+    return !!this.config.skipCompile;
   }
 
   get identifier(): string {
