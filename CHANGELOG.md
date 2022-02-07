@@ -1,3 +1,10 @@
+# [25.20.0](https://github.com/bettyblocks/cli/compare/v25.19.0...v25.20.0) (2022-02-07)
+
+
+### Features
+
+* make compilation opt-out instead of opt-in ([1908735](https://github.com/bettyblocks/cli/commit/1908735))
+
 # [25.19.0](https://github.com/bettyblocks/cli/compare/v25.18.0...v25.19.0) (2022-02-03)
 
 
