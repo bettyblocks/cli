@@ -1,3 +1,10 @@
+# [25.21.0](https://github.com/bettyblocks/cli/compare/v25.20.0...v25.21.0) (2022-02-10)
+
+
+### Features
+
+* compile tsx files ([#285](https://github.com/bettyblocks/cli/issues/285)) ([d3152f5](https://github.com/bettyblocks/cli/commit/d3152f5))
+
 # [25.20.0](https://github.com/bettyblocks/cli/compare/v25.19.0...v25.20.0) (2022-02-07)
 
 
