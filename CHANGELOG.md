@@ -1,3 +1,10 @@
+# [25.22.0](https://github.com/bettyblocks/cli/compare/v25.21.0...v25.22.0) (2022-02-21)
+
+
+### Features
+
+* add actionjsproperty option ([#286](https://github.com/bettyblocks/cli/issues/286)) ([f897991](https://github.com/bettyblocks/cli/commit/f897991))
+
 # [25.21.0](https://github.com/bettyblocks/cli/compare/v25.20.0...v25.21.0) (2022-02-10)
 
 
