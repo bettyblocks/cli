@@ -1,3 +1,10 @@
+## [25.22.1](https://github.com/bettyblocks/cli/compare/v25.22.0...v25.22.1) (2022-03-07)
+
+
+### Bug Fixes
+
+* **components:** change boilerplate type to CONTENT_COMPONENT ([7881f18](https://github.com/bettyblocks/cli/commit/7881f18))
+
 # [25.22.0](https://github.com/bettyblocks/cli/compare/v25.21.0...v25.22.0) (2022-02-21)
 
 
