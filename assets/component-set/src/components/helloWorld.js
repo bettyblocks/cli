@@ -1,6 +1,6 @@
 (() => ({
   name: 'HelloWorld',
-  type: 'TEXT',
+  type: 'CONTENT_COMPONENT',
   icon: 'TitleIcon',
   orientation: 'HORIZONTAL',
   allowedTypes: [],
