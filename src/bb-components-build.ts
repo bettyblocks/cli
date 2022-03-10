@@ -175,8 +175,9 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     process.exit(1);
   }
 
-  const prefabs: Array<Promise<Prefab>> = (results.emittedFiles || []).map(
-    (filename) => {
+  const prefabs: Array<Promise<Prefab>> = (results.emittedFiles || [])
+    .filter((filename) => /\.(\w+\/){2}\w+\.js/.test(filename))
+    .map((filename) => {
       return new Promise((resolve) => {
         import(`${absoluteRootDir}/${filename}`)
           .then((prefab) => {
@@ -187,8 +188,7 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
             throw new Error(`in ${filename}: ${error}`);
           });
       });
-    },
-  );
+    });
 
   return Promise.all(prefabs);
 };
