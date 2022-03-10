@@ -137,6 +137,7 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
       esModuleInterop: true,
       allowSyntheticDefaultImports: false,
       target: 99,
+      listEmittedFiles: true,
     },
   );
 
@@ -147,23 +148,47 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     process.exit(1);
   }
 
-  prefabProgram.emit();
+  const results = prefabProgram.emit();
 
-  const prefabs: Array<Promise<Prefab>> = prefabFiles.map((filename) => {
-    return new Promise((resolve) => {
-      const file = `${prefabsDir}/${filename
-        .replace('.tsx', '.js')
-        .replace('.ts', '.js')}`;
-      import(file)
-        .then((prefab) => {
-          // JSON schema validation
-          resolve(prefab.default);
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
-    });
-  });
+  if (results.diagnostics.length > 0) {
+    reportDiagnostics([...results.diagnostics]);
+    process.exit(1);
+  }
+
+  const globalDiagnostics = [...prefabProgram.getGlobalDiagnostics()];
+  if (globalDiagnostics.length > 0) {
+    reportDiagnostics(globalDiagnostics);
+    process.exit(1);
+  }
+
+  const declarationDiagnostics = [...prefabProgram.getDeclarationDiagnostics()];
+  if (declarationDiagnostics.length > 0) {
+    reportDiagnostics(declarationDiagnostics);
+    process.exit(1);
+  }
+
+  const configDiagnostics = [
+    ...prefabProgram.getConfigFileParsingDiagnostics(),
+  ];
+  if (configDiagnostics.length > 0) {
+    reportDiagnostics(configDiagnostics);
+    process.exit(1);
+  }
+
+  const prefabs: Array<Promise<Prefab>> = (results.emittedFiles || []).map(
+    (filename) => {
+      return new Promise((resolve) => {
+        import(`${absoluteRootDir}/${filename}`)
+          .then((prefab) => {
+            // JSON schema validation
+            resolve(prefab.default);
+          })
+          .catch((error) => {
+            throw new Error(`in ${filename}: ${error}`);
+          });
+      });
+    },
+  );
 
   return Promise.all(prefabs);
 };
@@ -330,7 +355,23 @@ void (async (): Promise<void> => {
     await Promise.all(outputPromises);
 
     console.info(chalk.green('Success, the component set has been built'));
-  } catch ({ file, name, message }) {
+  } catch (err) {
+    // TODO: reduce scope of this try catch to narrow the type of error.
+    // some errors will not contain these fields so it is unsafe to
+    // destructure
+
+    // eslint-disable-next-line prefer-destructuring
+    const name = err.name;
+    // eslint-disable-next-line prefer-destructuring
+    const file = err.file;
+    // eslint-disable-next-line prefer-destructuring
+    const message = err.message;
+
+    if (!name || !file || !message) {
+      console.error(err);
+      process.exit(1);
+    }
+
     if (file) {
       console.error(chalk.red(`\n${name} in ${file}: ${message}\n`));
     } else {
