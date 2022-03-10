@@ -1,3 +1,10 @@
+## [25.22.3](https://github.com/bettyblocks/cli/compare/v25.22.2...v25.22.3) (2022-03-10)
+
+
+### Bug Fixes
+
+* make errors visible page 1573 ([#291](https://github.com/bettyblocks/cli/issues/291)) ([32cacc0](https://github.com/bettyblocks/cli/commit/32cacc0))
+
 ## [25.22.2](https://github.com/bettyblocks/cli/compare/v25.22.1...v25.22.2) (2022-03-10)
 
 
