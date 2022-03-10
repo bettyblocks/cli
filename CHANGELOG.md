@@ -1,3 +1,10 @@
+## [25.22.2](https://github.com/bettyblocks/cli/compare/v25.22.1...v25.22.2) (2022-03-10)
+
+
+### Bug Fixes
+
+* compile errors not shown ([#289](https://github.com/bettyblocks/cli/issues/289)) ([70804b6](https://github.com/bettyblocks/cli/commit/70804b6))
+
 ## [25.22.1](https://github.com/bettyblocks/cli/compare/v25.22.0...v25.22.1) (2022-03-07)
 
 
