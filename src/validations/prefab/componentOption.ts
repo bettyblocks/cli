@@ -38,6 +38,7 @@ const optionConfigurationSchemaBase = {
     comparator: Joi.string().valid(...COMPARATORS),
     value: Joi.any(),
   }),
+  disabled: Joi.boolean(),
   dataType: Joi.string(),
   dependsOn: Joi.string(),
   placeholder: Joi.string(),
