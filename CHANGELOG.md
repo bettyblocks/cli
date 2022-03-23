@@ -1,3 +1,10 @@
+# [25.23.0](https://github.com/bettyblocks/cli/compare/v25.22.3...v25.23.0) (2022-03-23)
+
+
+### Features
+
+* adds afterCreate to component structure ([#292](https://github.com/bettyblocks/cli/issues/292)) ([d4efd75](https://github.com/bettyblocks/cli/commit/d4efd75))
+
 ## [25.22.3](https://github.com/bettyblocks/cli/compare/v25.22.2...v25.22.3) (2022-03-10)
 
 
