@@ -10,6 +10,16 @@ const schema: ObjectSchema = Joi.object({
   name: Joi.string().required(),
   icon: Joi.string(), // DEPRECATED
   category: Joi.string(), // DEPRECATED
+  $afterCreate: Joi.object({
+    query: Joi.string().required(),
+    input: Joi.object().pattern(Joi.string(), Joi.any()).required(),
+    output: Joi.object().pattern(
+      Joi.string(),
+      Joi.object({
+        ref: Joi.string(),
+      }),
+    ),
+  }),
   type: Joi.string().required(),
   allowedTypes: Joi.array().items(Joi.string()).required(),
   orientation: Joi.string().required(),

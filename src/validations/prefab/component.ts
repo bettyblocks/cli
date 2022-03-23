@@ -106,6 +106,24 @@ const componentSchema = (
       .required(),
 
     // lifecycle hooks
+
+    $afterCreate: Joi.array().items(
+      Joi.object({
+        query: Joi.string().valid('CreateAction').required(),
+        input: Joi.object().pattern(
+          /./,
+          Joi.object({
+            ref: Joi.array().items(Joi.string()),
+          }),
+        ),
+        output: Joi.object().pattern(
+          /./,
+          Joi.object({
+            ref: Joi.array().items(Joi.string()),
+          }),
+        ),
+      }),
+    ),
     $afterDelete: Joi.array().items(
       Joi.object({
         query: Joi.string()
