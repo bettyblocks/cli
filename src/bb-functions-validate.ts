@@ -32,11 +32,6 @@ void (async (): Promise<void> => {
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
 
-  if (inputFunctionName) {
-    const result = validator.validateFunction(inputFunctionName);
-    logValidationResult(result);
-  } else {
-    const results = await validator.validateFunctions();
-    results.forEach((result) => logValidationResult(result));
-  }
+  const results = await validator.validateFunctions(inputFunctionName);
+  results.forEach(logValidationResult);
 })();

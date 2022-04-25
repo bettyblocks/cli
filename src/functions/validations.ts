@@ -6,7 +6,6 @@ import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
 import {
   FunctionDefinition,
-  functionDefinition,
   functionDefinitions,
 } from './functionDefinitions';
 import Config from './config';
@@ -106,10 +105,12 @@ class FunctionValidator {
     await importSchema(this.schemaValidator, this.config);
   }
 
-  validateFunction(functionName: string): ValidationResult {
-    const functionPath = path.join(this.functionsDir, functionName);
+  validateFunction(definition: FunctionDefinition): ValidationResult {
+    const functionPath = definition.path;
+    const functionName = functionPath
+      .replace(this.functionsDir, '')
+      .replace(/\.*/, '');
     try {
-      const definition = functionDefinition(functionPath);
     } catch (err) {
       return validateSchema(definition, this.schemaValidator);
       return {
@@ -121,11 +122,19 @@ class FunctionValidator {
     }
   }
 
-  async validateFunctions(): Promise<ValidationResult[]> {
-    const definitions = functionDefinitions(this.functionsDir);
+  async validateFunctions(functionName?: string): Promise<ValidationResult[]> {
+    const definitions = functionDefinitions(this.functionsDir, true);
+    const validations: ValidationResult[] = [];
 
-    const validations = definitions.map((definition) => {
-      return validateFunction(definition, this.schemaValidator);
+    definitions.forEach((definition) => {
+      const preleadingPath = path.join(
+        this.functionsDir,
+        functionName || '',
+        '/',
+      );
+      if (definition.path.match(preleadingPath)) {
+        validations.push(this.validateFunction(definition));
+      }
     });
 
     return Promise.all(validations);
