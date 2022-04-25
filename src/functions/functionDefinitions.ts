@@ -19,11 +19,11 @@ export type FunctionDefinition = {
 const functionDefinitionPath = (functionPath: string): string =>
   path.join(functionPath, 'function.json');
 
-/* @doc pathToFunction
+/* @doc functionImplementationPath
   Expands the function dir with `index.js`.
 */
-const pathToFunction = (functionDir: string): string =>
-  path.join(functionDir, 'index.js');
+const functionImplementationPath = (functionPath: string): string =>
+  path.join(functionPath, 'index.js');
 
 /* @doc isFunctionDefinition
   Checks the given functions dir for a file named function.json.
@@ -36,8 +36,8 @@ const isFunctionDefinition = (functionPath: string): boolean =>
   Checks the given functions dir for a file named index.js.
   Returns true if the file exists.
 */
-const isFunction = (functionDir: string): boolean =>
-  fs.pathExistsSync(pathToFunction(functionDir));
+const isFunction = (functionPath: string): boolean =>
+  fs.pathExistsSync(functionImplementationPath(functionPath));
 
 /* @doc functionDirs
   Returns a list of directories inside the given functionsDir that have a function.json.
