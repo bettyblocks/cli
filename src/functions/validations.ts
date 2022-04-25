@@ -18,7 +18,7 @@ export type ValidationResult = {
   path: string;
   status: string;
   functionName?: string;
-  errors: ValidationError[] | { message: string }[];
+  errors: ValidationError[] | Error[];
 };
 
 const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {
@@ -111,13 +111,14 @@ class FunctionValidator {
       .replace(this.functionsDir, '')
       .replace(/\.*/, '');
     try {
-    } catch (err) {
       return validateSchema(definition, this.schemaValidator);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
       return {
         status: 'error',
         path: functionPath,
         functionName,
-        errors: [{ message: `${err}` }],
+        errors: [new Error(message)],
       };
     }
   }
