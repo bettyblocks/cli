@@ -8,6 +8,6 @@ const sayHello = async ({ name }) => {
       greet: join(['Hello', name], ', ')
     };
   }
-}
+};
 
 export default sayHello;
