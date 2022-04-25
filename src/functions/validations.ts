@@ -72,7 +72,7 @@ const validateFunctionDefinition = (
   return validator.validate(definition, functionSchema);
 };
 
-const validateFunction = (
+const validateSchema = (
   functionJson: object,
   validator: Validator,
 ): ValidationResult => {
@@ -110,8 +110,8 @@ class FunctionValidator {
     const functionPath = path.join(this.functionsDir, functionName);
     try {
       const definition = functionDefinition(functionPath);
-      return validateFunction(definition, this.schemaValidator);
     } catch (err) {
+      return validateSchema(definition, this.schemaValidator);
       return {
         status: 'error',
         path: functionPath,
@@ -151,6 +151,6 @@ const logValidationResult = ({
 export {
   FunctionValidator,
   functionValidator,
-  validateFunction,
+  validateSchema,
   logValidationResult,
 };
