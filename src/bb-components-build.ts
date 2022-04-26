@@ -41,6 +41,19 @@ const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
 const enableNewTranspile = !!options.transpile;
 
+const readConfigurationFile = async (srcDir: string, file: string) => {
+  try {
+    const configurationFile: string = await readFile(
+      `${srcDir}/${file.replace(/jsx|js|tsx|ts/, 'json')}`,
+      'utf-8',
+    );
+
+    return JSON.parse(configurationFile);
+  } catch {
+    return {};
+  }
+};
+
 /* execute command */
 
 const readComponents: () => Promise<Component[]> = async (): Promise<
@@ -59,6 +72,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
     async (file: string): Promise<Component> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+        const configuration = await readConfigurationFile(srcDir, file);
 
         const compatibility = extractComponentCompatibility(code);
 
@@ -81,9 +95,15 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
           );
         }
 
+        const { functions, triggers, interactions } = compatibility;
+
         return {
           ...transpiledFunction,
-          ...compatibility,
+          functions,
+          interactions,
+          ...(configuration.triggers
+            ? { triggers: configuration.triggers }
+            : { triggers }),
         };
       } catch (error) {
         error.file = file;
