@@ -1,7 +1,6 @@
 {
   "description": "This is an invalid function",
-  "name": "ooops",
-  "label": "Ooops",
+  "label": "Sorry",
   "category": "Misc",
   "icon": "CreateIcon",
   "options": [],
