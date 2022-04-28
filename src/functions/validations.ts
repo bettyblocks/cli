@@ -7,6 +7,7 @@ import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 import {
   FunctionDefinition,
   functionDefinitions,
+  isFunctionVersion,
 } from './functionDefinitions';
 import Config from './config';
 
@@ -71,19 +72,38 @@ const validateFunctionDefinition = (
   return validator.validate(definition, functionSchema);
 };
 
+const forceVersion = (
+  { path: functionPath }: FunctionDefinition,
+  functionsDir: string,
+): void => {
+  if (!isFunctionVersion(path.dirname(functionPath), functionsDir)) {
+    throw new Error(
+      `${functionPath.replace(
+        '/function.json',
+        '',
+      )} does not apply as a valid version directory`,
+    );
+  }
+};
+
 const validateSchema = (
   functionJson: object,
   validator: Validator,
 ): ValidationResult => {
-  const { path: definitionPath, schema } = functionJson as FunctionDefinition;
-  const { errors } = validateFunctionDefinition(validator, schema);
+  const {
+    name,
+    version,
+    path: definitionPath,
+    schema,
+  } = functionJson as FunctionDefinition;
 
+  const { errors } = validateFunctionDefinition(validator, schema);
   const status = errors.length ? 'error' : 'ok';
 
   return {
     status,
     path: definitionPath,
-    functionName: schema.name,
+    functionName: `${name}-${version}`,
     errors,
   };
 };
@@ -110,7 +130,9 @@ class FunctionValidator {
     const functionName = functionPath
       .replace(this.functionsDir, '')
       .replace(/\.*/, '');
+
     try {
+      forceVersion(definition, this.functionsDir);
       return validateSchema(definition, this.schemaValidator);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);

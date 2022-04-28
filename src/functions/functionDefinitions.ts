@@ -1,14 +1,17 @@
 import AdmZip from 'adm-zip';
 import camelCase from 'lodash/camelCase';
+import startCase from 'lodash/startCase';
 import fs from 'fs-extra';
+import glob from 'glob';
 import path from 'path';
 
 type Schema = {
-  name: string;
   [other: string]: unknown;
 };
 
 export type FunctionDefinition = {
+  name: string;
+  version: string;
   path: string;
   schema: Schema;
 };
@@ -32,6 +35,18 @@ const functionImplementationPath = (functionPath: string): string =>
 const isFunctionDefinition = (functionPath: string): boolean =>
   fs.pathExistsSync(functionDefinitionPath(functionPath));
 
+/* @doc isFunctionVersion
+  Checks the given functions dir to be a function version.
+  Returns true if applies to versioning conventions.
+*/
+const isFunctionVersion = (
+  functionPath: string,
+  functionsDir: string,
+): boolean =>
+  !!path.basename(functionPath).match(/^\d+\.\d+$/) &&
+  parseFloat(path.basename(functionPath)) >= 1.0 &&
+  path.dirname(path.dirname(functionPath)) === functionsDir;
+
 /* @doc isFunction
   Checks the given functions dir for a file named index.js.
   Returns true if the file exists.
@@ -40,28 +55,41 @@ const isFunction = (functionPath: string): boolean =>
   fs.pathExistsSync(functionImplementationPath(functionPath));
 
 /* @doc functionDirs
-  Returns a list of directories inside the given functionsDir that have a function.json.
+  Returns a list of directories inside the given functionsDir that have a function.json and index.js.
 */
-const functionDirs = (functionsDir: string): string[] =>
-  fs.readdirSync(functionsDir).reduce((dirs, functionDir) => {
-    const functionPath = path.join(functionsDir, functionDir);
-    if (isFunctionDefinition(functionPath)) {
-      dirs.push(functionPath);
-    }
-
-    return dirs;
-  }, [] as string[]);
+const functionDirs = (
+  functionsDir: string,
+  includeNonversioned: boolean,
+): string[] =>
+  glob
+    .sync(path.join(functionsDir, '**', 'function.json'))
+    .reduce((dirs, functionDefinition) => {
+      const dir = path.dirname(functionDefinition);
+      if (
+        isFunction(dir) &&
+        (includeNonversioned || isFunctionVersion(dir, functionsDir))
+      ) {
+        dirs.push(dir);
+      }
+      return dirs;
+    }, [] as string[]);
 
 /* @doc functionDefinition
   Reads the function.json from the given directory.
   Returns the parsed function.json as object.
 */
 const functionDefinition = (functionPath: string): FunctionDefinition => {
+  const name = camelCase(path.basename(path.dirname(functionPath)));
+  const version = path.basename(functionPath);
   const filePath = functionDefinitionPath(functionPath);
+  const schema = fs.readJSONSync(filePath) as Schema;
+
   try {
     return {
+      name,
+      version,
       path: filePath,
-      schema: fs.readJSONSync(filePath) as Schema,
+      schema,
     } as FunctionDefinition;
   } catch (err) {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -73,22 +101,29 @@ const functionDefinition = (functionPath: string): FunctionDefinition => {
   Returns an object containing all function.json definitions
   inside the given functionsDir, indexed by function name.
 */
-const functionDefinitions = (functionsDir: string): FunctionDefinition[] => {
-  return functionDirs(functionsDir).map((functionDir) =>
+const functionDefinitions = (
+  functionsDir: string,
+  includeNonversioned = false,
+): FunctionDefinition[] => {
+  return functionDirs(functionsDir, includeNonversioned).map((functionDir) =>
     functionDefinition(functionDir),
   );
 };
 
 const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
-  const updatedDefinitions = definitions.reduce((acc, { schema }) => {
-    return {
-      ...acc,
-      [schema.name]: {
-        ...schema,
-        options: JSON.stringify(schema.options),
-      },
-    };
-  }, {});
+  const updatedDefinitions = definitions.reduce(
+    (acc, { name, version, schema }) => {
+      return {
+        ...acc,
+        [name]: {
+          version,
+          ...schema,
+          options: JSON.stringify(schema.options),
+        },
+      };
+    },
+    {},
+  );
 
   return JSON.stringify(updatedDefinitions);
 };
@@ -105,15 +140,14 @@ const newFunctionDefinition = (
     /-./g,
     (x) => x.toUpperCase()[1],
   );
-  const functionDir = path.join(functionsDir, functionName);
+  const functionDir = path.join(functionsDir, functionName, '1.0');
   try {
     fs.mkdirpSync(functionDir);
     fs.writeJSONSync(
       functionDefinitionPath(functionDir),
       {
-        name: functionDefName,
         description: 'Description',
-        label: functionName,
+        label: startCase(functionName),
         category: 'Misc',
         icon: 'CreateIcon',
         options: [],
@@ -132,61 +166,67 @@ const newFunctionDefinition = (
   }
 };
 
-/* @doc fetchFunctions
-  Fetches all functions in the `/functions` folder, only includes function that
-  have both an `index.js` and `functions.json` file.
-  Returns an array of function names.
+const toVariableName = ({ name, version }: FunctionDefinition): string =>
+  `${camelCase(name)}_${version.replace('.', '_')}`;
+
+/* @doc importFunctions
+  Returns an array of strings, each item being an imported function:
+  `import { default as functionName_1_0 } from './function-name/1.0';`;
 */
-const fetchFunctions = (functionsDir: string): string[] =>
-  fs.readdirSync(functionsDir).reduce<string[]>((names, name) => {
-    const functionPath = path.join(functionsDir, name);
-    if (isFunction(functionPath) && isFunctionDefinition(functionPath)) {
-      names.push(name);
-    }
+const importFunctions = (
+  definitions: FunctionDefinition[],
+  functionsPath: string,
+): string[] =>
+  definitions.map<string>(
+    (definition) =>
+      `import { default as ${toVariableName(definition)} } from '${path.dirname(
+        definition.path.replace(functionsPath, '.'),
+      )}';`,
+  );
 
-    return names;
-  }, []);
-
-/* @doc reExportFunctions
-  Returns an array of strings, each item being a re-exported function:
-  `export { default as functionName } from './function-name';
- */
-const reExportFunctions = (functions: string[]): string[] =>
-  functions.reduce<string[]>((exportedFunctions, file) => {
-    exportedFunctions.push(
-      `export { default as ${camelCase(file)} } from './${file}';`,
-    );
-
-    return exportedFunctions;
-  }, []);
+/* @doc exportFunctions
+  Returns a string in which functions will be exported in an object;
+*/
+const exportFunctions = (definitions: FunctionDefinition[]): string[] => {
+  const exports = definitions.map<string>((definition) => {
+    const { name, version } = definition;
+    return `  "${name} ${version}": ${toVariableName(definition)}`;
+  });
+  return ['export {', ...exports, '};'];
+};
 
 /* @doc generateIndex
   Fetches all functions and re-exports them. 
   Returns the result as a Buffer. 
 */
-const generateIndex = (): Buffer => {
-  const functions = fetchFunctions(path.join(process.cwd(), 'functions'));
-  const code = reExportFunctions(functions).join('\n');
+const generateIndex = (functionsPath: string): string => {
+  const definitions = functionDefinitions(functionsPath);
 
-  return Buffer.from(code);
+  const code: string[] = [];
+  code.push(...importFunctions(definitions, functionsPath));
+  code.push('');
+  code.push(...exportFunctions(definitions));
+  code.push('');
+
+  return code.join('\n');
 };
 
 /* @doc zipFunctionDefinitions
-  Takes functionsDir as path to a directory with function definitions.
+  Takes functionsPath as path to a directory with function definitions.
   Scans each directory for a function.json file, and if present adds it
   to the zip file. Generates an index.js and adds it to the zip file.
   Returns path to the zip file.
- */
-const zipFunctionDefinitions = (functionsDir: string): string => {
+*/
+const zipFunctionDefinitions = (functionsPath: string): string => {
   const zip = new AdmZip();
   const tmpDir = '.tmp';
   const zipFilePath = `${tmpDir}/app.zip`;
 
   fs.ensureDirSync(tmpDir);
 
-  zip.addLocalFile(path.join(process.cwd(), 'package.json'));
-  zip.addFile('index.js', generateIndex());
-  zip.addLocalFolder(functionsDir);
+  zip.addLocalFile(path.join(path.dirname(functionsPath), 'package.json'));
+  zip.addFile('index.js', Buffer.from(generateIndex(functionsPath)));
+  zip.addLocalFolder(functionsPath);
 
   zip.writeZip(zipFilePath);
 
@@ -198,7 +238,9 @@ export {
   functionDefinitionPath,
   functionDefinition,
   functionDefinitions,
+  generateIndex,
   isFunctionDefinition,
+  isFunctionVersion,
   newFunctionDefinition,
   stringifyDefinitions,
   zipFunctionDefinitions,

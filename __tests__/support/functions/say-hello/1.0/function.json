@@ -1,6 +1,5 @@
 {
   "description": "Say Hello to the world",
-  "name": "sayHello",
   "label": "Say Hello",
   "category": "Misc",
   "icon": "CreateIcon",

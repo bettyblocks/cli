@@ -66,7 +66,7 @@ void (async (): Promise<void> => {
       console.log(
         `${chalk.red(
           `✖`,
-        )} Could not publish. Please make sure all functions are valid.`,
+        )} Could not publish. Please make sure all functions are versioned and valid.`,
       );
     }
   } else {

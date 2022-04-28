@@ -42,7 +42,7 @@ test('validate templates', async (t: Context): Promise<void> => {
   const functionPath = path.join(
     process.cwd(),
     'assets/app-functions/templates',
-    'functions/say-hello',
+    'functions/say-hello/1.0',
   );
 
   const functionJson = functionDefinition(functionPath);
