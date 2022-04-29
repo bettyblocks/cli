@@ -48,9 +48,27 @@ export interface Component {
   type: string;
 }
 
-export interface PrefabComponent {
-  actions?: PrefabAction[];
+export const isComponentTypePrefab = (
+  component: PrefabComponent,
+): component is ComponentTypePrefab => component.type === 'COMPONENT';
+export const isPartialTypePrefab = (
+  component: PrefabComponent,
+): component is PartialTypePrefab => component.type === 'PARTIAL';
+
+export type PrefabComponent = ComponentTypePrefab | PartialTypePrefab;
+
+export type ComponentTypePrefab = BasePrefab & {
+  type: 'COMPONENT';
   descendants: PrefabComponent[];
+};
+
+export type PartialTypePrefab = BasePrefab & {
+  type: 'PARTIAL';
+  partialId: string;
+};
+
+export interface BasePrefab {
+  actions?: PrefabAction[];
   name: string;
   style?: {
     name?: string;

@@ -1,6 +1,11 @@
 import chalk from 'chalk';
 
-import { Component, Prefab, PrefabComponent } from '../types';
+import {
+  Component,
+  isComponentTypePrefab,
+  Prefab,
+  PrefabComponent,
+} from '../types';
 
 function fromStructure<
   KString extends string & keyof T,
@@ -60,7 +65,9 @@ export const findDuplicates = <
 
 const checkComponentReferenceNames =
   (names: Set<string>, prefabName: string) =>
-  ({ name, descendants }: PrefabComponent): void => {
+  (prefabComponent: PrefabComponent): void => {
+    const { name } = prefabComponent;
+
     if (!names.has(name)) {
       throw new Error(
         chalk.red(
@@ -68,7 +75,9 @@ const checkComponentReferenceNames =
         ),
       );
     }
-    if (descendants) {
+
+    if (isComponentTypePrefab(prefabComponent)) {
+      const { descendants } = prefabComponent;
       descendants.forEach(checkComponentReferenceNames(names, prefabName));
     }
   };
