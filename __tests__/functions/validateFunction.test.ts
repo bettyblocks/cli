@@ -45,7 +45,11 @@ test('validate templates', async (t: Context): Promise<void> => {
     'functions/say-hello/1.0',
   );
 
-  const functionJson = functionDefinition(functionPath);
+  const functionJson = functionDefinition(
+    functionPath,
+    path.join(process.cwd(), 'functions'),
+  );
+
   const { status } = await validateSchema(functionJson, validator);
 
   t.is(status, 'ok');

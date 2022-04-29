@@ -45,7 +45,7 @@ test('isFunctionVersion', async (t: Context): Promise<void> => {
 
 test('functionDefinition', async (t: Context): Promise<void> => {
   const functionPath = path.join(functionsPath, 'say-hello', '1.0');
-  t.like(functionDefinition(functionPath), {
+  t.like(functionDefinition(functionPath, functionsPath), {
     schema: {
       label: 'Say Hello',
     },
@@ -58,7 +58,7 @@ test('creating a new functionDefinition', async (t: Context): Promise<void> => {
   newFunctionDefinition(tmpFunctionsPath, 'ciao-mondo');
 
   const functionPath = path.join(tmpFunctionsPath, 'ciao-mondo', '1.0');
-  const { schema } = functionDefinition(functionPath);
+  const { schema } = functionDefinition(functionPath, functionsPath);
 
   fs.removeSync(tmpFunctionsPath);
   t.like(schema, {

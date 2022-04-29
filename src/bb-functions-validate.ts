@@ -9,6 +9,9 @@ import {
   FunctionValidator,
   logValidationResult,
 } from './functions/validations';
+
+import { functionDefinitions } from './functions/functionDefinitions';
+
 import Config from './functions/config';
 
 /* process arguments */
@@ -34,4 +37,13 @@ void (async (): Promise<void> => {
 
   const results = await validator.validateFunctions(inputFunctionName);
   results.forEach(logValidationResult);
+
+  const allFunctions = functionDefinitions(baseFunctionsPath, true);
+  const versionedFunctions = functionDefinitions(baseFunctionsPath);
+
+  if (allFunctions.length !== versionedFunctions.length) {
+    console.log(
+      'Maybe auto-version your functions without a version number using `bb functions autoversion`?',
+    );
+  }
 })();

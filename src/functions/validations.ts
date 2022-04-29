@@ -127,9 +127,7 @@ class FunctionValidator {
 
   validateFunction(definition: FunctionDefinition): ValidationResult {
     const functionPath = definition.path;
-    const functionName = functionPath
-      .replace(this.functionsDir, '')
-      .replace(/\.*/, '');
+    const functionName = functionPath;
 
     try {
       forceVersion(definition, this.functionsDir);

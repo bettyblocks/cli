@@ -59,7 +59,7 @@ const isFunction = (functionPath: string): boolean =>
 */
 const functionDirs = (
   functionsDir: string,
-  includeNonversioned: boolean,
+  includeNonversioned = false,
 ): string[] =>
   glob
     .sync(path.join(functionsDir, '**', 'function.json'))
@@ -78,9 +78,20 @@ const functionDirs = (
   Reads the function.json from the given directory.
   Returns the parsed function.json as object.
 */
-const functionDefinition = (functionPath: string): FunctionDefinition => {
-  const name = camelCase(path.basename(path.dirname(functionPath)));
-  const version = path.basename(functionPath);
+const functionDefinition = (
+  functionPath: string,
+  functionsDir: string,
+): FunctionDefinition => {
+  let name = '';
+  let version = '';
+
+  if (isFunctionVersion(functionPath, functionsDir)) {
+    name = camelCase(path.basename(path.dirname(functionPath)));
+    version = path.basename(functionPath);
+  } else {
+    name = camelCase(path.basename(functionPath));
+  }
+
   const filePath = functionDefinitionPath(functionPath);
   const schema = fs.readJSONSync(filePath) as Schema;
 
@@ -106,7 +117,7 @@ const functionDefinitions = (
   includeNonversioned = false,
 ): FunctionDefinition[] => {
   return functionDirs(functionsDir, includeNonversioned).map((functionDir) =>
-    functionDefinition(functionDir),
+    functionDefinition(functionDir, functionsDir),
   );
 };
 
