@@ -50,7 +50,8 @@ export interface Component {
 
 export const isComponentTypePrefab = (
   component: PrefabComponent,
-): component is ComponentTypePrefab => component.type === 'COMPONENT';
+): component is ComponentTypePrefab =>
+  typeof component.type === 'undefined' || component.type === 'COMPONENT';
 export const isPartialTypePrefab = (
   component: PrefabComponent,
 ): component is PartialTypePrefab => component.type === 'PARTIAL';
@@ -58,7 +59,7 @@ export const isPartialTypePrefab = (
 export type PrefabComponent = ComponentTypePrefab | PartialTypePrefab;
 
 export type ComponentTypePrefab = BasePrefab & {
-  type: 'COMPONENT';
+  type?: 'COMPONENT';
   descendants: PrefabComponent[];
 };
 
