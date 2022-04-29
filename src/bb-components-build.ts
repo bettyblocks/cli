@@ -14,6 +14,7 @@ import {
   Prefab,
   PrefabComponent,
   ComponentStyleMap,
+  isComponentTypePrefab,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -312,7 +313,10 @@ void (async (): Promise<void> => {
           hash: hash(structure.options),
         };
 
-        if (newStructure.descendants && newStructure.descendants.length > 0) {
+        if (
+          isComponentTypePrefab(newStructure) &&
+          newStructure.descendants.length > 0
+        ) {
           newStructure.descendants =
             newStructure.descendants.map(buildStructure);
         }
