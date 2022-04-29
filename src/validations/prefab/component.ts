@@ -101,9 +101,19 @@ const componentSchema = (
       id: Joi.string().required(),
     }),
     options: Joi.array().items(optionSchema).required(),
+    type: Joi.string().valid('COMPONENT', 'PARTIAL').default('COMPONENT'),
+    partialId: Joi.string().when('type', {
+      is: 'PARTIAL',
+      then: Joi.string().default(''),
+      otherwise: Joi.forbidden(),
+    }),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap)))
-      .required(),
+      .when('type', {
+        is: 'COMPONENT',
+        then: Joi.required(),
+        otherwise: Joi.forbidden(),
+      }),
 
     // lifecycle hooks
 

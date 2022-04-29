@@ -68,8 +68,9 @@ const checkComponentReferenceNames =
         ),
       );
     }
-
-    descendants.forEach(checkComponentReferenceNames(names, prefabName));
+    if (descendants) {
+      descendants.forEach(checkComponentReferenceNames(names, prefabName));
+    }
   };
 
 export const checkNameReferences = (

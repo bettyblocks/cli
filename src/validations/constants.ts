@@ -143,6 +143,8 @@ export const OPTIONS = [
   'UNIT',
   'VARIABLE',
   'ICON',
+  'PARTIAL_REFERENCE',
+  'PARTIAL_INPUT_OBJECTS',
 ];
 
 export const STYLE_REFERENCE_TYPES = ['BUTTON', 'TEXT'];

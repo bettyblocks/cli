@@ -35,15 +35,6 @@ const schemaProvider = (
     actions: Joi.array().items(actionSchema).max(MAX_ACTIONS),
     variables: Joi.array().items(variableSchema).max(MAX_VARIABLES),
     beforeCreate: Joi.any(),
-    partials: Joi.array().items(
-      Joi.object({
-        name: Joi.string().required(),
-        ref: Joi.string(),
-        structure: Joi.array().items(
-          Joi.custom(validateComponent(componentStyleMap)),
-        ),
-      }),
-    ),
     structure: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap)))
       .required(),
