@@ -16,6 +16,7 @@ const availableCommands: CommandFunctions[] = [
   'build',
   'publish',
   'validate',
+  'test',
 ];
 
 /* process arguments */
@@ -30,6 +31,10 @@ program
   .command('build', 'build functions bundle file of current working directory')
   .command('publish', 'publish functions of current working directory')
   .command('validate', 'validate functions of current working directory')
+  .command(
+    'test',
+    'test your functions within a local light-weight version of the ActionJS environment',
+  )
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandFunctions)) {
       console.error('Invalid command: %s\n', command);

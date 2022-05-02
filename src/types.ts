@@ -24,7 +24,8 @@ export type CommandFunctions =
   | 'new'
   | 'build'
   | 'publish'
-  | 'validate';
+  | 'validate'
+  | 'test';
 
 export type CommandInteractions = 'generate';
 
