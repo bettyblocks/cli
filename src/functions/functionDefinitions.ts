@@ -190,9 +190,9 @@ const importFunctions = (
 const exportFunctions = (definitions: FunctionDefinition[]): string[] => {
   const exports = definitions.map<string>((definition) => {
     const { name, version } = definition;
-    return `  "${name} ${version}": ${toVariableName(definition)}`;
+    return `  "${name} ${version}": ${toVariableName(definition)},`;
   });
-  return ['export {', ...exports, '};'];
+  return ['const fn = {', ...exports, '};', '', 'export default fn;'];
 };
 
 /* @doc generateIndex
