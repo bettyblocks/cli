@@ -112,7 +112,7 @@ const componentSchema = (
       otherwise: Joi.forbidden(),
     }),
     type: Joi.string().valid('COMPONENT', 'PARTIAL').default('COMPONENT'),
-    id: Joi.string().when('type', {
+    partialId: Joi.string().when('type', {
       is: 'PARTIAL',
       then: Joi.string().default(''),
       otherwise: Joi.forbidden(),
@@ -204,14 +204,14 @@ export const validateComponent =
       }
     }
     if (isPrefabPartial(component)) {
-      const { id } = component;
+      const { type } = component;
       const { error } = componentSchema(componentStyleMap).validate(component);
 
       if (typeof error !== 'undefined') {
         const { message } = error;
 
         throw new Error(
-          chalk.red(`\nBuild error in component ${id}: ${message}\n`),
+          chalk.red(`\nBuild error in component ${type}: ${message}\n`),
         );
       }
     }

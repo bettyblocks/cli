@@ -60,7 +60,7 @@ export type PrefabReference = PrefabComponent | PrefabPartial;
 
 export type PrefabPartial = {
   type: 'PARTIAL';
-  id: string;
+  partialId: string;
 };
 export interface PrefabComponent {
   type?: 'COMPONENT';
