@@ -139,22 +139,7 @@ test('Throw when type partial has descendants', (t: Context): void => {
           ],
           descendants: [
             {
-              name: 'Partial',
               type: 'PARTIAL',
-              options: [
-                {
-                  type: 'PARTIAL_REFERENCE',
-                  label: 'Partial Reference',
-                  key: 'partialReferenceId',
-                  value: '""',
-                },
-                {
-                  type: 'PARTIAL_INPUT_OBJECTS',
-                  label: 'Partial inputs',
-                  key: 'partialInputMapping',
-                  value: '{}',
-                },
-              ],
               descendants: [],
             },
           ],
@@ -165,7 +150,67 @@ test('Throw when type partial has descendants', (t: Context): void => {
 
   t.throws(() => validatePrefabs(prefabs));
 });
-test('Throw when type component has partialId', (t: Context): void => {
+test('Throw when type partial has name', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [
+            {
+              name: 'Partial',
+              type: 'PARTIAL',
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+test('Throw when type partial has options', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [
+            {
+              type: 'PARTIAL',
+              options: [],
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+test('Throw when type component has id', (t: Context): void => {
   const prefabs = [
     {
       name: 'Component Name',
@@ -185,7 +230,7 @@ test('Throw when type component has partialId', (t: Context): void => {
           descendants: [
             {
               name: 'Component',
-              partialId: '',
+              id: '',
               options: [
                 {
                   type: 'PARTIAL_REFERENCE',
