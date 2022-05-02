@@ -14,7 +14,10 @@ import {
   Prefab,
   PrefabComponent,
   ComponentStyleMap,
-  isComponentTypePrefab,
+  isPrefabComponent,
+  PrefabReference,
+  PrefabPartial,
+  isPrefabPartial,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -298,15 +301,20 @@ void (async (): Promise<void> => {
       };
     });
 
-    type BuildPrefabComponent = PrefabComponent & {
+    type BuildPrefab = PrefabComponent & {
       hash: string;
       style: PrefabComponent['style'];
     };
 
+    type BuildPrefabComponent = BuildPrefab | PrefabPartial;
+
     const buildPrefabs = prefabs.map((prefab) => {
       const buildStructure = (
-        structure: PrefabComponent,
+        structure: PrefabReference,
       ): BuildPrefabComponent => {
+        if (isPrefabPartial(structure)) {
+          return structure;
+        }
         const newStructure = {
           ...structure,
           style: structure.style || {},
@@ -314,7 +322,7 @@ void (async (): Promise<void> => {
         };
 
         if (
-          isComponentTypePrefab(newStructure) &&
+          isPrefabComponent(newStructure) &&
           newStructure.descendants.length > 0
         ) {
           newStructure.descendants =

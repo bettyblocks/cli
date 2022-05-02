@@ -48,25 +48,20 @@ export interface Component {
   type: string;
 }
 
-// export const isComponentTypePrefab = (
-//   component: PrefabComponent,
-// ): component is ComponentTypePrefab =>
-//   typeof component.type === 'undefined' || component.type === 'COMPONENT';
-// export const isPartialTypePrefab = (
-//   component: PrefabComponent,
-// ): component is PartialTypePrefab => component.type === 'PARTIAL';
+export const isPrefabComponent = (
+  component: PrefabReference,
+): component is PrefabComponent =>
+  typeof component.type === 'undefined' || component.type === 'COMPONENT';
+export const isPrefabPartial = (
+  component: PrefabReference,
+): component is PrefabPartial => component.type === 'PARTIAL';
 
-// export type PrefabComponent = ComponentTypePrefab | PartialTypePrefab;
+export type PrefabReference = PrefabComponent | PrefabPartial;
 
-// export type ComponentTypePrefab = BasePrefab & {
-//   type?: 'COMPONENT';
-// };
-
-export type PrafabPrartial = {
+export type PrefabPartial = {
   type: 'PARTIAL';
   id: string;
 };
-
 export interface PrefabComponent {
   type?: 'COMPONENT';
   actions?: PrefabAction[];
@@ -101,7 +96,7 @@ export interface PrefabComponent {
       textTransform?: string;
     };
   };
-  descendants: (PrefabComponent | PrafabPrartial)[];
+  descendants: PrefabReference[];
   options: PrefabComponentOption[];
   ref?: {
     id: string;
