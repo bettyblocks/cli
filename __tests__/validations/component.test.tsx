@@ -255,6 +255,22 @@ test('Throw when type component has id', (t: Context): void => {
 
   t.throws(() => validatePrefabs(prefabs));
 });
+test('Does not throw when partial object is within the structure', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'PARTIAL',
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
 
 test('Does not throw when button prefabs style override options are valid', (t: Context): void => {
   const prefabs = [

@@ -174,7 +174,7 @@ export interface Prefab {
   keywords?: string[];
   icon: Icon;
   interactions?: PrefabInteraction[];
-  structure: PrefabComponent[];
+  structure: PrefabReference[];
   variables?: PrefabVariable[];
   type?: string;
   description?: string;

@@ -87,6 +87,13 @@ const styleValidator: StyleValidator = {
   }),
 };
 
+const partialSchema = (): Joi.ObjectSchema => {
+  return Joi.object({
+    type: Joi.string().valid('PARTIAL').required(),
+    partialId: Joi.string().default(''),
+  });
+};
+
 const componentSchema = (
   componentStyleMap?: ComponentStyleMap,
   styleType?: keyof StyleValidator,
@@ -94,11 +101,7 @@ const componentSchema = (
   const canValidateStyle = styleType && styleValidator[styleType];
 
   return Joi.object({
-    name: Joi.string().when('type', {
-      is: 'COMPONENT',
-      then: Joi.required(),
-      otherwise: Joi.forbidden(),
-    }),
+    name: Joi.string().required(),
     style: Joi.object({
       name: Joi.string().max(255).alphanum(),
       overwrite: canValidateStyle || Joi.any(),
@@ -106,24 +109,11 @@ const componentSchema = (
     ref: Joi.object({
       id: Joi.string().required(),
     }),
-    options: Joi.array().items(optionSchema).when('type', {
-      is: 'COMPONENT',
-      then: Joi.required(),
-      otherwise: Joi.forbidden(),
-    }),
-    type: Joi.string().valid('COMPONENT', 'PARTIAL').default('COMPONENT'),
-    partialId: Joi.string().when('type', {
-      is: 'PARTIAL',
-      then: Joi.string().default(''),
-      otherwise: Joi.forbidden(),
-    }),
+    options: Joi.array().items(optionSchema).required(),
+    type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap)))
-      .when('type', {
-        is: 'COMPONENT',
-        then: Joi.required(),
-        otherwise: Joi.forbidden(),
-      }),
+      .required(),
 
     // lifecycle hooks
 
@@ -205,7 +195,7 @@ export const validateComponent =
     }
     if (isPrefabPartial(component)) {
       const { type } = component;
-      const { error } = componentSchema(componentStyleMap).validate(component);
+      const { error } = partialSchema().validate(component);
 
       if (typeof error !== 'undefined') {
         const { message } = error;
