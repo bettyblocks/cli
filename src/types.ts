@@ -48,14 +48,6 @@ export interface Component {
   type: string;
 }
 
-// export const isPrefabComponent = (
-//   component: PrefabReference,
-// ): component is PrefabComponent =>
-//   typeof component.type === 'undefined' || component.type === 'COMPONENT';
-// export const isPrefabPartial = (
-//   component: PrefabReference,
-// ): component is PrefabPartial => component.type === 'PARTIAL';
-
 export type PrefabReference = PrefabComponent | PrefabPartial;
 
 export type PrefabPartial = {

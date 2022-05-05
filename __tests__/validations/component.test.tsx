@@ -210,7 +210,7 @@ test('Throw when type partial has options', (t: Context): void => {
 
   t.throws(() => validatePrefabs(prefabs));
 });
-test('Throw when type component has id', (t: Context): void => {
+test('Throw when type component has partialId', (t: Context): void => {
   const prefabs = [
     {
       name: 'Component Name',
@@ -230,7 +230,7 @@ test('Throw when type component has id', (t: Context): void => {
           descendants: [
             {
               name: 'Component',
-              id: '',
+              partialId: '',
               options: [
                 {
                   type: 'PARTIAL_REFERENCE',
@@ -264,6 +264,7 @@ test('Does not throw when partial object is within the structure', (t: Context):
       structure: [
         {
           type: 'PARTIAL',
+          partialId: '',
         },
       ],
     },

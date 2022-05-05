@@ -88,7 +88,7 @@ const styleValidator: StyleValidator = {
 const partialSchema = (): Joi.ObjectSchema => {
   return Joi.object({
     type: Joi.string().valid('PARTIAL').required(),
-    partialId: Joi.string().default(''),
+    partialId: Joi.string().allow('').required(),
   });
 };
 
