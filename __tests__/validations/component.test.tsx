@@ -230,7 +230,7 @@ test('Throw when type component has id', (t: Context): void => {
           descendants: [
             {
               name: 'Component',
-              partialId: '',
+              id: '',
               options: [
                 {
                   type: 'PARTIAL_REFERENCE',

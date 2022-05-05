@@ -9,8 +9,6 @@ import {
   ComponentStyleMap,
   Component,
   PrefabReference,
-  isPrefabComponent,
-  isPrefabPartial,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
 import { optionSchema } from './componentOption';
@@ -171,7 +169,18 @@ const componentSchema = (
 export const validateComponent =
   (componentStyleMap?: ComponentStyleMap) =>
   (component: PrefabReference): Prefab | unknown => {
-    if (isPrefabComponent(component)) {
+    if (component.type === 'PARTIAL') {
+      const { type } = component;
+      const { error } = partialSchema().validate(component);
+
+      if (typeof error !== 'undefined') {
+        const { message } = error;
+
+        throw new Error(
+          chalk.red(`\nBuild error in component ${type}: ${message}\n`),
+        );
+      }
+    } else {
       const { name, options } = component;
 
       const styleType: Component['styleType'] | undefined =
@@ -193,17 +202,6 @@ export const validateComponent =
         );
       }
     }
-    if (isPrefabPartial(component)) {
-      const { type } = component;
-      const { error } = partialSchema().validate(component);
 
-      if (typeof error !== 'undefined') {
-        const { message } = error;
-
-        throw new Error(
-          chalk.red(`\nBuild error in component ${type}: ${message}\n`),
-        );
-      }
-    }
     return component;
   };

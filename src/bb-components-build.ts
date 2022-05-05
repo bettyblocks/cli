@@ -14,10 +14,8 @@ import {
   Prefab,
   PrefabComponent,
   ComponentStyleMap,
-  isPrefabComponent,
   PrefabReference,
   PrefabPartial,
-  isPrefabPartial,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -312,7 +310,7 @@ void (async (): Promise<void> => {
       const buildStructure = (
         structure: PrefabReference,
       ): BuildPrefabComponent => {
-        if (isPrefabPartial(structure)) {
+        if (structure.type === 'PARTIAL') {
           return structure;
         }
         const newStructure = {
@@ -321,10 +319,7 @@ void (async (): Promise<void> => {
           hash: hash(structure.options),
         };
 
-        if (
-          isPrefabComponent(newStructure) &&
-          newStructure.descendants.length > 0
-        ) {
+        if (newStructure.descendants.length > 0) {
           newStructure.descendants =
             newStructure.descendants.map(buildStructure);
         }
