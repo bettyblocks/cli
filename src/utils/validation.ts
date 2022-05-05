@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { Component, Prefab, PrefabComponent } from '../types';
+import { Component, Prefab, PrefabReference } from '../types';
 
 function fromStructure<
   KString extends string & keyof T,
@@ -60,16 +60,19 @@ export const findDuplicates = <
 
 const checkComponentReferenceNames =
   (names: Set<string>, prefabName: string) =>
-  ({ name, descendants }: PrefabComponent): void => {
-    if (!names.has(name)) {
-      throw new Error(
-        chalk.red(
-          `\nPrefab: ${prefabName} references to non-existing component "${name}"\n`,
-        ),
-      );
-    }
+  (prefabReference: PrefabReference): void => {
+    if (prefabReference.type !== 'PARTIAL') {
+      const { name, descendants } = prefabReference;
 
-    descendants.forEach(checkComponentReferenceNames(names, prefabName));
+      if (!names.has(name)) {
+        throw new Error(
+          chalk.red(
+            `\nPrefab: ${prefabName} references to non-existing component "${name}"\n`,
+          ),
+        );
+      }
+      descendants.forEach(checkComponentReferenceNames(names, prefabName));
+    }
   };
 
 export const checkNameReferences = (

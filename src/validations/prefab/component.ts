@@ -6,9 +6,9 @@ import Joi from 'joi';
 
 import {
   Prefab,
-  PrefabComponent,
   ComponentStyleMap,
   Component,
+  PrefabReference,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
 import { optionSchema } from './componentOption';
@@ -85,6 +85,13 @@ const styleValidator: StyleValidator = {
   }),
 };
 
+const partialSchema = (): Joi.ObjectSchema => {
+  return Joi.object({
+    type: Joi.string().valid('PARTIAL').required(),
+    partialId: Joi.string().allow('').required(),
+  });
+};
+
 const componentSchema = (
   componentStyleMap?: ComponentStyleMap,
   styleType?: keyof StyleValidator,
@@ -101,6 +108,7 @@ const componentSchema = (
       id: Joi.string().required(),
     }),
     options: Joi.array().items(optionSchema).required(),
+    type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap)))
       .required(),
@@ -160,26 +168,39 @@ const componentSchema = (
 
 export const validateComponent =
   (componentStyleMap?: ComponentStyleMap) =>
-  (component: PrefabComponent): Prefab | unknown => {
-    const { name, options } = component;
+  (component: PrefabReference): Prefab | unknown => {
+    if (component.type === 'PARTIAL') {
+      const { type } = component;
+      const { error } = partialSchema().validate(component);
 
-    const styleType: Component['styleType'] | undefined =
-      componentStyleMap &&
-      componentStyleMap[name] &&
-      componentStyleMap[name].styleType;
-    const { error } = componentSchema(
-      componentStyleMap,
-      styleType as keyof StyleValidator,
-    ).validate(component);
+      if (typeof error !== 'undefined') {
+        const { message } = error;
 
-    findDuplicates(options, 'option key', 'key');
+        throw new Error(
+          chalk.red(`\nBuild error in component ${type}: ${message}\n`),
+        );
+      }
+    } else {
+      const { name, options } = component;
 
-    if (typeof error !== 'undefined') {
-      const { message } = error;
+      const styleType: Component['styleType'] | undefined =
+        componentStyleMap &&
+        componentStyleMap[name] &&
+        componentStyleMap[name].styleType;
+      const { error } = componentSchema(
+        componentStyleMap,
+        styleType as keyof StyleValidator,
+      ).validate(component);
 
-      throw new Error(
-        chalk.red(`\nBuild error in component ${name}: ${message}\n`),
-      );
+      findDuplicates(options, 'option key', 'key');
+
+      if (typeof error !== 'undefined') {
+        const { message } = error;
+
+        throw new Error(
+          chalk.red(`\nBuild error in component ${name}: ${message}\n`),
+        );
+      }
     }
 
     return component;
