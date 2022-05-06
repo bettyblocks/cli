@@ -8,6 +8,7 @@ import program from 'commander';
 
 /* internal dependencies */
 
+import { functionDefinitions } from './functions/functionDefinitions';
 import publishAppFunctions from './functions/publishAppFunctions';
 import publishCustomFunctions from './functions/publishCustomFunctions';
 import {
@@ -63,11 +64,17 @@ void (async (): Promise<void> => {
     if (valid) {
       await publishAppFunctions({ skipCompile });
     } else {
-      console.log(
-        `${chalk.red(
-          `✖`,
-        )} Could not publish. Please make sure all functions are versioned and valid.`,
-      );
+      const baseFunctionsPath = path.join(workingDir, 'functions');
+      const allFunctions = functionDefinitions(baseFunctionsPath, true);
+      const versionedFunctions = functionDefinitions(baseFunctionsPath);
+
+      if (allFunctions.length !== versionedFunctions.length) {
+        console.log(
+          `Maybe auto-version your functions without a version number using ${chalk.cyan(
+            'bb functions autoversion',
+          )}?`,
+        );
+      }
     }
   } else {
     publishCustomFunctions(host, bump, skip);

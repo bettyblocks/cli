@@ -1,5 +1,6 @@
 /* npm dependencies */
 
+import chalk from 'chalk';
 import path from 'path';
 import program from 'commander';
 
@@ -43,7 +44,9 @@ void (async (): Promise<void> => {
 
   if (allFunctions.length !== versionedFunctions.length) {
     console.log(
-      'Maybe auto-version your functions without a version number using `bb functions autoversion`?',
+      `Maybe auto-version your functions without a version number using ${chalk.cyan(
+        'bb functions autoversion',
+      )}?`,
     );
   }
 })();
