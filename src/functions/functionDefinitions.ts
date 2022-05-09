@@ -113,9 +113,11 @@ const functionDefinitions = (
 const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
   const updatedDefinitions = definitions.reduce(
     (acc, { name, version, schema }) => {
+      const key = `${name} ${version}`;
       return {
         ...acc,
-        [name]: {
+        [key]: {
+          name,
           version,
           ...schema,
           options: JSON.stringify(schema.options),
