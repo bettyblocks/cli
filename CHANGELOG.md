@@ -1,3 +1,17 @@
+# [25.25.0](https://github.com/bettyblocks/cli/compare/v25.24.0...v25.25.0) (2022-05-05)
+
+
+### Features
+
+* allow partials references in prefab structures ([b4835ab](https://github.com/bettyblocks/cli/commit/b4835ab))
+
+# [25.24.0](https://github.com/bettyblocks/cli/compare/v25.23.0...v25.24.0) (2022-05-02)
+
+
+### Features
+
+* adds boolean option to CLI ([#298](https://github.com/bettyblocks/cli/issues/298)) ([1bb05a9](https://github.com/bettyblocks/cli/commit/1bb05a9))
+
 # [25.23.0](https://github.com/bettyblocks/cli/compare/v25.22.3...v25.23.0) (2022-03-23)
 
 

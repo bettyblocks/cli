@@ -10,6 +10,13 @@ type Schema = {
   [other: string]: unknown;
 };
 
+type APIFunctionDefinition = {
+  name: string;
+  version: string;
+  options: string;
+  [other: string]: unknown;
+};
+
 export type FunctionDefinition = {
   name: string;
   version: string;
@@ -123,22 +130,12 @@ const functionDefinitions = (
 };
 
 const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
-  const updatedDefinitions = definitions.reduce(
-    (acc, { name, version, schema }) => {
-      const key = `${name} ${version}`;
-      return {
-        ...acc,
-        [key]: {
-          name,
-          version,
-          ...schema,
-          options: JSON.stringify(schema.options),
-        },
-      };
-    },
-    {},
-  );
-
+  const updatedDefinitions = definitions.map(({ name, version, schema }) => ({
+    name,
+    version,
+    ...schema,
+    options: JSON.stringify(schema.options),
+  }));
   return JSON.stringify(updatedDefinitions);
 };
 

@@ -50,9 +50,15 @@ export interface Component {
   type: string;
 }
 
+export type PrefabReference = PrefabComponent | PrefabPartial;
+
+export type PrefabPartial = {
+  type: 'PARTIAL';
+  partialId: string;
+};
 export interface PrefabComponent {
+  type?: 'COMPONENT';
   actions?: PrefabAction[];
-  descendants: PrefabComponent[];
   name: string;
   style?: {
     name?: string;
@@ -84,6 +90,7 @@ export interface PrefabComponent {
       textTransform?: string;
     };
   };
+  descendants: PrefabReference[];
   options: PrefabComponentOption[];
   ref?: {
     id: string;
@@ -161,7 +168,7 @@ export interface Prefab {
   keywords?: string[];
   icon: Icon;
   interactions?: PrefabInteraction[];
-  structure: PrefabComponent[];
+  structure: PrefabReference[];
   variables?: PrefabVariable[];
   type?: string;
   description?: string;
