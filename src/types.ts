@@ -25,7 +25,8 @@ export type CommandFunctions =
   | 'build'
   | 'publish'
   | 'validate'
-  | 'autoversion';
+  | 'autoversion'
+  | 'bump';
 
 export type CommandInteractions = 'generate';
 

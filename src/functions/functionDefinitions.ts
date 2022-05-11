@@ -6,6 +6,7 @@ import glob from 'glob';
 import path from 'path';
 
 type Schema = {
+  label: string;
   [other: string]: unknown;
 };
 
