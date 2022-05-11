@@ -66,10 +66,10 @@ test('Throw when useNewRuntime is not a boolean', (t: Context): void => {
     category: 'CONTENT',
     icon: 'TitleIcon',
     actions: [
-      ({
+      {
         name: 'foo',
         useNewRuntime: '1',
-      } as unknown) as PrefabAction,
+      } as unknown as PrefabAction,
     ],
     name: 'Prefab',
     structure: [],
@@ -531,6 +531,7 @@ test('Throw when component option has a value and a ref object with a value', (t
     name: 'Prefab',
     structure: [
       {
+        type: 'COMPONENT',
         name: 'HelloWorld',
         options: [
           {
@@ -653,7 +654,7 @@ Build error in component HelloWorld: "options[0].ref" is not allowed
 });
 
 test('Throw when component option has a ref object without a value', (t: Context): void => {
-  const prefab = ({
+  const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     name: 'Prefab',
@@ -674,7 +675,7 @@ test('Throw when component option has a ref object without a value', (t: Context
         descendants: [],
       },
     ],
-  } as unknown) as Prefab;
+  } as unknown as Prefab;
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
@@ -686,7 +687,7 @@ Build error in component HelloWorld: "options[0].ref.value" is required
 });
 
 test('Throw when component option has neither ref nor value', (t: Context): void => {
-  const prefab = ({
+  const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     name: 'Prefab',
@@ -706,7 +707,7 @@ test('Throw when component option has neither ref nor value', (t: Context): void
         descendants: [],
       },
     ],
-  } as unknown) as Prefab;
+  } as unknown as Prefab;
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
@@ -718,7 +719,7 @@ Build error in component HelloWorld: "options[0].ref" is required
 });
 
 test('Throw when multiple action reference the same id', (t: Context): void => {
-  const prefab = ({
+  const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     name: 'Prefab',
@@ -757,7 +758,7 @@ test('Throw when multiple action reference the same id', (t: Context): void => {
         useNewRuntime: true,
       },
     ],
-  } as unknown) as Prefab;
+  } as unknown as Prefab;
 
   t.throws(() => validatePrefabs([prefab]), {
     message: `
