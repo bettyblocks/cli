@@ -229,6 +229,42 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   return Promise.all(prefabs);
 };
 
+const readPartialPrefabs: () => Promise<Prefab[]> = async (): Promise<
+  Prefab[]
+> => {
+  const srcDir = `${rootDir}/src/prefabs/partials`;
+  const exists: boolean = await pathExists(srcDir);
+
+  if (!exists) {
+    throw new Error(chalk.red('\nPartials folder not found\n'));
+  }
+
+  const partialPrefabFiles: string[] = await readFilesByType(srcDir);
+
+  const partialPrefabs: Array<Promise<Prefab>> = partialPrefabFiles.map(
+    async (file: string): Promise<Prefab> => {
+      try {
+        const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval,@typescript-eslint/no-unsafe-assignment
+        const transpiledFunction = Function(
+          `return ${transpile(code, ['beforeCreate'])}`,
+        )();
+
+        if (!transpiledFunction) {
+          throw new Error("Prefab doesn't return anything");
+        }
+
+        return transpiledFunction;
+      } catch (error) {
+        error.file = file;
+        throw error;
+      }
+    },
+  );
+
+  return Promise.all(partialPrefabs);
+};
+
 const readInteractions: () => Promise<Interaction[]> = async (): Promise<
   Interaction[]
 > => {
@@ -268,12 +304,13 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
-    const [newPrefabs, oldPrefabs, components, interactions] =
+    const [newPrefabs, oldPrefabs, components, interactions, partialprefabs] =
       await Promise.all([
         readtsPrefabs(),
         readPrefabs(),
         readComponents(),
         readInteractions(),
+        readPartialPrefabs(),
       ]);
 
     const prefabs = oldPrefabs.concat(newPrefabs);
@@ -289,6 +326,7 @@ void (async (): Promise<void> => {
     await Promise.all([
       validateComponents(components),
       validatePrefabs(prefabs, componentStyleMap),
+      validatePrefabs(partialprefabs, componentStyleMap, 'partial'),
       interactions && validateInteractions(interactions),
     ]);
 
@@ -306,7 +344,7 @@ void (async (): Promise<void> => {
 
     type BuildPrefabComponent = BuildPrefab | PrefabPartial;
 
-    const buildPrefabs = prefabs.map((prefab) => {
+    const buildPrefab = (prefab: Prefab): Prefab => {
       const buildStructure = (
         structure: PrefabReference,
       ): BuildPrefabComponent => {
@@ -326,12 +364,14 @@ void (async (): Promise<void> => {
 
         return newStructure;
       };
-
       return {
         ...prefab,
         structure: prefab.structure.map(buildStructure),
       };
-    });
+    };
+
+    const buildPrefabs = prefabs.map(buildPrefab);
+    const buildPartialprefabs = partialprefabs.map(buildPrefab);
 
     await mkdir(distDir, { recursive: true });
 
@@ -342,6 +382,7 @@ void (async (): Promise<void> => {
     const outputPromises = [
       outputJson(`${distDir}/prefabs.json`, defaultPrefabs),
       outputJson(`${distDir}/templates.json`, componentsWithHash),
+
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ];
 
@@ -357,6 +398,18 @@ void (async (): Promise<void> => {
 
     if (pagePrefabs.length === 0 && existingPath) {
       await remove(`${distDir}/pagePrefabs.json`);
+    }
+
+    if (buildPartialprefabs.length > 0) {
+      outputPromises.push(
+        outputJson(`${distDir}/partials.json`, buildPartialprefabs),
+      );
+    }
+
+    const existingPartialPath = await pathExists(`${distDir}/partials.json`);
+
+    if (buildPartialprefabs.length === 0 && existingPartialPath) {
+      await remove(`${distDir}/partials.json`);
     }
 
     await Promise.all(outputPromises);

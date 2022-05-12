@@ -18,6 +18,7 @@ import { variableSchema } from './prefab/variable';
 
 const schemaProvider = (
   componentStyleMap?: ComponentStyleMap,
+  prefabType?: string,
 ): Joi.ObjectSchema => {
   return Joi.object({
     name: Joi.string().required(),
@@ -36,16 +37,20 @@ const schemaProvider = (
     variables: Joi.array().items(variableSchema).max(MAX_VARIABLES),
     beforeCreate: Joi.any(),
     structure: Joi.array()
-      .items(Joi.custom(validateComponent(componentStyleMap)))
+      .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
       .required(),
   });
 };
 
+type PrefabTypes = 'partial' | 'page';
+
 const validate =
-  (componentStyleMap?: ComponentStyleMap) =>
+  (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
   (prefab: Prefab): void => {
     const { actions, variables } = prefab;
-    const { error } = schemaProvider(componentStyleMap).validate(prefab);
+    const { error } = schemaProvider(componentStyleMap, prefabType).validate(
+      prefab,
+    );
 
     if (Array.isArray(actions)) {
       findDuplicates(actions, 'action', { ref: 'id' });
@@ -66,8 +71,9 @@ const validate =
 export default (
   prefabs: Prefab[],
   componentStyleMap?: ComponentStyleMap,
+  prefabType?: PrefabTypes,
 ): void => {
-  prefabs.forEach(validate(componentStyleMap));
+  prefabs.forEach(validate(componentStyleMap, prefabType));
 
   findDuplicates(prefabs, 'prefab', 'name');
 };

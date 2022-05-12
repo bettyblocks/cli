@@ -167,9 +167,12 @@ const componentSchema = (
 };
 
 export const validateComponent =
-  (componentStyleMap?: ComponentStyleMap) =>
+  (componentStyleMap?: ComponentStyleMap, prefabType?: string) =>
   (component: PrefabReference): Prefab | unknown => {
     if (component.type === 'PARTIAL') {
+      if (prefabType === 'partial') {
+        throw new Error(chalk.red(`\nPrefab`));
+      }
       const { type } = component;
       const { error } = partialSchema().validate(component);
 
