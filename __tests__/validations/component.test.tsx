@@ -512,3 +512,75 @@ test('Throw when two options with the same key are being used', (t: Context): vo
 
   t.throws(() => validatePrefabs(prefabs));
 });
+
+test('Does not throw when valid partial Prefab', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'partial Prefab',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'Option 1',
+              key: 'sameKey',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  validatePrefabs(prefabs, {}, 'partial');
+  t.pass();
+});
+
+test('Throw when partialcomponent in partial Prefab', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'partial Prefab',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          partialId: '',
+          type: 'PARTIAL',
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs, {}, 'partial'));
+});
+
+test('Throw when type key in partial Prefab', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'partial Prefab',
+      icon: 'TitleIcon',
+      type: 'page',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'Option 1',
+              key: 'sameKey',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+  t.throws(() => validatePrefabs(prefabs, {}, 'partial'));
+});
+

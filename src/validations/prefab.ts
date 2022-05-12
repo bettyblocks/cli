@@ -16,9 +16,10 @@ import { validateComponent } from './prefab/component';
 import { interactionSchema } from './prefab/interaction';
 import { variableSchema } from './prefab/variable';
 
+export type PrefabTypes = 'partial' | 'page' | undefined;
 const schemaProvider = (
   componentStyleMap?: ComponentStyleMap,
-  prefabType?: string,
+  prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
   return Joi.object({
     name: Joi.string().required(),
@@ -27,7 +28,8 @@ const schemaProvider = (
       .valid(...ICONS)
       .required(),
     category: Joi.string().required(),
-    type: Joi.string().valid('page'),
+    type:
+      prefabType === 'partial' ? Joi.forbidden() : Joi.string().valid('page'),
     description: Joi.string(),
     detail: Joi.string(),
     previewImage: Joi.string(),
@@ -42,11 +44,10 @@ const schemaProvider = (
   });
 };
 
-type PrefabTypes = 'partial' | 'page';
-
 const validate =
   (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
   (prefab: Prefab): void => {
+    console.log('prefab.ts: ', prefabType);
     const { actions, variables } = prefab;
     const { error } = schemaProvider(componentStyleMap, prefabType).validate(
       prefab,

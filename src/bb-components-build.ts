@@ -325,7 +325,7 @@ void (async (): Promise<void> => {
 
     await Promise.all([
       validateComponents(components),
-      validatePrefabs(prefabs, componentStyleMap),
+      // validatePrefabs(prefabs, componentStyleMap),
       validatePrefabs(partialprefabs, componentStyleMap, 'partial'),
       interactions && validateInteractions(interactions),
     ]);
