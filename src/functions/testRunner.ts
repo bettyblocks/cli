@@ -96,12 +96,37 @@ const run = (testFile: string, workingDir: string): Promise<string> => {
 
   const bundle = path.join(workingDir, '.tmp', 'dist', 'app.bundle.js');
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
-
   const context = isolate.createContextSync();
+
   context.global.setSync('ivm', ivm);
+  context.global.setSync(
+    `$console`,
+    new ivm.Reference(
+      (level: 'log' | 'debug' | 'info' | 'warn' | 'error', args: unknown[]) =>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        console[level](...args),
+    ),
+  );
 
   const script = isolate.compileScriptSync(
     `function run(resolve, reject) {
+  const console = (() => {
+    const log = (level) =>
+      (...args) =>
+        $console.apply(null, [
+          level,
+          new ivm.ExternalCopy(args).copyInto()
+        ]);
+
+    return {
+      log: log('log'),
+      debug: log('debug'),
+      info: log('info'),
+      warn: log('warn'),
+      error: log('error'),
+    };
+  })();
+
   ${fs.existsSync(helpers) ? fs.readFileSync(helpers, 'utf-8') : ''}
   ${fs.readFileSync(bundle, 'utf-8')}
 
