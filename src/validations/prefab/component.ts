@@ -172,8 +172,6 @@ export const validateComponent =
   (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
   (component: PrefabReference): Prefab | unknown => {
     if (component.type === 'PARTIAL') {
-      console.log('componenttype: ', component.type);
-      console.log('prefabtype: ', prefabType);
       if (prefabType === 'partial') {
         throw new Error(
           chalk.red(`\n Partials are not supported in partial Prefabs\n`),
