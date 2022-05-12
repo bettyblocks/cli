@@ -236,7 +236,7 @@ const readPartialPrefabs: () => Promise<Prefab[]> = async (): Promise<
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error(chalk.red('\nPartials folder not found\n'));
+    await mkdir(srcDir, { recursive: true });
   }
 
   const partialPrefabFiles: string[] = await readFilesByType(srcDir);

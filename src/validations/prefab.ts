@@ -47,7 +47,6 @@ const schemaProvider = (
 const validate =
   (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
   (prefab: Prefab): void => {
-    console.log('prefab.ts: ', prefabType);
     const { actions, variables } = prefab;
     const { error } = schemaProvider(componentStyleMap, prefabType).validate(
       prefab,
