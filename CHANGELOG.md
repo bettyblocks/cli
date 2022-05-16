@@ -1,3 +1,10 @@
+## [25.27.1](https://github.com/bettyblocks/cli/compare/v25.27.0...v25.27.1) (2022-05-16)
+
+
+### Bug Fixes
+
+* remove name from function json ([#303](https://github.com/bettyblocks/cli/issues/303)) ([37ee8c5](https://github.com/bettyblocks/cli/commit/37ee8c5))
+
 # [25.27.0](https://github.com/bettyblocks/cli/compare/v25.26.0...v25.27.0) (2022-05-16)
 
 
