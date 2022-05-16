@@ -10,14 +10,14 @@ const schema = {
   $id: '/schema/actions/function.json',
   title: 'Function',
   properties: {
-    name: {
+    label: {
       type: 'string',
     },
     icon: {
       enum: ['CreateIcon', 'DeleteIcon'],
     },
   },
-  required: ['name'],
+  required: ['label'],
 };
 
 const validator = new Validator();
