@@ -6,8 +6,8 @@ import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
 import {
   FunctionDefinition,
-  functionDefinition,
   functionDefinitions,
+  isFunctionVersion,
 } from './functionDefinitions';
 import Config from './config';
 
@@ -19,7 +19,7 @@ export type ValidationResult = {
   path: string;
   status: string;
   functionName?: string;
-  errors: ValidationError[] | { message: string }[];
+  errors: ValidationError[] | Error[];
 };
 
 const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {
@@ -72,19 +72,38 @@ const validateFunctionDefinition = (
   return validator.validate(definition, functionSchema);
 };
 
-const validateFunction = (
+const forceVersion = (
+  { path: functionPath }: FunctionDefinition,
+  functionsDir: string,
+): void => {
+  if (!isFunctionVersion(path.dirname(functionPath), functionsDir)) {
+    throw new Error(
+      `${functionPath.replace(
+        '/function.json',
+        '',
+      )} does not apply as a valid version directory`,
+    );
+  }
+};
+
+const validateSchema = (
   functionJson: object,
   validator: Validator,
 ): ValidationResult => {
-  const { path: definitionPath, schema } = functionJson as FunctionDefinition;
-  const { errors } = validateFunctionDefinition(validator, schema);
+  const {
+    name,
+    version,
+    path: definitionPath,
+    schema,
+  } = functionJson as FunctionDefinition;
 
+  const { errors } = validateFunctionDefinition(validator, schema);
   const status = errors.length ? 'error' : 'ok';
 
   return {
     status,
     path: definitionPath,
-    functionName: schema.name,
+    functionName: `${name}-${version}`,
     errors,
   };
 };
@@ -106,26 +125,37 @@ class FunctionValidator {
     await importSchema(this.schemaValidator, this.config);
   }
 
-  validateFunction(functionName: string): ValidationResult {
-    const functionPath = path.join(this.functionsDir, functionName);
+  validateFunction(definition: FunctionDefinition): ValidationResult {
+    const functionPath = definition.path;
+    const functionName = functionPath;
+
     try {
-      const definition = functionDefinition(functionPath);
-      return validateFunction(definition, this.schemaValidator);
-    } catch (err) {
+      forceVersion(definition, this.functionsDir);
+      return validateSchema(definition, this.schemaValidator);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
       return {
         status: 'error',
         path: functionPath,
         functionName,
-        errors: [{ message: `${err}` }],
+        errors: [new Error(message)],
       };
     }
   }
 
-  async validateFunctions(): Promise<ValidationResult[]> {
-    const definitions = functionDefinitions(this.functionsDir);
+  async validateFunctions(functionName?: string): Promise<ValidationResult[]> {
+    const definitions = functionDefinitions(this.functionsDir, true);
+    const validations: ValidationResult[] = [];
 
-    const validations = definitions.map((definition) => {
-      return validateFunction(definition, this.schemaValidator);
+    definitions.forEach((definition) => {
+      const preleadingPath = path.join(
+        this.functionsDir,
+        functionName || '',
+        '/',
+      );
+      if (definition.path.match(preleadingPath)) {
+        validations.push(this.validateFunction(definition));
+      }
     });
 
     return Promise.all(validations);
@@ -151,6 +181,6 @@ const logValidationResult = ({
 export {
   FunctionValidator,
   functionValidator,
-  validateFunction,
+  validateSchema,
   logValidationResult,
 };

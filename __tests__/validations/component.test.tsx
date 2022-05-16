@@ -94,7 +94,7 @@ test("Don't throw when all prefabs are valid", (t: Context): void => {
 });
 
 test('Throw when one of the prefabs options is invalid', (t: Context): void => {
-  const prefabs = ([
+  const prefabs = [
     {
       name: 'Component Name',
       icon: 'TitleIcon',
@@ -115,13 +115,166 @@ test('Throw when one of the prefabs options is invalid', (t: Context): void => {
         },
       ],
     },
-  ] as unknown) as Prefab[];
+  ] as unknown as Prefab[];
 
   t.throws(() => validatePrefabs(prefabs));
 });
 
+test('Throw when type partial has descendants', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [
+            {
+              type: 'PARTIAL',
+              descendants: [],
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+test('Throw when type partial has name', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [
+            {
+              name: 'Partial',
+              type: 'PARTIAL',
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+test('Throw when type partial has options', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [
+            {
+              type: 'PARTIAL',
+              options: [],
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+test('Throw when type component has partialId', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [
+            {
+              name: 'Component',
+              partialId: '',
+              options: [
+                {
+                  type: 'PARTIAL_REFERENCE',
+                  label: 'Partial Reference',
+                  key: 'partialReferenceId',
+                  value: '""',
+                },
+                {
+                  type: 'PARTIAL_INPUT_OBJECTS',
+                  label: 'Partial inputs',
+                  key: 'partialInputMapping',
+                  value: '{}',
+                },
+              ],
+              descendants: [],
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+test('Does not throw when partial object is within the structure', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'PARTIAL',
+          partialId: '',
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
+
 test('Does not throw when button prefabs style override options are valid', (t: Context): void => {
-  const prefabs = ([
+  const prefabs = [
     {
       name: 'Component name',
       icon: 'TitleIcon',
@@ -172,7 +325,7 @@ test('Does not throw when button prefabs style override options are valid', (t: 
         },
       ],
     },
-  ] as unknown) as Prefab[];
+  ] as unknown as Prefab[];
 
   t.notThrows(() =>
     validatePrefabs(prefabs, { Button: { styleType: 'BUTTON' } }),
@@ -180,7 +333,7 @@ test('Does not throw when button prefabs style override options are valid', (t: 
 });
 
 test('Throw when one of the prefabs style override string options is invalid', (t: Context): void => {
-  const prefabs = ([
+  const prefabs = [
     {
       name: 'Component name',
       icon: 'TitleIcon',
@@ -206,13 +359,13 @@ test('Throw when one of the prefabs style override string options is invalid', (
         },
       ],
     },
-  ] as unknown) as Prefab[];
+  ] as unknown as Prefab[];
 
   t.throws(() => validatePrefabs(prefabs, { Button: { styleType: 'BUTTON' } }));
 });
 
 test('Throw when one of the prefabs style override array options is invalid', (t: Context): void => {
-  const prefabs = ([
+  const prefabs = [
     {
       name: 'Component name',
       icon: 'TitleIcon',
@@ -238,13 +391,13 @@ test('Throw when one of the prefabs style override array options is invalid', (t
         },
       ],
     },
-  ] as unknown) as Prefab[];
+  ] as unknown as Prefab[];
 
   t.throws(() => validatePrefabs(prefabs, { Button: { styleType: 'BUTTON' } }));
 });
 
 test('Throw when style name is non-alphanumeric', (t: Context): void => {
-  const prefabs = ([
+  const prefabs = [
     {
       name: 'Component Name',
       icon: 'TitleIcon',
@@ -267,13 +420,13 @@ test('Throw when style name is non-alphanumeric', (t: Context): void => {
         },
       ],
     },
-  ] as unknown) as Prefab[];
+  ] as unknown as Prefab[];
 
   t.throws(() => validatePrefabs(prefabs));
 });
 
 test('Dont throw when prefab component has a ref', (t: Context): void => {
-  const prefabs = ([
+  const prefabs = [
     {
       name: 'Component Name',
       icon: 'TitleIcon',
@@ -296,7 +449,7 @@ test('Dont throw when prefab component has a ref', (t: Context): void => {
         },
       ],
     },
-  ] as unknown) as Prefab[];
+  ] as unknown as Prefab[];
 
   validatePrefabs(prefabs);
   t.pass();
@@ -359,3 +512,75 @@ test('Throw when two options with the same key are being used', (t: Context): vo
 
   t.throws(() => validatePrefabs(prefabs));
 });
+
+test('Does not throw when valid partial Prefab', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'partial Prefab',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'Option 1',
+              key: 'sameKey',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  validatePrefabs(prefabs, {}, 'partial');
+  t.pass();
+});
+
+test('Throw when partialcomponent in partial Prefab', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'partial Prefab',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          partialId: '',
+          type: 'PARTIAL',
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs, {}, 'partial'));
+});
+
+test('Throw when type key in partial Prefab', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'partial Prefab',
+      icon: 'TitleIcon',
+      type: 'page',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'Option 1',
+              key: 'sameKey',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+  t.throws(() => validatePrefabs(prefabs, {}, 'partial'));
+});
+

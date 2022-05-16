@@ -1,3 +1,38 @@
+## [25.27.1](https://github.com/bettyblocks/cli/compare/v25.27.0...v25.27.1) (2022-05-16)
+
+
+### Bug Fixes
+
+* remove name from function json ([#303](https://github.com/bettyblocks/cli/issues/303)) ([37ee8c5](https://github.com/bettyblocks/cli/commit/37ee8c5))
+
+# [25.27.0](https://github.com/bettyblocks/cli/compare/v25.26.0...v25.27.0) (2022-05-16)
+
+
+### Features
+
+* add partial prefabs to cli ([1fd3b8e](https://github.com/bettyblocks/cli/commit/1fd3b8e))
+
+# [25.26.0](https://github.com/bettyblocks/cli/compare/v25.25.0...v25.26.0) (2022-05-16)
+
+
+### Features
+
+* implement versioning to actions functions ACTIONS-707 ([#300](https://github.com/bettyblocks/cli/issues/300)) ([48b8080](https://github.com/bettyblocks/cli/commit/48b8080))
+
+# [25.25.0](https://github.com/bettyblocks/cli/compare/v25.24.0...v25.25.0) (2022-05-05)
+
+
+### Features
+
+* allow partials references in prefab structures ([b4835ab](https://github.com/bettyblocks/cli/commit/b4835ab))
+
+# [25.24.0](https://github.com/bettyblocks/cli/compare/v25.23.0...v25.24.0) (2022-05-02)
+
+
+### Features
+
+* adds boolean option to CLI ([#298](https://github.com/bettyblocks/cli/issues/298)) ([1bb05a9](https://github.com/bettyblocks/cli/commit/1bb05a9))
+
 # [25.23.0](https://github.com/bettyblocks/cli/compare/v25.22.3...v25.23.0) (2022-03-23)
 
 
