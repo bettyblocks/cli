@@ -1,3 +1,10 @@
+# [25.26.0](https://github.com/bettyblocks/cli/compare/v25.25.0...v25.26.0) (2022-05-16)
+
+
+### Features
+
+* implement versioning to actions functions ACTIONS-707 ([#300](https://github.com/bettyblocks/cli/issues/300)) ([48b8080](https://github.com/bettyblocks/cli/commit/48b8080))
+
 # [25.25.0](https://github.com/bettyblocks/cli/compare/v25.24.0...v25.25.0) (2022-05-05)
 
 
