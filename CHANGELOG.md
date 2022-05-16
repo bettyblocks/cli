@@ -1,3 +1,10 @@
+# [25.27.0](https://github.com/bettyblocks/cli/compare/v25.26.0...v25.27.0) (2022-05-16)
+
+
+### Features
+
+* add partial prefabs to cli ([1fd3b8e](https://github.com/bettyblocks/cli/commit/1fd3b8e))
+
 # [25.26.0](https://github.com/bettyblocks/cli/compare/v25.25.0...v25.26.0) (2022-05-16)
 
 
