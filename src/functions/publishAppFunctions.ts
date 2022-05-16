@@ -24,6 +24,7 @@ const workingDir = process.cwd();
 
 type FunctionResult = {
   name: string;
+  version?: string;
   status: 'ok' | 'error';
   id?: string;
   error?: string;
@@ -41,16 +42,19 @@ type PublishOptions = {
 };
 
 const logResult = (
-  { status, name, error }: FunctionResult,
+  { status, name, version, error }: FunctionResult,
   operation: string,
 ): void => {
+  const delimiter = version ? '-' : '';
   if (status === 'ok') {
-    console.log(`${chalk.green(`✔`)} ${operation} ${name}.`);
+    console.log(
+      `${chalk.green(`✔`)} ${operation} ${name}${delimiter}${version || ''}.`,
+    );
   } else {
     console.log(
-      `${chalk.red(`✖`)} ${operation} ${name} failed. Errors: ${JSON.stringify(
-        error,
-      )}.`,
+      `${chalk.red(`✖`)} ${operation} ${name}${delimiter}${
+        version || ''
+      } failed. Errors: ${JSON.stringify(error)}.`,
     );
   }
 };

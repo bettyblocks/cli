@@ -1,0 +1,8 @@
+{
+  "description": "This is an invalid function",
+  "label": "Sorry",
+  "category": "Misc",
+  "icon": "CreateIcon",
+  "options": [],
+  "yields": "NONE"
+}

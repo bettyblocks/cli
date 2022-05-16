@@ -81,3 +81,6 @@ typings/
 
 # VSCode
 .vscode
+
+# Test artifacts
+__tests__/support/tmpFunctions*
