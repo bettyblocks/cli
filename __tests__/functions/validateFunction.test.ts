@@ -27,7 +27,7 @@ test('load in entire schema for validator', async (t: Context): Promise<void> =>
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
-      name: 'create',
+      label: 'Create',
       icon: 'CreateIcon',
     },
   };
@@ -68,14 +68,14 @@ test('invalidate empty schemas', async (t: Context): Promise<void> => {
   );
 
   t.is(status, 'error');
-  t.is(message, 'requires property "name"');
+  t.is(message, 'requires property "label"');
 });
 
 test('invalidate schemas that do not have valid values for properties', async (t: Context): Promise<void> => {
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
-      name: 'create',
+      label: 'Create',
       icon: 'RandomIcon',
     },
   };
