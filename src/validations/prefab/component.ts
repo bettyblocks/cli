@@ -14,6 +14,7 @@ import { findDuplicates } from '../../utils/validation';
 import { optionSchema } from './componentOption';
 
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
+type PrefabTypes = 'partial' | 'page' | undefined;
 
 const shadows = [
   'none',
@@ -95,6 +96,7 @@ const partialSchema = (): Joi.ObjectSchema => {
 const componentSchema = (
   componentStyleMap?: ComponentStyleMap,
   styleType?: keyof StyleValidator,
+  prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
   const canValidateStyle = styleType && styleValidator[styleType];
 
@@ -110,7 +112,7 @@ const componentSchema = (
     options: Joi.array().items(optionSchema).required(),
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
-      .items(Joi.custom(validateComponent(componentStyleMap)))
+      .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
       .required(),
 
     // lifecycle hooks
@@ -167,9 +169,14 @@ const componentSchema = (
 };
 
 export const validateComponent =
-  (componentStyleMap?: ComponentStyleMap) =>
+  (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
   (component: PrefabReference): Prefab | unknown => {
     if (component.type === 'PARTIAL') {
+      if (prefabType === 'partial') {
+        throw new Error(
+          chalk.red(`\n Partials are not supported in partial Prefabs\n`),
+        );
+      }
       const { type } = component;
       const { error } = partialSchema().validate(component);
 
@@ -190,6 +197,7 @@ export const validateComponent =
       const { error } = componentSchema(
         componentStyleMap,
         styleType as keyof StyleValidator,
+        prefabType,
       ).validate(component);
 
       findDuplicates(options, 'option key', 'key');

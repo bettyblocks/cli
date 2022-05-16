@@ -16,8 +16,10 @@ import { validateComponent } from './prefab/component';
 import { interactionSchema } from './prefab/interaction';
 import { variableSchema } from './prefab/variable';
 
+export type PrefabTypes = 'partial' | 'page' | undefined;
 const schemaProvider = (
   componentStyleMap?: ComponentStyleMap,
+  prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
   return Joi.object({
     name: Joi.string().required(),
@@ -26,7 +28,8 @@ const schemaProvider = (
       .valid(...ICONS)
       .required(),
     category: Joi.string().required(),
-    type: Joi.string().valid('page'),
+    type:
+      prefabType === 'partial' ? Joi.forbidden() : Joi.string().valid('page'),
     description: Joi.string(),
     detail: Joi.string(),
     previewImage: Joi.string(),
@@ -36,16 +39,18 @@ const schemaProvider = (
     variables: Joi.array().items(variableSchema).max(MAX_VARIABLES),
     beforeCreate: Joi.any(),
     structure: Joi.array()
-      .items(Joi.custom(validateComponent(componentStyleMap)))
+      .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
       .required(),
   });
 };
 
 const validate =
-  (componentStyleMap?: ComponentStyleMap) =>
+  (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
   (prefab: Prefab): void => {
     const { actions, variables } = prefab;
-    const { error } = schemaProvider(componentStyleMap).validate(prefab);
+    const { error } = schemaProvider(componentStyleMap, prefabType).validate(
+      prefab,
+    );
 
     if (Array.isArray(actions)) {
       findDuplicates(actions, 'action', { ref: 'id' });
@@ -66,8 +71,9 @@ const validate =
 export default (
   prefabs: Prefab[],
   componentStyleMap?: ComponentStyleMap,
+  prefabType?: PrefabTypes,
 ): void => {
-  prefabs.forEach(validate(componentStyleMap));
+  prefabs.forEach(validate(componentStyleMap, prefabType));
 
   findDuplicates(prefabs, 'prefab', 'name');
 };
