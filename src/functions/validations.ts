@@ -78,9 +78,8 @@ const forceVersion = (
 ): void => {
   if (!isFunctionVersion(path.dirname(functionPath), functionsDir)) {
     throw new Error(
-      `${functionPath.replace(
-        `${path.sep}function.json`,
-        '',
+      `${path.dirname(
+        functionPath,
       )} does not apply as a valid version directory`,
     );
   }
