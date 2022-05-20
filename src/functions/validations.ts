@@ -152,7 +152,7 @@ class FunctionValidator {
         functionName || '',
         path.sep,
       );
-      if (definition.path.match(preleadingPath)) {
+      if (definition.path.indexOf(preleadingPath) === 0) {
         validations.push(this.validateFunction(definition));
       }
     });

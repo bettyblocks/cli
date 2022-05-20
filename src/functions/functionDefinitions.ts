@@ -63,9 +63,9 @@ const functionDirs = (
   includeNonversioned = false,
 ): string[] =>
   glob
-    .sync(path.join(functionsDir, '**', 'function.json'))
+    .sync(path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'))
     .reduce((dirs, functionDefinition) => {
-      const dir = path.dirname(functionDefinition);
+      const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
       if (
         isFunction(dir) &&
         (includeNonversioned || isFunctionVersion(dir, functionsDir))
