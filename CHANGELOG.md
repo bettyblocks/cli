@@ -1,3 +1,10 @@
+## [25.27.2](https://github.com/bettyblocks/cli/compare/v25.27.1...v25.27.2) (2022-05-20)
+
+
+### Bug Fixes
+
+* remove hardcoded slash ([#304](https://github.com/bettyblocks/cli/issues/304)) ([2131921](https://github.com/bettyblocks/cli/commit/2131921))
+
 ## [25.27.1](https://github.com/bettyblocks/cli/compare/v25.27.0...v25.27.1) (2022-05-16)
 
 
