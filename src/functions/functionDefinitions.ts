@@ -10,13 +10,6 @@ type Schema = {
   [other: string]: unknown;
 };
 
-type APIFunctionDefinition = {
-  name: string;
-  version: string;
-  options: string;
-  [other: string]: unknown;
-};
-
 export type FunctionDefinition = {
   name: string;
   version: string;
@@ -70,9 +63,9 @@ const functionDirs = (
   includeNonversioned = false,
 ): string[] =>
   glob
-    .sync(path.join(functionsDir, '**', 'function.json'))
+    .sync(path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'))
     .reduce((dirs, functionDefinition) => {
-      const dir = path.dirname(functionDefinition);
+      const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
       if (
         isFunction(dir) &&
         (includeNonversioned || isFunctionVersion(dir, functionsDir))
@@ -231,7 +224,7 @@ const generateIndex = (functionsPath: string): string => {
 const zipFunctionDefinitions = (functionsPath: string): string => {
   const zip = new AdmZip();
   const tmpDir = '.tmp';
-  const zipFilePath = `${tmpDir}/app.zip`;
+  const zipFilePath = path.join(tmpDir, 'app.zip');
 
   fs.ensureDirSync(tmpDir);
 
