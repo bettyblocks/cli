@@ -183,9 +183,9 @@ const importFunctions = (
 ): string[] =>
   definitions.map<string>(
     (definition) =>
-      `import { default as ${toVariableName(definition)} } from '${path.dirname(
-        definition.path.replace(functionsPath, '.'),
-      )}';`,
+      `import { default as ${toVariableName(definition)} } from '${path
+        .dirname(definition.path.replace(functionsPath, '.'))
+        .replace(/\\/g, '/')}';`,
   );
 
 /* @doc exportFunctions
