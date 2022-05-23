@@ -100,6 +100,7 @@ const componentSchema = (
 
   return Joi.object({
     name: Joi.string().required(),
+    label: Joi.string(),
     style: Joi.object({
       name: Joi.string().max(255).alphanum(),
       overwrite: canValidateStyle || Joi.any(),
