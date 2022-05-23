@@ -1,3 +1,10 @@
+## [25.27.3](https://github.com/bettyblocks/cli/compare/v25.27.2...v25.27.3) (2022-05-23)
+
+
+### Bug Fixes
+
+* import path ([dc8aa3e](https://github.com/bettyblocks/cli/commit/dc8aa3e))
+
 ## [25.27.2](https://github.com/bettyblocks/cli/compare/v25.27.1...v25.27.2) (2022-05-20)
 
 
