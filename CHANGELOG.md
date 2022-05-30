@@ -1,3 +1,10 @@
+# [25.28.0](https://github.com/bettyblocks/cli/compare/v25.27.3...v25.28.0) (2022-05-30)
+
+
+### Features
+
+* added ts support ([#307](https://github.com/bettyblocks/cli/issues/307)) ([a68684c](https://github.com/bettyblocks/cli/commit/a68684c))
+
 ## [25.27.3](https://github.com/bettyblocks/cli/compare/v25.27.2...v25.27.3) (2022-05-23)
 
 
