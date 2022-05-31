@@ -29,7 +29,7 @@ const migrate = (functionsPath: string, verbose = false): void => {
       postfix = `-${version}`;
     } else {
       version = '1.0';
-      postfix = ` => ${name}/${version}`;
+      postfix = ` => ${path.join(name, version)}`;
 
       try {
         delete definition.schema.name;

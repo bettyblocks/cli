@@ -1,3 +1,24 @@
+# [25.28.0](https://github.com/bettyblocks/cli/compare/v25.27.3...v25.28.0) (2022-05-30)
+
+
+### Features
+
+* added ts support ([#307](https://github.com/bettyblocks/cli/issues/307)) ([a68684c](https://github.com/bettyblocks/cli/commit/a68684c))
+
+## [25.27.3](https://github.com/bettyblocks/cli/compare/v25.27.2...v25.27.3) (2022-05-23)
+
+
+### Bug Fixes
+
+* import path ([dc8aa3e](https://github.com/bettyblocks/cli/commit/dc8aa3e))
+
+## [25.27.2](https://github.com/bettyblocks/cli/compare/v25.27.1...v25.27.2) (2022-05-20)
+
+
+### Bug Fixes
+
+* remove hardcoded slash ([#304](https://github.com/bettyblocks/cli/issues/304)) ([2131921](https://github.com/bettyblocks/cli/commit/2131921))
+
 ## [25.27.1](https://github.com/bettyblocks/cli/compare/v25.27.0...v25.27.1) (2022-05-16)
 
 

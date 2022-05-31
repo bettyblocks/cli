@@ -78,9 +78,8 @@ const forceVersion = (
 ): void => {
   if (!isFunctionVersion(path.dirname(functionPath), functionsDir)) {
     throw new Error(
-      `${functionPath.replace(
-        '/function.json',
-        '',
+      `${path.dirname(
+        functionPath,
       )} does not apply as a valid version directory`,
     );
   }
@@ -151,9 +150,9 @@ class FunctionValidator {
       const preleadingPath = path.join(
         this.functionsDir,
         functionName || '',
-        '/',
+        path.sep,
       );
-      if (definition.path.match(preleadingPath)) {
+      if (definition.path.indexOf(preleadingPath) === 0) {
         validations.push(this.validateFunction(definition));
       }
     });
