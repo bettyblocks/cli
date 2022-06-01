@@ -9,17 +9,17 @@ import { runTest } from './functions/testRunner';
 /* process arguments */
 
 program
-  .usage('[path/to/test-file]')
+  .usage('[pattern/for/test-files]')
   .name('bb functions test')
   .parse(process.argv);
 
 const {
-  args: [testFile],
+  args: [pattern],
 } = program;
 
 /* execute command */
 
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
-  await runTest(testFile, process.cwd());
+  await runTest(pattern, process.cwd());
 })();

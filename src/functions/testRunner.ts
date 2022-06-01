@@ -3,6 +3,7 @@
 import AdmZip from 'adm-zip';
 import chalk from 'chalk';
 import fs from 'fs-extra';
+import glob from 'glob';
 import ivm from 'isolated-vm';
 import path from 'path';
 import { spawn } from 'child_process';
@@ -18,9 +19,23 @@ const cross = chalk.red(`✖`);
 const right = chalk.green(`›`);
 
 const build = async (
-  testFile: string,
+  pattern: string,
   workingDir: string,
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> => {
+  const testFiles = glob
+    .sync(`${pattern || 'test/'}**`.replace(/\\/g, '/'))
+    .reduce((files, match) => {
+      const file = match.replace(/\//g, path.sep);
+      if (file.match(/\.test\.js$/)) {
+        files.push(file);
+      }
+      return files;
+    }, [] as string[]);
+
+  if (!testFiles.length) {
+    return { exitCode: 1, stdout: 'No test files found.', stderr: '' };
+  }
+
   const functionsDir = path.join(workingDir, 'functions');
   const tmpDir = path.join(workingDir, '.tmp');
 
@@ -66,7 +81,7 @@ const build = async (
     `import { default as $app } from 'app';
 import _ from 'lodash';
 
-${fs.readFileSync(path.join(workingDir, testFile), 'utf-8')}
+${testFiles.map((file) => fs.readFileSync(file, 'utf-8')).join('\n\n')}
 `,
   );
 
@@ -89,14 +104,10 @@ ${fs.readFileSync(path.join(workingDir, testFile), 'utf-8')}
   return { exitCode, stdout, stderr };
 };
 
-const run = (testFile: string, workingDir: string): Promise<string> => {
-  const helpers = path.join(
-    workingDir,
-    testFile.split(/[\\/]/)[0],
-    'helpers.js',
-  );
-
+const run = (workingDir: string): Promise<string> => {
+  const helpers = path.join(workingDir, 'test', 'helpers.js');
   const bundle = path.join(workingDir, '.tmp', 'dist', 'app.bundle.js');
+
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
   const context = isolate.createContextSync();
 
@@ -195,33 +206,28 @@ const run = (testFile: string, workingDir: string): Promise<string> => {
   });
 };
 
-const runTest = async (testFile: string, workingDir: string): Promise<void> => {
-  if (!fs.existsSync(path.join(workingDir, testFile))) {
-    console.log(`${cross} ${testFile} could not be found`);
-    return;
-  }
-
-  let time: number;
-  const start = () => new Date().getTime();
-  const stop = () => (new Date().getTime() - time) / 1000;
-
-  console.log(`${right} Building artifacts ...`);
-
-  time = start();
-  const { exitCode, stdout } = await build(testFile, workingDir);
-  const buildTime = stop();
-
-  if (exitCode) {
-    console.log(`${cross} ${stdout}`);
-    return;
-  }
-
+const runTest = async (pattern: string, workingDir: string): Promise<void> => {
   try {
+    let time: number;
+    const start = () => new Date().getTime();
+    const stop = () => (new Date().getTime() - time) / 1000;
+
+    console.log(`${right} Building artifacts ...`);
+
+    time = start();
+    const { exitCode, stdout } = await build(pattern, workingDir);
+    const buildTime = stop();
+
+    if (exitCode) {
+      console.log(`${cross} ${stdout}`);
+      return;
+    }
+
     console.log(`${check} Build succeeded`);
     console.log(`${right} Running tests ...`);
 
     time = start();
-    const summary = await run(testFile, workingDir);
+    const summary = await run(workingDir);
     const testTime = stop();
 
     console.log(
