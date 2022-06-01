@@ -1,3 +1,10 @@
+# [25.30.0](https://github.com/bettyblocks/cli/compare/v25.29.0...v25.30.0) (2022-06-01)
+
+
+### Features
+
+* add examples for isolated function tests ([30b4f32](https://github.com/bettyblocks/cli/commit/30b4f32))
+
 # [25.29.0](https://github.com/bettyblocks/cli/compare/v25.28.0...v25.29.0) (2022-06-01)
 
 
