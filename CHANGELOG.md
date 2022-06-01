@@ -1,3 +1,10 @@
+# [25.29.0](https://github.com/bettyblocks/cli/compare/v25.28.0...v25.29.0) (2022-06-01)
+
+
+### Features
+
+* add ability to test functions in isolated-vm locally ([#299](https://github.com/bettyblocks/cli/issues/299)) ([bf1b1d7](https://github.com/bettyblocks/cli/commit/bf1b1d7))
+
 # [25.28.0](https://github.com/bettyblocks/cli/compare/v25.27.3...v25.28.0) (2022-05-30)
 
 
