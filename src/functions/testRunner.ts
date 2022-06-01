@@ -49,7 +49,6 @@ const build = async (
       name: 'app',
       dependencies: { app: 'file:./app' },
       devDependencies: {
-        lodash: '^4.17.15',
         webpack: '^5.10.0',
         'webpack-cli': '^4.2.0',
       },
@@ -79,7 +78,6 @@ const build = async (
   fs.writeFileSync(
     path.join(tmpDir, 'app.js'),
     `import { default as $app } from 'app';
-import _ from 'lodash';
 
 ${testFiles.map((file) => fs.readFileSync(file, 'utf-8')).join('\n\n')}
 `,
@@ -144,6 +142,10 @@ const run = (workingDir: string): Promise<string> => {
     };
   })();
 
+  const isEqual = (t,e) => {
+    function n(t){return Object.prototype.toString.call(t).slice(8,-1).toLowerCase()}let r=n(t);return r===n(e)&&("array"===r?function(){if(t.length!==e.length)return!1;for(let n=0;n<t.length;n++)if(!isEqual(t[n],e[n]))return!1;return!0}():"object"===r?function(){if(Object.keys(t).length!==Object.keys(e).length)return!1;for(let n in t)if(Object.prototype.hasOwnProperty.call(t,n)&&!isEqual(t[n],e[n]))return!1;return!0}():"function"===r?t.toString()===e.toString():t===e)
+  };
+
   const test = (desc, fn) => {
     tests.push(new Promise((resolve, reject) => {
       fn()
@@ -161,7 +163,7 @@ const run = (workingDir: string): Promise<string> => {
   };
 
   const assert = (left, right) => {
-    if (!_.isEqual(left, right)) {
+    if (!isEqual(left, right)) {
       throw new Error(\`\\x1b[31m  Assertion failed\\x1b[0m
   \\x1b[36mleft:\\x1b[0m   \${JSON.stringify(left)}
   \\x1b[36mright:\\x1b[0m  \${JSON.stringify(right)}\`);
