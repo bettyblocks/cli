@@ -3820,6 +3820,11 @@ isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/isexe/-/isexe-2.0.0.tgz"
 
+isolated-vm@^4.0.0:
+  version "4.3.7"
+  resolved "https://registry.yarnpkg.com/isolated-vm/-/isolated-vm-4.3.7.tgz#1adc82efcc6aa94597e28129c619ff19ad46ac04"
+  integrity sha512-tFMn2HwoSrwCfRdiNpNLn3ucaOlupyGd+C1X3aoqtpJxOLBLgWd6FQGLNXx/Ixmq8H0fWhj4tHaQSrB1ogreJQ==
+
 isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.npmjs.org/isstream/-/isstream-0.1.2.tgz"
