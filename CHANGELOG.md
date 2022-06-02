@@ -1,3 +1,10 @@
+# [25.31.0](https://github.com/bettyblocks/cli/compare/v25.30.0...v25.31.0) (2022-06-02)
+
+
+### Features
+
+* **OL-915:** added new property to prefabs ([#310](https://github.com/bettyblocks/cli/issues/310)) ([ede7257](https://github.com/bettyblocks/cli/commit/ede7257))
+
 # [25.30.0](https://github.com/bettyblocks/cli/compare/v25.29.0...v25.30.0) (2022-06-01)
 
 
