@@ -1,3 +1,10 @@
+## [25.31.1](https://github.com/bettyblocks/cli/compare/v25.31.0...v25.31.1) (2022-06-07)
+
+
+### Bug Fixes
+
+* allow a label on the prefab structure ([#305](https://github.com/bettyblocks/cli/issues/305)) ([b461ebe](https://github.com/bettyblocks/cli/commit/b461ebe))
+
 # [25.31.0](https://github.com/bettyblocks/cli/compare/v25.30.0...v25.31.0) (2022-06-02)
 
 
