@@ -6,6 +6,18 @@ import { findDuplicates } from '../utils/validation';
 
 import { STYLE_REFERENCE_TYPES } from './constants';
 
+const reservedTypes = (value: string) => {
+  if (value === 'PARTIAL' || value === 'WRAPPER') {
+    throw new Error(
+      chalk.red(
+        `\nBuild error in component \`${value}\` is a reserved keyword for type`,
+      ),
+    );
+  }
+
+  return value;
+};
+
 const schema: ObjectSchema = Joi.object({
   name: Joi.string().required(),
   icon: Joi.string(), // DEPRECATED
@@ -20,7 +32,7 @@ const schema: ObjectSchema = Joi.object({
       }),
     ),
   }),
-  type: Joi.string().required(),
+  type: Joi.string().required().custom(reservedTypes),
   allowedTypes: Joi.array().items(Joi.string()).required(),
   orientation: Joi.string().required(),
   functions: Joi.array().items(Joi.string()),

@@ -584,3 +584,32 @@ test('Throw when type key in partial Prefab', (t: Context): void => {
   t.throws(() => validatePrefabs(prefabs, {}, 'partial'));
 });
 
+test("throws an error when a reserved keyword is used 'PARTIAL'", (t: Context): void => {
+  const components = [
+    {
+      name: 'HelloWorld',
+      type: 'PARTIAL',
+      allowedTypes: ['COLUMN'],
+      orientation: 'VERTICAL',
+      jsx: '<div>jsx</div>',
+      styles: 'styles',
+    },
+  ] as Component[];
+
+  t.throws(() => validateComponents(components));
+});
+
+test("throws an error when a reserved keyword is used 'WRAPPER'", (t: Context): void => {
+  const components = [
+    {
+      name: 'HelloWorld',
+      type: 'WRAPPER',
+      allowedTypes: ['COLUMN'],
+      orientation: 'VERTICAL',
+      jsx: '<div>jsx</div>',
+      styles: 'styles',
+    },
+  ] as Component[];
+
+  t.throws(() => validateComponents(components));
+});
