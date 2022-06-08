@@ -1,5 +1,13 @@
 # Betty Blocks Component CLI
 
+## Prerequisites
+
+As of version `25.29.0`, you will need to install the [requirements for IsolatedVM](https://www.npmjs.com/package/isolated-vm#requirements) which basically include:
+
+* make
+* g++
+* python
+
 ## Installation
 
 To install the CLI you will need [a recent version of Node.js](https://nodejs.org/en/).

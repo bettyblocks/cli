@@ -1,3 +1,38 @@
+## [25.31.1](https://github.com/bettyblocks/cli/compare/v25.31.0...v25.31.1) (2022-06-07)
+
+
+### Bug Fixes
+
+* allow a label on the prefab structure ([#305](https://github.com/bettyblocks/cli/issues/305)) ([b461ebe](https://github.com/bettyblocks/cli/commit/b461ebe))
+
+# [25.31.0](https://github.com/bettyblocks/cli/compare/v25.30.0...v25.31.0) (2022-06-02)
+
+
+### Features
+
+* **OL-915:** added new property to prefabs ([#310](https://github.com/bettyblocks/cli/issues/310)) ([ede7257](https://github.com/bettyblocks/cli/commit/ede7257))
+
+# [25.30.0](https://github.com/bettyblocks/cli/compare/v25.29.0...v25.30.0) (2022-06-01)
+
+
+### Features
+
+* add examples for isolated function tests ([30b4f32](https://github.com/bettyblocks/cli/commit/30b4f32))
+
+# [25.29.0](https://github.com/bettyblocks/cli/compare/v25.28.0...v25.29.0) (2022-06-01)
+
+
+### Features
+
+* add ability to test functions in isolated-vm locally ([#299](https://github.com/bettyblocks/cli/issues/299)) ([bf1b1d7](https://github.com/bettyblocks/cli/commit/bf1b1d7))
+
+# [25.28.0](https://github.com/bettyblocks/cli/compare/v25.27.3...v25.28.0) (2022-05-30)
+
+
+### Features
+
+* added ts support ([#307](https://github.com/bettyblocks/cli/issues/307)) ([a68684c](https://github.com/bettyblocks/cli/commit/a68684c))
+
 ## [25.27.3](https://github.com/bettyblocks/cli/compare/v25.27.2...v25.27.3) (2022-05-23)
 
 
