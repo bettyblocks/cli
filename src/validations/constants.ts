@@ -137,6 +137,7 @@ export const OPTIONS = [
   'NUMBER',
   'PROPERTY',
   'PROPERTIES',
+  'PUBLIC_FILE',
   'SIZE',
   'SIZES',
   'TEXT',
