@@ -117,9 +117,9 @@ class Config {
 
   private static defaultConfig = (): LocalConfig => {
     return {
-      schemaUrl: 'https://github.com',
+      schemaUrl: 'https://raw.githubusercontent.com',
       functionSchemaPath:
-        '/bettyblocks/json-schema/raw/master/schemas/actions/function.json',
+        '/bettyblocks/json-schema/master/schemas/actions/function.json',
       cacheDir: '.tmp/',
       fusionAuthUrl: 'https://fusionauth{ZONEPOSTFIX}.betty.services',
       builderApiUrl: '{HOST}/api/builder',
