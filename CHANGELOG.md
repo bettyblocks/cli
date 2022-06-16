@@ -1,3 +1,10 @@
+## [25.31.3](https://github.com/bettyblocks/cli/compare/v25.31.2...v25.31.3) (2022-06-16)
+
+
+### Bug Fixes
+
+* schema url ([fa8ee4b](https://github.com/bettyblocks/cli/commit/fa8ee4b))
+
 ## [25.31.2](https://github.com/bettyblocks/cli/compare/v25.31.1...v25.31.2) (2022-06-08)
 
 
