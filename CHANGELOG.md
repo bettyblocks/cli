@@ -1,3 +1,10 @@
+# [25.32.0](https://github.com/bettyblocks/cli/compare/v25.31.3...v25.32.0) (2022-06-17)
+
+
+### Features
+
+* add public file option ([#314](https://github.com/bettyblocks/cli/issues/314)) ([2c68d25](https://github.com/bettyblocks/cli/commit/2c68d25))
+
 ## [25.31.3](https://github.com/bettyblocks/cli/compare/v25.31.2...v25.31.3) (2022-06-16)
 
 
