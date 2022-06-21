@@ -255,6 +255,7 @@ test('Throw when type component has partialId', (t: Context): void => {
 
   t.throws(() => validatePrefabs(prefabs));
 });
+
 test('Does not throw when partial object is within the structure', (t: Context): void => {
   const prefabs = [
     {
@@ -272,6 +273,48 @@ test('Does not throw when partial object is within the structure', (t: Context):
 
   t.notThrows(() => validatePrefabs(prefabs));
 });
+
+test('Does not throw when wrapper object is within the structure', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
+
+test('Does not throw when nesting wrapper objects', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          descendants: [
+            {
+              type: 'WRAPPER',
+              descendants: [],
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
+
 
 test('Does not throw when button prefabs style override options are valid', (t: Context): void => {
   const prefabs = [

@@ -101,7 +101,11 @@ const componentSchema = (
   const canValidateStyle = styleType && styleValidator[styleType];
 
   return Joi.object({
-    name: Joi.string().required(),
+    name: Joi.when('type', {
+      is: 'WRAPPER',
+      then: Joi.invalid(),
+      otherwise: Joi.string().required(),
+    }),
     label: Joi.string(),
     style: Joi.object({
       name: Joi.string().max(255).alphanum(),
@@ -110,8 +114,13 @@ const componentSchema = (
     ref: Joi.object({
       id: Joi.string().required(),
     }),
-    options: Joi.array().items(optionSchema).required(),
-    type: Joi.string().valid('COMPONENT').default('COMPONENT'),
+    options: Joi.when('type', {
+      is: 'WRAPPER',
+      // TODO introduce linked options
+      then: Joi.invalid(),
+      otherwise: Joi.array().items(optionSchema).required(),
+    }),
+    type: Joi.string().valid('COMPONENT', 'WRAPPER').default('COMPONENT'),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
       .required(),
@@ -186,6 +195,20 @@ export const validateComponent =
 
         throw new Error(
           chalk.red(`\nBuild error in component ${type}: ${message}\n`),
+        );
+      }
+    } else if (component.type === 'WRAPPER') {
+      const { error } = componentSchema(
+        componentStyleMap,
+        undefined,
+        prefabType,
+      ).validate(component);
+
+      if (typeof error !== 'undefined') {
+        const { message } = error;
+
+        throw new Error(
+          chalk.red(`\nBuild error in component WRAPPER: ${message}\n`),
         );
       }
     } else {
