@@ -93,6 +93,20 @@ const partialSchema = (): Joi.ObjectSchema => {
   });
 };
 
+const wrapperSchema = (
+  componentStyleMap?: ComponentStyleMap,
+  prefabType?: PrefabTypes,
+): Joi.ObjectSchema => {
+  return Joi.object({
+    type: Joi.string().valid('WRAPPER').required(),
+    // TODO introduce linked options
+    options: Joi.forbidden(),
+    descendants: Joi.array()
+      .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
+      .required(),
+  });
+};
+
 const componentSchema = (
   componentStyleMap?: ComponentStyleMap,
   styleType?: keyof StyleValidator,
@@ -101,11 +115,7 @@ const componentSchema = (
   const canValidateStyle = styleType && styleValidator[styleType];
 
   return Joi.object({
-    name: Joi.when('type', {
-      is: 'WRAPPER',
-      then: Joi.invalid(),
-      otherwise: Joi.string().required(),
-    }),
+    name: Joi.string().required(),
     label: Joi.string(),
     style: Joi.object({
       name: Joi.string().max(255).alphanum(),
@@ -114,13 +124,8 @@ const componentSchema = (
     ref: Joi.object({
       id: Joi.string().required(),
     }),
-    options: Joi.when('type', {
-      is: 'WRAPPER',
-      // TODO introduce linked options
-      then: Joi.invalid(),
-      otherwise: Joi.array().items(optionSchema).required(),
-    }),
-    type: Joi.string().valid('COMPONENT', 'WRAPPER').default('COMPONENT'),
+    options: Joi.array().items(optionSchema).required(),
+    type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
       .required(),
@@ -198,11 +203,9 @@ export const validateComponent =
         );
       }
     } else if (component.type === 'WRAPPER') {
-      const { error } = componentSchema(
-        componentStyleMap,
-        undefined,
-        prefabType,
-      ).validate(component);
+      const { error } = wrapperSchema(componentStyleMap, prefabType).validate(
+        component,
+      );
 
       if (typeof error !== 'undefined') {
         const { message } = error;

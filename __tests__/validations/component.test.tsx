@@ -315,6 +315,35 @@ test('Does not throw when nesting wrapper objects', (t: Context): void => {
   t.notThrows(() => validatePrefabs(prefabs));
 });
 
+test('Does throw when wrapper has options (linked options not supported yet)', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          options: [
+            {
+              type: "LINKED",
+              value: {
+                ref: {
+                  componentId: '#componentId1',
+                  optionId: '#componentId1OptionId1'
+                }
+              }
+            }
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+
 
 test('Does not throw when button prefabs style override options are valid', (t: Context): void => {
   const prefabs = [
