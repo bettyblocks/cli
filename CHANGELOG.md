@@ -1,3 +1,10 @@
+## [25.32.1](https://github.com/bettyblocks/cli/compare/v25.32.0...v25.32.1) (2022-06-23)
+
+
+### Bug Fixes
+
+* escape functions before "isolated logging" ([#318](https://github.com/bettyblocks/cli/issues/318)) ([0ad1b94](https://github.com/bettyblocks/cli/commit/0ad1b94))
+
 # [25.32.0](https://github.com/bettyblocks/cli/compare/v25.31.3...v25.32.0) (2022-06-17)
 
 
