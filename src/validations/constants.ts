@@ -149,6 +149,7 @@ export const OPTIONS = [
 
 export const STYLE_REFERENCE_TYPES = ['BUTTON', 'TEXT'];
 
+export const MEDIA_TYPES = ['IMAGE', 'VIDEO'];
 export const CONDITION_TYPE = ['HIDE', 'SHOW'];
 export const COMPARATORS = ['EQ'];
 export const MODAL_TYPE = ['MODEL_AND_PROPERTIES'];
