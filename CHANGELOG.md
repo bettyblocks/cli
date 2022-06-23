@@ -1,3 +1,10 @@
+# [25.33.0](https://github.com/bettyblocks/cli/compare/v25.32.1...v25.33.0) (2022-06-23)
+
+
+### Features
+
+* add media type and allowed extensions for public file type ([#319](https://github.com/bettyblocks/cli/issues/319)) ([2ada30d](https://github.com/bettyblocks/cli/commit/2ada30d))
+
 ## [25.32.1](https://github.com/bettyblocks/cli/compare/v25.32.0...v25.32.1) (2022-06-23)
 
 
