@@ -69,7 +69,15 @@ const optionConfigurationSchema = Joi.when('type', {
     then: Joi.object({
       ...optionConfigurationSchemaBase,
       mediaType: Joi.string().valid(...MEDIA_TYPES),
-      allowedExtensions: Joi.array().items(Joi.string()),
+      allowedExtensions: Joi.alternatives().conditional('mediaType', {
+        is: 'VIDEO',
+        then: Joi.array().items(
+          Joi.string().regex(/(^video)(\/)[a-zA-Z0-9_]*/m),
+        ),
+        otherwise: Joi.array().items(
+          Joi.string().regex(/(^image)(\/)[a-zA-Z0-9_]*/m),
+        ),
+      }),
     }),
   })
 
