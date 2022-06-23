@@ -6,6 +6,7 @@ import {
   CONFIGURATION_AS,
   MODAL_TYPE,
   OPTIONS,
+  MEDIA_TYPES,
 } from '../constants';
 
 const refSchema = Joi.when('type', {
@@ -62,7 +63,17 @@ const optionConfigurationSchema = Joi.when('type', {
       }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
-}).default({});
+})
+  .when('type', {
+    is: 'PUBLIC_FILE',
+    then: Joi.object({
+      ...optionConfigurationSchemaBase,
+      mediaType: Joi.string().valid(...MEDIA_TYPES),
+      allowedExtensions: Joi.array().items(Joi.string()),
+    }),
+  })
+
+  .default({});
 
 export const optionSchema = Joi.object({
   label: Joi.string().required(),
