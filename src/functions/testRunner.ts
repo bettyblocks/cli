@@ -126,11 +126,32 @@ const run = (workingDir: string): Promise<string> => {
   let failures = 0;
   
   const console = (() => {
+    const escape = (value) => {
+      switch (typeof(value)) {
+      case "function":
+        return value.toString();
+      case "object":
+        if (value == null) {
+          return value;
+        }
+        if (value instanceof Array) {
+          return value.map(escape);
+        } else {
+          return Object.keys(value).reduce((o, k) => {
+            o[k] = escape(value[k]);
+            return o;
+          }, {});
+        }
+      default:
+        return value;
+      }
+    };
+
     const log = (level) =>
       (...args) =>
         $console.apply(null, [
           level,
-          new ivm.ExternalCopy(args).copyInto()
+          new ivm.ExternalCopy(escape(args)).copyInto()
         ]);
 
     return {
