@@ -99,6 +99,7 @@ const wrapperSchema = (
 ): Joi.ObjectSchema => {
   return Joi.object({
     type: Joi.string().valid('WRAPPER').required(),
+    label: Joi.string(),
     // TODO introduce linked options
     options: Joi.forbidden(),
     descendants: Joi.array()
