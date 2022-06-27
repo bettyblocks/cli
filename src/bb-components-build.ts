@@ -16,6 +16,7 @@ import {
   ComponentStyleMap,
   PrefabReference,
   PrefabPartial,
+  PrefabWrapper,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -325,7 +326,7 @@ void (async (): Promise<void> => {
 
     await Promise.all([
       validateComponents(components),
-      // validatePrefabs(prefabs, componentStyleMap),
+      validatePrefabs(prefabs, componentStyleMap),
       validatePrefabs(partialprefabs, componentStyleMap, 'partial'),
       interactions && validateInteractions(interactions),
     ]);
@@ -342,7 +343,7 @@ void (async (): Promise<void> => {
       style: PrefabComponent['style'];
     };
 
-    type BuildPrefabComponent = BuildPrefab | PrefabPartial;
+    type BuildPrefabComponent = BuildPrefab | PrefabPartial | PrefabWrapper;
 
     const buildPrefab = (prefab: Prefab): Prefab => {
       const buildStructure = (
@@ -351,6 +352,16 @@ void (async (): Promise<void> => {
         if (structure.type === 'PARTIAL') {
           return structure;
         }
+
+        if (structure.type === 'WRAPPER') {
+          const wrapperStructure = structure;
+          if (wrapperStructure.descendants.length > 0) {
+            wrapperStructure.descendants =
+              wrapperStructure.descendants.map(buildStructure);
+          }
+          return wrapperStructure;
+        }
+
         const newStructure = {
           ...structure,
           style: structure.style || {},

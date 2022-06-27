@@ -61,7 +61,10 @@ export const findDuplicates = <
 const checkComponentReferenceNames =
   (names: Set<string>, prefabName: string) =>
   (prefabReference: PrefabReference): void => {
-    if (prefabReference.type !== 'PARTIAL') {
+    if (
+      prefabReference.type === undefined ||
+      prefabReference.type === 'COMPONENT'
+    ) {
       const { name, descendants } = prefabReference;
 
       if (!names.has(name)) {
@@ -71,6 +74,10 @@ const checkComponentReferenceNames =
           ),
         );
       }
+      descendants.forEach(checkComponentReferenceNames(names, prefabName));
+    } else if (prefabReference.type === 'WRAPPER') {
+      const { descendants } = prefabReference;
+
       descendants.forEach(checkComponentReferenceNames(names, prefabName));
     }
   };

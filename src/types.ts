@@ -51,11 +51,16 @@ export interface Component {
   type: string;
 }
 
-export type PrefabReference = PrefabComponent | PrefabPartial;
+export type PrefabReference = PrefabComponent | PrefabPartial | PrefabWrapper;
 
 export type PrefabPartial = {
   type: 'PARTIAL';
   partialId: string;
+};
+
+export type PrefabWrapper = {
+  type: 'WRAPPER';
+  descendants: PrefabReference[];
 };
 export interface PrefabComponent {
   type?: 'COMPONENT';

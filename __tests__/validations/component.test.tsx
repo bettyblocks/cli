@@ -255,6 +255,7 @@ test('Throw when type component has partialId', (t: Context): void => {
 
   t.throws(() => validatePrefabs(prefabs));
 });
+
 test('Does not throw when partial object is within the structure', (t: Context): void => {
   const prefabs = [
     {
@@ -271,6 +272,118 @@ test('Does not throw when partial object is within the structure', (t: Context):
   ] as unknown as Prefab[];
 
   t.notThrows(() => validatePrefabs(prefabs));
+});
+
+test('Does not throw when wrapper object is within the structure', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
+
+test('Does not throw when nesting wrapper objects', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          descendants: [
+            {
+              type: 'WRAPPER',
+              descendants: [],
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
+
+test('Does throw when wrapper has options (linked options not supported yet)', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          options: [
+            {
+              type: "LINKED",
+              value: {
+                ref: {
+                  componentId: '#componentId1',
+                  optionId: '#componentId1OptionId1'
+                }
+              }
+            }
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+
+test('Does throw when a wrapper nested in the structure has options (linked options not supported yet)', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [
+            {
+              type: 'WRAPPER',
+              options: [
+                {
+                  type: "LINKED",
+                  value: {
+                    ref: {
+                      componentId: '#componentId1',
+                      optionId: '#componentId1OptionId1'
+                    }
+                  }
+                }
+              ],
+              descendants: [],
+            },
+          ],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
 });
 
 test('Does not throw when button prefabs style override options are valid', (t: Context): void => {

@@ -93,6 +93,21 @@ const partialSchema = (): Joi.ObjectSchema => {
   });
 };
 
+const wrapperSchema = (
+  componentStyleMap?: ComponentStyleMap,
+  prefabType?: PrefabTypes,
+): Joi.ObjectSchema => {
+  return Joi.object({
+    type: Joi.string().valid('WRAPPER').required(),
+    label: Joi.string(),
+    // TODO introduce linked options
+    options: Joi.forbidden(),
+    descendants: Joi.array()
+      .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
+      .required(),
+  });
+};
+
 const componentSchema = (
   componentStyleMap?: ComponentStyleMap,
   styleType?: keyof StyleValidator,
@@ -186,6 +201,18 @@ export const validateComponent =
 
         throw new Error(
           chalk.red(`\nBuild error in component ${type}: ${message}\n`),
+        );
+      }
+    } else if (component.type === 'WRAPPER') {
+      const { error } = wrapperSchema(componentStyleMap, prefabType).validate(
+        component,
+      );
+
+      if (typeof error !== 'undefined') {
+        const { message } = error;
+
+        throw new Error(
+          chalk.red(`\nBuild error in component WRAPPER: ${message}\n`),
         );
       }
     } else {
