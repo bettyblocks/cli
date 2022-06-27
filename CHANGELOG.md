@@ -1,3 +1,10 @@
+# [25.34.0](https://github.com/bettyblocks/cli/compare/v25.33.0...v25.34.0) (2022-06-27)
+
+
+### Features
+
+* able to build a prefab with wrapper structure ([#316](https://github.com/bettyblocks/cli/issues/316)) ([a9075c9](https://github.com/bettyblocks/cli/commit/a9075c9))
+
 # [25.33.0](https://github.com/bettyblocks/cli/compare/v25.32.1...v25.33.0) (2022-06-23)
 
 
