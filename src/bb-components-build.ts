@@ -353,14 +353,20 @@ void (async (): Promise<void> => {
           return structure;
         }
 
-        const newStructure =
-          structure.type === 'WRAPPER'
-            ? structure
-            : {
-                ...structure,
-                style: structure.style || {},
-                hash: hash(structure.options),
-              };
+        if (structure.type === 'WRAPPER') {
+          const wrapperStructure = structure;
+          if (wrapperStructure.descendants.length > 0) {
+            wrapperStructure.descendants =
+              wrapperStructure.descendants.map(buildStructure);
+          }
+          return wrapperStructure;
+        }
+
+        const newStructure = {
+          ...structure,
+          style: structure.style || {},
+          hash: hash(structure.options),
+        };
 
         if (newStructure.descendants.length > 0) {
           newStructure.descendants =
