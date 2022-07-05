@@ -17,7 +17,7 @@ const refSchema = Joi.when('type', {
     not: Joi.exist(),
     then: Joi.required(),
   }),
-  otherwise: Joi.forbidden(),
+  otherwise: Joi.object({ id: Joi.string() }),
 });
 
 const optionConfigurationSchemaBase = {
@@ -83,6 +83,24 @@ const optionConfigurationSchema = Joi.when('type', {
 
   .default({});
 
+const linkedOptionValueSchema = Joi.object({
+  ref: Joi.object({
+    componentId: Joi.string().required(),
+    optionId: Joi.string().required(),
+  }),
+});
+
+export const linkedOptionSchema = Joi.object({
+  key: Joi.string().required(),
+  label: Joi.string(),
+  type: Joi.string().valid('LINKED_OPTION').required(),
+  value: linkedOptionValueSchema,
+});
+
+const valueRef = Joi.object({
+  ref: Joi.object({ value: Joi.exist() }).exist(),
+});
+
 export const optionSchema = Joi.object({
   label: Joi.string().required(),
   key: Joi.string().required(),
@@ -90,8 +108,7 @@ export const optionSchema = Joi.object({
     .valid(...OPTIONS)
     .required(),
   configuration: optionConfigurationSchema,
-  value: Joi.when('ref', {
-    is: Joi.exist(),
+  value: Joi.when(valueRef.unknown(), {
     then: Joi.forbidden(),
     otherwise: Joi.any(),
   }),
