@@ -283,6 +283,7 @@ test('Does not throw when wrapper object is within the structure', (t: Context):
       structure: [
         {
           type: 'WRAPPER',
+          options: [],
           descendants: [],
         },
       ],
@@ -301,9 +302,11 @@ test('Does not throw when nesting wrapper objects', (t: Context): void => {
       structure: [
         {
           type: 'WRAPPER',
+          options: [],
           descendants: [
             {
               type: 'WRAPPER',
+              options: [],
               descendants: [],
             },
           ],
