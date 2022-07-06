@@ -97,10 +97,6 @@ export const linkedOptionSchema = Joi.object({
   value: linkedOptionValueSchema,
 });
 
-const valueRef = Joi.object({
-  ref: Joi.object({ value: Joi.exist() }).exist(),
-});
-
 export const optionSchema = Joi.object({
   label: Joi.string().required(),
   key: Joi.string().required(),
@@ -108,8 +104,13 @@ export const optionSchema = Joi.object({
     .valid(...OPTIONS)
     .required(),
   configuration: optionConfigurationSchema,
-  value: Joi.when(valueRef.unknown(), {
-    then: Joi.forbidden(),
+  value: Joi.when('ref', {
+    is: Joi.exist(),
+    then: Joi.when('value', {
+      is: Joi.exist(),
+      then: Joi.forbidden(),
+      otherwise: Joi.any(),
+    }),
     otherwise: Joi.any(),
   }),
   ref: refSchema,
