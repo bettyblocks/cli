@@ -571,6 +571,37 @@ test('Dont throw when prefab component has a ref', (t: Context): void => {
   t.pass();
 });
 
+test('Dont throw when prefab component option has a ref', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              ref: {
+                id: '#id',
+              },
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  validatePrefabs(prefabs);
+  t.pass();
+});
+
+
 test('Throw when the prefabs option type is not referring to one the correct types', (t: Context): void => {
   const prefabs = [
     {

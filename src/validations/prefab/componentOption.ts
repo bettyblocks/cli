@@ -105,12 +105,8 @@ export const optionSchema = Joi.object({
     .required(),
   configuration: optionConfigurationSchema,
   value: Joi.when('ref', {
-    is: Joi.exist(),
-    then: Joi.when('value', {
-      is: Joi.exist(),
-      then: Joi.forbidden(),
-      otherwise: Joi.any(),
-    }),
+    is: Joi.object({ value: Joi.exist() }).exist(),
+    then: Joi.forbidden(),
     otherwise: Joi.any(),
   }),
   ref: refSchema,
