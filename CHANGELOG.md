@@ -1,3 +1,10 @@
+## [25.35.1](https://github.com/bettyblocks/cli/compare/v25.35.0...v25.35.1) (2022-07-07)
+
+
+### Bug Fixes
+
+* adjust type ([#322](https://github.com/bettyblocks/cli/issues/322)) ([db86578](https://github.com/bettyblocks/cli/commit/db86578))
+
 # [25.35.0](https://github.com/bettyblocks/cli/compare/v25.34.0...v25.35.0) (2022-07-07)
 
 
