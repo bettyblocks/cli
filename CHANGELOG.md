@@ -1,3 +1,10 @@
+# [25.36.0](https://github.com/bettyblocks/cli/compare/v25.35.1...v25.36.0) (2022-07-07)
+
+
+### Features
+
+* add partials json in build ([#323](https://github.com/bettyblocks/cli/issues/323)) ([e05d5e8](https://github.com/bettyblocks/cli/commit/e05d5e8))
+
 ## [25.35.1](https://github.com/bettyblocks/cli/compare/v25.35.0...v25.35.1) (2022-07-07)
 
 
