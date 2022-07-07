@@ -1,3 +1,10 @@
+## [25.37.1](https://github.com/bettyblocks/cli/compare/v25.37.0...v25.37.1) (2022-07-07)
+
+
+### Bug Fixes
+
+* bump version ([#325](https://github.com/bettyblocks/cli/issues/325)) ([0d404de](https://github.com/bettyblocks/cli/commit/0d404de))
+
 # [25.37.0](https://github.com/bettyblocks/cli/compare/v25.36.0...v25.37.0) (2022-07-07)
 
 
