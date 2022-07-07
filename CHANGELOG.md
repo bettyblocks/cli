@@ -1,3 +1,10 @@
+# [25.37.0](https://github.com/bettyblocks/cli/compare/v25.36.0...v25.37.0) (2022-07-07)
+
+
+### Features
+
+* add paths to function definitions ([1900a85](https://github.com/bettyblocks/cli/commit/1900a85))
+
 # [25.36.0](https://github.com/bettyblocks/cli/compare/v25.35.1...v25.36.0) (2022-07-07)
 
 
