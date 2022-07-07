@@ -127,7 +127,7 @@ export interface ValueDefault {
 
 export interface ValueRef {
   ref: {
-    ref?: { id?: string };
+    id?: string;
     value: string;
   };
 }
