@@ -1,3 +1,10 @@
+# [25.35.0](https://github.com/bettyblocks/cli/compare/v25.34.0...v25.35.0) (2022-07-07)
+
+
+### Features
+
+* build wrappers with linked options ([#321](https://github.com/bettyblocks/cli/issues/321)) ([dfa6956](https://github.com/bettyblocks/cli/commit/dfa6956))
+
 # [25.34.0](https://github.com/bettyblocks/cli/compare/v25.33.0...v25.34.0) (2022-06-27)
 
 
