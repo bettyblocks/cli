@@ -283,6 +283,7 @@ test('Does not throw when wrapper object is within the structure', (t: Context):
       structure: [
         {
           type: 'WRAPPER',
+          options: [],
           descendants: [],
         },
       ],
@@ -301,9 +302,11 @@ test('Does not throw when nesting wrapper objects', (t: Context): void => {
       structure: [
         {
           type: 'WRAPPER',
+          options: [],
           descendants: [
             {
               type: 'WRAPPER',
+              options: [],
               descendants: [],
             },
           ],
@@ -567,6 +570,37 @@ test('Dont throw when prefab component has a ref', (t: Context): void => {
   validatePrefabs(prefabs);
   t.pass();
 });
+
+test('Dont throw when prefab component option has a ref', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              ref: {
+                id: '#id',
+              },
+              label: 'something',
+              key: 'something',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  validatePrefabs(prefabs);
+  t.pass();
+});
+
 
 test('Throw when the prefabs option type is not referring to one the correct types', (t: Context): void => {
   const prefabs = [

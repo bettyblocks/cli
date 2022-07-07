@@ -11,7 +11,7 @@ import {
   PrefabReference,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
-import { optionSchema } from './componentOption';
+import { optionSchema, linkedOptionSchema } from './componentOption';
 
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
@@ -100,8 +100,7 @@ const wrapperSchema = (
   return Joi.object({
     type: Joi.string().valid('WRAPPER').required(),
     label: Joi.string(),
-    // TODO introduce linked options
-    options: Joi.forbidden(),
+    options: Joi.array().items(linkedOptionSchema).required(),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
       .required(),

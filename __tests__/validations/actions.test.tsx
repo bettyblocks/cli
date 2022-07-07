@@ -647,7 +647,7 @@ test('Throw when component option has a ref when type is not ACTION', (t: Contex
   t.throws(() => validatePrefabs([prefab]), {
     message: `
 Property: "structure[0]" failed custom validation because 
-Build error in component HelloWorld: "options[0].ref" is not allowed
+Build error in component HelloWorld: "options[0].ref.value" is not allowed
  at prefab: Prefab
 `,
   });

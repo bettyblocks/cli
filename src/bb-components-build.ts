@@ -355,6 +355,7 @@ void (async (): Promise<void> => {
 
         if (structure.type === 'WRAPPER') {
           const wrapperStructure = structure;
+
           if (wrapperStructure.descendants.length > 0) {
             wrapperStructure.descendants =
               wrapperStructure.descendants.map(buildStructure);
