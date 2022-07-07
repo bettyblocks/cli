@@ -92,7 +92,7 @@ const linkedOptionValueSchema = Joi.object({
 
 export const linkedOptionSchema = Joi.object({
   key: Joi.string().required(),
-  label: Joi.string(),
+  label: Joi.string().allow(''),
   type: Joi.string().valid('LINKED_OPTION').required(),
   value: linkedOptionValueSchema,
 });
