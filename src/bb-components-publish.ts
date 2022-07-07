@@ -97,9 +97,13 @@ void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['prefabs.json', 'templates.json', 'interactions.json'];
   const existingPath = await pathExists(`${distDir}/pagePrefabs.json`);
+  const existingPartialPath = await pathExists(`${distDir}/partials.json`);
 
   if (existingPath) {
     files.push('pagePrefabs.json');
+  }
+  if (existingPartialPath) {
+    files.push('partials.json');
   }
   const [{ url }] = await Promise.all(files.map(publish));
 
