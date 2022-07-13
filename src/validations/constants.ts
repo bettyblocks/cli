@@ -138,6 +138,7 @@ export const OPTIONS = [
   'PROPERTY',
   'PROPERTIES',
   'PUBLIC_FILE',
+  'RECONFIGURE',
   'SIZE',
   'SIZES',
   'TEXT',
