@@ -1,3 +1,10 @@
+# [25.38.0](https://github.com/bettyblocks/cli/compare/v25.37.1...v25.38.0) (2022-07-13)
+
+
+### Features
+
+* **OL-960:** added reconfigure option ([#327](https://github.com/bettyblocks/cli/issues/327)) ([44b3473](https://github.com/bettyblocks/cli/commit/44b3473))
+
 ## [25.37.1](https://github.com/bettyblocks/cli/compare/v25.37.0...v25.37.1) (2022-07-07)
 
 
