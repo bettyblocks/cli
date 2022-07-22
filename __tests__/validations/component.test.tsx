@@ -318,25 +318,90 @@ test('Does not throw when nesting wrapper objects', (t: Context): void => {
   t.notThrows(() => validatePrefabs(prefabs));
 });
 
-test('Does throw when wrapper has options (linked options not supported yet)', (t: Context): void => {
+test('Does not throw when component option categories are valid', (t: Context): void => {
   const prefabs = [
     {
-      name: 'Component Name',
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'Text',
+          optionCategories: [
+            { label: 'Category 1', members: ['option1'] },
+            { label: 'Category 2', members: ['option2'] },
+          ],
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'option1',
+              type: 'TEXT',
+            },
+            {
+              value: '',
+              label: 'something',
+              key: 'option2',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
+
+test('Does not throw when wrapper option categories are valid', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component name',
       icon: 'TitleIcon',
       category: 'CONTENT',
       structure: [
         {
           type: 'WRAPPER',
+          optionCategories: [{ label: 'Category 1', members: ['0'] }],
           options: [
             {
-              type: "LINKED",
+              key: '0',
+              type: 'LINKED_OPTION',
               value: {
                 ref: {
                   componentId: '#componentId1',
-                  optionId: '#componentId1OptionId1'
-                }
-              }
-            }
+                  optionId: '#componentId1OptionId1',
+                },
+              },
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
+
+test('Throws when component option category has no label', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'Text',
+          optionCategories: [{ members: ['option1'] }],
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'option1',
+              type: 'TEXT',
+            },
           ],
           descendants: [],
         },
@@ -347,40 +412,79 @@ test('Does throw when wrapper has options (linked options not supported yet)', (
   t.throws(() => validatePrefabs(prefabs));
 });
 
-test('Does throw when a wrapper nested in the structure has options (linked options not supported yet)', (t: Context): void => {
+test('Throws when component option category has no entries', (t: Context): void => {
   const prefabs = [
     {
-      name: 'Component Name',
+      name: 'Component name',
       icon: 'TitleIcon',
       category: 'CONTENT',
       structure: [
         {
-          name: 'something',
+          name: 'Text',
+          optionCategories: [],
           options: [
             {
               value: '',
               label: 'something',
-              key: 'something',
+              key: 'option1',
               type: 'TEXT',
             },
           ],
-          descendants: [
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+
+test('Throws when component option category members has no entries', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'Text',
+          optionCategories: [{ label: 'Category 1', members: [] }],
+          options: [
             {
-              type: 'WRAPPER',
-              options: [
-                {
-                  type: "LINKED",
-                  value: {
-                    ref: {
-                      componentId: '#componentId1',
-                      optionId: '#componentId1OptionId1'
-                    }
-                  }
-                }
-              ],
-              descendants: [],
+              value: '',
+              label: 'something',
+              key: 'option1',
+              type: 'TEXT',
             },
           ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs));
+});
+
+test('Throws when component option category member does not match option key', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'Text',
+          optionCategories: [{ label: 'Category 1', members: ['foo'] }],
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'option1',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
         },
       ],
     },
@@ -600,7 +704,6 @@ test('Dont throw when prefab component option has a ref', (t: Context): void => 
   validatePrefabs(prefabs);
   t.pass();
 });
-
 
 test('Throw when the prefabs option type is not referring to one the correct types', (t: Context): void => {
   const prefabs = [
