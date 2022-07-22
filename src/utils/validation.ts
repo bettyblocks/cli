@@ -94,3 +94,37 @@ export const checkNameReferences = (
     structure.forEach(checkComponentReferenceNames(componentNames, name));
   });
 };
+
+export function checkOptionCategoryReferences(prefabs: Prefab[]): void {
+  function innerFn(structure: PrefabReference[], name: string): void {
+    structure.forEach((prefabReference) => {
+      if (
+        prefabReference.type === undefined ||
+        prefabReference.type === 'COMPONENT' ||
+        prefabReference.type === 'WRAPPER'
+      ) {
+        if (prefabReference?.optionCategories) {
+          prefabReference.optionCategories.forEach((category) => {
+            category.members.forEach((member) => {
+              if (
+                !prefabReference.options.some((option) => member === option.key)
+              ) {
+                throw new Error(
+                  chalk.red(
+                    `\nOption category member: "${member}" references to non-existing option\n\nat prefab: ${name}`,
+                  ),
+                );
+              }
+            });
+          });
+        }
+
+        innerFn(prefabReference.descendants, name);
+      }
+    });
+  }
+
+  prefabs.forEach((prefab) => {
+    innerFn(prefab.structure, prefab.name);
+  });
+}

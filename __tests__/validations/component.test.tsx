@@ -466,33 +466,6 @@ test('Throws when component option category members has no entries', (t: Context
   t.throws(() => validatePrefabs(prefabs));
 });
 
-test('Throws when component option category member does not match option key', (t: Context): void => {
-  const prefabs = [
-    {
-      name: 'Component name',
-      icon: 'TitleIcon',
-      category: 'CONTENT',
-      structure: [
-        {
-          name: 'Text',
-          optionCategories: [{ label: 'Category 1', members: ['foo'] }],
-          options: [
-            {
-              value: '',
-              label: 'something',
-              key: 'option1',
-              type: 'TEXT',
-            },
-          ],
-          descendants: [],
-        },
-      ],
-    },
-  ] as unknown as Prefab[];
-
-  t.throws(() => validatePrefabs(prefabs));
-});
-
 test('Does not throw when button prefabs style override options are valid', (t: Context): void => {
   const prefabs = [
     {
