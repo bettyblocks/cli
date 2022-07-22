@@ -104,6 +104,7 @@ const wrapperSchema = (
   return Joi.object({
     type: Joi.string().valid('WRAPPER').required(),
     label: Joi.string(),
+    optionCategories: Joi.array().items(optionCategorySchema).min(1),
     options: Joi.array().items(linkedOptionSchema).required(),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
