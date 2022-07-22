@@ -11,7 +11,11 @@ import {
   PrefabReference,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
-import { optionSchema, linkedOptionSchema } from './componentOption';
+import {
+  optionCategorySchema,
+  optionSchema,
+  linkedOptionSchema,
+} from './componentOption';
 
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
@@ -124,6 +128,7 @@ const componentSchema = (
     ref: Joi.object({
       id: Joi.string().required(),
     }),
+    optionCategories: Joi.array().items(optionCategorySchema).min(1),
     options: Joi.array().items(optionSchema).required(),
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
