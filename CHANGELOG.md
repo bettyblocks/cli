@@ -1,3 +1,10 @@
+## [25.38.1](https://github.com/bettyblocks/cli/compare/v25.38.0...v25.38.1) (2022-07-26)
+
+
+### Bug Fixes
+
+* removed unneeded deps and code ([#329](https://github.com/bettyblocks/cli/issues/329)) ([b46b75f](https://github.com/bettyblocks/cli/commit/b46b75f))
+
 # [25.38.0](https://github.com/bettyblocks/cli/compare/v25.37.1...v25.38.0) (2022-07-13)
 
 
