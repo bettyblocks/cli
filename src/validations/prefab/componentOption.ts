@@ -111,3 +111,9 @@ export const optionSchema = Joi.object({
   }),
   ref: refSchema,
 });
+
+export const optionCategorySchema = Joi.object({
+  label: Joi.string().required(),
+  expanded: Joi.boolean(),
+  members: Joi.array().items(Joi.string()).min(1).required(),
+});

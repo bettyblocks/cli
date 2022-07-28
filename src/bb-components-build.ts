@@ -23,7 +23,10 @@ import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import hash from './utils/hash';
 import readFilesByType from './utils/readFilesByType';
 import transpile from './utils/transpile';
-import { checkNameReferences } from './utils/validation';
+import {
+  checkNameReferences,
+  checkOptionCategoryReferences,
+} from './utils/validation';
 import validateComponents from './validations/component';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
@@ -330,6 +333,8 @@ void (async (): Promise<void> => {
       validatePrefabs(partialprefabs, componentStyleMap, 'partial'),
       interactions && validateInteractions(interactions),
     ]);
+
+    checkOptionCategoryReferences(prefabs);
 
     const componentsWithHash = components.map((component) => {
       return {
