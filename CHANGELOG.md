@@ -1,3 +1,10 @@
+## [25.38.3](https://github.com/bettyblocks/cli/compare/v25.38.2...v25.38.3) (2022-07-29)
+
+
+### Bug Fixes
+
+* make sure option keys and category members are unique ([#332](https://github.com/bettyblocks/cli/issues/332)) ([573cdf7](https://github.com/bettyblocks/cli/commit/573cdf7))
+
 ## [25.38.2](https://github.com/bettyblocks/cli/compare/v25.38.1...v25.38.2) (2022-07-28)
 
 
