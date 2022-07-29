@@ -9,6 +9,7 @@ import {
   ComponentStyleMap,
   Component,
   PrefabReference,
+  PrefabComponentOptionCategory,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
 import {
@@ -189,6 +190,23 @@ const componentSchema = (
   });
 };
 
+const findCategoryMemberDuplicates = (
+  optionCategories: PrefabComponentOptionCategory[],
+  componentType: string,
+): void => {
+  const memberKeys = optionCategories.reduce<string[]>((acc, { members }) => {
+    return [...acc, ...members];
+  }, []);
+
+  if (memberKeys.length !== new Set(memberKeys).size) {
+    throw new Error(
+      chalk.red(
+        `\nBuild error in component ${componentType}: optionCategory members are required to be unique \n`,
+      ),
+    );
+  }
+};
+
 export const validateComponent =
   (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
   (component: PrefabReference): Prefab | unknown => {
@@ -212,6 +230,10 @@ export const validateComponent =
       const { error } = wrapperSchema(componentStyleMap, prefabType).validate(
         component,
       );
+      const { optionCategories = [], options } = component;
+
+      findDuplicates(options, 'option key', 'key');
+      findCategoryMemberDuplicates(optionCategories, 'WRAPPER');
 
       if (typeof error !== 'undefined') {
         const { message } = error;
@@ -221,7 +243,7 @@ export const validateComponent =
         );
       }
     } else {
-      const { name, options } = component;
+      const { name, optionCategories = [], options, type } = component;
 
       const styleType: Component['styleType'] | undefined =
         componentStyleMap &&
@@ -234,6 +256,7 @@ export const validateComponent =
       ).validate(component);
 
       findDuplicates(options, 'option key', 'key');
+      findCategoryMemberDuplicates(optionCategories, 'component');
 
       if (typeof error !== 'undefined') {
         const { message } = error;
