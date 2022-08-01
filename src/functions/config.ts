@@ -24,6 +24,7 @@ export type LocalConfig = {
   zone?: string;
   applicationId?: string;
   skipCompile?: boolean;
+  includes?: string[];
 };
 
 export type CustomConfig = {
@@ -125,6 +126,7 @@ class Config {
       builderApiUrl: '{HOST}/api/builder',
       domain: 'bettyblocks.com',
       skipCompile: false,
+      includes: [],
     } as LocalConfig;
   };
 
@@ -234,6 +236,10 @@ class Config {
     }
 
     return `https://${subdomain}.${this.config.domain}`;
+  }
+
+  get includes(): string[] {
+    return this.config.includes || [];
   }
 }
 

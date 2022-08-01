@@ -1,5 +1,63 @@
 import fs from 'fs-extra';
 import path from 'path';
+import glob from 'glob';
+import { pick } from 'lodash';
+
+export interface Block {
+  dependencies: string[];
+  functions: string[];
+  includes: string[];
+}
+
+interface RootPackageJson {
+  dependencies: { [key: string]: string };
+}
+
+/* @doc createPackageJson
+  Returns an object containing all data needed for the block package json
+*/
+const createPackageJson = (
+  name: string,
+  rootPackageJson: string,
+  dependencies: string[],
+): string => {
+  const rootDependencies = pick(
+    (fs.readJsonSync(rootPackageJson) as RootPackageJson).dependencies,
+    dependencies,
+  );
+  const packageJson = JSON.stringify(
+    {
+      name,
+      version: '1.0.0',
+      private: 'true',
+      dependencies: rootDependencies,
+    },
+    null,
+    2,
+  );
+
+  return packageJson;
+};
+
+/* @doc functionDirs
+  Returns a list of blocks.
+*/
+const blockFiles = (blockDir: string): string[] => {
+  return glob
+    .sync(path.join(blockDir, '*.json').replace(/\\/g, '/'))
+    .reduce((blocks, blockDefinition) => {
+      blocks.push(blockDefinition);
+      return blocks;
+    }, [] as string[]);
+};
+
+/* @doc blockDefinitions
+  Returns an object containing all block definitions
+  inside the given blocksDir.
+*/
+const blockDefinitions = (blocksDir: string): string[] => {
+  return blockFiles(blocksDir).map((blocks) => blocks);
+};
 
 /* @doc blockDefinitionPath
   Expands the block dir with a json file with the given blockname.
@@ -21,8 +79,9 @@ const newBlockDefinition = (blocksDir: string, blockName: string): string => {
     fs.writeJSONSync(
       blockDefinitionPath(blocksDir, blockName),
       {
+        dependencies: [],
         functions: [],
-        include: [],
+        includes: [],
       },
       { spaces: 2 },
     );
@@ -33,4 +92,4 @@ const newBlockDefinition = (blocksDir: string, blockName: string): string => {
   }
 };
 
-export { newBlockDefinition };
+export { blockDefinitions, createPackageJson, newBlockDefinition };

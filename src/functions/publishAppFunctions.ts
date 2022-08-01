@@ -113,7 +113,7 @@ const uploadAppFunctions = async (
 
 const publishFunctions = async (config: Config): Promise<void> => {
   const functionsDir = path.join(workingDir, 'functions');
-  const zipFile = zipFunctionDefinitions(functionsDir);
+  const zipFile = zipFunctionDefinitions(functionsDir, config.includes);
 
   const functions = functionDefinitions(functionsDir);
   const functionsJson = stringifyDefinitions(functions);
