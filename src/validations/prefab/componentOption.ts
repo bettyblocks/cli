@@ -90,11 +90,22 @@ const linkedOptionValueSchema = Joi.object({
   }),
 });
 
+export const linkedOptionConfigurationSchema = Joi.object({
+  as: Joi.string().valid(...CONFIGURATION_AS),
+  condition: Joi.object({
+    type: Joi.string().valid(...CONDITION_TYPE),
+    option: Joi.string(),
+    comparator: Joi.string().valid(...COMPARATORS),
+    value: Joi.any(),
+  }),
+});
+
 export const linkedOptionSchema = Joi.object({
   key: Joi.string().required(),
   label: Joi.string().allow(''),
   type: Joi.string().valid('LINKED_OPTION').required(),
   value: linkedOptionValueSchema,
+  configuration: linkedOptionConfigurationSchema,
 });
 
 export const optionSchema = Joi.object({
