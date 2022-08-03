@@ -52,7 +52,7 @@ const blockFiles = (blockDir: string): string[] => {
 };
 
 /* @doc blockDefinitions
-  Returns an object containing all block definitions
+  Returns an array containing all block definitions
   inside the given blocksDir.
 */
 const blockDefinitions = (blocksDir: string): string[] => {
@@ -92,4 +92,9 @@ const newBlockDefinition = (blocksDir: string, blockName: string): string => {
   }
 };
 
-export { blockDefinitions, createPackageJson, newBlockDefinition };
+export {
+  blockDefinitions,
+  blockDefinitionPath,
+  createPackageJson,
+  newBlockDefinition,
+};
