@@ -37,31 +37,38 @@ const createBlockZip = (
 
   fs.ensureDirSync(tmpDir);
 
-  const functionsDir = path.join(workingDir, 'functions');
-  const blocksDir = path.join(workingDir, 'blocks');
-  const rootPackageJson = path.join(path.dirname(blocksDir), 'package.json');
+  try {
+    const functionsDir = path.join(workingDir, 'functions');
+    const blocksDir = path.join(workingDir, 'blocks');
+    const rootPackageJson = path.join(path.dirname(blocksDir), 'package.json');
 
-  zip.addFile(
-    'package.json',
-    Buffer.from(createPackageJson(name, rootPackageJson, dependencies)),
-  );
-  zip.addFile('index.js', Buffer.from(generateIndex(functionsDir, functions)));
+    zip.addFile(
+      'package.json',
+      Buffer.from(createPackageJson(name, rootPackageJson, dependencies)),
+    );
+    zip.addFile(
+      'index.js',
+      Buffer.from(generateIndex(functionsDir, functions)),
+    );
 
-  const funcDefinitions = functionDefinitions(functionsDir);
-  const blockFunctions = whitelistedFunctions(funcDefinitions, functions);
+    const funcDefinitions = functionDefinitions(functionsDir);
+    const blockFunctions = whitelistedFunctions(funcDefinitions, functions);
 
-  blockFunctions.forEach((blockFunction) => {
-    const functionDir = path.dirname(blockFunction.path);
-    zip.addLocalFolder(functionDir, functionDir.replace(workingDir, ''));
-  });
+    blockFunctions.forEach((blockFunction) => {
+      const functionDir = path.dirname(blockFunction.path);
+      zip.addLocalFolder(functionDir, functionDir.replace(workingDir, ''));
+    });
 
-  includes.forEach((include) => {
-    zip.addLocalFolder(path.join(workingDir, include), include);
-  });
+    includes.forEach((include) => {
+      zip.addLocalFolder(path.join(workingDir, include), include);
+    });
 
-  zip.writeZip(zipFilePath);
+    zip.writeZip(zipFilePath);
 
-  return zipFilePath;
+    return zipFilePath;
+  } catch ({ message }) {
+    return console.error(message);
+  }
 };
 
 // eslint-disable-next-line no-void

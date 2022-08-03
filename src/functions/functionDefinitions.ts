@@ -213,11 +213,16 @@ const whitelistedFunctions = (
   definitions: FunctionDefinition[],
   whitelist: string[],
 ): FunctionDefinition[] =>
-  whitelist.map((whitelisted) =>
-    definitions.find(
+  whitelist.map((whitelisted) => {
+    const definition = definitions.find(
       (def) => concat(def.name, def.version).join(' ') === whitelisted,
-    ),
-  ) as FunctionDefinition[];
+    );
+    if (!definition)
+      throw new Error(
+        `Function ${whitelisted} could not be found. Check if function and version exists.`,
+      );
+    return definition;
+  });
 
 /* @doc generateIndex
   Fetches all functions and re-exports them. 
