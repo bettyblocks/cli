@@ -19,6 +19,7 @@ import {
   generateIndex,
   whitelistedFunctions,
 } from './functions/functionDefinitions';
+import publishBlocks from './blocks/publishBlocks';
 
 program.name('bb blocks publish').parse(process.argv);
 
@@ -87,12 +88,17 @@ void (async (): Promise<void> => {
     },
   ])) as { selected: string[] };
 
-  selected.forEach((jsonFile): void => {
+  selected.forEach((jsonFile) => {
     const block: Block = fs.readJsonSync(jsonFile);
     const name = path.basename(jsonFile, '.json');
-
     if (validateBlockConfig(block)) {
-      createBlockZip(name, block);
+      try {
+        const zip = createBlockZip(name, block);
+        // eslint-disable-next-line no-void
+        if (zip) void publishBlocks(block.functions, zip);
+      } catch ({ message }) {
+        console.error(message);
+      }
     } else {
       console.log(`Cannot publish invalid block ${name}`); // improve error message
     }
