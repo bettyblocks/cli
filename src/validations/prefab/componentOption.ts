@@ -83,20 +83,6 @@ const optionConfigurationSchema = Joi.when('type', {
 
   .default({});
 
-const linkedOptionValueSchema = Joi.object({
-  ref: Joi.object({
-    componentId: Joi.string().required(),
-    optionId: Joi.string().required(),
-  }),
-});
-
-export const linkedOptionSchema = Joi.object({
-  key: Joi.string().required(),
-  label: Joi.string().allow(''),
-  type: Joi.string().valid('LINKED_OPTION').required(),
-  value: linkedOptionValueSchema,
-});
-
 export const optionSchema = Joi.object({
   label: Joi.string().required(),
   key: Joi.string().required(),
