@@ -1,3 +1,10 @@
+# [25.39.0](https://github.com/bettyblocks/cli/compare/v25.38.3...v25.39.0) (2022-08-04)
+
+
+### Features
+
+* add configuration validation on linked options ([#333](https://github.com/bettyblocks/cli/issues/333)) ([5cf41ca](https://github.com/bettyblocks/cli/commit/5cf41ca))
+
 ## [25.38.3](https://github.com/bettyblocks/cli/compare/v25.38.2...v25.38.3) (2022-07-29)
 
 
