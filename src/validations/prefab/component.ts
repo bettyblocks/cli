@@ -17,6 +17,7 @@ import {
   optionSchema,
 } from './componentOption';
 import { linkedOptionSchema } from './linkedOption';
+
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
 
