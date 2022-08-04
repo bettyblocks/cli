@@ -15,9 +15,8 @@ import { findDuplicates } from '../../utils/validation';
 import {
   optionCategorySchema,
   optionSchema,
-  linkedOptionSchema,
 } from './componentOption';
-
+import { linkedOptionSchema } from './linkedOption';
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
 
