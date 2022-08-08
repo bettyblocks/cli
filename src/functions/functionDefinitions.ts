@@ -207,7 +207,7 @@ const exportFunctions = (definitions: FunctionDefinition[]): string[] => {
 };
 
 /* @doc whitelistedFunctions
-  Fetches functions based on a whitelist and re-exports them.
+  Returns an array containing all functions based on the whitelist.
 */
 const whitelistedFunctions = (
   definitions: FunctionDefinition[],

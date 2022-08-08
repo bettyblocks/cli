@@ -41,7 +41,7 @@ type PublishOptions = {
   skipCompile: boolean;
 };
 
-const logResult = (
+export const logResult = (
   { status, name, version, error }: FunctionResult,
   operation: string,
 ): void => {

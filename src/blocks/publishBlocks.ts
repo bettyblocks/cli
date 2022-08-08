@@ -3,12 +3,12 @@
 
 import path from 'path';
 import fs from 'fs-extra';
-import chalk from 'chalk';
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 
 /* internal dependencies */
 
+import { logResult } from 'src/functions/publishAppFunctions';
 import {
   functionDefinitions,
   stringifyDefinitions,
@@ -34,22 +34,7 @@ type PublishResponse = {
   updated: FunctionResult[];
 };
 
-const logResult = (
-  { status, name, error }: FunctionResult,
-  operation: string,
-): void => {
-  if (status === 'ok') {
-    console.log(`${chalk.green(`✔`)} ${operation} ${name}`);
-  } else {
-    console.log(
-      `${chalk.red(`✖`)} ${operation} ${name} failed. Errors: ${JSON.stringify(
-        error,
-      )}.`,
-    );
-  }
-};
-
-const uploadBlocks = async (
+const uploadBlock = async (
   blockDefinitionsFile: string,
   functionsJson: string,
   config: Config,
@@ -78,7 +63,7 @@ const uploadBlocks = async (
   }).then(async (res) => {
     if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();
-      return uploadBlocks(blockDefinitionsFile, functionsJson, config);
+      return uploadBlock(blockDefinitionsFile, functionsJson, config);
     }
     if (res.status !== 201) {
       throw new Error(
@@ -105,7 +90,7 @@ const createAndPublishFiles = async (
   const blockFunctions = whitelistedFunctions(funcDefinitions, functions);
   const functionsJson = stringifyDefinitions(blockFunctions);
 
-  await uploadBlocks(zip, functionsJson, config);
+  await uploadBlock(zip, functionsJson, config);
 };
 
 const publishBlocks = async (
