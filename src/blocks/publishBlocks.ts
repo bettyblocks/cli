@@ -8,7 +8,7 @@ import FormData from 'form-data';
 
 /* internal dependencies */
 
-import { logResult } from 'src/functions/publishAppFunctions';
+import { logResult } from '../functions/publishAppFunctions';
 import {
   functionDefinitions,
   stringifyDefinitions,

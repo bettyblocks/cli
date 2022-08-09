@@ -15,11 +15,17 @@ import {
   createPackageJson,
 } from './blocks/blockDefinitions';
 import {
+  FunctionDefinition,
   functionDefinitions,
   generateIndex,
   whitelistedFunctions,
 } from './functions/functionDefinitions';
 import publishBlocks from './blocks/publishBlocks';
+import Config from './functions/config';
+import {
+  FunctionValidator,
+  logValidationResult,
+} from './functions/validations';
 
 program.name('bb blocks publish').parse(process.argv);
 
@@ -72,6 +78,26 @@ const createBlockZip = (
   }
 };
 
+const validateFunctions = async (
+  blockFunctions: FunctionDefinition[],
+): Promise<boolean> => {
+  const baseFunctionsPath = path.join(workingDir, 'functions');
+  console.log(`Validating functions in ${baseFunctionsPath}`);
+  const config = new Config();
+  const validator = new FunctionValidator(config, baseFunctionsPath);
+  await validator.initSchema();
+  const results = await validator.validateFunctions('', blockFunctions);
+  let valid = true;
+  results.forEach((result) => {
+    if (result.status === 'error') {
+      valid = false;
+    }
+    logValidationResult(result);
+  });
+
+  return valid;
+};
+
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   const choices = blocks.map((block) => ({
@@ -89,18 +115,31 @@ void (async (): Promise<void> => {
   ])) as { selected: string[] };
 
   selected.forEach((jsonFile) => {
-    const block: Block = fs.readJsonSync(jsonFile);
-    const name = path.basename(jsonFile, '.json');
-    if (validateBlockConfig(block)) {
-      try {
-        const zip = createBlockZip(name, block);
-        // eslint-disable-next-line no-void
-        if (zip) void publishBlocks(block.functions, zip);
-      } catch ({ message }) {
-        console.error(message);
+    // eslint-disable-next-line no-void
+    void (async (): Promise<void> => {
+      const block: Block = fs.readJsonSync(jsonFile);
+      const name = path.basename(jsonFile, '.json');
+      if (validateBlockConfig(block)) {
+        try {
+          const functionsDir = path.join(workingDir, 'functions');
+          const funcDefinitions = functionDefinitions(functionsDir);
+          const blockFunctions = whitelistedFunctions(
+            funcDefinitions,
+            block.functions,
+          );
+          const valid = await validateFunctions(blockFunctions);
+          if (valid) {
+            const zip = createBlockZip(name, block);
+            if (zip) await publishBlocks(block.functions, zip);
+          } else {
+            console.error('Some functions are not valid');
+          }
+        } catch ({ message }) {
+          console.error(message);
+        }
+      } else {
+        console.log(`Cannot publish invalid block ${name}`);
       }
-    } else {
-      console.log(`Cannot publish invalid block ${name}`); // improve error message
-    }
+    })();
   });
 })();
