@@ -20,6 +20,13 @@ const refSchema = Joi.when('type', {
   otherwise: Joi.object({ id: Joi.string() }),
 });
 
+const optionConditionSchema = Joi.object({
+  type: Joi.string().valid(...CONDITION_TYPE),
+  option: Joi.string(),
+  comparator: Joi.string().valid(...COMPARATORS),
+  value: Joi.any(),
+});
+
 const optionConfigurationSchemaBase = {
   apiVersion: Joi.string()
     .pattern(/^v[\d]{1,}/)
@@ -33,12 +40,7 @@ const optionConfigurationSchemaBase = {
   allowedTypes: Joi.array().items(Joi.string()),
   as: Joi.string().valid(...CONFIGURATION_AS),
   component: Joi.string(),
-  condition: Joi.object({
-    type: Joi.string().valid(...CONDITION_TYPE),
-    option: Joi.string(),
-    comparator: Joi.string().valid(...COMPARATORS),
-    value: Joi.any(),
-  }),
+  condition: optionConditionSchema,
   disabled: Joi.boolean(),
   dataType: Joi.string(),
   dependsOn: Joi.string(),
@@ -102,4 +104,5 @@ export const optionCategorySchema = Joi.object({
   label: Joi.string().required(),
   expanded: Joi.boolean(),
   members: Joi.array().items(Joi.string()).min(1).required(),
+  condition: optionConditionSchema,
 });

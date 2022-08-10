@@ -1,9 +1,5 @@
 import Joi from 'joi';
-import {
-  COMPARATORS,
-  CONDITION_TYPE,
-  CONFIGURATION_AS,
-} from '../constants';
+import { COMPARATORS, CONDITION_TYPE, CONFIGURATION_AS } from '../constants';
 
 const linkedOptionValueSchema = Joi.object({
   ref: Joi.object({

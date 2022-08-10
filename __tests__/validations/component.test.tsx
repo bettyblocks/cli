@@ -318,6 +318,60 @@ test('Does not throw when nesting wrapper objects', (t: Context): void => {
   t.notThrows(() => validatePrefabs(prefabs));
 });
 
+test('Does not throw when component option categories with condition', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'Text',
+          optionCategories: [
+            {
+              label: 'Category 1',
+              members: ['option1'],
+              condition: {
+                type: 'SHOW',
+                option: 'option2',
+                comparator: 'EQ',
+                value: true,
+              },
+            },
+            {
+              label: 'Category 2',
+              members: ['option2'],
+              condition: {
+                type: 'HIDE',
+                option: 'option1',
+                comparator: 'EQ',
+                value: false,
+              },
+            },
+          ],
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'option1',
+              type: 'TEXT',
+            },
+            {
+              value: '',
+              label: 'something',
+              key: 'option2',
+              type: 'TEXT',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs));
+});
+
 test('Does not throw when component option categories are valid', (t: Context): void => {
   const prefabs = [
     {

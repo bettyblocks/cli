@@ -12,10 +12,7 @@ import {
   PrefabComponentOptionCategory,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
-import {
-  optionCategorySchema,
-  optionSchema,
-} from './componentOption';
+import { optionCategorySchema, optionSchema } from './componentOption';
 import { linkedOptionSchema } from './linkedOption';
 
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
