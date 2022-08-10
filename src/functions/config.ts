@@ -24,6 +24,7 @@ export type LocalConfig = {
   zone?: string;
   applicationId?: string;
   skipCompile?: boolean;
+  tenantId?: string;
 };
 
 export type CustomConfig = {
@@ -199,6 +200,30 @@ class Config {
 
   get builderApiUrl(): string {
     return this.config.builderApiUrl.replace('{HOST}', this.host);
+  }
+
+  public additionalHeaders(): Record<string, string> {
+    let tenantId = null;
+
+    if (this.config.tenantId) {
+      tenantId = this.config.tenantId;
+    } else {
+      switch (this.zone) {
+        case 'edge':
+          tenantId = '62313937-6230-3361-3465-643833656463';
+          break;
+        default:
+          tenantId = null;
+      }
+    }
+
+    if (tenantId) {
+      return {
+        'X-FusionAuth-TenantId': tenantId,
+      };
+    }
+
+    return {};
   }
 
   async applicationId(): Promise<string | undefined> {
