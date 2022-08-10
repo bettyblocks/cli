@@ -1,3 +1,10 @@
+## [25.40.1](https://github.com/bettyblocks/cli/compare/v25.40.0...v25.40.1) (2022-08-10)
+
+
+### Bug Fixes
+
+* add tenant-id to login request on edge ([#335](https://github.com/bettyblocks/cli/issues/335)) ([6bc9010](https://github.com/bettyblocks/cli/commit/6bc9010))
+
 # [25.40.0](https://github.com/bettyblocks/cli/compare/v25.39.0...v25.40.0) (2022-08-10)
 
 
