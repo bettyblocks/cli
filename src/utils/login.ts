@@ -74,13 +74,14 @@ class FusionAuth {
   async ensureLogin(): Promise<void> {
     const { email, password } = await promptCredentials();
 
+    const additionalHeaders = this.config.additionalHeaders();
     return fetch(`${this.config.fusionAuthUrl}/api/login`, {
       method: 'POST',
       body: JSON.stringify({
         loginId: email,
         password,
       }),
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...additionalHeaders },
     }).then(async (resp) => {
       if (resp.status === 242) {
         const { twoFactorId } = (await resp.json()) as LoginResponse;
