@@ -1,3 +1,10 @@
+# [25.40.0](https://github.com/bettyblocks/cli/compare/v25.39.0...v25.40.0) (2022-08-10)
+
+
+### Features
+
+* add condition to option categories ([#334](https://github.com/bettyblocks/cli/issues/334)) ([446c8e8](https://github.com/bettyblocks/cli/commit/446c8e8))
+
 # [25.39.0](https://github.com/bettyblocks/cli/compare/v25.38.3...v25.39.0) (2022-08-04)
 
 
