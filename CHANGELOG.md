@@ -1,3 +1,10 @@
+# [25.41.0](https://github.com/bettyblocks/cli/compare/v25.40.1...v25.41.0) (2022-08-11)
+
+
+### Features
+
+* enable LINKED PARTIAL for wrappers ([#336](https://github.com/bettyblocks/cli/issues/336)) ([762a405](https://github.com/bettyblocks/cli/commit/762a405))
+
 ## [25.40.1](https://github.com/bettyblocks/cli/compare/v25.40.0...v25.40.1) (2022-08-10)
 
 
