@@ -14,6 +14,7 @@ import {
 import { findDuplicates } from '../../utils/validation';
 import { optionCategorySchema, optionSchema } from './componentOption';
 import { linkedOptionSchema } from './linkedOption';
+import { linkedPartialSchema } from './linkedPartial';
 
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
@@ -90,6 +91,9 @@ const styleValidator: StyleValidator = {
 
 const partialSchema = (): Joi.ObjectSchema => {
   return Joi.object({
+    ref: Joi.object({
+      id: Joi.string().required(),
+    }),
     type: Joi.string().valid('PARTIAL').required(),
     partialId: Joi.string().allow('').required(),
   });
@@ -103,7 +107,9 @@ const wrapperSchema = (
     type: Joi.string().valid('WRAPPER').required(),
     label: Joi.string(),
     optionCategories: Joi.array().items(optionCategorySchema).min(1),
-    options: Joi.array().items(linkedOptionSchema).required(),
+    options: Joi.array()
+      .items(linkedOptionSchema, linkedPartialSchema)
+      .required(),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
       .required(),
