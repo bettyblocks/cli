@@ -42,6 +42,7 @@ const uploadBlock = async (
   const fusionAuth = new FusionAuth(config);
 
   const form = new FormData();
+  form.append('name', path.basename(blockDefinitionsFile, '.zip'));
   form.append('functions', functionsJson);
   form.append('file', fs.createReadStream(blockDefinitionsFile));
 
@@ -51,7 +52,7 @@ const uploadBlock = async (
       "Couldn't publish block(s), Error: application id not found",
     );
   }
-  const url = config.blockstoreApiUrl;
+  const url = `${config.blockstoreApiUrl}/blocks/publish`;
 
   return fetch(url, {
     method: 'POST',
@@ -59,22 +60,23 @@ const uploadBlock = async (
     headers: {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       Authorization: `Bearer ${fusionAuth.jwt()}`,
+      ApplicationId: applicationId,
+      Accept: 'application/json',
     },
   }).then(async (res) => {
     if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();
       return uploadBlock(blockDefinitionsFile, functionsJson, config);
     }
+
     if (res.status !== 201) {
+      const error = await res.text();
       throw new Error(
-        `Couldn't publish block(s), Error: ${res.status},${await res.text()}`,
+        `Couldn't publish block(s), Error: ${res.status}, ${
+          error.match('## Connection details') ? 'Something went wrong' : error
+        }`,
       );
     }
-
-    const { created, updated } = (await res.json()) as PublishResponse;
-
-    created.forEach((result) => logResult(result, 'Create'));
-    updated.forEach((result) => logResult(result, 'Update'));
 
     return true;
   });

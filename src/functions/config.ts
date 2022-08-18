@@ -125,7 +125,7 @@ class Config {
       cacheDir: '.tmp/',
       fusionAuthUrl: 'https://fusionauth{ZONEPOSTFIX}.betty.services',
       builderApiUrl: '{HOST}/api/builder',
-      blockstoreApiUrl: '{HOST}/api/blocks',
+      blockstoreApiUrl: 'https://block-store{ZONEPOSTFIX}.betty.services',
       domain: 'bettyblocks.com',
       skipCompile: false,
       includes: [],
