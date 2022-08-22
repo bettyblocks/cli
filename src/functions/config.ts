@@ -126,7 +126,8 @@ class Config {
       cacheDir: '.tmp/',
       fusionAuthUrl: 'https://fusionauth{ZONEPOSTFIX}.betty.services',
       builderApiUrl: '{HOST}/api/builder',
-      blockstoreApiUrl: 'https://block-store{ZONEPOSTFIX}.betty.services',
+      blockstoreApiUrl:
+        'https://my{ZONEPOSTFIX}.bettyblocks.com/block-store-api',
       domain: 'bettyblocks.com',
       skipCompile: false,
       includes: [],
@@ -207,7 +208,12 @@ class Config {
   }
 
   get blockstoreApiUrl(): string {
-    return this.config.blockstoreApiUrl.replace('{HOST}', this.host);
+    let postfix = '';
+    if (this.zone.match(/^(acceptance|edge)$/)) {
+      postfix = `.${this.zone}`;
+    }
+
+    return this.config.blockstoreApiUrl.replace('{ZONEPOSTFIX}', postfix);
   }
 
   public additionalHeaders(): Record<string, string> {
