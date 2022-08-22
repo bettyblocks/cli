@@ -207,7 +207,14 @@ class Config {
   }
 
   get blockstoreApiUrl(): string {
-    return this.config.blockstoreApiUrl.replace('{HOST}', this.host);
+    let postfix = '';
+    if (this.zone === 'acceptance') {
+      postfix = '-ca';
+    } else if (this.zone === 'edge') {
+      postfix = '-ce';
+    }
+
+    return this.config.blockstoreApiUrl.replace('{ZONEPOSTFIX}', postfix);
   }
 
   public additionalHeaders(): Record<string, string> {
