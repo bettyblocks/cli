@@ -64,6 +64,7 @@ export type PrefabPartial = {
 export type PrefabWrapper = {
   type: 'WRAPPER';
   descendants: PrefabReference[];
+  optionCategories?: PrefabComponentOptionCategory[];
   options: PrefabComponentOption[];
 };
 export interface PrefabComponent {
@@ -101,6 +102,7 @@ export interface PrefabComponent {
     };
   };
   descendants: PrefabReference[];
+  optionCategories?: PrefabComponentOptionCategory[];
   options: PrefabComponentOption[];
   ref?: {
     id: string;
@@ -134,6 +136,12 @@ export interface ValueRef {
     value: string;
   };
 }
+
+export type PrefabComponentOptionCategory = {
+  label: string;
+  extended?: boolean;
+  members: string[];
+};
 
 export type PrefabComponentOption = PrefabComponentOptionBase &
   (ValueDefault | ValueRef);

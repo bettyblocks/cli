@@ -9,9 +9,12 @@ import {
   ComponentStyleMap,
   Component,
   PrefabReference,
+  PrefabComponentOptionCategory,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
-import { optionSchema, linkedOptionSchema } from './componentOption';
+import { optionCategorySchema, optionSchema } from './componentOption';
+import { linkedOptionSchema } from './linkedOption';
+import { linkedPartialSchema } from './linkedPartial';
 
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
@@ -88,6 +91,9 @@ const styleValidator: StyleValidator = {
 
 const partialSchema = (): Joi.ObjectSchema => {
   return Joi.object({
+    ref: Joi.object({
+      id: Joi.string().required(),
+    }),
     type: Joi.string().valid('PARTIAL').required(),
     partialId: Joi.string().allow('').required(),
   });
@@ -100,7 +106,10 @@ const wrapperSchema = (
   return Joi.object({
     type: Joi.string().valid('WRAPPER').required(),
     label: Joi.string(),
-    options: Joi.array().items(linkedOptionSchema).required(),
+    optionCategories: Joi.array().items(optionCategorySchema).min(1),
+    options: Joi.array()
+      .items(linkedOptionSchema, linkedPartialSchema)
+      .required(),
     descendants: Joi.array()
       .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
       .required(),
@@ -124,6 +133,7 @@ const componentSchema = (
     ref: Joi.object({
       id: Joi.string().required(),
     }),
+    optionCategories: Joi.array().items(optionCategorySchema).min(1),
     options: Joi.array().items(optionSchema).required(),
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
@@ -183,6 +193,23 @@ const componentSchema = (
   });
 };
 
+const findCategoryMemberDuplicates = (
+  optionCategories: PrefabComponentOptionCategory[],
+  componentType: string,
+): void => {
+  const memberKeys = optionCategories.reduce<string[]>((acc, { members }) => {
+    return [...acc, ...members];
+  }, []);
+
+  if (memberKeys.length !== new Set(memberKeys).size) {
+    throw new Error(
+      chalk.red(
+        `\nBuild error in component ${componentType}: optionCategory members are required to be unique \n`,
+      ),
+    );
+  }
+};
+
 export const validateComponent =
   (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
   (component: PrefabReference): Prefab | unknown => {
@@ -206,6 +233,10 @@ export const validateComponent =
       const { error } = wrapperSchema(componentStyleMap, prefabType).validate(
         component,
       );
+      const { optionCategories = [], options } = component;
+
+      findDuplicates(options, 'option key', 'key');
+      findCategoryMemberDuplicates(optionCategories, 'WRAPPER');
 
       if (typeof error !== 'undefined') {
         const { message } = error;
@@ -215,7 +246,7 @@ export const validateComponent =
         );
       }
     } else {
-      const { name, options } = component;
+      const { name, optionCategories = [], options, type } = component;
 
       const styleType: Component['styleType'] | undefined =
         componentStyleMap &&
@@ -228,6 +259,7 @@ export const validateComponent =
       ).validate(component);
 
       findDuplicates(options, 'option key', 'key');
+      findCategoryMemberDuplicates(optionCategories, 'component');
 
       if (typeof error !== 'undefined') {
         const { message } = error;

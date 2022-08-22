@@ -1,3 +1,52 @@
+# [25.41.0](https://github.com/bettyblocks/cli/compare/v25.40.1...v25.41.0) (2022-08-11)
+
+
+### Features
+
+* enable LINKED PARTIAL for wrappers ([#336](https://github.com/bettyblocks/cli/issues/336)) ([762a405](https://github.com/bettyblocks/cli/commit/762a405))
+
+## [25.40.1](https://github.com/bettyblocks/cli/compare/v25.40.0...v25.40.1) (2022-08-10)
+
+
+### Bug Fixes
+
+* add tenant-id to login request on edge ([#335](https://github.com/bettyblocks/cli/issues/335)) ([6bc9010](https://github.com/bettyblocks/cli/commit/6bc9010))
+
+# [25.40.0](https://github.com/bettyblocks/cli/compare/v25.39.0...v25.40.0) (2022-08-10)
+
+
+### Features
+
+* add condition to option categories ([#334](https://github.com/bettyblocks/cli/issues/334)) ([446c8e8](https://github.com/bettyblocks/cli/commit/446c8e8))
+
+# [25.39.0](https://github.com/bettyblocks/cli/compare/v25.38.3...v25.39.0) (2022-08-04)
+
+
+### Features
+
+* add configuration validation on linked options ([#333](https://github.com/bettyblocks/cli/issues/333)) ([5cf41ca](https://github.com/bettyblocks/cli/commit/5cf41ca))
+
+## [25.38.3](https://github.com/bettyblocks/cli/compare/v25.38.2...v25.38.3) (2022-07-29)
+
+
+### Bug Fixes
+
+* make sure option keys and category members are unique ([#332](https://github.com/bettyblocks/cli/issues/332)) ([573cdf7](https://github.com/bettyblocks/cli/commit/573cdf7))
+
+## [25.38.2](https://github.com/bettyblocks/cli/compare/v25.38.1...v25.38.2) (2022-07-28)
+
+
+### Bug Fixes
+
+* bump ([#331](https://github.com/bettyblocks/cli/issues/331)) ([a215e47](https://github.com/bettyblocks/cli/commit/a215e47))
+
+## [25.38.1](https://github.com/bettyblocks/cli/compare/v25.38.0...v25.38.1) (2022-07-26)
+
+
+### Bug Fixes
+
+* removed unneeded deps and code ([#329](https://github.com/bettyblocks/cli/issues/329)) ([b46b75f](https://github.com/bettyblocks/cli/commit/b46b75f))
+
 # [25.38.0](https://github.com/bettyblocks/cli/compare/v25.37.1...v25.38.0) (2022-07-13)
 
 

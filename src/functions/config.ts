@@ -26,6 +26,7 @@ export type LocalConfig = {
   applicationId?: string;
   skipCompile?: boolean;
   includes?: string[];
+  tenantId?: string;
 };
 
 export type CustomConfig = {
@@ -207,6 +208,30 @@ class Config {
 
   get blockstoreApiUrl(): string {
     return this.config.blockstoreApiUrl.replace('{HOST}', this.host);
+  }
+
+  public additionalHeaders(): Record<string, string> {
+    let tenantId = null;
+
+    if (this.config.tenantId) {
+      tenantId = this.config.tenantId;
+    } else {
+      switch (this.zone) {
+        case 'edge':
+          tenantId = '62313937-6230-3361-3465-643833656463';
+          break;
+        default:
+          tenantId = null;
+      }
+    }
+
+    if (tenantId) {
+      return {
+        'X-FusionAuth-TenantId': tenantId,
+      };
+    }
+
+    return {};
   }
 
   async applicationId(): Promise<string | undefined> {
