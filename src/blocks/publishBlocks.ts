@@ -8,7 +8,6 @@ import FormData from 'form-data';
 
 /* internal dependencies */
 
-import { logResult } from '../functions/publishAppFunctions';
 import {
   functionDefinitions,
   stringifyDefinitions,
@@ -21,18 +20,6 @@ import Config from '../functions/config';
 /* execute command */
 
 const workingDir = process.cwd();
-
-type FunctionResult = {
-  name: string;
-  status: 'ok' | 'error';
-  id?: string;
-  error?: string;
-};
-
-type PublishResponse = {
-  created: FunctionResult[];
-  updated: FunctionResult[];
-};
 
 const uploadBlock = async (
   blockDefinitionsFile: string,
