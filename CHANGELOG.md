@@ -1,3 +1,10 @@
+# [25.42.0](https://github.com/bettyblocks/cli/compare/v25.41.0...v25.42.0) (2022-08-22)
+
+
+### Features
+
+* add blocks command to init new block ([#330](https://github.com/bettyblocks/cli/issues/330)) ([3b7aa94](https://github.com/bettyblocks/cli/commit/3b7aa94))
+
 # [25.41.0](https://github.com/bettyblocks/cli/compare/v25.40.1...v25.41.0) (2022-08-11)
 
 
