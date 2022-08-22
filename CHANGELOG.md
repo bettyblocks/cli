@@ -1,3 +1,10 @@
+## [25.42.2](https://github.com/bettyblocks/cli/compare/v25.42.1...v25.42.2) (2022-08-22)
+
+
+### Bug Fixes
+
+* use the correct block store api url ([#340](https://github.com/bettyblocks/cli/issues/340)) ([7143a7e](https://github.com/bettyblocks/cli/commit/7143a7e))
+
 ## [25.42.1](https://github.com/bettyblocks/cli/compare/v25.42.0...v25.42.1) (2022-08-22)
 
 
