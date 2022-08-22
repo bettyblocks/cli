@@ -86,7 +86,7 @@ test('stringifying function definitions', async (t: Context): Promise<void> => {
 });
 
 test('generating the package index.js', async (t: Context): Promise<void> => {
-  const expected = `import { default as sayHello_1_0 } from './say-hello/1.0';
+  const expected = `import { default as sayHello_1_0 } from './functions/say-hello/1.0';
 
 const fn = {
   "sayHello 1.0": sayHello_1_0,

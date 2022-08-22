@@ -142,11 +142,14 @@ class FunctionValidator {
     }
   }
 
-  async validateFunctions(functionName?: string): Promise<ValidationResult[]> {
+  async validateFunctions(
+    functionName?: string,
+    blockFunctions?: FunctionDefinition[],
+  ): Promise<ValidationResult[]> {
     const definitions = functionDefinitions(this.functionsDir, true);
+    const functions = blockFunctions || definitions;
     const validations: ValidationResult[] = [];
-
-    definitions.forEach((definition) => {
+    functions.forEach((definition) => {
       const preleadingPath = path.join(
         this.functionsDir,
         functionName || '',

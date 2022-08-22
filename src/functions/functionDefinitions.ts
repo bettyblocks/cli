@@ -4,6 +4,7 @@ import startCase from 'lodash/startCase';
 import fs from 'fs-extra';
 import glob from 'glob';
 import path from 'path';
+import { concat } from 'lodash';
 
 type Schema = {
   label: string;
@@ -185,7 +186,12 @@ const importFunctions = (
   definitions.map<string>(
     (definition) =>
       `import { default as ${toVariableName(definition)} } from '${path
-        .dirname(definition.path.replace(functionsPath, '.'))
+        .dirname(
+          definition.path.replace(
+            functionsPath,
+            `./${path.basename(functionsPath)}`,
+          ),
+        )
         .replace(/\\/g, '/')}';`,
   );
 
@@ -200,17 +206,39 @@ const exportFunctions = (definitions: FunctionDefinition[]): string[] => {
   return ['const fn = {', ...exports, '};', '', 'export default fn;'];
 };
 
+/* @doc whitelistedFunctions
+  Returns an array containing all functions based on the whitelist.
+*/
+const whitelistedFunctions = (
+  definitions: FunctionDefinition[],
+  whitelist: string[],
+): FunctionDefinition[] =>
+  whitelist.map((whitelisted) => {
+    const definition = definitions.find(
+      (def) => concat(def.name, def.version).join(' ') === whitelisted,
+    );
+    if (!definition)
+      throw new Error(
+        `Function ${whitelisted} could not be found. Check if function and version exists.`,
+      );
+    return definition;
+  });
+
 /* @doc generateIndex
   Fetches all functions and re-exports them. 
   Returns the result as a Buffer. 
 */
-const generateIndex = (functionsPath: string): string => {
+const generateIndex = (functionsPath: string, whitelist?: string[]): string => {
   const definitions = functionDefinitions(functionsPath);
 
+  const functions = whitelist
+    ? whitelistedFunctions(definitions, whitelist)
+    : definitions;
+
   const code: string[] = [];
-  code.push(...importFunctions(definitions, functionsPath));
+  code.push(...importFunctions(functions, functionsPath));
   code.push('');
-  code.push(...exportFunctions(definitions));
+  code.push(...exportFunctions(functions));
   code.push('');
 
   return code.join('\n');
@@ -222,16 +250,24 @@ const generateIndex = (functionsPath: string): string => {
   to the zip file. Generates an index.js and adds it to the zip file.
   Returns path to the zip file.
 */
-const zipFunctionDefinitions = (functionsPath: string): string => {
+const zipFunctionDefinitions = (
+  functionsPath: string,
+  includes?: string[],
+): string => {
   const zip = new AdmZip();
   const tmpDir = '.tmp';
   const zipFilePath = path.join(tmpDir, 'app.zip');
+  const cwd = path.dirname(functionsPath);
 
   fs.ensureDirSync(tmpDir);
 
   zip.addLocalFile(path.join(path.dirname(functionsPath), 'package.json'));
   zip.addFile('index.js', Buffer.from(generateIndex(functionsPath)));
-  zip.addLocalFolder(functionsPath);
+  zip.addLocalFolder(functionsPath, functionsPath.replace(cwd, ''));
+
+  (includes || []).forEach((include) => {
+    zip.addLocalFolder(path.join(cwd, include), include);
+  });
 
   zip.writeZip(zipFilePath);
 
@@ -248,5 +284,6 @@ export {
   isFunctionVersion,
   newFunctionDefinition,
   stringifyDefinitions,
+  whitelistedFunctions,
   zipFunctionDefinitions,
 };

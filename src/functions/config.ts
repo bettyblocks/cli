@@ -18,12 +18,14 @@ export type LocalConfig = {
   cacheDir: string;
   fusionAuthUrl: string;
   builderApiUrl: string;
+  blockstoreApiUrl: string;
   domain: string;
   identifier?: string;
   host?: string;
   zone?: string;
   applicationId?: string;
   skipCompile?: boolean;
+  includes?: string[];
   tenantId?: string;
 };
 
@@ -124,8 +126,10 @@ class Config {
       cacheDir: '.tmp/',
       fusionAuthUrl: 'https://fusionauth{ZONEPOSTFIX}.betty.services',
       builderApiUrl: '{HOST}/api/builder',
+      blockstoreApiUrl: 'https://block-store{ZONEPOSTFIX}.betty.services',
       domain: 'bettyblocks.com',
       skipCompile: false,
+      includes: [],
     } as LocalConfig;
   };
 
@@ -202,6 +206,10 @@ class Config {
     return this.config.builderApiUrl.replace('{HOST}', this.host);
   }
 
+  get blockstoreApiUrl(): string {
+    return this.config.blockstoreApiUrl.replace('{HOST}', this.host);
+  }
+
   public additionalHeaders(): Record<string, string> {
     let tenantId = null;
 
@@ -259,6 +267,10 @@ class Config {
     }
 
     return `https://${subdomain}.${this.config.domain}`;
+  }
+
+  get includes(): string[] {
+    return this.config.includes || [];
   }
 }
 

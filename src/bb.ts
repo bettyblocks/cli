@@ -15,6 +15,7 @@ import { CommandBB } from './types';
 const { version }: { version: string } = require('../package.json');
 
 const availableCommands: CommandBB[] = [
+  'blocks',
   'components',
   'functions',
   'interactions',
@@ -28,6 +29,7 @@ program
   .description('Betty Blocks CLI')
   .version(version, '-v, --version')
   .command('components [cmd]', 'manage your component sets')
+  .command('blocks [cmd]', 'manage your blocks')
   .command('functions [cmd]', 'manage your custom functions')
   .command('interactions [cmd]', 'manage your interactions')
   .command('bundle [cmd]', 'manage your vendor bundle')

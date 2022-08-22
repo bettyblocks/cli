@@ -3,6 +3,7 @@ import { ICONS } from './validations/constants';
 export type Category = DefaultCategory | string;
 
 export type CommandBB =
+  | 'blocks'
   | 'components'
   | 'functions'
   | 'interactions'
@@ -28,6 +29,8 @@ export type CommandFunctions =
   | 'autoversion'
   | 'bump'
   | 'test';
+
+export type CommandBlocks = 'publish' | 'new';
 
 export type CommandInteractions = 'generate';
 
