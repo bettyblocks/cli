@@ -1,3 +1,10 @@
+# [25.43.0](https://github.com/bettyblocks/cli/compare/v25.42.2...v25.43.0) (2022-09-05)
+
+
+### Features
+
+* update buttongroup datatype ([#341](https://github.com/bettyblocks/cli/issues/341)) ([0ea27ce](https://github.com/bettyblocks/cli/commit/0ea27ce))
+
 ## [25.42.2](https://github.com/bettyblocks/cli/compare/v25.42.1...v25.42.2) (2022-08-22)
 
 
