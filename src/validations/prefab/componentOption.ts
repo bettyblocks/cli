@@ -34,7 +34,7 @@ const optionConfigurationSchemaBase = {
   allowedInput: Joi.array().items(
     Joi.object({
       name: Joi.string().allow(''),
-      value: Joi.string(),
+      value: Joi.any(),
     }),
   ),
   allowedTypes: Joi.array().items(Joi.string()),
