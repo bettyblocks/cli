@@ -141,6 +141,12 @@ export type PrefabComponentOptionCategory = {
   label: string;
   extended?: boolean;
   members: string[];
+  condition?: {
+    type: string;
+    option: string;
+    comparator: string;
+    value: string | boolean | number;
+  };
 };
 
 export type PrefabComponentOption = PrefabComponentOptionBase &
