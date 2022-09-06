@@ -4,11 +4,7 @@ import { COMPARATORS, CONDITION_TYPE, CONFIGURATION_AS } from '../constants';
 const linkedOptionValueSchema = Joi.object({
   ref: Joi.object({
     componentId: Joi.string().required(),
-    optionId: Joi.alternatives().conditional('type', {
-      is: 'LINKED_OPTION',
-      then: Joi.string().required(),
-      otherwise: Joi.forbidden(),
-    }),
+    optionId: Joi.string().optional(),
   }),
 });
 
