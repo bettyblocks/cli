@@ -1,3 +1,10 @@
+## [25.43.1](https://github.com/bettyblocks/cli/compare/v25.43.0...v25.43.1) (2022-09-07)
+
+
+### Bug Fixes
+
+* fix allowed types typing ([#343](https://github.com/bettyblocks/cli/issues/343)) ([c9ad080](https://github.com/bettyblocks/cli/commit/c9ad080))
+
 # [25.43.0](https://github.com/bettyblocks/cli/compare/v25.42.2...v25.43.0) (2022-09-05)
 
 
