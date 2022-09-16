@@ -1,3 +1,10 @@
+# [25.44.0](https://github.com/bettyblocks/cli/compare/v25.43.1...v25.44.0) (2022-09-16)
+
+
+### Features
+
+* add v2 option types to components ([#345](https://github.com/bettyblocks/cli/issues/345)) ([6a2be0e](https://github.com/bettyblocks/cli/commit/6a2be0e))
+
 ## [25.43.1](https://github.com/bettyblocks/cli/compare/v25.43.0...v25.43.1) (2022-09-07)
 
 
