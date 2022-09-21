@@ -1,3 +1,16 @@
+# [25.45.0](https://github.com/bettyblocks/cli/compare/v25.44.0...v25.45.0) (2022-09-21)
+
+
+### Bug Fixes
+
+* remove package lock ([7c889e3](https://github.com/bettyblocks/cli/commit/7c889e3))
+* unessecary escape character ([db8b750](https://github.com/bettyblocks/cli/commit/db8b750))
+
+
+### Features
+
+* add validation to comp ([892e3d9](https://github.com/bettyblocks/cli/commit/892e3d9))
+
 # [25.44.0](https://github.com/bettyblocks/cli/compare/v25.43.1...v25.44.0) (2022-09-16)
 
 
