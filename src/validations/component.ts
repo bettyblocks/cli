@@ -35,6 +35,15 @@ const schema: ObjectSchema = Joi.object({
   type: Joi.string().required().custom(reservedTypes),
   allowedTypes: Joi.array().items(Joi.string()).required(),
   orientation: Joi.string().required(),
+  dependencies: Joi.object().pattern(
+    /.*/,
+    Joi.object({
+      package: Joi.string()
+        .pattern(/^[a-z]+:[^~)('!*@]+(@[0-9\.\-a-z]+)$/)
+        .required(),
+      imports: Joi.array().items(Joi.string()).required(),
+    }),
+  ),
   functions: Joi.array().items(Joi.string()),
   triggers: Joi.array().items(Joi.string()),
   interactions: Joi.object(),
