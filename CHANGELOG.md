@@ -1,3 +1,10 @@
+## [25.45.1](https://github.com/bettyblocks/cli/compare/v25.45.0...v25.45.1) (2022-09-22)
+
+
+### Bug Fixes
+
+* update fusion auth url ([#347](https://github.com/bettyblocks/cli/issues/347)) ([974a933](https://github.com/bettyblocks/cli/commit/974a933))
+
 # [25.45.0](https://github.com/bettyblocks/cli/compare/v25.44.0...v25.45.0) (2022-09-21)
 
 
