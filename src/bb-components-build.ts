@@ -17,6 +17,7 @@ import {
   PrefabReference,
   PrefabPartial,
   PrefabWrapper,
+  StyleDefinition,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -28,6 +29,7 @@ import {
   checkOptionCategoryReferences,
 } from './utils/validation';
 import validateComponents from './validations/component';
+import validateStyles from './validations/styles';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
 
@@ -304,19 +306,104 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
   );
 };
 
+const readStyles: () => Promise<StyleDefinition[]> = async (): Promise<
+  StyleDefinition[]
+> => {
+  const absoluteRootDir = path.resolve(process.cwd(), rootDir);
+  const srcDir = `${absoluteRootDir}/src/styles`;
+  const prefabsDir = `${absoluteRootDir}/.styles`;
+
+  const exists: boolean = await pathExists(srcDir);
+
+  if (!exists) {
+    throw new Error(chalk.red('\nPrefabs folder not found\n'));
+  }
+
+  const styleFiles: string[] = await readFilesByType(srcDir, 'ts');
+
+  const styleProgram = ts.createProgram(
+    styleFiles.map((file) => `${srcDir}/${file}`),
+    {
+      outDir: '.styles',
+      module: 1,
+      esModuleInterop: true,
+      allowSyntheticDefaultImports: false,
+      target: 99,
+      listEmittedFiles: true,
+    },
+  );
+
+  const diagnostics = [...ts.getPreEmitDiagnostics(styleProgram)];
+
+  if (diagnostics.length > 0) {
+    reportDiagnostics(diagnostics);
+    process.exit(1);
+  }
+
+  const results = styleProgram.emit();
+
+  if (results.diagnostics.length > 0) {
+    reportDiagnostics([...results.diagnostics]);
+    process.exit(1);
+  }
+
+  const globalDiagnostics = [...styleProgram.getGlobalDiagnostics()];
+  if (globalDiagnostics.length > 0) {
+    reportDiagnostics(globalDiagnostics);
+    process.exit(1);
+  }
+
+  const declarationDiagnostics = [...styleProgram.getDeclarationDiagnostics()];
+  if (declarationDiagnostics.length > 0) {
+    reportDiagnostics(declarationDiagnostics);
+    process.exit(1);
+  }
+
+  const configDiagnostics = [...styleProgram.getConfigFileParsingDiagnostics()];
+  if (configDiagnostics.length > 0) {
+    reportDiagnostics(configDiagnostics);
+    process.exit(1);
+  }
+
+  const styles: Array<Promise<StyleDefinition>> = (results.emittedFiles || [])
+    .filter((filename) => /\.(\w+\/){1}\w+\.js/.test(filename))
+    .map((filename) => {
+      return new Promise((resolve) => {
+        import(`${absoluteRootDir}/${filename}`)
+          .then((style) => {
+            // JSON schema validation
+            resolve(style.default);
+          })
+          .catch((error) => {
+            throw new Error(`in ${filename}: ${error}`);
+          });
+      });
+    });
+
+  return Promise.all(styles);
+};
+
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
-    const [newPrefabs, oldPrefabs, components, interactions, partialprefabs] =
-      await Promise.all([
-        readtsPrefabs(),
-        readPrefabs(),
-        readComponents(),
-        readInteractions(),
-        readPartialPrefabs(),
-      ]);
+    const [
+      styles,
+      newPrefabs,
+      oldPrefabs,
+      components,
+      interactions,
+      partialprefabs,
+    ] = await Promise.all([
+      readStyles(),
+      readtsPrefabs(),
+      readPrefabs(),
+      readComponents(),
+      readInteractions(),
+      readPartialPrefabs(),
+    ]);
 
+    const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = oldPrefabs.concat(newPrefabs);
 
     checkNameReferences(prefabs, components);
@@ -328,7 +415,8 @@ void (async (): Promise<void> => {
     }, {});
 
     await Promise.all([
-      validateComponents(components),
+      validateStyles(styles),
+      validateComponents(components, validStyleTypes),
       validatePrefabs(prefabs, componentStyleMap),
       validatePrefabs(partialprefabs, componentStyleMap, 'partial'),
       interactions && validateInteractions(interactions),
@@ -402,6 +490,10 @@ void (async (): Promise<void> => {
 
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ];
+
+    if (styleTypes.length > 0) {
+      outputPromises.push(outputJson(`${distDir}/styleTypes.json`, styleTypes));
+    }
 
     const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');
 

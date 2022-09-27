@@ -44,6 +44,11 @@ export type DefaultCategory =
   | 'NAVIGATION'
   | 'TABLE';
 
+export interface StyleDefinition {
+  type: string;
+  name: string;
+  content: any;
+}
 export interface Component {
   allowedTypes: string[];
   jsx: string;

@@ -252,6 +252,7 @@ export const validateComponent =
         componentStyleMap &&
         componentStyleMap[name] &&
         componentStyleMap[name].styleType;
+
       const { error } = componentSchema(
         componentStyleMap,
         styleType as keyof StyleValidator,
