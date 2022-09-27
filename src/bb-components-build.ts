@@ -123,7 +123,6 @@ function reportDiagnostics(diagnostics: ts.Diagnostic[]): void {
 const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
-  const prefabsDir = `${absoluteRootDir}/.prefabs`;
 
   const exists: boolean = await pathExists(srcDir);
 
@@ -311,12 +310,11 @@ const readStyles: () => Promise<StyleDefinition[]> = async (): Promise<
 > => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/styles`;
-  const prefabsDir = `${absoluteRootDir}/.styles`;
 
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error(chalk.red('\nPrefabs folder not found\n'));
+    throw new Error(chalk.red('\nStyles folder not found\n'));
   }
 
   const styleFiles: string[] = await readFilesByType(srcDir, 'ts');
@@ -491,8 +489,8 @@ void (async (): Promise<void> => {
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ];
 
-    if (styleTypes.length > 0) {
-      outputPromises.push(outputJson(`${distDir}/styleTypes.json`, styleTypes));
+    if (styles.length > 0) {
+      outputPromises.push(outputJson(`${distDir}/styles.json`, styles));
     }
 
     const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');
