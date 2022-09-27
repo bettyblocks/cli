@@ -1,3 +1,30 @@
+## [25.45.1](https://github.com/bettyblocks/cli/compare/v25.45.0...v25.45.1) (2022-09-22)
+
+
+### Bug Fixes
+
+* update fusion auth url ([#347](https://github.com/bettyblocks/cli/issues/347)) ([974a933](https://github.com/bettyblocks/cli/commit/974a933))
+
+# [25.45.0](https://github.com/bettyblocks/cli/compare/v25.44.0...v25.45.0) (2022-09-21)
+
+
+### Bug Fixes
+
+* remove package lock ([7c889e3](https://github.com/bettyblocks/cli/commit/7c889e3))
+* unessecary escape character ([db8b750](https://github.com/bettyblocks/cli/commit/db8b750))
+
+
+### Features
+
+* add validation to comp ([892e3d9](https://github.com/bettyblocks/cli/commit/892e3d9))
+
+# [25.44.0](https://github.com/bettyblocks/cli/compare/v25.43.1...v25.44.0) (2022-09-16)
+
+
+### Features
+
+* add v2 option types to components ([#345](https://github.com/bettyblocks/cli/issues/345)) ([6a2be0e](https://github.com/bettyblocks/cli/commit/6a2be0e))
+
 ## [25.43.1](https://github.com/bettyblocks/cli/compare/v25.43.0...v25.43.1) (2022-09-07)
 
 

@@ -147,6 +147,13 @@ export const OPTIONS = [
   'TOGGLE',
   'UNIT',
   'VARIABLE',
+  // v2
+  'BOOLEAN',
+  'NUMERAL',
+  'QUERY',
+  'RECORD_ARRAY',
+  'STRING',
+  'STRING_ARRAY',
 ];
 
 export const MEDIA_TYPES = ['IMAGE', 'VIDEO'];
