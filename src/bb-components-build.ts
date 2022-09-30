@@ -3,7 +3,13 @@ import chalk from 'chalk';
 import path from 'path';
 import program, { CommanderStatic } from 'commander';
 import ts from 'typescript';
-import { outputJson, pathExists, promises, remove } from 'fs-extra';
+import {
+  outputJson,
+  pathExists,
+  promises,
+  readFileSync,
+  remove,
+} from 'fs-extra';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
 import extractInteractionCompatibility from './interactions/compatibility';
@@ -31,6 +37,9 @@ import validateComponents from './validations/component';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
 
+const startTime = Date.now();
+let endTime;
+
 const { mkdir, readFile } = promises;
 
 /* process arguments */
@@ -45,6 +54,7 @@ const { args }: CommanderStatic = program;
 const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
+const jsonDir = `${rootDir}/json`;
 const enableNewTranspile = !!options.transpile;
 
 /* execute command */
@@ -396,18 +406,37 @@ void (async (): Promise<void> => {
       (prefab) => prefab.type !== 'page',
     );
 
-    const outputPromises = [
-      outputJson(`${distDir}/prefabs.json`, defaultPrefabs),
-      outputJson(`${distDir}/templates.json`, componentsWithHash),
+    const comps = JSON.parse(
+      readFileSync(`${distDir}/templates.json`, 'utf8'),
+    )?.map((comp) => {
+      if (comp.name === componentsWithHash[0].name) {
+        comp = componentsWithHash[0];
+      }
+      return comp;
+    });
 
-      interactions && outputJson(`${distDir}/interactions.json`, interactions),
+    const outputPromises = [
+      outputJson(
+        `${distDir}/prefabs.json`,
+        JSON.parse(readFileSync(`${jsonDir}/prefabs.json`, 'utf8')),
+      ),
+      outputJson(`${distDir}/templates.json`, comps),
+
+      interactions &&
+        outputJson(
+          `${distDir}/interactions.json`,
+          JSON.parse(readFileSync(`${jsonDir}/interactions.json`, 'utf8')),
+        ),
     ];
 
     const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');
 
     if (pagePrefabs.length > 0) {
       outputPromises.push(
-        outputJson(`${distDir}/pagePrefabs.json`, pagePrefabs),
+        outputJson(
+          `${distDir}/pagePrefabs.json`,
+          JSON.parse(readFileSync(`${jsonDir}/pagePrefabs.json`, 'utf8')),
+        ),
       );
     }
 
@@ -419,7 +448,10 @@ void (async (): Promise<void> => {
 
     if (buildPartialprefabs.length > 0) {
       outputPromises.push(
-        outputJson(`${distDir}/partials.json`, buildPartialprefabs),
+        outputJson(
+          `${distDir}/partials.json`,
+          JSON.parse(readFileSync(`${jsonDir}/partials.json`, 'utf8')),
+        ),
       );
     }
 
@@ -457,4 +489,6 @@ void (async (): Promise<void> => {
 
     process.exit(1);
   }
+  endTime = Date.now();
+  console.info(`total time: ${(endTime - startTime) / 1000} seconds`);
 })();
