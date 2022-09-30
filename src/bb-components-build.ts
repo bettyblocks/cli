@@ -18,6 +18,7 @@ import {
   PrefabPartial,
   PrefabWrapper,
   StyleDefinition,
+  BuildStyleDefinition,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -32,6 +33,7 @@ import validateComponents from './validations/component';
 import validateStyles from './validations/styles';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
+import { access } from 'fs';
 
 const { mkdir, readFile } = promises;
 
@@ -436,6 +438,20 @@ void (async (): Promise<void> => {
 
     type BuildPrefabComponent = BuildPrefab | PrefabPartial | PrefabWrapper;
 
+    const buildStyle = (style: StyleDefinition): BuildStyleDefinition => {
+      const buildContent: BuildStyleDefinition['content'] = Object.values(
+        style.content,
+      ).reduce(
+        (acc, { className, styleObject }) => ({
+          ...acc,
+          [className]: styleObject,
+        }),
+        {},
+      );
+
+      return { ...style, content: buildContent };
+    };
+
     const buildPrefab = (prefab: Prefab): Prefab => {
       const buildStructure = (
         structure: PrefabReference,
@@ -473,6 +489,8 @@ void (async (): Promise<void> => {
       };
     };
 
+    const buildStyles = styles.map(buildStyle);
+
     const buildPrefabs = prefabs.map(buildPrefab);
     const buildPartialprefabs = partialprefabs.map(buildPrefab);
 
@@ -489,8 +507,8 @@ void (async (): Promise<void> => {
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ];
 
-    if (styles.length > 0) {
-      outputPromises.push(outputJson(`${distDir}/styles.json`, styles));
+    if (buildStyles.length > 0) {
+      outputPromises.push(outputJson(`${distDir}/styles.json`, buildStyles));
     }
 
     const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');

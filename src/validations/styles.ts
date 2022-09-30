@@ -28,23 +28,16 @@ const cssObjectSchema = Joi.object({
   textTransform: Joi.string(),
 });
 
-const contentSchema = Joi.object({
-  basis: cssObjectSchema.required(),
-  focus: cssObjectSchema,
-  hover: cssObjectSchema,
-  active: cssObjectSchema,
-  disabled: cssObjectSchema,
-  valid: cssObjectSchema,
-  invalid: cssObjectSchema,
-  readOnly: cssObjectSchema,
+const classSchema = Joi.object({
+  className: Joi.string().required(),
+  styleObject: cssObjectSchema.required().min(1),
 });
 
-// export type PrefabTypes = 'partial' | 'page' | undefined;
 const schemaProvider = (): Joi.ObjectSchema => {
   return Joi.object({
     name: Joi.string().required(),
     type: Joi.string().required(),
-    content: contentSchema.required(),
+    content: Joi.array().items(classSchema).unique('name').required().min(1),
   });
 };
 

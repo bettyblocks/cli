@@ -1,3 +1,4 @@
+import { CSSProperties } from 'react';
 import { ICONS } from './validations/constants';
 
 export type Category = DefaultCategory | string;
@@ -44,11 +45,48 @@ export type DefaultCategory =
   | 'NAVIGATION'
   | 'TABLE';
 
+interface RefOrValue {
+  type: 'THEME_COLOR' | 'STATIC';
+  value: string;
+}
+
+export interface StyleDefinitionClassStyle {
+  backgroundColor?: RefOrValue;
+  borderColor?: RefOrValue;
+  borderRadius?: string[];
+  borderStyle?: string;
+  borderWidth?: string[];
+  boxShadow?: string;
+  color?: RefOrValue;
+  fontFamily?: string;
+  fontSize?: string;
+  fontStyle?: string;
+  fontWeight?: string;
+  letterSpacing?: string;
+  lineHeight?: string;
+  padding?: string[];
+  textDecoration?: string;
+  textTransform?: string;
+}
+export interface StyleDefinitionClass {
+  className: string;
+  styleObject: StyleDefinitionClassStyle;
+}
+
+export interface StyleDefinitionContent {
+  [key: string]: StyleDefinitionClassStyle;
+}
+
 export interface StyleDefinition {
   type: string;
   name: string;
-  content: any;
+  content: StyleDefinitionClass[];
 }
+
+export interface BuildStyleDefinition extends Omit<StyleDefinition, 'content'> {
+  content: StyleDefinitionContent;
+}
+
 export interface Component {
   allowedTypes: string[];
   jsx: string;
