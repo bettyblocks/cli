@@ -1,3 +1,10 @@
+## [25.45.2](https://github.com/bettyblocks/cli/compare/v25.45.1...v25.45.2) (2022-09-29)
+
+
+### Bug Fixes
+
+* change dependency input from object to array ([a44126c](https://github.com/bettyblocks/cli/commit/a44126c))
+
 ## [25.45.1](https://github.com/bettyblocks/cli/compare/v25.45.0...v25.45.1) (2022-09-22)
 
 
