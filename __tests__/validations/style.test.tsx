@@ -118,3 +118,34 @@ test('Throw when unsupported styleObject property', (t: Context): void => {
 
   t.throws(() => validateStyles(styles as StyleDefinition[]));
 });
+
+test("Don't throw when all styles are valid", (t: Context): void => {
+  const styles: StyleDefinition[] = [
+    {
+      type: 'BUTTON',
+      name: 'MyCustomStylo2',
+      content: [
+        {
+          className: 'root',
+          styleObject: {
+            borderStyle: 'none',
+          }
+        },
+      ],
+    },
+    {
+      type: 'BUTTON',
+      name: 'MyCustomStylo',
+      content: [
+        {
+          className: 'root',
+          styleObject: {
+            borderStyle: 'none',
+          }
+        },
+      ],
+    },
+  ];
+
+  t.notThrows(() => validateStyles(styles));
+});

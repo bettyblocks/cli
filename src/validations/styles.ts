@@ -33,42 +33,26 @@ const classSchema = Joi.object({
   styleObject: cssObjectSchema.required().min(1),
 });
 
-const schemaProvider = (): Joi.ObjectSchema => {
-  return Joi.object({
-    name: Joi.string().required(),
-    type: Joi.string().required(),
-    content: Joi.array().items(classSchema).unique('name').required().min(1),
-  });
-};
+const styleTypeSchema = Joi.object({
+  name: Joi.string().required(),
+  type: Joi.string().required(),
+  content: Joi.array().items(classSchema).unique('name').required().min(1),
+});
 
-const validate = (styleType: StyleDefinition): void => {
-  const { error } = schemaProvider().validate(styleType);
+const validateUnique = (a: StyleDefinition, b: StyleDefinition) =>
+  a.name === b.name && a.type === b.type;
+
+const validateAll = (styleTypes: StyleDefinition[]) => {
+  const { error } = Joi.array()
+    .items(styleTypeSchema)
+    .unique(validateUnique)
+    .validate(styleTypes);
 
   if (error) {
-    throw new Error(
-      chalk.red(`\nStyleType: ${error.message} at: ${styleType.name}\n`),
-    );
+    throw new Error(chalk.red(`\nStyleTypes: ${error.message}\n`));
   }
 };
 
-const findDuplicates = (styleTypes: StyleDefinition[]): void => {
-  styleTypes.reduce((acc: Set<string>, item: StyleDefinition) => {
-    const valueLower = `${item.type}_${item.name}`.toLowerCase();
-
-    if (acc.has(valueLower)) {
-      throw new Error(
-        chalk.red(
-          `\nThe Style "${item.name}" for type: "${item.type}" is already defined \n`,
-        ),
-      );
-    }
-
-    return acc.add(valueLower);
-  }, new Set());
-};
-
 export default (styleTypes: StyleDefinition[]): void => {
-  styleTypes.forEach((styleType) => validate(styleType));
-
-  findDuplicates(styleTypes);
+  validateAll(styleTypes);
 };
