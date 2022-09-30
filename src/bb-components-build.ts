@@ -33,7 +33,6 @@ import validateComponents from './validations/component';
 import validateStyles from './validations/styles';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
-import { access } from 'fs';
 
 const { mkdir, readFile } = promises;
 

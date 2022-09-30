@@ -1,7 +1,6 @@
 import test, { ExecutionContext } from 'ava';
 
-import { Component, StyleDefinition } from '../../src/types';
-import validateComponents from '../../src/validations/component';
+import { StyleDefinition } from '../../src/types';
 import validateStyles from '../../src/validations/styles';
 
 type Context = ExecutionContext<unknown>;
