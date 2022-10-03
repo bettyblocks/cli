@@ -16,6 +16,12 @@ To install the CLI you will need [a recent version of Node.js](https://nodejs.or
 $ npm install -g @betty-blocks/cli
 ```
 
+To install the CLI without optional dependencies (isolated-vm)
+
+```bash
+$ npm install -g @betty-blocks/cli --omit=optional
+```
+
 ## Introduction
 
 Welcome to the GitHub repository for the Betty Blocks command-line interface (CLI). This CLI lets you develop for Betty Blocks, a no-code platform for business users. Not using Betty Blocks yet? Find out more at [https://www.bettyblocks.com](https://www.bettyblocks.com).
