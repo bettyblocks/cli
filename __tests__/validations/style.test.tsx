@@ -35,7 +35,7 @@ test('Throw when duplicate style', (t: Context): void => {
     }
   ];
 
-  t.throws(() => validateStyles(styles));
+  t.throws(() => validateStyles(styles, ['BUTTON']));
 });
 
 test('Throw when empty css content for basis', (t: Context): void => {
@@ -48,7 +48,7 @@ test('Throw when empty css content for basis', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validateStyles(styles));
+  t.throws(() => validateStyles(styles, ['BUTTON']));
 });
 
 test('Throw when empty css content for state', (t: Context): void => {
@@ -68,7 +68,7 @@ test('Throw when empty css content for state', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validateStyles(styles));
+  t.throws(() => validateStyles(styles, ['BUTTON']));
 });
 
 test('Throw when duplicate stateName', (t: Context): void => {
@@ -105,7 +105,7 @@ test('Throw when duplicate stateName', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validateStyles(styles));
+  t.throws(() => validateStyles(styles, ['BUTTON']));
 });
 
 test('Throw when unsupported css property in basis', (t: Context): void => {
@@ -120,7 +120,7 @@ test('Throw when unsupported css property in basis', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validateStyles(styles as StyleDefinition[]));
+  t.throws(() => validateStyles(styles as StyleDefinition[], ['BUTTON']));
 });
 
 test('Throw when unsupported css property in states', (t: Context): void => {
@@ -142,7 +142,29 @@ test('Throw when unsupported css property in states', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validateStyles(styles as StyleDefinition[]));
+  t.throws(() => validateStyles(styles as StyleDefinition[], ['BUTTON']));
+});
+
+test("it throws when the type does not exist as a component", (t: Context): void => {
+  const styles: StyleDefinition[] = [
+    {
+      type: 'BUTTON_NEXT_GEN',
+      name: 'MyCustomStylo',
+      basis: {
+        borderStyle: 'none',
+      },
+      states: [
+        {
+          name: 'root',
+          cssObject: {
+            borderStyle: 'none',
+          }
+        },
+      ],
+    },
+  ];
+
+  t.throws(() => validateStyles(styles, ['BUTTON']));
 });
 
 test("Don't throw when all styles are valid", (t: Context): void => {
@@ -179,5 +201,5 @@ test("Don't throw when all styles are valid", (t: Context): void => {
     },
   ];
 
-  t.notThrows(() => validateStyles(styles));
+  t.notThrows(() => validateStyles(styles, ['BUTTON']));
 });

@@ -73,11 +73,11 @@ export const readStyles: (
     .map((filename) => {
       return new Promise((resolve) => {
         import(`${absoluteRootDir}/${filename}`)
-          .then((style) => {
+          .then((style: { default: StyleDefinition }) => {
             // JSON schema validation
             resolve(style.default);
           })
-          .catch((error) => {
+          .catch((error: string) => {
             throw new Error(`in ${filename}: ${error}`);
           });
       });

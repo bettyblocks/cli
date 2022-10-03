@@ -311,6 +311,8 @@ void (async (): Promise<void> => {
     const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = oldPrefabs.concat(newPrefabs);
 
+    const componentNames = components.map(({ name }) => name);
+
     checkNameReferences(prefabs, components);
 
     const componentStyleMap: ComponentStyleMap = components.reduce((acc, c) => {
@@ -320,7 +322,7 @@ void (async (): Promise<void> => {
     }, {});
 
     await Promise.all([
-      validateStyles(styles),
+      validateStyles(styles, componentNames),
       validateComponents(components, validStyleTypes),
       validatePrefabs(prefabs, componentStyleMap),
       validatePrefabs(partialprefabs, componentStyleMap, 'partial'),

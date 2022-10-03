@@ -1,4 +1,3 @@
-import { CSSProperties } from 'react';
 import { ICONS } from './validations/constants';
 
 export type Category = DefaultCategory | string;

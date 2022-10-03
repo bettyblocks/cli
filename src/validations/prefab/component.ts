@@ -246,7 +246,7 @@ export const validateComponent =
         );
       }
     } else {
-      const { name, optionCategories = [], options, type } = component;
+      const { name, optionCategories = [], options } = component;
 
       const styleType: Component['styleType'] | undefined =
         componentStyleMap &&
