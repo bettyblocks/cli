@@ -10,10 +10,11 @@ test('Throw when duplicate style', (t: Context): void => {
     {
       type: 'BUTTON',
       name: 'MyCustomStylo',
-      content: [
+      basis: {color: {type: "STATIC", value: "a"}},
+      states: [
         {
-          className: 'root',
-          styleObject: {
+          name: 'disabled',
+          cssObject: {
             borderStyle: 'none',
           }
         },
@@ -22,10 +23,11 @@ test('Throw when duplicate style', (t: Context): void => {
     {
       type: 'BUTTON',
       name: 'MyCustomStylo',
-      content: [
+      basis: {color: {type: "STATIC", value: "b"}},
+      states: [
         {
-          className: 'root',
-          styleObject: {
+          name: 'hover',
+          cssObject: {
             borderStyle: 'none',
           }
         },
@@ -36,33 +38,57 @@ test('Throw when duplicate style', (t: Context): void => {
   t.throws(() => validateStyles(styles));
 });
 
-test('Throw when empty content', (t: Context): void => {
+test('Throw when empty css content for basis', (t: Context): void => {
   const styles: StyleDefinition[] = [
     {
       type: 'BUTTON',
       name: 'MyCustomStylo',
-      content: [],
+      basis: {},
+      states: [],
     },
   ];
 
   t.throws(() => validateStyles(styles));
 });
 
-test('Throw when duplicate className', (t: Context): void => {
+test('Throw when empty css content for state', (t: Context): void => {
   const styles: StyleDefinition[] = [
     {
       type: 'BUTTON',
       name: 'MyCustomStylo',
-      content: [
+      basis: {
+        borderStyle: 'none',
+      },
+      states: [
         {
-          className: 'root',
-          styleObject: {
+          name: 'disabled',
+          cssObject: {}
+        },
+      ],
+    },
+  ];
+
+  t.throws(() => validateStyles(styles));
+});
+
+test('Throw when duplicate stateName', (t: Context): void => {
+  const styles: StyleDefinition[] = [
+    {
+      type: 'BUTTON',
+      name: 'MyCustomStylo',
+      basis: {
+        borderStyle: 'none',
+      },
+      states: [
+        {
+          name: 'disabled',
+          cssObject: {
             borderStyle: 'none',
           }
         },
         {
-          className: 'root',
-          styleObject: {
+          name: 'disabled',
+          cssObject: {
             borderRadius: ['0.25rem'],
             borderStyle: 'none',
             color: {
@@ -82,35 +108,36 @@ test('Throw when duplicate className', (t: Context): void => {
   t.throws(() => validateStyles(styles));
 });
 
-test('Throw when empty styleObject', (t: Context): void => {
-  const styles: StyleDefinition[] = [
-    {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
-      content: [
-        {
-          className: 'root',
-          styleObject: {}
-        },
-      ],
-    },
-  ];
-
-  t.throws(() => validateStyles(styles));
-});
-
-test('Throw when unsupported styleObject property', (t: Context): void => {
+test('Throw when unsupported css property in basis', (t: Context): void => {
   const styles = [
     {
       type: 'BUTTON',
       name: 'MyCustomStylo',
-      content: [
+      basis: {
+        unsupportedColor: "yeet",
+      },
+      states: [],
+    },
+  ];
+
+  t.throws(() => validateStyles(styles as StyleDefinition[]));
+});
+
+test('Throw when unsupported css property in states', (t: Context): void => {
+  const styles = [
+    {
+      type: 'BUTTON',
+      name: 'MyCustomStylo',
+      basis: {
+        borderStyle: 'none',
+      },
+      states: [
         {
-          className: 'root',
-          styleObject: {
+          name: 'disabled',
+          cssObject: {
             unsupportedColor: "yeet",
-          }
-        },
+          },
+        }
       ],
     },
   ];
@@ -123,10 +150,13 @@ test("Don't throw when all styles are valid", (t: Context): void => {
     {
       type: 'BUTTON',
       name: 'MyCustomStylo2',
-      content: [
+      basis: {
+        borderStyle: 'none',
+      },
+      states: [
         {
-          className: 'root',
-          styleObject: {
+          name: 'disabled',
+          cssObject: {
             borderStyle: 'none',
           }
         },
@@ -135,10 +165,13 @@ test("Don't throw when all styles are valid", (t: Context): void => {
     {
       type: 'BUTTON',
       name: 'MyCustomStylo',
-      content: [
+      basis: {
+        borderStyle: 'none',
+      },
+      states: [
         {
-          className: 'root',
-          styleObject: {
+          name: 'root',
+          cssObject: {
             borderStyle: 'none',
           }
         },
