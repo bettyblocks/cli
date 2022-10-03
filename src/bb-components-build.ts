@@ -17,8 +17,6 @@ import {
   PrefabReference,
   PrefabPartial,
   PrefabWrapper,
-  StyleDefinition,
-  BuildStyleDefinition,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -33,6 +31,7 @@ import validateComponents from './validations/component';
 import validateStyles from './validations/styles';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
+import { reportDiagnostics, readStyles, buildStyle } from './components-build';
 
 const { mkdir, readFile } = promises;
 
@@ -103,23 +102,6 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 
   return Promise.all(components);
 };
-
-function reportDiagnostics(diagnostics: ts.Diagnostic[]): void {
-  diagnostics.forEach((diagnostic) => {
-    let message = 'Error';
-    if (diagnostic.file) {
-      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
-        diagnostic.start || 0,
-      );
-      message += ` ${diagnostic.file.fileName} (${line + 1},${character + 1})`;
-    }
-    message += `: ${ts.flattenDiagnosticMessageText(
-      diagnostic.messageText,
-      '\n',
-    )}`;
-    console.error(`\u001b[31m${message}\u001b[0m`);
-  });
-}
 
 const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
@@ -306,82 +288,6 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
   );
 };
 
-const readStyles: () => Promise<StyleDefinition[]> = async (): Promise<
-  StyleDefinition[]
-> => {
-  const absoluteRootDir = path.resolve(process.cwd(), rootDir);
-  const srcDir = `${absoluteRootDir}/src/styles`;
-
-  const exists: boolean = await pathExists(srcDir);
-
-  if (!exists) {
-    throw new Error(chalk.red('\nStyles folder not found\n'));
-  }
-
-  const styleFiles: string[] = await readFilesByType(srcDir, 'ts');
-
-  const styleProgram = ts.createProgram(
-    styleFiles.map((file) => `${srcDir}/${file}`),
-    {
-      outDir: '.styles',
-      module: 1,
-      esModuleInterop: true,
-      allowSyntheticDefaultImports: false,
-      target: 99,
-      listEmittedFiles: true,
-    },
-  );
-
-  const diagnostics = [...ts.getPreEmitDiagnostics(styleProgram)];
-
-  if (diagnostics.length > 0) {
-    reportDiagnostics(diagnostics);
-    process.exit(1);
-  }
-
-  const results = styleProgram.emit();
-
-  if (results.diagnostics.length > 0) {
-    reportDiagnostics([...results.diagnostics]);
-    process.exit(1);
-  }
-
-  const globalDiagnostics = [...styleProgram.getGlobalDiagnostics()];
-  if (globalDiagnostics.length > 0) {
-    reportDiagnostics(globalDiagnostics);
-    process.exit(1);
-  }
-
-  const declarationDiagnostics = [...styleProgram.getDeclarationDiagnostics()];
-  if (declarationDiagnostics.length > 0) {
-    reportDiagnostics(declarationDiagnostics);
-    process.exit(1);
-  }
-
-  const configDiagnostics = [...styleProgram.getConfigFileParsingDiagnostics()];
-  if (configDiagnostics.length > 0) {
-    reportDiagnostics(configDiagnostics);
-    process.exit(1);
-  }
-
-  const styles: Array<Promise<StyleDefinition>> = (results.emittedFiles || [])
-    .filter((filename) => /\.(\w+\/){1}\w+\.js/.test(filename))
-    .map((filename) => {
-      return new Promise((resolve) => {
-        import(`${absoluteRootDir}/${filename}`)
-          .then((style) => {
-            // JSON schema validation
-            resolve(style.default);
-          })
-          .catch((error) => {
-            throw new Error(`in ${filename}: ${error}`);
-          });
-      });
-    });
-
-  return Promise.all(styles);
-};
-
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
@@ -394,7 +300,7 @@ void (async (): Promise<void> => {
       interactions,
       partialprefabs,
     ] = await Promise.all([
-      readStyles(),
+      readStyles(rootDir),
       readtsPrefabs(),
       readPrefabs(),
       readComponents(),
@@ -436,20 +342,6 @@ void (async (): Promise<void> => {
     };
 
     type BuildPrefabComponent = BuildPrefab | PrefabPartial | PrefabWrapper;
-
-    const buildStyle = (style: StyleDefinition): BuildStyleDefinition => {
-      const buildContent: BuildStyleDefinition['content'] = Object.values(
-        style.content,
-      ).reduce(
-        (acc, { className, styleObject }) => ({
-          ...acc,
-          [className]: styleObject,
-        }),
-        {},
-      );
-
-      return { ...style, content: buildContent };
-    };
 
     const buildPrefab = (prefab: Prefab): Prefab => {
       const buildStructure = (

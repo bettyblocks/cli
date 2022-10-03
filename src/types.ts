@@ -50,7 +50,7 @@ interface RefOrValue {
   value: string;
 }
 
-export interface StyleDefinitionClassStyle {
+export interface StyleDefinitionCssObject {
   backgroundColor?: RefOrValue;
   borderColor?: RefOrValue;
   borderRadius?: string[];
@@ -68,22 +68,46 @@ export interface StyleDefinitionClassStyle {
   textDecoration?: string;
   textTransform?: string;
 }
-export interface StyleDefinitionClass {
-  className: string;
-  styleObject: StyleDefinitionClassStyle;
-}
-
-export interface StyleDefinitionContent {
-  [key: string]: StyleDefinitionClassStyle;
+export interface StyleDefinitionState {
+  name: string;
+  cssObject: StyleDefinitionCssObject;
 }
 
 export interface StyleDefinition {
   type: string;
   name: string;
-  content: StyleDefinitionClass[];
+  basis: StyleDefinitionCssObject;
+  states: StyleDefinitionState[];
 }
 
-export interface BuildStyleDefinition extends Omit<StyleDefinition, 'content'> {
+export enum AllowedStateKeys {
+  SELECTED = 'selected',
+  HOVER = 'hover',
+  FOCUS = 'focus',
+  DISABLED = 'disabled',
+  VALID = 'valid',
+  INVALID = 'invalid',
+  READONLY = 'readOnly',
+}
+
+export type StyleStateKeys =
+  | AllowedStateKeys.SELECTED
+  | AllowedStateKeys.HOVER
+  | AllowedStateKeys.FOCUS
+  | AllowedStateKeys.DISABLED
+  | AllowedStateKeys.VALID
+  | AllowedStateKeys.INVALID
+  | AllowedStateKeys.READONLY;
+
+export type StyleDefinitionContentBase = {
+  [key in StyleStateKeys | 'basis']: StyleDefinitionCssObject;
+};
+
+export type StyleDefinitionContent = Partial<StyleDefinitionContentBase> &
+  Pick<StyleDefinitionContentBase, 'basis'>;
+
+export interface BuildStyleDefinition
+  extends Omit<StyleDefinition, 'states' | 'basis'> {
   content: StyleDefinitionContent;
 }
 

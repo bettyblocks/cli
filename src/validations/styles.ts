@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import Joi from 'joi';
-import { StyleDefinition } from '../types';
+import { StyleDefinition, AllowedStateKeys } from '../types';
 
 const RefOrValue = Joi.object({
   type: Joi.string().valid('THEME_COLOR', 'STATIC'),
@@ -28,31 +28,34 @@ const cssObjectSchema = Joi.object({
   textTransform: Joi.string(),
 });
 
-const classSchema = Joi.object({
-  className: Joi.string().required(),
-  styleObject: cssObjectSchema.required().min(1),
+const stateSchema = Joi.object({
+  name: Joi.string()
+    .required()
+    .allow(...Object.keys(AllowedStateKeys)),
+  cssObject: cssObjectSchema.required().min(1),
 });
 
-const styleTypeSchema = Joi.object({
+const styleSchema = Joi.object({
   name: Joi.string().required(),
   type: Joi.string().required(),
-  content: Joi.array().items(classSchema).unique('name').required().min(1),
+  basis: cssObjectSchema.required().min(1),
+  states: Joi.array().items(stateSchema).unique('name').required(),
 });
 
 const validateUnique = (a: StyleDefinition, b: StyleDefinition) =>
   a.name === b.name && a.type === b.type;
 
-const validateAll = (styleTypes: StyleDefinition[]) => {
+const validateAll = (styles: StyleDefinition[]) => {
   const { error } = Joi.array()
-    .items(styleTypeSchema)
+    .items(styleSchema)
     .unique(validateUnique)
-    .validate(styleTypes);
+    .validate(styles);
 
   if (error) {
-    throw new Error(chalk.red(`\nStyleTypes: ${error.message}\n`));
+    throw new Error(chalk.red(`\nStyles: ${error.message}\n`));
   }
 };
 
-export default (styleTypes: StyleDefinition[]): void => {
-  validateAll(styleTypes);
+export default (styles: StyleDefinition[]): void => {
+  validateAll(styles);
 };
