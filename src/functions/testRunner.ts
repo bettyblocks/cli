@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint import/no-extraneous-dependencies: ["error", {"optionalDependencies": true}] */
 /* npm dependencies */
 
 import AdmZip from 'adm-zip';
