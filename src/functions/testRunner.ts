@@ -1,16 +1,23 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint import/no-extraneous-dependencies: ["error", {"optionalDependencies": true}] */
 /* npm dependencies */
 
 import AdmZip from 'adm-zip';
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import glob from 'glob';
-import ivm from 'isolated-vm';
 import path from 'path';
 import { spawn } from 'child_process';
 
 /* internal dependencies */
 
 import { zipFunctionDefinitions } from './functionDefinitions';
+
+// @ts-ignore
+type Ivm = typeof import('isolated-vm');
 
 /* execute command */
 
@@ -102,7 +109,7 @@ ${testFiles.map((file) => fs.readFileSync(file, 'utf-8')).join('\n\n')}
   return { exitCode, stdout, stderr };
 };
 
-const run = (workingDir: string): Promise<string> => {
+const run = (workingDir: string, ivm: Ivm): Promise<string> => {
   const helpers = path.join(workingDir, 'test', 'helpers.js');
   const bundle = path.join(workingDir, '.tmp', 'dist', 'app.bundle.js');
 
@@ -231,6 +238,8 @@ const run = (workingDir: string): Promise<string> => {
 
 const runTest = async (pattern: string, workingDir: string): Promise<void> => {
   try {
+    // @ts-ignore
+    const { default: ivm } = await import('isolated-vm');
     let time: number;
     const start = () => new Date().getTime();
     const stop = () => (new Date().getTime() - time) / 1000;
@@ -250,7 +259,7 @@ const runTest = async (pattern: string, workingDir: string): Promise<void> => {
     console.log(`${right} Running tests ...`);
 
     time = start();
-    const summary = await run(workingDir);
+    const summary = await run(workingDir, ivm);
     const testTime = stop();
 
     console.log(
@@ -262,7 +271,10 @@ const runTest = async (pattern: string, workingDir: string): Promise<void> => {
     );
     console.log(summary);
   } catch (error) {
-    console.log(`${cross} ${String(error)}`);
+    const { code } = error as { code: string };
+    if (code === 'MODULE_NOT_FOUND')
+      console.log('Unable to run tests (isolated-vm is not installed)');
+    else console.log(`${cross} ${String(error)}`);
   }
 };
 
