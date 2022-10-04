@@ -155,7 +155,7 @@ test("it throws when the type does not exist as a component", (t: Context): void
       },
       states: [
         {
-          name: 'root',
+          name: 'disabled',
           cssObject: {
             borderStyle: 'none',
           }
@@ -192,7 +192,7 @@ test("Don't throw when all styles are valid", (t: Context): void => {
       },
       states: [
         {
-          name: 'root',
+          name: 'disabled',
           cssObject: {
             borderStyle: 'none',
           }

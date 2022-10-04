@@ -48,7 +48,9 @@ const schema = (validStyleTypes: string[]): ObjectSchema =>
     interactions: Joi.object(),
     jsx: Joi.any().required(),
     styles: Joi.any().required(),
-    styleType: Joi.string().allow(...validStyleTypes),
+    styleType: Joi.string().valid(
+      ...[...validStyleTypes, ...['BUTTON', 'TEXT']],
+    ),
     transpiledJsx: Joi.string(),
     transpiledStyles: Joi.string(),
   });

@@ -12,11 +12,12 @@ import {
   Component,
   Interaction,
   Prefab,
-  PrefabComponent,
   ComponentStyleMap,
   PrefabReference,
-  PrefabPartial,
-  PrefabWrapper,
+  GroupedStyles,
+  BuildPrefabReference,
+  BuildPrefabComponent,
+  BuildPrefab,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -31,7 +32,12 @@ import validateComponents from './validations/component';
 import validateStyles from './validations/styles';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
-import { reportDiagnostics, readStyles, buildStyle } from './components-build';
+import {
+  reportDiagnostics,
+  readStyles,
+  buildStyle,
+  buildReferenceStyle,
+} from './components-build';
 
 const { mkdir, readFile } = promises;
 
@@ -311,6 +317,23 @@ void (async (): Promise<void> => {
     const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = oldPrefabs.concat(newPrefabs);
 
+    const StylesGroupedByTypeAndName = styles.reduce(
+      (object: GroupedStyles, e) => {
+        const { name, type } = e;
+
+        const byType = object[type] || {};
+
+        return {
+          ...object,
+          [type]: {
+            ...byType,
+            [name]: e,
+          },
+        };
+      },
+      {},
+    );
+
     const componentNames = components.map(({ name }) => name);
 
     checkNameReferences(prefabs, components);
@@ -324,8 +347,13 @@ void (async (): Promise<void> => {
     await Promise.all([
       validateStyles(styles, componentNames),
       validateComponents(components, validStyleTypes),
-      validatePrefabs(prefabs, componentStyleMap),
-      validatePrefabs(partialprefabs, componentStyleMap, 'partial'),
+      validatePrefabs(prefabs, StylesGroupedByTypeAndName, componentStyleMap),
+      validatePrefabs(
+        partialprefabs,
+        StylesGroupedByTypeAndName,
+        componentStyleMap,
+        'partial',
+      ),
       interactions && validateInteractions(interactions),
     ]);
 
@@ -338,41 +366,33 @@ void (async (): Promise<void> => {
       };
     });
 
-    type BuildPrefab = PrefabComponent & {
-      hash: string;
-      style: PrefabComponent['style'];
-    };
-
-    type BuildPrefabComponent = BuildPrefab | PrefabPartial | PrefabWrapper;
-
-    const buildPrefab = (prefab: Prefab): Prefab => {
+    const buildPrefab = (prefab: Prefab): BuildPrefab => {
       const buildStructure = (
         structure: PrefabReference,
-      ): BuildPrefabComponent => {
+      ): BuildPrefabReference => {
         if (structure.type === 'PARTIAL') {
           return structure;
         }
 
         if (structure.type === 'WRAPPER') {
-          const wrapperStructure = structure;
-
-          if (wrapperStructure.descendants.length > 0) {
-            wrapperStructure.descendants =
-              wrapperStructure.descendants.map(buildStructure);
-          }
+          const { descendants = [], ...rest } = structure;
+          const wrapperStructure = {
+            ...rest,
+            descendants: descendants.map(buildStructure),
+          };
           return wrapperStructure;
         }
 
-        const newStructure = {
-          ...structure,
-          style: structure.style || {},
-          hash: hash(structure.options),
-        };
+        const { style, descendants, ...rest } = structure;
 
-        if (newStructure.descendants.length > 0) {
-          newStructure.descendants =
-            newStructure.descendants.map(buildStructure);
-        }
+        const styleReference = buildReferenceStyle(style);
+
+        const newStructure: BuildPrefabComponent = {
+          ...rest,
+          ...(styleReference ? { style: styleReference } : {}),
+          hash: hash(structure.options),
+          descendants: descendants.map(buildStructure),
+        };
 
         return newStructure;
       };

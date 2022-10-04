@@ -1,6 +1,5 @@
 import chalk from 'chalk';
 import Joi from 'joi';
-import { join } from 'lodash';
 import { StyleDefinition, AllowedStateKeys } from '../types';
 
 const shadows = [
@@ -97,6 +96,17 @@ const styleSchema = (componentNames: string[]) =>
     basis: cssObjectSchema.required().min(1),
     states: Joi.array().items(stateSchema).unique('name').required(),
   });
+
+export const overwriteSchema = Joi.array()
+  .items(
+    Joi.object({
+      name: Joi.string()
+        .required()
+        .allow(...Object.keys(AllowedStateKeys), 'basis'),
+      cssObject: cssObjectSchema.required().min(1),
+    }),
+  )
+  .unique('name');
 
 const validateUnique = (a: StyleDefinition, b: StyleDefinition) =>
   a.name === b.name && a.type === b.type;

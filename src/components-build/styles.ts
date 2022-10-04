@@ -3,7 +3,14 @@ import path from 'path';
 import ts from 'typescript';
 import { pathExists, promises } from 'fs-extra';
 
-import { StyleDefinition, BuildStyleDefinition } from '../types';
+import {
+  StyleDefinition,
+  BuildStyleDefinition,
+  PrefabComponent,
+  BuildStyle,
+  StyleDefinitionContentOverwrites,
+  BuildStyleDefinitionContentOverwrites,
+} from '../types';
 import readFilesByType from '../utils/readFilesByType';
 
 import { reportDiagnostics } from './reportDiagnostics';
@@ -102,4 +109,38 @@ export const buildStyle = ({
   );
 
   return { ...style, content: buildContent };
+};
+
+const isStyleDefinitionContentOverwrite = (
+  overwrite: unknown | StyleDefinitionContentOverwrites[],
+): overwrite is StyleDefinitionContentOverwrites[] => {
+  return Array.isArray(overwrite);
+};
+
+export const buildReferenceStyle = (
+  style: PrefabComponent['style'] | undefined,
+): BuildStyle | undefined => {
+  if (typeof style === 'undefined') {
+    return undefined;
+  }
+
+  const { overwrite, name } = style;
+  const nameObject = name ? { name } : {};
+  if (typeof overwrite === 'undefined') {
+    return { ...nameObject };
+  }
+
+  if (isStyleDefinitionContentOverwrite(overwrite)) {
+    const buildOverwrite: BuildStyleDefinitionContentOverwrites =
+      overwrite.reduce(
+        (acc, { name: key, cssObject }) => ({
+          ...acc,
+          [key]: cssObject,
+        }),
+        {},
+      );
+    return { ...nameObject, overwrite: buildOverwrite };
+  }
+
+  return { ...nameObject, overwrite };
 };

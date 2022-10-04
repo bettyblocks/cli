@@ -68,7 +68,7 @@ export interface StyleDefinitionCssObject {
   textTransform?: string;
 }
 export interface StyleDefinitionState {
-  name: string;
+  name: StyleStateKeys;
   cssObject: StyleDefinitionCssObject;
 }
 
@@ -90,17 +90,34 @@ export enum AllowedStateKeys {
 }
 
 export type StyleStateKeys =
-  | AllowedStateKeys.SELECTED
-  | AllowedStateKeys.HOVER
-  | AllowedStateKeys.FOCUS
-  | AllowedStateKeys.DISABLED
-  | AllowedStateKeys.VALID
-  | AllowedStateKeys.INVALID
-  | AllowedStateKeys.READONLY;
+  | 'selected'
+  | 'hover'
+  | 'focus'
+  | 'disabled'
+  | 'valid'
+  | 'invalid'
+  | 'readOnly';
 
 export type StyleDefinitionContentBase = {
   [key in StyleStateKeys | 'basis']: StyleDefinitionCssObject;
 };
+
+export type StyleDefinitionContentKeys = {
+  [key in StyleStateKeys]?: string[];
+} & { basis: string[] };
+
+export interface StyleDefinitionContentOverwrites
+  extends Omit<StyleDefinitionState, 'name'> {
+  name: string;
+}
+
+export type BuildStyleDefinitionContentOverwrites =
+  Partial<StyleDefinitionContentBase>;
+
+export interface OverwriteStyleDefinitionState
+  extends Omit<StyleDefinitionState, 'name'> {
+  name: string;
+}
 
 export type StyleDefinitionContent = Partial<StyleDefinitionContentBase> &
   Pick<StyleDefinitionContentBase, 'basis'>;
@@ -109,6 +126,8 @@ export interface BuildStyleDefinition
   extends Omit<StyleDefinition, 'states' | 'basis'> {
   content: StyleDefinitionContent;
 }
+
+export type GroupedStyles = Record<string, Record<string, StyleDefinition>>;
 
 export interface Component {
   allowedTypes: string[];
@@ -122,24 +141,8 @@ export interface Component {
 
 export type PrefabReference = PrefabComponent | PrefabPartial | PrefabWrapper;
 
-export type PrefabPartial = {
-  type: 'PARTIAL';
-  partialId: string;
-};
-
-export type PrefabWrapper = {
-  type: 'WRAPPER';
-  descendants: PrefabReference[];
-  optionCategories?: PrefabComponentOptionCategory[];
-  options: PrefabComponentOption[];
-};
-export interface PrefabComponent {
-  type?: 'COMPONENT';
-  actions?: PrefabAction[];
-  name: string;
-  style?: {
-    name?: string;
-    overwrite?: {
+export type BuildStyleOverwrite =
+  | {
       backgroundColor?: {
         value: string;
         type: string;
@@ -165,7 +168,78 @@ export interface PrefabComponent {
       padding?: string | string[];
       textDecoration?: string;
       textTransform?: string;
-    };
+    }
+  | BuildStyleDefinitionContentOverwrites;
+
+export type BuildStyle = {
+  name?: string; // TODO: make this required
+  overwrite?: BuildStyleOverwrite;
+};
+
+export interface BuildPrefabComponent
+  extends Omit<PrefabComponent, 'style' | 'descendants'> {
+  hash: string;
+  style?: BuildStyle;
+  descendants: BuildPrefabReference[];
+}
+
+export interface BuildPrefabWrapper extends Omit<PrefabWrapper, 'descendants'> {
+  descendants: BuildPrefabReference[];
+}
+
+export type BuildPrefabReference =
+  | BuildPrefabComponent
+  | PrefabPartial
+  | BuildPrefabWrapper;
+
+export type PrefabPartial = {
+  type: 'PARTIAL';
+  partialId: string;
+};
+
+export type PrefabWrapper = {
+  type: 'WRAPPER';
+  descendants: PrefabReference[];
+  optionCategories?: PrefabComponentOptionCategory[];
+  options: PrefabComponentOption[];
+};
+
+type PrefabComponentStyleOverwrite =
+  | {
+      backgroundColor?: {
+        value: string;
+        type: string;
+      };
+      borderColor?: {
+        value: string;
+        type: string;
+      };
+      borderRadius?: string | string[];
+      borderStyle?: string;
+      borderWidth?: string | string[];
+      boxShadow?: string;
+      color?: {
+        value: string;
+        type: string;
+      };
+      fontFamily?: string;
+      fontSize?: string;
+      fontStyle?: string;
+      fontWeight?: string;
+      letterSpacing?: string;
+      lineHeight?: string;
+      padding?: string | string[];
+      textDecoration?: string;
+      textTransform?: string;
+    }
+  | StyleDefinitionContentOverwrites[];
+export interface PrefabComponent {
+  type?: 'COMPONENT';
+  actions?: PrefabAction[];
+  name: string;
+  style?: {
+    name?: string;
+    overwrite?: PrefabComponentStyleOverwrite;
   };
   descendants: PrefabReference[];
   optionCategories?: PrefabComponentOptionCategory[];
@@ -264,6 +338,10 @@ export interface Prefab {
   variables?: PrefabVariable[];
   type?: string;
   description?: string;
+}
+
+export interface BuildPrefab extends Omit<Prefab, 'structure'> {
+  structure: BuildPrefabReference[];
 }
 
 export enum InteractionType {

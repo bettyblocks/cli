@@ -14,7 +14,7 @@ test('Pass without actions array', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -28,7 +28,7 @@ test('Pass when actions is empty list', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -54,7 +54,7 @@ test('Throw when action has no useNewRuntime', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "actions[0].useNewRuntime" is required at prefab: Prefab
 `,
@@ -75,7 +75,7 @@ test('Throw when useNewRuntime is not a boolean', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "actions[0].useNewRuntime" must be a boolean at prefab: Prefab
 `,
@@ -91,7 +91,7 @@ test('Throw when action has no ref', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "actions[0].ref" is required at prefab: Prefab
 `,
@@ -113,7 +113,7 @@ test('Throw when action has no id inside ref', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "actions[0].ref.id" is required at prefab: Prefab
 `,
@@ -135,7 +135,7 @@ test('Throw when action has no endpointId inside ref', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "actions[0].ref.endpointId" is required at prefab: Prefab
 `,
@@ -168,7 +168,7 @@ test('Pass when actions contains an event of a kind supported by the old runtime
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -195,7 +195,7 @@ test('Pass when actions contains an event of a kind supported by the new runtime
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -226,7 +226,7 @@ test('Throw when actions contains an event of an unsupported kind', (t: Context)
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "actions[0].events[0].kind" must be one of [${EVENT_KIND.join(
       ', ',
@@ -271,7 +271,7 @@ test('Pass when a update event has options', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -313,7 +313,7 @@ test('Pass when create event has valid options', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -346,7 +346,7 @@ test('Pass when a delete event has valid options', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -386,7 +386,7 @@ test('Pass when a authenticate_user event has valid options', (t: Context): void
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -414,7 +414,7 @@ test('Pass when a update event has no options', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -455,7 +455,7 @@ test('Throw when a assign event has options', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "actions[0].events[0].options" is not allowed at prefab: Prefab
 `,
@@ -488,7 +488,7 @@ test('Pass when actions array contains a valid action object', (t: Context): voi
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -510,7 +510,7 @@ test('Pass when action object does not contain any events', (t: Context): void =
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -552,12 +552,11 @@ test('Throw when component option has a value and a ref object with a value', (t
     ],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
-    message: `
-Property: "structure[0]" failed custom validation because 
-Build error in component HelloWorld: "options[0].value" is not allowed
- at prefab: Prefab
-`,
+  const expectedMessage =
+    '\nProperty: "structure[0]" failed custom validation because \nBuild error in component HelloWorld: "options[0].value" is not allowed\n at prefab: Prefab\n';
+
+  t.throws(() => validatePrefabs([prefab], {}), {
+    message: expectedMessage,
   });
 });
 
@@ -585,7 +584,7 @@ test('Pass when component option has a value and no ref', (t: Context): void => 
     ],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -616,7 +615,7 @@ test('Pass when component option has a ref and no value', (t: Context): void => 
     ],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -644,12 +643,11 @@ test('Throw when component option has a ref when type is not ACTION', (t: Contex
     ],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
-    message: `
-Property: "structure[0]" failed custom validation because 
-Build error in component HelloWorld: "options[0].ref.value" is not allowed
- at prefab: Prefab
-`,
+  const expectedMessage =
+    '\nProperty: "structure[0]" failed custom validation because \nBuild error in component HelloWorld: "options[0].ref.value" is not allowed\n at prefab: Prefab\n';
+
+  t.throws(() => validatePrefabs([prefab], {}), {
+    message: expectedMessage,
   });
 });
 
@@ -677,12 +675,11 @@ test('Throw when component option has a ref object without a value', (t: Context
     ],
   } as unknown as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
-    message: `
-Property: "structure[0]" failed custom validation because 
-Build error in component HelloWorld: "options[0].ref.value" is required
- at prefab: Prefab
-`,
+  const expectedMessage =
+    '\nProperty: "structure[0]" failed custom validation because \nBuild error in component HelloWorld: "options[0].ref.value" is required\n at prefab: Prefab\n';
+
+  t.throws(() => validatePrefabs([prefab], {}), {
+    message: expectedMessage,
   });
 });
 
@@ -709,12 +706,11 @@ test('Throw when component option has neither ref nor value', (t: Context): void
     ],
   } as unknown as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
-    message: `
-Property: "structure[0]" failed custom validation because 
-Build error in component HelloWorld: "options[0].ref" is required
- at prefab: Prefab
-`,
+  const expectedMessage =
+    '\nProperty: "structure[0]" failed custom validation because \nBuild error in component HelloWorld: "options[0].ref" is required\n at prefab: Prefab\n';
+
+  const error = t.throws(() => validatePrefabs([prefab], {}), {
+    message: expectedMessage,
   });
 });
 
@@ -760,7 +756,7 @@ test('Throw when multiple action reference the same id', (t: Context): void => {
     ],
   } as unknown as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 The name "foo" is used for multiple actions
 `,
