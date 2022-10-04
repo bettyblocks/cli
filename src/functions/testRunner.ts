@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable import/no-extraneous-dependencies */
 /* npm dependencies */
 
 import AdmZip from 'adm-zip';
@@ -15,9 +15,8 @@ import { spawn } from 'child_process';
 
 import { zipFunctionDefinitions } from './functionDefinitions';
 
-interface Ivm {
-  default: typeof import('isolated-vm');
-}
+// @ts-ignore
+type Ivm = typeof import('isolated-vm');
 
 /* execute command */
 
@@ -109,7 +108,7 @@ ${testFiles.map((file) => fs.readFileSync(file, 'utf-8')).join('\n\n')}
   return { exitCode, stdout, stderr };
 };
 
-const run = (workingDir: string, ivm: Ivm['default']): Promise<string> => {
+const run = (workingDir: string, ivm: Ivm): Promise<string> => {
   const helpers = path.join(workingDir, 'test', 'helpers.js');
   const bundle = path.join(workingDir, '.tmp', 'dist', 'app.bundle.js');
 
@@ -238,7 +237,8 @@ const run = (workingDir: string, ivm: Ivm['default']): Promise<string> => {
 
 const runTest = async (pattern: string, workingDir: string): Promise<void> => {
   try {
-    const ivm: Ivm = await import('isolated-vm');
+    // @ts-ignore
+    const { default: ivm } = await import('isolated-vm');
     let time: number;
     const start = () => new Date().getTime();
     const stop = () => (new Date().getTime() - time) / 1000;
@@ -258,7 +258,7 @@ const runTest = async (pattern: string, workingDir: string): Promise<void> => {
     console.log(`${right} Running tests ...`);
 
     time = start();
-    const summary = await run(workingDir, ivm.default);
+    const summary = await run(workingDir, ivm);
     const testTime = stop();
 
     console.log(
