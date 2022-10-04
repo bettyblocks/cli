@@ -1,12 +1,14 @@
 import chalk from 'chalk';
 import path from 'path';
 import ts from 'typescript';
-import { pathExists } from 'fs-extra';
+import { pathExists, promises } from 'fs-extra';
 
 import { StyleDefinition, BuildStyleDefinition } from '../types';
 import readFilesByType from '../utils/readFilesByType';
 
 import { reportDiagnostics } from './reportDiagnostics';
+
+const { mkdir } = promises;
 
 export const readStyles: (
   rootDir: string,
@@ -19,7 +21,7 @@ export const readStyles: (
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    throw new Error(chalk.red('\nStyles folder not found\n'));
+    await mkdir(srcDir, { recursive: true });
   }
 
   const styleFiles: string[] = await readFilesByType(srcDir, 'ts');
