@@ -1,7 +1,8 @@
 import test, { ExecutionContext } from 'ava';
 
-import { StyleDefinition } from '../../src/types';
+import { Prefab, PrefabReference, StyleDefinition } from '../../src/types';
 import validateStyles from '../../src/validations/styles';
+import validatePrefabs from '../../src/validations/prefab';
 
 type Context = ExecutionContext<unknown>;
 
@@ -10,29 +11,29 @@ test('Throw when duplicate style', (t: Context): void => {
     {
       type: 'BUTTON',
       name: 'MyCustomStylo',
-      basis: {color: {type: "STATIC", value: "a"}},
+      basis: { color: { type: 'STATIC', value: 'a' } },
       states: [
         {
           name: 'disabled',
           cssObject: {
             borderStyle: 'none',
-          }
+          },
         },
       ],
     },
     {
       type: 'BUTTON',
       name: 'MyCustomStylo',
-      basis: {color: {type: "STATIC", value: "b"}},
+      basis: { color: { type: 'STATIC', value: 'b' } },
       states: [
         {
           name: 'hover',
           cssObject: {
             borderStyle: 'none',
-          }
+          },
         },
       ],
-    }
+    },
   ];
 
   t.throws(() => validateStyles(styles, ['BUTTON']));
@@ -62,7 +63,7 @@ test('Throw when empty css content for state', (t: Context): void => {
       states: [
         {
           name: 'disabled',
-          cssObject: {}
+          cssObject: {},
         },
       ],
     },
@@ -84,7 +85,7 @@ test('Throw when duplicate stateName', (t: Context): void => {
           name: 'disabled',
           cssObject: {
             borderStyle: 'none',
-          }
+          },
         },
         {
           name: 'disabled',
@@ -114,7 +115,7 @@ test('Throw when unsupported css property in basis', (t: Context): void => {
       type: 'BUTTON',
       name: 'MyCustomStylo',
       basis: {
-        unsupportedColor: "yeet",
+        unsupportedColor: 'yeet',
       },
       states: [],
     },
@@ -135,9 +136,9 @@ test('Throw when unsupported css property in states', (t: Context): void => {
         {
           name: 'disabled',
           cssObject: {
-            unsupportedColor: "yeet",
+            unsupportedColor: 'yeet',
           },
-        }
+        },
       ],
     },
   ];
@@ -145,7 +146,7 @@ test('Throw when unsupported css property in states', (t: Context): void => {
   t.throws(() => validateStyles(styles as StyleDefinition[], ['BUTTON']));
 });
 
-test("it throws when the type does not exist as a component", (t: Context): void => {
+test('it throws when the type does not exist as a component', (t: Context): void => {
   const styles: StyleDefinition[] = [
     {
       type: 'BUTTON_NEXT_GEN',
@@ -158,7 +159,7 @@ test("it throws when the type does not exist as a component", (t: Context): void
           name: 'disabled',
           cssObject: {
             borderStyle: 'none',
-          }
+          },
         },
       ],
     },
@@ -180,7 +181,7 @@ test("Don't throw when all styles are valid", (t: Context): void => {
           name: 'disabled',
           cssObject: {
             borderStyle: 'none',
-          }
+          },
         },
       ],
     },
@@ -195,11 +196,249 @@ test("Don't throw when all styles are valid", (t: Context): void => {
           name: 'disabled',
           cssObject: {
             borderStyle: 'none',
-          }
+          },
         },
       ],
     },
   ];
 
   t.notThrows(() => validateStyles(styles, ['BUTTON']));
+});
+
+test('it does not throw when a old style reference is defined and no procoder styles are available', (t: Context): void => {
+  const prefabReference: PrefabReference = {
+    type: 'COMPONENT',
+    name: 'Button',
+    descendants: [],
+    options: [],
+    style: { name: 'Outline' },
+  };
+
+  const prefabs: Prefab[] = [
+    {
+      name: 'ShinyButton',
+      icon: 'ButtonIcon',
+      category: 'Content',
+      structure: [prefabReference],
+    },
+  ];
+
+  t.notThrows(() => validatePrefabs(prefabs, {}));
+});
+
+test('it does throw when a component uses a style but has no styleDefinition by type', (t: Context): void => {
+  const style: StyleDefinition = {
+    type: 'Magic',
+    name: 'Filled',
+    basis: {
+      borderStyle: 'none',
+    },
+    states: [
+      {
+        name: 'disabled',
+        cssObject: {
+          borderStyle: 'none',
+        },
+      },
+    ],
+  };
+  const prefabReference: PrefabReference = {
+    type: 'COMPONENT',
+    name: 'Button',
+    descendants: [],
+    options: [],
+    style: { name: 'Filled' },
+  };
+
+  const prefabs: Prefab[] = [
+    {
+      name: 'ShinyButton',
+      icon: 'ButtonIcon',
+      category: 'Content',
+      structure: [prefabReference],
+    },
+  ];
+
+  const groupedStyles = { Magic: { Filled: style } };
+
+  const expectedMessage = "\nProperty: \"structure[0]\" failed custom validation because \nBuild error in component Button: \"value\" failed custom validation because \nBuild error in component style reference to unkown style Button:Filled \n\n at prefab: ShinyButton\n";
+
+  const error  = t.throws(() => validatePrefabs(prefabs, groupedStyles));
+  t.is(error.message, expectedMessage);
+});
+
+test('it does throw when a component uses a style but has no styleDefinition by name', (t: Context): void => {
+  const style: StyleDefinition = {
+    type: 'Button',
+    name: 'yeep',
+    basis: {
+      borderStyle: 'none',
+    },
+    states: [
+      {
+        name: 'disabled',
+        cssObject: {
+          borderStyle: 'none',
+        },
+      },
+    ],
+  };
+  const prefabReference: PrefabReference = {
+    type: 'COMPONENT',
+    name: 'Button',
+    descendants: [],
+    options: [],
+    style: { name: 'Filled' },
+  };
+
+  const prefabs: Prefab[] = [
+    {
+      name: 'ShinyButton',
+      icon: 'ButtonIcon',
+      category: 'Content',
+      structure: [prefabReference],
+    },
+  ];
+
+  const groupedStyles = { Button: { yeep: style } };
+
+  const expectedMessage = "\nProperty: \"structure[0]\" failed custom validation because \nBuild error in component Button: \"value\" failed custom validation because \nBuild error in component style reference to unkown style Button:Filled \n\n at prefab: ShinyButton\n";
+
+  const error  = t.throws(() => validatePrefabs(prefabs, groupedStyles));
+  t.is(error.message, expectedMessage);
+});
+
+test('it does throw when a component uses a style but the overwrite does not match the StyleDefinition for basis', (t: Context): void => {
+  const style: StyleDefinition = {
+    type: 'Button',
+    name: 'Filled',
+    basis: {
+      borderStyle: 'none',
+    },
+    states: [
+      {
+        name: 'disabled',
+        cssObject: {
+          borderStyle: 'none',
+        },
+      },
+    ],
+  };
+  const prefabReference: PrefabReference = {
+    type: 'COMPONENT',
+    name: 'Button',
+    descendants: [],
+    options: [],
+    style: {
+      name: 'Filled',
+      overwrite: [{ name: 'basis', cssObject: { borderWidth: ['1rem'] } }],
+    },
+  };
+
+  const prefabs: Prefab[] = [
+    {
+      name: 'ShinyButton',
+      icon: 'ButtonIcon',
+      category: 'Content',
+      structure: [prefabReference],
+    },
+  ];
+
+  const groupedStyles = { Button: { Filled: style } };
+
+  const expectedMessage =
+    '\nProperty: "structure[0]" failed custom validation because \nBuild error in component Button: "value" failed custom validation because \nBuild error in component style reference invalid overwrite for Button:Filled where basis overwrites a non existing css property borderWidth \n\n at prefab: ShinyButton\n';
+
+  const error = t.throws(() => validatePrefabs(prefabs, groupedStyles));
+  t.is(error.message, expectedMessage);
+});
+
+test('it does throw when a component uses a style but the overwrite does not match the StyleDefinition for state key object', (t: Context): void => {
+  const style: StyleDefinition = {
+    type: 'Button',
+    name: 'Filled',
+    basis: {
+      borderStyle: 'none',
+    },
+    states: [
+      {
+        name: 'disabled',
+        cssObject: {
+          borderStyle: 'none',
+        },
+      },
+    ],
+  };
+  const prefabReference: PrefabReference = {
+    type: 'COMPONENT',
+    name: 'Button',
+    descendants: [],
+    options: [],
+    style: {
+      name: 'Filled',
+      overwrite: [{ name: 'disabled', cssObject: { borderWidth: ['1rem'] } }],
+    },
+  };
+
+  const prefabs: Prefab[] = [
+    {
+      name: 'ShinyButton',
+      icon: 'ButtonIcon',
+      category: 'Content',
+      structure: [prefabReference],
+    },
+  ];
+
+  const groupedStyles = { Button: { Filled: style } };
+
+  const expectedMessage =
+    '\nProperty: "structure[0]" failed custom validation because \nBuild error in component Button: "value" failed custom validation because \nBuild error in component style reference invalid overwrite for Button:Filled where disabled overwrites a non existing css property borderWidth \n\n at prefab: ShinyButton\n';
+
+  const error = t.throws(() => validatePrefabs(prefabs, groupedStyles));
+  t.is(error.message, expectedMessage);
+});
+
+test('it does throw when a component uses a style but the overwrite does not match the StyleDefinition for state key', (t: Context): void => {
+  const style: StyleDefinition = {
+    type: 'Button',
+    name: 'Filled',
+    basis: {
+      borderStyle: 'none',
+    },
+    states: [
+      {
+        name: 'disabled',
+        cssObject: {
+          borderStyle: 'none',
+        },
+      },
+    ],
+  };
+  const prefabReference: PrefabReference = {
+    type: 'COMPONENT',
+    name: 'Button',
+    descendants: [],
+    options: [],
+    style: {
+      name: 'Filled',
+      overwrite: [{ name: 'hover', cssObject: { borderWidth: ['1rem'] } }],
+    },
+  };
+
+  const prefabs: Prefab[] = [
+    {
+      name: 'ShinyButton',
+      icon: 'ButtonIcon',
+      category: 'Content',
+      structure: [prefabReference],
+    },
+  ];
+
+  const groupedStyles = { Button: { Filled: style } };
+
+  const expectedMessage =
+    '\nProperty: "structure[0]" failed custom validation because \nBuild error in component Button: "value" failed custom validation because \nBuild error in component style reference invalid overwrite for Button where hover does not exist in style Filled \n\n at prefab: ShinyButton\n';
+
+  const error = t.throws(() => validatePrefabs(prefabs, groupedStyles));
+  t.is(error.message, expectedMessage);
 });
