@@ -157,14 +157,14 @@ const validateComponentStyle =
     ];
     const validCssObjectValues: StyleDefinitionContentKeys =
       styleByName.states.reduce(
-        (acc, { name, cssObject }) => ({
+        (acc, { name, content }) => ({
           ...acc,
-          [name]: Object.keys(cssObject),
+          [name]: Object.keys(content),
         }),
         { basis: Object.keys(styleByName.basis) },
       );
 
-    overwrite.forEach(({ name: stateName, cssObject }): void => {
+    overwrite.forEach(({ name: stateName, content }): void => {
       if (!validCssObjects.includes(stateName)) {
         throw new Error(
           chalk.red(
@@ -175,7 +175,7 @@ const validateComponentStyle =
 
       const validCssKeys = validCssObjectValues[stateName] || [];
 
-      Object.keys(cssObject).forEach((cssKey) => {
+      Object.keys(content).forEach((cssKey) => {
         if (!validCssKeys.includes(cssKey)) {
           throw new Error(
             chalk.red(

@@ -69,7 +69,7 @@ export interface StyleDefinitionCssObject {
 }
 export interface StyleDefinitionState {
   name: StyleStateKeys;
-  cssObject: StyleDefinitionCssObject;
+  content: StyleDefinitionCssObject;
 }
 
 export interface StyleDefinition {

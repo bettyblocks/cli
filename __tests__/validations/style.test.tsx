@@ -15,7 +15,7 @@ test('Throw when duplicate style', (t: Context): void => {
       states: [
         {
           name: 'disabled',
-          cssObject: {
+          content: {
             borderStyle: 'none',
           },
         },
@@ -28,7 +28,7 @@ test('Throw when duplicate style', (t: Context): void => {
       states: [
         {
           name: 'hover',
-          cssObject: {
+          content: {
             borderStyle: 'none',
           },
         },
@@ -63,7 +63,7 @@ test('Throw when empty css content for state', (t: Context): void => {
       states: [
         {
           name: 'disabled',
-          cssObject: {},
+          content: {},
         },
       ],
     },
@@ -83,13 +83,13 @@ test('Throw when duplicate stateName', (t: Context): void => {
       states: [
         {
           name: 'disabled',
-          cssObject: {
+          content: {
             borderStyle: 'none',
           },
         },
         {
           name: 'disabled',
-          cssObject: {
+          content: {
             borderRadius: ['0.25rem'],
             borderStyle: 'none',
             color: {
@@ -135,7 +135,7 @@ test('Throw when unsupported css property in states', (t: Context): void => {
       states: [
         {
           name: 'disabled',
-          cssObject: {
+          content: {
             unsupportedColor: 'yeet',
           },
         },
@@ -157,7 +157,7 @@ test('it throws when the type does not exist as a component', (t: Context): void
       states: [
         {
           name: 'disabled',
-          cssObject: {
+          content: {
             borderStyle: 'none',
           },
         },
@@ -179,7 +179,7 @@ test("Don't throw when all styles are valid", (t: Context): void => {
       states: [
         {
           name: 'disabled',
-          cssObject: {
+          content: {
             borderStyle: 'none',
           },
         },
@@ -194,7 +194,7 @@ test("Don't throw when all styles are valid", (t: Context): void => {
       states: [
         {
           name: 'disabled',
-          cssObject: {
+          content: {
             borderStyle: 'none',
           },
         },
@@ -236,7 +236,7 @@ test('it does throw when a component uses a style but has no styleDefinition by 
     states: [
       {
         name: 'disabled',
-        cssObject: {
+        content: {
           borderStyle: 'none',
         },
       },
@@ -277,7 +277,7 @@ test('it does throw when a component uses a style but has no styleDefinition by 
     states: [
       {
         name: 'disabled',
-        cssObject: {
+        content: {
           borderStyle: 'none',
         },
       },
@@ -318,7 +318,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
     states: [
       {
         name: 'disabled',
-        cssObject: {
+        content: {
           borderStyle: 'none',
         },
       },
@@ -331,7 +331,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
     options: [],
     style: {
       name: 'Filled',
-      overwrite: [{ name: 'basis', cssObject: { borderWidth: ['1rem'] } }],
+      overwrite: [{ name: 'basis', content: { borderWidth: ['1rem'] } }],
     },
   };
 
@@ -363,7 +363,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
     states: [
       {
         name: 'disabled',
-        cssObject: {
+        content: {
           borderStyle: 'none',
         },
       },
@@ -376,7 +376,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
     options: [],
     style: {
       name: 'Filled',
-      overwrite: [{ name: 'disabled', cssObject: { borderWidth: ['1rem'] } }],
+      overwrite: [{ name: 'disabled', content: { borderWidth: ['1rem'] } }],
     },
   };
 
@@ -408,7 +408,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
     states: [
       {
         name: 'disabled',
-        cssObject: {
+        content: {
           borderStyle: 'none',
         },
       },
@@ -421,7 +421,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
     options: [],
     style: {
       name: 'Filled',
-      overwrite: [{ name: 'hover', cssObject: { borderWidth: ['1rem'] } }],
+      overwrite: [{ name: 'hover', content: { borderWidth: ['1rem'] } }],
     },
   };
 

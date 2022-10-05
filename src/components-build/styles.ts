@@ -100,9 +100,9 @@ export const buildStyle = ({
   ...style
 }: StyleDefinition): BuildStyleDefinition => {
   const buildContent: BuildStyleDefinition['content'] = states.reduce(
-    (acc, { name, cssObject }) => ({
+    (acc, { name, content }) => ({
       ...acc,
-      [name]: cssObject,
+      [name]: content,
     }),
     { basis },
   );
@@ -132,9 +132,9 @@ export const buildReferenceStyle = (
   if (isStyleDefinitionContentOverwrite(overwrite)) {
     const buildOverwrite: BuildStyleDefinitionContentOverwrites =
       overwrite.reduce(
-        (acc, { name: key, cssObject }) => ({
+        (acc, { name: key, content }) => ({
           ...acc,
-          [key]: cssObject,
+          [key]: content,
         }),
         {},
       );

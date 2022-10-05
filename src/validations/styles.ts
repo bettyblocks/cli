@@ -34,7 +34,7 @@ const isString = Joi.string().max(255);
 const validRem = /^\d{1,5}\.?\d{0,5}rem$/;
 const optionType = ['STATIC', 'THEME_COLOR'];
 
-export const cssObjectSchema = Joi.object({
+export const contentSchema = Joi.object({
   backgroundColor: Joi.object({
     type: optionType,
     value: isString,
@@ -73,7 +73,7 @@ const stateSchema = Joi.object({
   name: Joi.string()
     .required()
     .allow(...Object.keys(AllowedStateKeys)),
-  cssObject: cssObjectSchema.required().min(1),
+  content: contentSchema.required().min(1),
 });
 
 const validateStyleType =
@@ -93,7 +93,7 @@ const styleSchema = (componentNames: string[]) =>
   Joi.object({
     name: Joi.string().required(),
     type: Joi.string().required().custom(validateStyleType(componentNames)),
-    basis: cssObjectSchema.required().min(1),
+    basis: contentSchema.required().min(1),
     states: Joi.array().items(stateSchema).unique('name').required(),
   });
 
@@ -103,7 +103,7 @@ export const overwriteSchema = Joi.array()
       name: Joi.string()
         .required()
         .allow(...Object.keys(AllowedStateKeys), 'basis'),
-      cssObject: cssObjectSchema.required().min(1),
+      content: contentSchema.required().min(1),
     }),
   )
   .unique('name');

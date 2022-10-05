@@ -25,13 +25,13 @@ test('it build a styleReference for the componentPrefab for states', (t: Context
   const overwrite: StyleDefinitionContentOverwrites[] = [
     {
       name: 'basis',
-      cssObject: {
+      content: {
         backgroundColor: { type: 'STATIC', value: 'Red' },
       },
     },
     {
       name: 'hover',
-      cssObject: {
+      content: {
         backgroundColor: { type: 'STATIC', value: 'Blue' },
       },
     },
@@ -61,7 +61,7 @@ test('it build a style ', (t: Context): void => {
     states: [
       {
         name: 'hover',
-        cssObject: {
+        content: {
           backgroundColor: { type: 'STATIC', value: 'Blue' },
         },
       },
