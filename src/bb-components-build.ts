@@ -317,8 +317,8 @@ void (async (): Promise<void> => {
     const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = oldPrefabs.concat(newPrefabs);
 
-    const StylesGroupedByTypeAndName = styles.reduce(
-      (object: GroupedStyles, e) => {
+    const stylesGroupedByTypeAndName = styles.reduce<GroupedStyles>(
+      (object, e) => {
         const { name, type } = e;
 
         const byType = object[type] || {};
@@ -347,10 +347,10 @@ void (async (): Promise<void> => {
     await Promise.all([
       validateStyles(styles, componentNames),
       validateComponents(components, validStyleTypes),
-      validatePrefabs(prefabs, StylesGroupedByTypeAndName, componentStyleMap),
+      validatePrefabs(prefabs, stylesGroupedByTypeAndName, componentStyleMap),
       validatePrefabs(
         partialprefabs,
-        StylesGroupedByTypeAndName,
+        stylesGroupedByTypeAndName,
         componentStyleMap,
         'partial',
       ),

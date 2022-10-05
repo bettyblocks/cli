@@ -16,8 +16,11 @@ const reservedTypes = (value: string) => {
   return value;
 };
 
-const schema = (validStyleTypes: string[]): ObjectSchema =>
-  Joi.object({
+const schema = (validStyleTypes: string[]): ObjectSchema => {
+  const validTypes =
+    validStyleTypes.length === 0 ? ['BUTTON', 'TEXT'] : validStyleTypes;
+
+  return Joi.object({
     name: Joi.string().required(),
     icon: Joi.string(), // DEPRECATED
     category: Joi.string(), // DEPRECATED
@@ -48,12 +51,11 @@ const schema = (validStyleTypes: string[]): ObjectSchema =>
     interactions: Joi.object(),
     jsx: Joi.any().required(),
     styles: Joi.any().required(),
-    styleType: Joi.string().valid(
-      ...[...validStyleTypes, ...['BUTTON', 'TEXT']],
-    ),
+    styleType: Joi.string().valid(...validTypes),
     transpiledJsx: Joi.string(),
     transpiledStyles: Joi.string(),
   });
+};
 
 const validate = (component: Component, validStyleTypes: string[]): void => {
   const { error }: ValidationResult =

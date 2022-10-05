@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import path from 'path';
 import ts from 'typescript';
 import { pathExists, promises } from 'fs-extra';
