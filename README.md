@@ -19,7 +19,7 @@ $ npm install -g @betty-blocks/cli
 To install the CLI without optional dependencies (isolated-vm)
 
 ```bash
-$ npm install -g @betty-blocks/cli --omit=optional
+$ npm install -g @betty-blocks/cli --no-optional
 ```
 
 ## Update
@@ -33,7 +33,7 @@ $ npm update -g @betty-blocks/cli
 To update the CLI without optional dependencies (isolated-vm)
 
 ```bash
-$ npm update -g @betty-blocks/cli --omit=optional
+$ npm update -g @betty-blocks/cli --no-optional
 ```
 
 ## Introduction
