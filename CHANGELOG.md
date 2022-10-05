@@ -1,3 +1,10 @@
+## [25.46.1](https://github.com/bettyblocks/cli/compare/v25.46.0...v25.46.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* update optional flag and no isolated-vm installed error message ([#352](https://github.com/bettyblocks/cli/issues/352)) ([2fe4b64](https://github.com/bettyblocks/cli/commit/2fe4b64))
+
 # [25.46.0](https://github.com/bettyblocks/cli/compare/v25.45.2...v25.46.0) (2022-10-04)
 
 
