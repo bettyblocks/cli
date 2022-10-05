@@ -1,3 +1,10 @@
+# [25.46.0](https://github.com/bettyblocks/cli/compare/v25.45.2...v25.46.0) (2022-10-04)
+
+
+### Features
+
+* add isolated-vm as optional dependency ([#351](https://github.com/bettyblocks/cli/issues/351)) ([084330f](https://github.com/bettyblocks/cli/commit/084330f))
+
 ## [25.45.2](https://github.com/bettyblocks/cli/compare/v25.45.1...v25.45.2) (2022-09-29)
 
 
