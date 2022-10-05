@@ -98,9 +98,15 @@ export type StyleStateKeys =
   | 'invalid'
   | 'readOnly';
 
-export type StyleDefinitionContentBase = {
+type StyleDefinitionContentBase = {
   [key in StyleStateKeys | 'basis']: StyleDefinitionCssObject;
 };
+
+export type StyleDefinitionContent = Partial<StyleDefinitionContentBase> &
+  Pick<StyleDefinitionContentBase, 'basis'>;
+
+export type BuildStyleDefinitionContentOverwrites =
+  Partial<StyleDefinitionContentBase>;
 
 export type StyleDefinitionContentKeys = {
   [key in StyleStateKeys]?: string[];
@@ -110,17 +116,10 @@ export interface StyleDefinitionContentOverwrites
   extends Omit<StyleDefinitionState, 'name'> {
   name: string;
 }
-
-export type BuildStyleDefinitionContentOverwrites =
-  Partial<StyleDefinitionContentBase>;
-
 export interface OverwriteStyleDefinitionState
   extends Omit<StyleDefinitionState, 'name'> {
   name: string;
 }
-
-export type StyleDefinitionContent = Partial<StyleDefinitionContentBase> &
-  Pick<StyleDefinitionContentBase, 'basis'>;
 
 export interface BuildStyleDefinition
   extends Omit<StyleDefinition, 'states' | 'basis'> {
