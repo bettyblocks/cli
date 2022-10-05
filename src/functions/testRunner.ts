@@ -273,7 +273,9 @@ const runTest = async (pattern: string, workingDir: string): Promise<void> => {
   } catch (error) {
     const { code } = error as { code: string };
     if (code === 'MODULE_NOT_FOUND')
-      console.log('Unable to run tests (isolated-vm is not installed)');
+      console.log(
+        'Unable to run tests (isolated-vm is not installed). If you want to install isolated-vm, you will need to install the following requirements: (make, g++ and python) and run "npm update -g @betty-blocks/cli"',
+      );
     else console.log(`${cross} ${String(error)}`);
   }
 };
