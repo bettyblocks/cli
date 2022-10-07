@@ -1,3 +1,10 @@
+# [25.47.0](https://github.com/bettyblocks/cli/compare/v25.46.1...v25.47.0) (2022-10-07)
+
+
+### Features
+
+* read, validate and build component styles ([#348](https://github.com/bettyblocks/cli/issues/348)) ([57a08a5](https://github.com/bettyblocks/cli/commit/57a08a5))
+
 ## [25.46.1](https://github.com/bettyblocks/cli/compare/v25.46.0...v25.46.1) (2022-10-05)
 
 
