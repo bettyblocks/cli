@@ -12,11 +12,12 @@ import {
   Component,
   Interaction,
   Prefab,
-  PrefabComponent,
   ComponentStyleMap,
   PrefabReference,
-  PrefabPartial,
-  PrefabWrapper,
+  GroupedStyles,
+  BuildPrefabReference,
+  BuildPrefabComponent,
+  BuildPrefab,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -28,8 +29,15 @@ import {
   checkOptionCategoryReferences,
 } from './utils/validation';
 import validateComponents from './validations/component';
+import validateStyles from './validations/styles';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
+import {
+  reportDiagnostics,
+  readStyles,
+  buildStyle,
+  buildReferenceStyle,
+} from './components-build';
 
 const { mkdir, readFile } = promises;
 
@@ -101,27 +109,9 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
   return Promise.all(components);
 };
 
-function reportDiagnostics(diagnostics: ts.Diagnostic[]): void {
-  diagnostics.forEach((diagnostic) => {
-    let message = 'Error';
-    if (diagnostic.file) {
-      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
-        diagnostic.start || 0,
-      );
-      message += ` ${diagnostic.file.fileName} (${line + 1},${character + 1})`;
-    }
-    message += `: ${ts.flattenDiagnosticMessageText(
-      diagnostic.messageText,
-      '\n',
-    )}`;
-    console.error(`\u001b[31m${message}\u001b[0m`);
-  });
-}
-
 const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
-  const prefabsDir = `${absoluteRootDir}/.prefabs`;
 
   const exists: boolean = await pathExists(srcDir);
 
@@ -308,16 +298,43 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
-    const [newPrefabs, oldPrefabs, components, interactions, partialprefabs] =
-      await Promise.all([
-        readtsPrefabs(),
-        readPrefabs(),
-        readComponents(),
-        readInteractions(),
-        readPartialPrefabs(),
-      ]);
+    const [
+      styles,
+      newPrefabs,
+      oldPrefabs,
+      components,
+      interactions,
+      partialprefabs,
+    ] = await Promise.all([
+      readStyles(rootDir),
+      readtsPrefabs(),
+      readPrefabs(),
+      readComponents(),
+      readInteractions(),
+      readPartialPrefabs(),
+    ]);
 
+    const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = oldPrefabs.concat(newPrefabs);
+
+    const stylesGroupedByTypeAndName = styles.reduce<GroupedStyles>(
+      (object, e) => {
+        const { name, type } = e;
+
+        const byType = object[type] || {};
+
+        return {
+          ...object,
+          [type]: {
+            ...byType,
+            [name]: e,
+          },
+        };
+      },
+      {},
+    );
+
+    const componentNames = components.map(({ name }) => name);
 
     checkNameReferences(prefabs, components);
 
@@ -328,9 +345,15 @@ void (async (): Promise<void> => {
     }, {});
 
     await Promise.all([
-      validateComponents(components),
-      validatePrefabs(prefabs, componentStyleMap),
-      validatePrefabs(partialprefabs, componentStyleMap, 'partial'),
+      validateStyles(styles, componentNames),
+      validateComponents(components, validStyleTypes),
+      validatePrefabs(prefabs, stylesGroupedByTypeAndName, componentStyleMap),
+      validatePrefabs(
+        partialprefabs,
+        stylesGroupedByTypeAndName,
+        componentStyleMap,
+        'partial',
+      ),
       interactions && validateInteractions(interactions),
     ]);
 
@@ -343,41 +366,33 @@ void (async (): Promise<void> => {
       };
     });
 
-    type BuildPrefab = PrefabComponent & {
-      hash: string;
-      style: PrefabComponent['style'];
-    };
-
-    type BuildPrefabComponent = BuildPrefab | PrefabPartial | PrefabWrapper;
-
-    const buildPrefab = (prefab: Prefab): Prefab => {
+    const buildPrefab = (prefab: Prefab): BuildPrefab => {
       const buildStructure = (
         structure: PrefabReference,
-      ): BuildPrefabComponent => {
+      ): BuildPrefabReference => {
         if (structure.type === 'PARTIAL') {
           return structure;
         }
 
         if (structure.type === 'WRAPPER') {
-          const wrapperStructure = structure;
-
-          if (wrapperStructure.descendants.length > 0) {
-            wrapperStructure.descendants =
-              wrapperStructure.descendants.map(buildStructure);
-          }
+          const { descendants = [], ...rest } = structure;
+          const wrapperStructure = {
+            ...rest,
+            descendants: descendants.map(buildStructure),
+          };
           return wrapperStructure;
         }
 
-        const newStructure = {
-          ...structure,
-          style: structure.style || {},
-          hash: hash(structure.options),
-        };
+        const { style, descendants, ...rest } = structure;
 
-        if (newStructure.descendants.length > 0) {
-          newStructure.descendants =
-            newStructure.descendants.map(buildStructure);
-        }
+        const styleReference = buildReferenceStyle(style);
+
+        const newStructure: BuildPrefabComponent = {
+          ...rest,
+          ...(styleReference ? { style: styleReference } : {}),
+          hash: hash(structure.options),
+          descendants: descendants.map(buildStructure),
+        };
 
         return newStructure;
       };
@@ -386,6 +401,8 @@ void (async (): Promise<void> => {
         structure: prefab.structure.map(buildStructure),
       };
     };
+
+    const buildStyles = styles.map(buildStyle);
 
     const buildPrefabs = prefabs.map(buildPrefab);
     const buildPartialprefabs = partialprefabs.map(buildPrefab);
@@ -402,6 +419,10 @@ void (async (): Promise<void> => {
 
       interactions && outputJson(`${distDir}/interactions.json`, interactions),
     ];
+
+    if (buildStyles.length > 0) {
+      outputPromises.push(outputJson(`${distDir}/styles.json`, buildStyles));
+    }
 
     const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');
 

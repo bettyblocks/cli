@@ -6,7 +6,7 @@ import {
   getDefaultCompilerOptions,
 } from 'typescript';
 
-function reportDiagnostics(diagnostics: Diagnostic[]): void {
+const reportDiagnostics = (diagnostics: Diagnostic[]): void => {
   diagnostics.forEach((diagnostic) => {
     let message = 'Error';
     if (diagnostic.file) {
@@ -21,9 +21,9 @@ function reportDiagnostics(diagnostics: Diagnostic[]): void {
     )}`;
     console.error(`\u001b[31m${message}\u001b[0m`);
   });
-}
+};
 
-export default function (filePath: string): void {
+export default (filePath: string): void => {
   const config = getDefaultCompilerOptions();
 
   config.strict = true;
@@ -36,4 +36,4 @@ export default function (filePath: string): void {
     reportDiagnostics(diagnostics);
     process.exit(1);
   }
-}
+};
