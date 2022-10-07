@@ -1,3 +1,10 @@
+# [25.48.0](https://github.com/bettyblocks/cli/compare/v25.47.0...v25.48.0) (2022-10-07)
+
+
+### Features
+
+* overwrite compatibility object with transpiledFunction ([#353](https://github.com/bettyblocks/cli/issues/353)) ([4590718](https://github.com/bettyblocks/cli/commit/4590718))
+
 # [25.47.0](https://github.com/bettyblocks/cli/compare/v25.46.1...v25.47.0) (2022-10-07)
 
 
