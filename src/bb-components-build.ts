@@ -88,8 +88,8 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
         }
 
         return {
-          ...transpiledFunction,
           ...compatibility,
+          ...transpiledFunction,
         };
       } catch (error) {
         error.file = file;
