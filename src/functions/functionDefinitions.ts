@@ -128,7 +128,6 @@ const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
     name,
     version,
     ...schema,
-    icon: JSON.stringify(schema.icon),
     options: JSON.stringify(schema.options || []),
     paths: JSON.stringify(schema.paths || {}),
   }));
