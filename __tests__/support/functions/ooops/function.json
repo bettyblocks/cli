@@ -3,7 +3,10 @@
   "name": "ooops",
   "label": "Ooops",
   "category": "Misc",
-  "icon": "CreateIcon",
+  "icon": {
+    "name": "ChatIcon",
+    "color": "Teal"
+  },
   "options": [],
   "yields": "NONE"
 }

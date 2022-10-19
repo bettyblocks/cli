@@ -80,7 +80,7 @@ test('functionDefinitions for a directory without functions', async (t: Context)
 
 test('stringifying function definitions', async (t: Context): Promise<void> => {
   const expected =
-    '[{"name":"sayHello","version":"1.0","description":"Say Hello to the world","label":"Say Hello","category":"Misc","icon":"CreateIcon","options":"[{\\"meta\\":{\\"type\\":\\"Text\\"},\\"name\\":\\"name\\",\\"label\\":\\"Name\\",\\"info\\":\\"The name that\'s going to be used to say hello to the world!\\",\\"advanced\\":false,\\"configuration\\":{\\"placeholder\\":\\"Betty Blocks\\"}}]","yields":"NONE","paths":"{}"}]';
+    '[{"name":"sayHello","version":"1.0","description":"Say Hello to the world","label":"Say Hello","category":"Misc","icon":"{\\"name\\":\\"ChatIcon\\",\\"color\\":\\"Teal\\"}","options":"[{\\"meta\\":{\\"type\\":\\"Text\\"},\\"name\\":\\"name\\",\\"label\\":\\"Name\\",\\"info\\":\\"The name that\'s going to be used to say hello to the world!\\",\\"advanced\\":false,\\"configuration\\":{\\"placeholder\\":\\"Betty Blocks\\"}}]","yields":"NONE","paths":"{}"}]';
   const definitions = functionDefinitions(functionsPath);
   t.is(stringifyDefinitions(definitions), expected);
 });
