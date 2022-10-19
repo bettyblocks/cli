@@ -2,7 +2,10 @@
   "description": "This is an invalid function",
   "label": "Sorry",
   "category": "Misc",
-  "icon": "CreateIcon",
+  "icon": {
+    "name": "ChatIcon",
+    "color": "Teal"
+  },
   "options": [],
   "yields": "NONE"
 }
