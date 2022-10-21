@@ -157,8 +157,8 @@ const newFunctionDefinition = (
         label: startCase(functionName),
         category: 'Misc',
         icon: {
-          name: 'ChatIcon',
-          color: 'Teal',
+          name: 'ActionsIcon',
+          color: 'Orange',
         },
         options: [],
         yields: 'NONE',
