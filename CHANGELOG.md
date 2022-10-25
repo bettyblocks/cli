@@ -1,3 +1,18 @@
+# [25.49.0](https://github.com/bettyblocks/cli/compare/v25.48.0...v25.49.0) (2022-10-25)
+
+
+### Bug Fixes
+
+* default icon for say hello and fix some tests ([2da1c21](https://github.com/bettyblocks/cli/commit/2da1c21))
+* remove json stringify for icon ([9c732ac](https://github.com/bettyblocks/cli/commit/9c732ac))
+* set correct icon for bb functions new ([5d4f280](https://github.com/bettyblocks/cli/commit/5d4f280))
+* validate function tests ([0eca2f9](https://github.com/bettyblocks/cli/commit/0eca2f9))
+
+
+### Features
+
+* json stringify icon object ([c94a214](https://github.com/bettyblocks/cli/commit/c94a214))
+
 # [25.48.0](https://github.com/bettyblocks/cli/compare/v25.47.0...v25.48.0) (2022-10-07)
 
 
