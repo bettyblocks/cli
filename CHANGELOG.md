@@ -1,3 +1,10 @@
+# [25.50.0](https://github.com/bettyblocks/cli/compare/v25.49.0...v25.50.0) (2022-10-27)
+
+
+### Features
+
+* add auto-convert function icons command ([#357](https://github.com/bettyblocks/cli/issues/357)) ([e58074b](https://github.com/bettyblocks/cli/commit/e58074b))
+
 # [25.49.0](https://github.com/bettyblocks/cli/compare/v25.48.0...v25.49.0) (2022-10-25)
 
 
