@@ -145,7 +145,7 @@ void (async (): Promise<void> => {
           ) {
             console.log(
               `Maybe auto-convert your function icons using ${chalk.cyan(
-                'bb functions converticons',
+                'bb functions convert-icons',
               )}?`,
             );
           } else {

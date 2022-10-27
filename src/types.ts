@@ -27,7 +27,7 @@ export type CommandFunctions =
   | 'publish'
   | 'validate'
   | 'autoversion'
-  | 'converticons'
+  | 'convert-icons'
   | 'bump'
   | 'test';
 

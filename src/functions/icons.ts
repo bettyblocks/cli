@@ -7,6 +7,10 @@ import {
   functionDirs,
 } from './functionDefinitions';
 
+interface ICONS {
+  [key: string]: { name: string; color: string };
+}
+
 const check = chalk.green(`✔`);
 
 const convert = (functionsPath: string): void => {
@@ -20,8 +24,7 @@ const convert = (functionsPath: string): void => {
     const fn = `${name}-${version}`;
 
     if (typeof definition.schema.icon === 'string') {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const icon = {
+      const icons: ICONS = {
         AuthenticateIcon: { color: 'Teal', name: 'UserArrowInIcon' },
         ConditionIcon: { color: 'Yellow', name: 'ConditionIcon' },
         CreateIcon: { color: 'Green', name: 'PlusIcon' },
@@ -33,9 +36,12 @@ const convert = (functionsPath: string): void => {
         LoopIcon: { color: 'Blue', name: 'LoopIcon' },
         UpdateIcon: { color: 'Green', name: 'ArrowClockwiseIcon' },
         UploadIcon: { color: 'Orange', name: 'UploadIcon' },
-      }[definition.schema.icon];
+      };
 
-      definition.schema.icon = icon || { color: 'Orange', name: 'ActionsIcon' };
+      definition.schema.icon = icons[definition.schema.icon] || {
+        color: 'Orange',
+        name: 'ActionsIcon',
+      };
 
       fs.writeJSONSync(
         functionDefinitionPath(functionPath),
@@ -45,7 +51,11 @@ const convert = (functionsPath: string): void => {
         },
       );
 
-      log(`${check} Converted: ${fn} => ${JSON.stringify(icon)}`);
+      log(
+        `${check} Converted: ${fn} => ${JSON.stringify(
+          definition.schema.icon,
+        )}`,
+      );
     } else {
       log(`${check} Skipped: ${fn}`);
     }

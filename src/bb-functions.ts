@@ -17,7 +17,7 @@ const availableCommands: CommandFunctions[] = [
   'publish',
   'validate',
   'autoversion',
-  'converticons',
+  'convert-icons',
   'bump',
   'test',
 ];
@@ -33,7 +33,7 @@ program
   )
   .command('build', 'build functions bundle file of current working directory')
   .command('bump', 'increase the major/minor version of a specific function')
-  .command('converticons', 'auto-convert function icons to { name, color }')
+  .command('convert-icons', 'auto-convert function icons to { name, color }')
   .command('init [identifier]', 'initialize functions project')
   .command('login', 'login using the same credentials as the IDE')
   .command('logout', 'remove all tokens used to authenticate with the APIs')

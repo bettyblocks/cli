@@ -78,14 +78,14 @@ void (async (): Promise<void> => {
     ) {
       console.log(
         `Maybe auto-convert your function icons using ${chalk.cyan(
-          'bb functions converticons',
+          'bb functions convert-icons',
         )}?`,
       );
     } else {
       const baseFunctionsPath = path.join(workingDir, 'functions');
       const allFunctions = functionDefinitions(baseFunctionsPath, true);
       const versionedFunctions = functionDefinitions(baseFunctionsPath);
-      console.log('blablabla');
+
       if (allFunctions.length !== versionedFunctions.length) {
         console.log(
           `Maybe auto-version your functions without a version number using ${chalk.cyan(

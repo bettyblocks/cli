@@ -8,7 +8,7 @@ import program from 'commander';
 import { convert } from './functions/icons';
 
 /* process arguments */
-program.name('bb functions converticons').parse(process.argv);
+program.name('bb functions convert-icons').parse(process.argv);
 
 /* execute command */
 
