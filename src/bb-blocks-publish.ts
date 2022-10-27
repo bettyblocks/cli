@@ -1,6 +1,7 @@
 /* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument */
 /* npm dependencies */
 
+import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
 import program from 'commander';
@@ -25,6 +26,7 @@ import Config from './functions/config';
 import {
   FunctionValidator,
   logValidationResult,
+  ValidationResult,
 } from './functions/validations';
 
 program.name('bb blocks publish').parse(process.argv);
@@ -80,7 +82,7 @@ const createBlockZip = (
 
 const validateFunctions = async (
   blockFunctions: FunctionDefinition[],
-): Promise<boolean> => {
+): Promise<{ valid: boolean; results: ValidationResult[] }> => {
   const baseFunctionsPath = path.join(workingDir, 'functions');
   console.log(`Validating functions in ${baseFunctionsPath}`);
   const config = new Config();
@@ -95,7 +97,7 @@ const validateFunctions = async (
     logValidationResult(result);
   });
 
-  return valid;
+  return { valid, results };
 };
 
 // eslint-disable-next-line no-void
@@ -127,10 +129,25 @@ void (async (): Promise<void> => {
             funcDefinitions,
             block.functions,
           );
-          const valid = await validateFunctions(blockFunctions);
+          const { valid, results } = await validateFunctions(blockFunctions);
           if (valid) {
             const zip = createBlockZip(name, block);
             if (zip) await publishBlocks(block.functions, zip);
+          } else if (
+            results.some(
+              ({ errors }) =>
+                errors &&
+                errors.some(
+                  ({ stack }) =>
+                    stack === 'instance.icon is not of a type(s) object',
+                ),
+            )
+          ) {
+            console.log(
+              `Maybe auto-convert your function icons using ${chalk.cyan(
+                'bb functions converticons',
+              )}?`,
+            );
           } else {
             console.error('Some functions are not valid');
           }
