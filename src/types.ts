@@ -479,3 +479,9 @@ export interface PrefabVariable {
   };
   options?: unknown;
 }
+
+export interface ComponentDependency {
+  label: string;
+  package: string;
+  imports: string[];
+}
