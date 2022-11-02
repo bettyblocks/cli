@@ -22,7 +22,7 @@ import {
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
-import { getPackageVersion } from './utils/getPackageVersion';
+import { checkPackageVersion } from './utils/checkPackageVersion';
 import hash from './utils/hash';
 import readFilesByType from './utils/readFilesByType';
 import transpile from './utils/transpile';
@@ -104,7 +104,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 
           const dependencyPromises = usedPackages.map(
             async (usedPackage: string): Promise<void> => {
-              await getPackageVersion(usedPackage.replace(/^npm:/g, ''));
+              await checkPackageVersion(usedPackage.replace(/^npm:/g, ''));
             },
           );
 
