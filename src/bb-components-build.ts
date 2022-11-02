@@ -18,9 +18,11 @@ import {
   BuildPrefabReference,
   BuildPrefabComponent,
   BuildPrefab,
+  ComponentDependency,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import { checkPackageVersion } from './utils/checkPackageVersion';
 import hash from './utils/hash';
 import readFilesByType from './utils/readFilesByType';
 import transpile from './utils/transpile';
@@ -93,6 +95,20 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
           transpiledFunction.transpiledStyles = doTranspile(
             transpiledFunction.styles,
           );
+        }
+
+        if (transpiledFunction.dependencies) {
+          const usedPackages = (
+            transpiledFunction.dependencies as ComponentDependency[]
+          ).map((usedDependency) => usedDependency.package);
+
+          const dependencyPromises = usedPackages.map(
+            async (usedPackage: string): Promise<void> => {
+              await checkPackageVersion(usedPackage.replace(/^npm:/g, ''));
+            },
+          );
+
+          await Promise.all(dependencyPromises);
         }
 
         return {
