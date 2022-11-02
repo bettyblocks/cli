@@ -102,16 +102,13 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
             transpiledFunction.dependencies as ComponentDependency[]
           ).map((usedDependency) => usedDependency.package);
 
-          usedPackages.forEach((usedPackage: string): void => {
-            getPackageVersion(usedPackage.replace(/^npm:/g, ''))
-              .then(() => {})
-              .catch((ex) => {
-                console.error('component dependency not found', ex.message);
-                throw new Error(
-                  'Component set could not build because of missing dependency',
-                );
-              });
-          });
+          const dependencyPromises = usedPackages.map(
+            async (usedPackage: string): Promise<void> => {
+              await getPackageVersion(usedPackage.replace(/^npm:/g, ''));
+            },
+          );
+
+          await Promise.all(dependencyPromises);
         }
 
         return {

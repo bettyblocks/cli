@@ -10,8 +10,7 @@ export const getPackageVersion = async (name: string): Promise<string> => {
   const versionInfo = output.toString().trim();
 
   if (error) {
-    // eslint-disable-next-line @typescript-eslint/no-throw-literal
-    throw error;
+    throw new Error(error);
   }
 
   return versionInfo;
