@@ -147,6 +147,7 @@ export const OPTIONS = [
   'TOGGLE',
   'UNIT',
   'VARIABLE',
+  'CREATE_PAGE',
   // v2
   'BOOLEAN',
   'NUMERAL',
@@ -154,7 +155,6 @@ export const OPTIONS = [
   'RECORD_ARRAY',
   'STRING',
   'STRING_ARRAY',
-  'CREATE_PAGE',
 ];
 
 export const MEDIA_TYPES = ['IMAGE', 'VIDEO'];
