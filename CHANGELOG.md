@@ -1,3 +1,10 @@
+# [25.52.0](https://github.com/bettyblocks/cli/compare/v25.51.0...v25.52.0) (2022-11-04)
+
+
+### Features
+
+* add create page component option type ([#360](https://github.com/bettyblocks/cli/issues/360)) ([7816d8f](https://github.com/bettyblocks/cli/commit/7816d8f))
+
 # [25.51.0](https://github.com/bettyblocks/cli/compare/v25.50.0...v25.51.0) (2022-11-02)
 
 
