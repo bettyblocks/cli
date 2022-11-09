@@ -338,6 +338,7 @@ export interface Prefab {
   variables?: PrefabVariable[];
   type?: string;
   description?: string;
+  reconfigure?: { children: PrefabComponent[] };
 }
 
 export interface BuildPrefab extends Omit<Prefab, 'structure'> {

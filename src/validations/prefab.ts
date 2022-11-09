@@ -45,6 +45,7 @@ const schemaProvider = (
         Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
       )
       .required(),
+    reconfigure: Joi.any(),
   });
 };
 
