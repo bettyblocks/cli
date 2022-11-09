@@ -1,3 +1,10 @@
+# [25.53.0](https://github.com/bettyblocks/cli/compare/v25.52.0...v25.53.0) (2022-11-09)
+
+
+### Features
+
+* type for reconfigure in prefab ([#362](https://github.com/bettyblocks/cli/issues/362)) ([9db2068](https://github.com/bettyblocks/cli/commit/9db2068))
+
 # [25.52.0](https://github.com/bettyblocks/cli/compare/v25.51.0...v25.52.0) (2022-11-04)
 
 
