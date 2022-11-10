@@ -38,7 +38,9 @@ $ npm update -g @betty-blocks/cli --no-optional
 
 ## Introduction
 
-Welcome to the GitHub repository for the Betty Blocks command-line interface (CLI). This CLI lets you develop for Betty Blocks, a no-code platform for business users. Not using Betty Blocks yet? Find out more at [https://www.bettyblocks.com](https://www.bettyblocks.com).
+Welcome to the GitHub repository for the Betty Blocks command-line interface (CLI).
+
+This CLI lets you develop for Betty Blocks, a no-code platform for business users. Not using Betty Blocks yet? Find out more at [https://www.bettyblocks.com](https://www.bettyblocks.com).
 
 ## Contents
 
