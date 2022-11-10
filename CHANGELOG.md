@@ -1,3 +1,10 @@
+# [25.54.0](https://github.com/bettyblocks/cli/compare/v25.53.0...v25.54.0) (2022-11-10)
+
+
+### Features
+
+* update readme ([#366](https://github.com/bettyblocks/cli/issues/366)) ([998b32e](https://github.com/bettyblocks/cli/commit/998b32e))
+
 # [25.53.0](https://github.com/bettyblocks/cli/compare/v25.52.0...v25.53.0) (2022-11-09)
 
 
