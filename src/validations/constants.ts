@@ -141,6 +141,7 @@ export const OPTIONS = [
   'PROPERTY',
   'PUBLIC_FILE',
   'RECONFIGURE',
+  'RECONFIGUREV2',
   'SIZE',
   'SIZES',
   'TEXT',
