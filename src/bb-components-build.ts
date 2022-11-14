@@ -40,6 +40,7 @@ import {
   buildStyle,
   buildReferenceStyle,
 } from './components-build';
+import { buildInteractions } from './components-build/v2/buildInteractions';
 
 const { mkdir, readFile } = promises;
 
@@ -49,6 +50,11 @@ program
   .usage('[path]')
   .name('bb components build')
   .option('-t, --transpile', 'enable new transpilation')
+  .option(
+    '--runtime-version [version]',
+    'the runtime option to build for',
+    'v1',
+  )
   .parse(process.argv);
 
 const { args }: CommanderStatic = program;
@@ -313,6 +319,9 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
+
+  const { runtimeVersion = 'v1' } = options;
+
   try {
     const [
       styles,
@@ -326,7 +335,7 @@ void (async (): Promise<void> => {
       readtsPrefabs(),
       readPrefabs(),
       readComponents(),
-      readInteractions(),
+      runtimeVersion === 'v2' ? Promise.resolve([]) : readInteractions(),
       readPartialPrefabs(),
     ]);
 
@@ -467,6 +476,12 @@ void (async (): Promise<void> => {
     }
 
     await Promise.all(outputPromises);
+
+    // v2
+
+    if (runtimeVersion === 'v2') {
+      await buildInteractions(rootDir);
+    }
 
     console.info(chalk.green('Success, the component set has been built'));
   } catch (err) {
