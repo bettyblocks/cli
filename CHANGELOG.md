@@ -1,3 +1,10 @@
+# [25.56.0](https://github.com/bettyblocks/cli/compare/v25.55.0...v25.56.0) (2022-11-15)
+
+
+### Features
+
+* build v2 interactions ([c81ea40](https://github.com/bettyblocks/cli/commit/c81ea40))
+
 # [25.55.0](https://github.com/bettyblocks/cli/compare/v25.54.0...v25.55.0) (2022-11-14)
 
 
