@@ -1,3 +1,10 @@
+## [25.56.1](https://github.com/bettyblocks/cli/compare/v25.56.0...v25.56.1) (2022-11-16)
+
+
+### Bug Fixes
+
+* validation pattern for dependencies field ([#370](https://github.com/bettyblocks/cli/issues/370)) ([304ffb2](https://github.com/bettyblocks/cli/commit/304ffb2))
+
 # [25.56.0](https://github.com/bettyblocks/cli/compare/v25.55.0...v25.56.0) (2022-11-15)
 
 
