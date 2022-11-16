@@ -41,7 +41,7 @@ const schema = (validStyleTypes: string[]): ObjectSchema => {
       Joi.object({
         label: Joi.string().required(),
         package: Joi.string()
-          .pattern(/^[a-z]+:[^~)('!*@]+(@[0-9.\-a-z]+)$/)
+          .pattern(/^[a-z]+:[^~)('!*]+(@[0-9.\-a-z]+)$/)
           .required(),
         imports: Joi.array().items(Joi.string()).required(),
       }),
