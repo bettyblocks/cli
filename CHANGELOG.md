@@ -1,3 +1,10 @@
+# [25.58.0](https://github.com/bettyblocks/cli/compare/v25.57.0...v25.58.0) (2022-11-21)
+
+
+### Features
+
+* add interaction parameter to invalidate queries ([#373](https://github.com/bettyblocks/cli/issues/373)) ([162075b](https://github.com/bettyblocks/cli/commit/162075b))
+
 # [25.57.0](https://github.com/bettyblocks/cli/compare/v25.56.1...v25.57.0) (2022-11-21)
 
 
