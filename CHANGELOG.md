@@ -1,3 +1,10 @@
+# [25.57.0](https://github.com/bettyblocks/cli/compare/v25.56.1...v25.57.0) (2022-11-21)
+
+
+### Features
+
+* add allowRelations to optionConfiguration ([#371](https://github.com/bettyblocks/cli/issues/371)) ([9443f6b](https://github.com/bettyblocks/cli/commit/9443f6b))
+
 ## [25.56.1](https://github.com/bettyblocks/cli/compare/v25.56.0...v25.56.1) (2022-11-16)
 
 
