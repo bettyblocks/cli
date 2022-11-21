@@ -4,13 +4,13 @@ import { promises, readJson, readdir, outputJson, pathExists } from 'fs-extra';
 const { readFile } = promises;
 
 export type InteractionConfigurationParameter = {
-  type: 'BOOLEAN' | 'NUMBER' | 'STRING' | 'MUTATION';
+  type: 'BOOLEAN' | 'INVALIDATE_QUERIES' | 'NUMBER' | 'STRING' | 'MUTATION';
 };
 
 export type InteractionConfiguration = {
   name: string;
   parameters: Record<string /* name */, InteractionConfigurationParameter>;
-  returnType: 'BOOLEAN' | 'NUMBER' | 'STRING' | 'Void';
+  returnType: 'BOOLEAN' | 'NUMBER' | 'STRING' | 'VOID';
 };
 
 export type InteractionSource = InteractionConfiguration & { code: string };
@@ -30,7 +30,13 @@ const jsonFileSchema: Schema = {
         type: 'object',
         properties: {
           type: {
-            enum: ['BOOLEAN', 'NUMBER', 'STRING', 'MUTATION'],
+            enum: [
+              'BOOLEAN',
+              'INVALIDATE_QUERIES',
+              'NUMBER',
+              'STRING',
+              'MUTATION',
+            ],
           },
         },
         required: ['type'],
