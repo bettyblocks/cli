@@ -223,6 +223,7 @@ const componentSchema = (
         Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
       )
       .required(),
+    reconfigure: Joi.any(),
 
     // lifecycle hooks
 
