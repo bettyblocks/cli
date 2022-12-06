@@ -20,24 +20,22 @@ const name: string = args[0];
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
-  const regex = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
-  if (name.match(regex)) {
-    throw new Error(
+  if (!/^[a-z][a-z0-9]*$/i.test(name)) {
+    throw Error(
       chalk.red(`\nName cannot contain special characters or spaces\n`),
     );
   }
 
   if (await pathExists(`src/prefabs/${name}.tsx`)) {
-    throw new Error(chalk.red(`\nPrefab ${name} already exists\n`));
+    throw Error(chalk.red(`\nPrefab ${name} already exists\n`));
   }
 
   if (await pathExists(`src/components/${name}.js`)) {
-    throw new Error(chalk.red(`\nComponent ${name} already exists\n`));
+    throw Error(chalk.red(`\nComponent ${name} already exists\n`));
   }
   const capitalisedName = name.charAt(0).toUpperCase() + name.slice(1);
 
-  const prefab = `
-import { prefab, Icon } from '@betty-blocks/component-sdk';
+  const prefab = `import { prefab, Icon } from '@betty-blocks/component-sdk';
 
 import { ${capitalisedName} } from './structures/${capitalisedName}';
 
@@ -51,8 +49,7 @@ export default prefab('${capitalisedName}', attributes, undefined, [${capitalise
 
 `;
 
-  const structureIndex = `
-import { component, PrefabReference } from '@betty-blocks/component-sdk';
+  const structureIndex = `import { component, PrefabReference } from '@betty-blocks/component-sdk';
 import { Configuration } from '../Configuration';
 import {
   ${name}Options as defaultOptions,
@@ -77,11 +74,9 @@ export const ${capitalisedName} = (
     descendants,
   );
 };
-
 `;
 
-  const optionsIndex = `
-import { variable } from '@betty-blocks/component-sdk';
+  const optionsIndex = `import { variable } from '@betty-blocks/component-sdk';
 import { advanced } from '../../advanced';
 
 export const categories = [
@@ -103,8 +98,7 @@ export const ${name}Options = {
 
 `;
 
-  const component = `
-(() => ({
+  const component = `(() => ({
   name: '${capitalisedName}',
   type: 'CONTENT_COMPONENT',
   allowedTypes: [],
@@ -124,14 +118,14 @@ export const ${name}Options = {
   await Promise.all([
     outputFile(
       `src/prefabs/structures/${capitalisedName}/index.ts`,
-      structureIndex.trim(),
+      structureIndex,
     ),
     outputFile(
       `src/prefabs/structures/${capitalisedName}/options/index.ts`,
-      optionsIndex.trim(),
+      optionsIndex,
     ),
-    outputFile(`src/prefabs/${name}.tsx`, prefab.trim()),
-    outputFile(`src/components/${name}.js`, component.trim()),
+    outputFile(`src/prefabs/${name}.tsx`, prefab),
+    outputFile(`src/components/${name}.js`, component),
     console.log(chalk.green('The component has been generated')),
   ]);
 })();
