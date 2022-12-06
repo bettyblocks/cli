@@ -1,3 +1,10 @@
+## [25.58.4](https://github.com/bettyblocks/cli/compare/v25.58.3...v25.58.4) (2022-12-06)
+
+
+### Bug Fixes
+
+* bump version ([#377](https://github.com/bettyblocks/cli/issues/377)) ([8f19862](https://github.com/bettyblocks/cli/commit/8f19862))
+
 ## [25.58.3](https://github.com/bettyblocks/cli/compare/v25.58.2...v25.58.3) (2022-12-06)
 
 
