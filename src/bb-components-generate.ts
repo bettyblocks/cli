@@ -24,44 +24,110 @@ void (async (): Promise<void> => {
     throw new Error(chalk.red(`\nName cannot contain spaces\n`));
   }
 
-  if (await pathExists(`src/prefabs/${name}.js`)) {
+  if (await pathExists(`src/prefabs/${name}.tsx`)) {
     throw new Error(chalk.red(`\nPrefab ${name} already exists\n`));
   }
 
   if (await pathExists(`src/components/${name}.js`)) {
     throw new Error(chalk.red(`\nComponent ${name} already exists\n`));
   }
+  const capitalisedName = name.charAt(0).toUpperCase() + name.slice(1);
 
-  const prefab = `
-(() => ({
-  name: '${name}',
-  icon: 'TitleIcon',
+  const newPrefab = `
+import { prefab, Icon } from '@betty-blocks/component-sdk';
+
+import { ${capitalisedName} } from './structures/${capitalisedName}';
+
+const attributes = {
   category: 'CONTENT',
-  structure: [
-    {
-      name: '${name}',
-      options: [],
-      descendants: [],
-    },
-  ],
-}))();
-  `;
+  icon: Icon.TitleIcon,
+  keywords: [''],
+};
+
+export default prefab('${capitalisedName}', attributes, undefined, [${capitalisedName}({})]);
+
+`;
+
+  const structureIndex = `
+import { component, PrefabReference } from '@betty-blocks/component-sdk';
+import { Configuration } from '../Configuration';
+import {
+  ${name}Options as defaultOptions,
+  categories as defaultCategories,
+} from './options';
+
+export const ${capitalisedName} = (
+  config: Configuration,
+  descendants: PrefabReference[] = [],
+) => {
+  const options = { ...(config.options || defaultOptions) };
+  const style = { ...config.style };
+  const ref = config.ref ? { ...config.ref } : undefined;
+  const label = config.label ? config.label : undefined;
+  const optionCategories = config.optionCategories
+    ? { ...config.optionCategories }
+    : defaultCategories;
+
+  return component(
+    '${capitalisedName}',
+    { options, ref, style, label, optionCategories },
+    descendants,
+  );
+};
+
+`;
+
+  const optionsIndex = `
+import { variable } from '@betty-blocks/component-sdk';
+import { advanced } from '../../advanced';
+
+export const categories = [
+  {
+    label: 'Advanced Options',
+    expanded: false,
+    members: ['dataComponentAttribute'],
+  },
+];
+
+export const ${name}Options = {
+  content: variable('Content', {
+    value: ['Hello world'],
+    configuration: { as: 'MULTILINE' },
+  }),
+
+  ...advanced('${capitalisedName}'),
+};
+
+`;
 
   const component = `
 (() => ({
-  name: '${name}',
-  type: 'ROW',
+  name: '${capitalisedName}',
+  type: 'CONTENT_COMPONENT',
   allowedTypes: [],
   orientation: 'HORIZONTAL',
-  jsx: <div className={classes.root}>Hello World</div>,
+  jsx: (() => {
+    const { useText } = B;
+    const { content } = options;
+    return <div className={classes.root}>{useText(content)}</div>;
+  })(),
   styles: () => () => ({
     root: {},
   }),
 }))();
-  `;
+
+`;
 
   await Promise.all([
-    outputFile(`src/prefabs/${name}.js`, prefab.trim()),
+    outputFile(
+      `src/prefabs/structures/${capitalisedName}/index.ts`,
+      structureIndex.trim(),
+    ),
+    outputFile(
+      `src/prefabs/structures/${capitalisedName}/options/index.ts`,
+      optionsIndex.trim(),
+    ),
+    outputFile(`src/prefabs/${name}.tsx`, newPrefab.trim()),
     outputFile(`src/components/${name}.js`, component.trim()),
     console.log(chalk.green('The component has been generated')),
   ]);
