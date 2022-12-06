@@ -54,6 +54,7 @@ const schema = (validStyleTypes: string[]): ObjectSchema => {
     styleType: Joi.string().valid(...validTypes),
     transpiledJsx: Joi.string(),
     transpiledStyles: Joi.string(),
+    reconfigure: Joi.any(),
   });
 };
 
