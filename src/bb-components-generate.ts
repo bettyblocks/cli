@@ -33,7 +33,7 @@ void (async (): Promise<void> => {
   }
   const capitalisedName = name.charAt(0).toUpperCase() + name.slice(1);
 
-  const newPrefab = `
+  const prefab = `
 import { prefab, Icon } from '@betty-blocks/component-sdk';
 
 import { ${capitalisedName} } from './structures/${capitalisedName}';
@@ -127,7 +127,7 @@ export const ${name}Options = {
       `src/prefabs/structures/${capitalisedName}/options/index.ts`,
       optionsIndex.trim(),
     ),
-    outputFile(`src/prefabs/${name}.tsx`, newPrefab.trim()),
+    outputFile(`src/prefabs/${name}.tsx`, prefab.trim()),
     outputFile(`src/components/${name}.js`, component.trim()),
     console.log(chalk.green('The component has been generated')),
   ]);
