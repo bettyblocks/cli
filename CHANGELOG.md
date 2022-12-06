@@ -1,3 +1,10 @@
+## [25.58.3](https://github.com/bettyblocks/cli/compare/v25.58.2...v25.58.3) (2022-12-06)
+
+
+### Bug Fixes
+
+* add reconfigure to component structure ([#375](https://github.com/bettyblocks/cli/issues/375)) ([dc7050c](https://github.com/bettyblocks/cli/commit/dc7050c))
+
 ## [25.58.2](https://github.com/bettyblocks/cli/compare/v25.58.1...v25.58.2) (2022-12-06)
 
 
