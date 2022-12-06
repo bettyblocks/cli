@@ -20,8 +20,11 @@ const name: string = args[0];
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
-  if (name.includes(' ')) {
-    throw new Error(chalk.red(`\nName cannot contain spaces\n`));
+  const regex = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+  if (name.match(regex)) {
+    throw new Error(
+      chalk.red(`\nName cannot contain special characters or spaces\n`),
+    );
   }
 
   if (await pathExists(`src/prefabs/${name}.tsx`)) {
