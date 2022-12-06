@@ -1,3 +1,31 @@
+## [25.58.4](https://github.com/bettyblocks/cli/compare/v25.58.3...v25.58.4) (2022-12-06)
+
+
+### Bug Fixes
+
+* bump version ([#377](https://github.com/bettyblocks/cli/issues/377)) ([8f19862](https://github.com/bettyblocks/cli/commit/8f19862))
+
+## [25.58.3](https://github.com/bettyblocks/cli/compare/v25.58.2...v25.58.3) (2022-12-06)
+
+
+### Bug Fixes
+
+* add reconfigure to component structure ([#375](https://github.com/bettyblocks/cli/issues/375)) ([dc7050c](https://github.com/bettyblocks/cli/commit/dc7050c))
+
+## [25.58.2](https://github.com/bettyblocks/cli/compare/v25.58.1...v25.58.2) (2022-12-06)
+
+
+### Bug Fixes
+
+* bump version ([#376](https://github.com/bettyblocks/cli/issues/376)) ([9425420](https://github.com/bettyblocks/cli/commit/9425420))
+
+## [25.58.1](https://github.com/bettyblocks/cli/compare/v25.58.0...v25.58.1) (2022-12-06)
+
+
+### Bug Fixes
+
+* prevent duplicate imports by forcing import all ([#374](https://github.com/bettyblocks/cli/issues/374)) ([07facd1](https://github.com/bettyblocks/cli/commit/07facd1))
+
 # [25.58.0](https://github.com/bettyblocks/cli/compare/v25.57.0...v25.58.0) (2022-11-21)
 
 

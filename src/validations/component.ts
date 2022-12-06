@@ -43,7 +43,7 @@ const schema = (validStyleTypes: string[]): ObjectSchema => {
         package: Joi.string()
           .pattern(/^[a-z]+:[^~)('!*]+(@[0-9.\-a-z]+)$/)
           .required(),
-        imports: Joi.array().items(Joi.string()).required(),
+        imports: Joi.array().items(Joi.string().valid('*')).required(),
       }),
     ),
     functions: Joi.array().items(Joi.string()),
