@@ -1,3 +1,10 @@
+## [25.58.1](https://github.com/bettyblocks/cli/compare/v25.58.0...v25.58.1) (2022-12-06)
+
+
+### Bug Fixes
+
+* prevent duplicate imports by forcing import all ([#374](https://github.com/bettyblocks/cli/issues/374)) ([07facd1](https://github.com/bettyblocks/cli/commit/07facd1))
+
 # [25.58.0](https://github.com/bettyblocks/cli/compare/v25.57.0...v25.58.0) (2022-11-21)
 
 
