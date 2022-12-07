@@ -1,3 +1,10 @@
+## [25.59.1](https://github.com/bettyblocks/cli/compare/v25.59.0...v25.59.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* removed extra new lines in component generation ([#381](https://github.com/bettyblocks/cli/issues/381)) ([2081784](https://github.com/bettyblocks/cli/commit/2081784))
+
 # [25.59.0](https://github.com/bettyblocks/cli/compare/v25.58.5...v25.59.0) (2022-12-07)
 
 
