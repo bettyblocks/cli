@@ -46,7 +46,6 @@ const attributes = {
 };
 
 export default prefab('${capitalisedName}', attributes, undefined, [${capitalisedName}({})]);
-
 `;
 
   const structureIndex = `import { component, PrefabReference } from '@betty-blocks/component-sdk';
@@ -95,7 +94,6 @@ export const ${name}Options = {
 
   ...advanced('${capitalisedName}'),
 };
-
 `;
 
   const component = `(() => ({
@@ -112,7 +110,6 @@ export const ${name}Options = {
     root: {},
   }),
 }))();
-
 `;
 
   await Promise.all([
