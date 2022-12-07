@@ -124,5 +124,10 @@ export const ${name}Options = {
     outputFile(`src/prefabs/${name}.tsx`, prefab),
     outputFile(`src/components/${name}.js`, component),
     console.log(chalk.green('The component has been generated')),
+    console.log(
+      chalk.blueBright(
+        "\nIf you would like to use the component in another prefab, \nwe recommend adding the import and export of the component structure to 'src/prefabs/structures/index.ts' for a clean import from the same file",
+      ),
+    ),
   ]);
 })();
