@@ -1,3 +1,10 @@
+# [25.59.0](https://github.com/bettyblocks/cli/compare/v25.58.5...v25.59.0) (2022-12-07)
+
+
+### Features
+
+* create tsx prefab on component generate ([#379](https://github.com/bettyblocks/cli/issues/379)) ([b13d713](https://github.com/bettyblocks/cli/commit/b13d713))
+
 ## [25.58.5](https://github.com/bettyblocks/cli/compare/v25.58.4...v25.58.5) (2022-12-06)
 
 
