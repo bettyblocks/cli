@@ -1,3 +1,10 @@
+# [25.60.0](https://github.com/bettyblocks/cli/compare/v25.59.1...v25.60.0) (2022-12-14)
+
+
+### Features
+
+* add new prefab icons ([#382](https://github.com/bettyblocks/cli/issues/382)) ([c29fafd](https://github.com/bettyblocks/cli/commit/c29fafd))
+
 ## [25.59.1](https://github.com/bettyblocks/cli/compare/v25.59.0...v25.59.1) (2022-12-07)
 
 
