@@ -194,7 +194,7 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   }
 
   const prefabs: Array<Promise<Prefab>> = (results.emittedFiles || [])
-    .filter((filename) => /\.(\w+\/){2}\w+\.js/.test(filename))
+    .filter((filename) => /\.(\w+\/){1,2}\w+\.js/.test(filename))
     .map((filename) => {
       return new Promise((resolve) => {
         import(`${absoluteRootDir}/${filename}`)
@@ -325,8 +325,8 @@ void (async (): Promise<void> => {
   try {
     const [
       styles,
-      newPrefabs,
-      oldPrefabs,
+      tsxPrefabs,
+      jsPrefabs,
       components,
       interactions,
       partialprefabs,
@@ -340,7 +340,7 @@ void (async (): Promise<void> => {
     ]);
 
     const validStyleTypes = styles.map(({ type }) => type);
-    const prefabs = oldPrefabs.concat(newPrefabs);
+    const prefabs = jsPrefabs.concat(tsxPrefabs);
 
     const stylesGroupedByTypeAndName = styles.reduce<GroupedStyles>(
       (object, e) => {
