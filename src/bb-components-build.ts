@@ -2,8 +2,8 @@
 import chalk from 'chalk';
 import path from 'path';
 import program, { CommanderStatic } from 'commander';
-import ts from 'typescript';
 import { outputJson, pathExists, promises, remove } from 'fs-extra';
+import ts, { JsxEmit, ModuleKind, ScriptTarget } from 'typescript';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
 import extractInteractionCompatibility from './interactions/compatibility';
@@ -134,6 +134,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
+  const outDir = `${absoluteRootDir}/tmp/${Math.floor(Date.now() / 1000)}`;
 
   const exists: boolean = await pathExists(srcDir);
 
@@ -149,13 +150,13 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const prefabProgram = ts.createProgram(
     prefabFiles.map((file) => `${srcDir}/${file}`),
     {
-      jsx: 2,
-      outDir: '.prefabs',
-      module: 1,
-      esModuleInterop: true,
       allowSyntheticDefaultImports: false,
-      target: 99,
+      esModuleInterop: true,
+      jsx: JsxEmit.React,
       listEmittedFiles: true,
+      module: ModuleKind.CommonJS,
+      target: ScriptTarget.ESNext,
+      outDir,
     },
   );
 
@@ -194,10 +195,10 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   }
 
   const prefabs: Array<Promise<Prefab>> = (results.emittedFiles || [])
-    .filter((filename) => /\.(\w+\/){1,2}\w+\.js/.test(filename))
+    .filter((filename) => /prefabs\/\w+\.js$/.test(filename))
     .map((filename) => {
       return new Promise((resolve) => {
-        import(`${absoluteRootDir}/${filename}`)
+        import(filename)
           .then((prefab) => {
             // JSON schema validation
             resolve(prefab.default);
