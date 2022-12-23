@@ -1,3 +1,12 @@
+## [25.60.1](https://github.com/bettyblocks/cli/compare/v25.60.0...v25.60.1) (2022-12-23)
+
+
+### Bug Fixes
+
+* allow .prefab-paths of only one layer deep ([5b52af6](https://github.com/bettyblocks/cli/commit/5b52af6))
+* downgrade to nodejs v8.9 ([031d73c](https://github.com/bettyblocks/cli/commit/031d73c))
+* stabilize compiling of tsx-prefab ([32bf95e](https://github.com/bettyblocks/cli/commit/32bf95e))
+
 # [25.60.0](https://github.com/bettyblocks/cli/compare/v25.59.1...v25.60.0) (2022-12-14)
 
 
