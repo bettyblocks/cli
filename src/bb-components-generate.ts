@@ -2,7 +2,7 @@
 
 import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { pathExists, outputFile } from 'fs-extra';
+import { pathExists, outputFile, outputFileSync } from 'fs-extra';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 /* process arguments */
@@ -15,7 +15,41 @@ if (args.length === 0) {
   program.help();
 }
 
-const name: string = args[0];
+const name: string = args[0].charAt(0).toLowerCase() + args[0].slice(1);
+
+const advancedTs = `import { variable } from '@betty-blocks/component-sdk';
+
+export const advanced = (value: string) => {
+  return {
+    dataComponentAttribute: variable('Test attribute', {
+      value: [value],
+    }),
+  };
+};
+`;
+
+const configurationTs = `import {
+  OptionCategory,
+  OptionProducer,
+  PrefabComponentStyle,
+} from '@betty-blocks/component-sdk';
+
+export interface Configuration {
+  options?: Record<string, OptionProducer>;
+  adornmentIcon?: string;
+  label?: string;
+  inputLabel?: string;
+  type?: HTMLInputElement['type'];
+  style?: PrefabComponentStyle;
+  ref?: { id: string };
+  inputType?: string;
+  placeholder?: string;
+  dataComponentAttribute?: string;
+  optionCategories?: OptionCategory[];
+  validationPattern?: string;
+  pattern?: string;
+}
+`;
 
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
@@ -34,6 +68,39 @@ void (async (): Promise<void> => {
     throw Error(chalk.red(`\nComponent ${name} already exists\n`));
   }
   const capitalisedName = name.charAt(0).toUpperCase() + name.slice(1);
+
+  const prefabsStructureIndex = `// Import all prefabs here
+import { ${capitalisedName} } from './${capitalisedName}';
+
+// Import all prefab options here
+import { ${name}Options } from './${capitalisedName}/options';
+
+export { ${capitalisedName}, ${name}Options };
+`;
+
+  await pathExists('src/prefabs/structures/advanced.ts').then((exists) => {
+    if (!exists) {
+      console.log("advanced.ts didn't exist yet. Creating it");
+      outputFileSync('src/prefabs/structures/advanced.ts', advancedTs);
+    }
+  });
+
+  await pathExists('src/prefabs/structures/Configuration.ts').then((exists) => {
+    if (!exists) {
+      console.log("Configuration.ts didn't exist yet. Creating it");
+      outputFileSync(
+        'src/prefabs/structures/Configuration.ts',
+        configurationTs,
+      );
+    }
+  });
+
+  await pathExists('src/prefabs/structures/index.ts').then((exists) => {
+    if (!exists) {
+      console.log("index.ts didn't exist yet. Creating it");
+      outputFileSync('src/prefabs/structures/index.ts', prefabsStructureIndex);
+    }
+  });
 
   const prefab = `import { prefab, Icon } from '@betty-blocks/component-sdk';
 
