@@ -134,7 +134,9 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
 const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
-  const outDir = `${absoluteRootDir}/tmp/${Math.floor(Date.now() / 1000)}`;
+  const outDir = `${absoluteRootDir}/tmp/${Math.floor(
+    Date.now() / 1000,
+  )}/prefabs`;
 
   const exists: boolean = await pathExists(srcDir);
 
