@@ -1,3 +1,11 @@
+## [25.60.2](https://github.com/bettyblocks/cli/compare/v25.60.1...v25.60.2) (2023-01-16)
+
+
+### Bug Fixes
+
+* add missing files on component generate ([#385](https://github.com/bettyblocks/cli/issues/385)) ([6ca75ad](https://github.com/bettyblocks/cli/commit/6ca75ad))
+* add prefab to the path of the temp prefab file ([#386](https://github.com/bettyblocks/cli/issues/386)) ([b2bfe5c](https://github.com/bettyblocks/cli/commit/b2bfe5c))
+
 ## [25.60.1](https://github.com/bettyblocks/cli/compare/v25.60.0...v25.60.1) (2022-12-23)
 
 
