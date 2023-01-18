@@ -32,6 +32,7 @@ const jsonFileSchema: Schema = {
           type: {
             enum: [
               'BOOLEAN',
+              'NAVIGATE_PARAM',
               'INVALIDATE_QUERIES',
               'NUMBER',
               'STRING',
