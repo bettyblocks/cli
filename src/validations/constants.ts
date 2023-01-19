@@ -152,7 +152,7 @@ export const OPTIONS = [
   'TOGGLE',
   'UNIT',
   'VARIABLE',
-  'CREATE_PAGE',
+  'DISPLAY_LOGIC',
   // v2
   'BOOLEAN',
   'NUMERAL',
