@@ -1,3 +1,10 @@
+# [25.61.0](https://github.com/bettyblocks/cli/compare/v25.60.2...v25.61.0) (2023-01-19)
+
+
+### Features
+
+* allow specified dependency imports ([#391](https://github.com/bettyblocks/cli/issues/391)) ([7516a9c](https://github.com/bettyblocks/cli/commit/7516a9c))
+
 ## [25.60.2](https://github.com/bettyblocks/cli/compare/v25.60.1...v25.60.2) (2023-01-16)
 
 
