@@ -1,3 +1,10 @@
+## [25.61.1](https://github.com/bettyblocks/cli/compare/v25.61.0...v25.61.1) (2023-01-19)
+
+
+### Bug Fixes
+
+* rename create_page to display_logic ([#392](https://github.com/bettyblocks/cli/issues/392)) ([e69bd63](https://github.com/bettyblocks/cli/commit/e69bd63))
+
 # [25.61.0](https://github.com/bettyblocks/cli/compare/v25.60.2...v25.61.0) (2023-01-19)
 
 
