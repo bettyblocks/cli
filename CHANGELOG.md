@@ -1,3 +1,10 @@
+# [25.62.0](https://github.com/bettyblocks/cli/compare/v25.61.1...v25.62.0) (2023-01-23)
+
+
+### Features
+
+* allow navigate param type ([#393](https://github.com/bettyblocks/cli/issues/393)) ([940bc83](https://github.com/bettyblocks/cli/commit/940bc83))
+
 ## [25.61.1](https://github.com/bettyblocks/cli/compare/v25.61.0...v25.61.1) (2023-01-19)
 
 
