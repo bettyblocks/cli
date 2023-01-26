@@ -355,7 +355,9 @@ void (async (): Promise<void> => {
     ]);
 
     const validStyleTypes = styles.map(({ type }) => type);
-    const prefabs = jsPrefabs.concat(tsxPrefabs);
+    const prefabs = jsPrefabs
+      .concat(tsxPrefabs)
+      .filter((prefab): prefab is Prefab => !!prefab);
 
     const stylesGroupedByTypeAndName = styles.reduce<GroupedStyles>(
       (object, e) => {
