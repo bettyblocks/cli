@@ -2,7 +2,13 @@
 import chalk from 'chalk';
 import path from 'path';
 import program, { CommanderStatic } from 'commander';
-import { outputJson, pathExists, promises, remove } from 'fs-extra';
+import {
+  outputJson,
+  pathExists,
+  promises,
+  remove,
+  readFileSync,
+} from 'fs-extra';
 import ts, { JsxEmit, ModuleKind, ScriptTarget } from 'typescript';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
@@ -62,6 +68,13 @@ const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
 const enableNewTranspile = !!options.transpile;
+
+function getComponentSetVersion() {
+  const rawPackageJsonFile = readFileSync(`${rootDir}/package.json`).toString();
+  const parsedPackageJsonFile = JSON.parse(rawPackageJsonFile);
+
+  return parsedPackageJsonFile.version;
+}
 
 /* execute command */
 
@@ -389,7 +402,14 @@ void (async (): Promise<void> => {
 
     checkOptionCategoryReferences(prefabs);
 
-    const componentsWithHash = components.map((component) => {
+    const componentsWithVersion = components.map((component) => {
+      return {
+        ...component,
+        componentSetVersion: getComponentSetVersion(),
+      };
+    });
+
+    const componentsWithHash = componentsWithVersion.map((component) => {
       return {
         ...component,
         componentHash: hash(component),
