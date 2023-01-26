@@ -69,9 +69,10 @@ const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
 const enableNewTranspile = !!options.transpile;
 
-function getVersion() {
-  const rawPackageJsonFile = readFileSync('./package.json').toString();
+function getComponentSetVersion() {
+  const rawPackageJsonFile = readFileSync(`${rootDir}/package.json`).toString();
   const parsedPackageJsonFile = JSON.parse(rawPackageJsonFile);
+
   return parsedPackageJsonFile.version;
 }
 
@@ -404,7 +405,7 @@ void (async (): Promise<void> => {
     const componentsWithVersion = components.map((component) => {
       return {
         ...component,
-        version: getVersion(),
+        componentSetVersion: getComponentSetVersion(),
       };
     });
 
