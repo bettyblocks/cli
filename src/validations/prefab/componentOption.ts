@@ -109,6 +109,8 @@ export const optionSchema = Joi.object({
     then: Joi.forbidden(),
     otherwise: Joi.any(),
   }),
+  showInAddChild: Joi.boolean(),
+  showInReconfigure: Joi.boolean(),
   ref: refSchema,
 });
 
