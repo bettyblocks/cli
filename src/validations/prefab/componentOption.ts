@@ -51,6 +51,7 @@ const optionConfigurationSchemaBase = {
     generateCustomModel: Joi.boolean(),
     modelRequired: Joi.boolean(),
   }),
+  showOnDrop: Joi.boolean(),
 };
 
 const optionConfigurationSchema = Joi.when('type', {
@@ -64,6 +65,16 @@ const optionConfigurationSchema = Joi.when('type', {
       .messages({
         'any.invalid': 'API version 1 is no longer supported.',
       }),
+    allowManageValues: Joi.boolean(),
+    afterCreate: Joi.object({
+      createNewProperty: Joi.array().items(
+        Joi.object({
+          type: Joi.string(),
+          dependsOn: Joi.string(),
+          value: Joi.string(),
+        }),
+      ),
+    }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
 })
