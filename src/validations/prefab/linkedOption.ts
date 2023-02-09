@@ -31,4 +31,6 @@ export const linkedOptionSchema = Joi.object({
   type: Joi.string().valid('LINKED_OPTION').required(),
   value: linkedOptionValueSchema,
   configuration: linkedOptionConfigurationSchema,
+  showInAddChild: Joi.boolean(),
+  showInReconfigure: Joi.boolean(),
 });

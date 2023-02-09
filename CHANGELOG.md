@@ -1,3 +1,17 @@
+## [25.63.1](https://github.com/bettyblocks/cli/compare/v25.63.0...v25.63.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* add showInAddChild and showInReconfigure ([#399](https://github.com/bettyblocks/cli/issues/399)) ([251fa97](https://github.com/bettyblocks/cli/commit/251fa97))
+
+# [25.63.0](https://github.com/bettyblocks/cli/compare/v25.62.1...v25.63.0) (2023-02-08)
+
+
+### Features
+
+* support new property option config values PAGE-2838 ([#396](https://github.com/bettyblocks/cli/issues/396)) ([71f0262](https://github.com/bettyblocks/cli/commit/71f0262))
+
 ## [25.62.1](https://github.com/bettyblocks/cli/compare/v25.62.0...v25.62.1) (2023-01-25)
 
 
