@@ -66,9 +66,9 @@ const optionConfigurationSchema = Joi.when('type', {
       }),
     allowManageValues: Joi.boolean(),
     createNewProperty: Joi.object({
-      type: Joi.string(),
+      type: Joi.string().required(),
       dependsOn: Joi.string(),
-      value: Joi.string(),
+      value: Joi.string().required(),
     }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
