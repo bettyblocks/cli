@@ -1,3 +1,10 @@
+# [25.64.0](https://github.com/bettyblocks/cli/compare/v25.63.1...v25.64.0) (2023-02-10)
+
+
+### Features
+
+* add bar and pie chart icons ([#402](https://github.com/bettyblocks/cli/issues/402)) ([84106e8](https://github.com/bettyblocks/cli/commit/84106e8))
+
 ## [25.63.1](https://github.com/bettyblocks/cli/compare/v25.63.0...v25.63.1) (2023-02-08)
 
 
