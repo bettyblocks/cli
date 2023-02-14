@@ -1,3 +1,10 @@
+# [25.65.0](https://github.com/bettyblocks/cli/compare/v25.64.0...v25.65.0) (2023-02-14)
+
+
+### Features
+
+* add allow kinds to property option PAGE-2807 ([#404](https://github.com/bettyblocks/cli/issues/404)) ([12fb394](https://github.com/bettyblocks/cli/commit/12fb394))
+
 # [25.64.0](https://github.com/bettyblocks/cli/compare/v25.63.1...v25.64.0) (2023-02-10)
 
 
