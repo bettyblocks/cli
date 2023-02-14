@@ -608,7 +608,9 @@ test('Throw when one of the prefabs style override string options is invalid', (
     },
   ] as unknown as Prefab[];
 
-  t.throws(() => validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }));
+  t.throws(() =>
+    validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }),
+  );
 });
 
 test('Throw when one of the prefabs style override array options is invalid', (t: Context): void => {
@@ -640,7 +642,9 @@ test('Throw when one of the prefabs style override array options is invalid', (t
     },
   ] as unknown as Prefab[];
 
-  t.throws(() => validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }));
+  t.throws(() =>
+    validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }),
+  );
 });
 
 test('Throw when style name is non-alphanumeric', (t: Context): void => {
@@ -889,4 +893,69 @@ test("throws an error when a reserved keyword is used 'WRAPPER'", (t: Context): 
   ] as Component[];
 
   t.throws(() => validateComponents(components, []));
+});
+
+test('Throw when one of the prefabs configuration options is invalid', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'PROPERTY',
+              configuration: {
+                allowedKinds: 'TEXT',
+              },
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.throws(() => validatePrefabs(prefabs, {}));
+});
+
+test('Success when the reconfigure configuration optioms of the prefabs are valid', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'PROPERTY',
+              configuration: {
+                allowedKinds: ['TEXT', 'URL'],
+                allowManageValues: true,
+                createNewProperty: {
+                  type: 'TEXT',
+                  dependsOn: 'model',
+                  value: 'New property',
+                },
+                showOnDrop: true,
+              },
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs, {}));
 });
