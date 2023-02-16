@@ -1,3 +1,10 @@
+# [25.66.0](https://github.com/bettyblocks/cli/compare/v25.65.0...v25.66.0) (2023-02-16)
+
+
+### Features
+
+* add showThemeColor to configuration ([#405](https://github.com/bettyblocks/cli/issues/405)) ([1ba5b24](https://github.com/bettyblocks/cli/commit/1ba5b24))
+
 # [25.65.0](https://github.com/bettyblocks/cli/compare/v25.64.0...v25.65.0) (2023-02-14)
 
 
