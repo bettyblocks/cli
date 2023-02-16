@@ -14,6 +14,7 @@ import publishCustomFunctions from './functions/publishCustomFunctions';
 import {
   FunctionValidator,
   logValidationResult,
+  ValidationResult,
 } from './functions/validations';
 import Config from './functions/config';
 
@@ -36,7 +37,10 @@ const { host, skip, bump, skipCompile } = program;
 
 const workingDir = process.cwd();
 
-const validateFunctions = async (): Promise<boolean> => {
+const validateFunctions = async (): Promise<{
+  valid: boolean;
+  results: ValidationResult[];
+}> => {
   const baseFunctionsPath = path.join(workingDir, 'functions');
   console.log(`Validating functions in ${baseFunctionsPath}`);
 
@@ -53,16 +57,30 @@ const validateFunctions = async (): Promise<boolean> => {
     logValidationResult(result);
   });
 
-  return valid;
+  return { valid, results };
 };
 
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
-    const valid = await validateFunctions();
+    const { valid, results } = await validateFunctions();
 
     if (valid) {
       await publishAppFunctions({ skipCompile });
+    } else if (
+      results.some(
+        ({ errors }) =>
+          errors &&
+          errors.some(
+            ({ stack }) => stack === 'instance.icon is not of a type(s) object',
+          ),
+      )
+    ) {
+      console.log(
+        `Maybe auto-convert your function icons using ${chalk.cyan(
+          'bb functions convert-icons',
+        )}?`,
+      );
     } else {
       const baseFunctionsPath = path.join(workingDir, 'functions');
       const allFunctions = functionDefinitions(baseFunctionsPath, true);

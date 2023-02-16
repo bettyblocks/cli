@@ -13,7 +13,7 @@ test('Pass without variables array', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -27,7 +27,7 @@ test('Pass when variables array is the empty list', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -50,7 +50,7 @@ test('Throw when variable kind is unsupported', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "variables[0].kind" must be one of [construct, object, string, integer] at prefab: Prefab
 `,
@@ -76,7 +76,7 @@ test('Throw when construct variable does not have a modelId', (t: Context): void
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "variables[0].options.modelId" is required at prefab: Prefab
 `,
@@ -94,7 +94,7 @@ test('Throw when construct variable does not have a name', (t: Context): void =>
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "variables[0].name" is required at prefab: Prefab
 `,
@@ -120,7 +120,7 @@ test('Throw when construct variable does not have a ref', (t: Context): void => 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "variables[0].options.ref" is required at prefab: Prefab
 `,
@@ -147,7 +147,7 @@ test('Throw when construct variable does not have a id ref', (t: Context): void 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "variables[0].ref.id" is required at prefab: Prefab
 `,
@@ -176,7 +176,7 @@ test('Throw when construct variable does not have a customModelId ref', (t: Cont
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "variables[0].options.ref.customModelId" is required at prefab: Prefab
 `,
@@ -205,7 +205,7 @@ test('Pass for valid construct variable', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -228,7 +228,7 @@ test('Pass when using a string variable', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -254,7 +254,7 @@ test('Pass when using a object variable', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });

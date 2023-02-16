@@ -10,8 +10,12 @@ import {
   Component,
   PrefabReference,
   PrefabComponentOptionCategory,
+  GroupedStyles,
+  StyleDefinitionState,
+  StyleDefinitionContentKeys,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
+import { overwriteSchema } from '../styles';
 import { optionCategorySchema, optionSchema } from './componentOption';
 import { linkedOptionSchema } from './linkedOption';
 import { linkedPartialSchema } from './linkedPartial';
@@ -100,6 +104,7 @@ const partialSchema = (): Joi.ObjectSchema => {
 };
 
 const wrapperSchema = (
+  styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
   prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
@@ -111,25 +116,102 @@ const wrapperSchema = (
       .items(linkedOptionSchema, linkedPartialSchema)
       .required(),
     descendants: Joi.array()
-      .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
+      .items(
+        Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
+      )
       .required(),
   });
 };
 
+const validateComponentStyle =
+  (styles: GroupedStyles, deprecatedStylesFlag: boolean) =>
+  (prefabObject: {
+    name: string;
+    style?: {
+      name: string;
+      overwrite: StyleDefinitionState[];
+    };
+  }) => {
+    const { name: componentName, style } = prefabObject;
+
+    if (deprecatedStylesFlag || typeof style === 'undefined') {
+      return prefabObject;
+    }
+
+    const { name: styleName, overwrite = [] } = style;
+
+    const stylesByType = styles[componentName];
+    const styleByName = stylesByType && stylesByType[styleName];
+
+    if (!styleByName) {
+      throw new Error(
+        chalk.red(
+          `\nBuild error in component style reference to unkown style ${componentName}:${styleName} \n`,
+        ),
+      );
+    }
+
+    const validCssObjects = [
+      'basis',
+      ...styleByName.states.map(({ name: stateName }) => stateName),
+    ];
+    const validCssObjectValues: StyleDefinitionContentKeys =
+      styleByName.states.reduce(
+        (acc, { name, content }) => ({
+          ...acc,
+          [name]: Object.keys(content),
+        }),
+        { basis: Object.keys(styleByName.basis) },
+      );
+
+    overwrite.forEach(({ name: stateName, content }): void => {
+      if (!validCssObjects.includes(stateName)) {
+        throw new Error(
+          chalk.red(
+            `\nBuild error in component style reference invalid overwrite for ${componentName} where ${stateName} does not exist in style ${styleName} \n`,
+          ),
+        );
+      }
+
+      const validCssKeys = validCssObjectValues[stateName] || [];
+
+      Object.keys(content).forEach((cssKey) => {
+        if (!validCssKeys.includes(cssKey)) {
+          throw new Error(
+            chalk.red(
+              `\nBuild error in component style reference invalid overwrite for ${componentName}:${styleName} where ${stateName} overwrites a non existing css property ${cssKey} \n`,
+            ),
+          );
+        }
+      });
+    });
+
+    return prefabObject;
+  };
+
 const componentSchema = (
+  styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
   styleType?: keyof StyleValidator,
   prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
-  const canValidateStyle = styleType && styleValidator[styleType];
+  const canValidateOldStyle = styleType && styleValidator[styleType];
+  const deprecatedStyleSchema = Joi.object({
+    name: Joi.string().max(255).alphanum(),
+    overwrite: canValidateOldStyle || Joi.any(),
+  });
+
+  const styleSchema = Joi.object({
+    name: Joi.string().max(255).alphanum().required(),
+    overwrite: overwriteSchema,
+  });
+
+  const deprecatedStylesFlag = Object.keys(styles).length === 0;
 
   return Joi.object({
     name: Joi.string().required(),
     label: Joi.string(),
-    style: Joi.object({
-      name: Joi.string().max(255).alphanum(),
-      overwrite: canValidateStyle || Joi.any(),
-    }),
+    style: deprecatedStylesFlag ? deprecatedStyleSchema : styleSchema,
     ref: Joi.object({
       id: Joi.string().required(),
     }),
@@ -137,8 +219,11 @@ const componentSchema = (
     options: Joi.array().items(optionSchema).required(),
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
-      .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
+      .items(
+        Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
+      )
       .required(),
+    reconfigure: Joi.any(),
 
     // lifecycle hooks
 
@@ -190,7 +275,7 @@ const componentSchema = (
           .required(),
       }),
     ),
-  });
+  }).custom(validateComponentStyle(styles, deprecatedStylesFlag));
 };
 
 const findCategoryMemberDuplicates = (
@@ -211,7 +296,11 @@ const findCategoryMemberDuplicates = (
 };
 
 export const validateComponent =
-  (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
+  (
+    styles: GroupedStyles,
+    componentStyleMap?: ComponentStyleMap,
+    prefabType?: PrefabTypes,
+  ) =>
   (component: PrefabReference): Prefab | unknown => {
     if (component.type === 'PARTIAL') {
       if (prefabType === 'partial') {
@@ -230,9 +319,11 @@ export const validateComponent =
         );
       }
     } else if (component.type === 'WRAPPER') {
-      const { error } = wrapperSchema(componentStyleMap, prefabType).validate(
-        component,
-      );
+      const { error } = wrapperSchema(
+        styles,
+        componentStyleMap,
+        prefabType,
+      ).validate(component);
       const { optionCategories = [], options } = component;
 
       findDuplicates(options, 'option key', 'key');
@@ -246,13 +337,15 @@ export const validateComponent =
         );
       }
     } else {
-      const { name, optionCategories = [], options, type } = component;
+      const { name, optionCategories = [], options } = component;
 
       const styleType: Component['styleType'] | undefined =
         componentStyleMap &&
         componentStyleMap[name] &&
         componentStyleMap[name].styleType;
+
       const { error } = componentSchema(
+        styles,
         componentStyleMap,
         styleType as keyof StyleValidator,
         prefabType,

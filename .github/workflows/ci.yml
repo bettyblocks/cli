@@ -12,7 +12,7 @@ jobs:
         with:
           node-version: '14.18.2'
       - run: npm install -g yarn
-      - run: yarn install --frozen-lockfile
+      - run: yarn install --frozen-lockfile --ignore-optionals
       - name: Commit lint
         run: yarn commitlint --from $(git rev-parse --short HEAD^1) --to $(git rev-parse --short HEAD^2)
       - name: Run prettier

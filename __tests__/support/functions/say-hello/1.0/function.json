@@ -2,7 +2,10 @@
   "description": "Say Hello to the world",
   "label": "Say Hello",
   "category": "Misc",
-  "icon": "CreateIcon",
+  "icon": {
+    "name": "ChatIcon",
+    "color": "Teal"
+  },
   "options": [
     {
       "meta": {

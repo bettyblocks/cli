@@ -2,7 +2,6 @@
 import chalk from 'chalk';
 import path from 'path';
 import program, { CommanderStatic } from 'commander';
-import ts from 'typescript';
 import {
   outputJson,
   pathExists,
@@ -10,6 +9,7 @@ import {
   readFileSync,
   remove,
 } from 'fs-extra';
+import ts, { JsxEmit, ModuleKind, ScriptTarget } from 'typescript';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
 import extractInteractionCompatibility from './interactions/compatibility';
@@ -18,14 +18,17 @@ import {
   Component,
   Interaction,
   Prefab,
-  PrefabComponent,
   ComponentStyleMap,
   PrefabReference,
-  PrefabPartial,
-  PrefabWrapper,
+  GroupedStyles,
+  BuildPrefabReference,
+  BuildPrefabComponent,
+  BuildPrefab,
+  ComponentDependency,
 } from './types';
 import { parseDir } from './utils/arguments';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import { checkPackageVersion } from './utils/checkPackageVersion';
 import hash from './utils/hash';
 import readFilesByType from './utils/readFilesByType';
 import transpile from './utils/transpile';
@@ -34,8 +37,16 @@ import {
   checkOptionCategoryReferences,
 } from './utils/validation';
 import validateComponents from './validations/component';
+import validateStyles from './validations/styles';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
+import {
+  reportDiagnostics,
+  readStyles,
+  buildStyle,
+  buildReferenceStyle,
+} from './components-build';
+import { buildInteractions } from './components-build/v2/buildInteractions';
 
 const startTime = Date.now();
 let endTime;
@@ -48,6 +59,11 @@ program
   .usage('[path]')
   .name('bb components build')
   .option('-t, --transpile', 'enable new transpilation')
+  .option(
+    '--runtime-version [version]',
+    'the runtime option to build for',
+    'v1',
+  )
   .parse(process.argv);
 
 const { args }: CommanderStatic = program;
@@ -97,11 +113,25 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
           );
         }
 
+        if (transpiledFunction.dependencies) {
+          const usedPackages = (
+            transpiledFunction.dependencies as ComponentDependency[]
+          ).map((usedDependency) => usedDependency.package);
+
+          const dependencyPromises = usedPackages.map(
+            async (usedPackage: string): Promise<void> => {
+              await checkPackageVersion(usedPackage.replace(/^npm:/g, ''));
+            },
+          );
+
+          await Promise.all(dependencyPromises);
+        }
+
         return {
-          ...transpiledFunction,
           ...compatibility,
+          ...transpiledFunction,
         };
-      } catch (error) {
+      } catch (error: any) {
         error.file = file;
         throw error;
       }
@@ -111,27 +141,12 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
   return Promise.all(components);
 };
 
-function reportDiagnostics(diagnostics: ts.Diagnostic[]): void {
-  diagnostics.forEach((diagnostic) => {
-    let message = 'Error';
-    if (diagnostic.file) {
-      const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
-        diagnostic.start || 0,
-      );
-      message += ` ${diagnostic.file.fileName} (${line + 1},${character + 1})`;
-    }
-    message += `: ${ts.flattenDiagnosticMessageText(
-      diagnostic.messageText,
-      '\n',
-    )}`;
-    console.error(`\u001b[31m${message}\u001b[0m`);
-  });
-}
-
 const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
-  const prefabsDir = `${absoluteRootDir}/.prefabs`;
+  const outDir = `${absoluteRootDir}/tmp/${Math.floor(
+    Date.now() / 1000,
+  )}/prefabs`;
 
   const exists: boolean = await pathExists(srcDir);
 
@@ -147,13 +162,13 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   const prefabProgram = ts.createProgram(
     prefabFiles.map((file) => `${srcDir}/${file}`),
     {
-      jsx: 2,
-      outDir: '.prefabs',
-      module: 1,
-      esModuleInterop: true,
       allowSyntheticDefaultImports: false,
-      target: 99,
+      esModuleInterop: true,
+      jsx: JsxEmit.React,
       listEmittedFiles: true,
+      module: ModuleKind.CommonJS,
+      target: ScriptTarget.ESNext,
+      outDir,
     },
   );
 
@@ -192,10 +207,10 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   }
 
   const prefabs: Array<Promise<Prefab>> = (results.emittedFiles || [])
-    .filter((filename) => /\.(\w+\/){2}\w+\.js/.test(filename))
+    .filter((filename) => /prefabs\/\w+\.js$/.test(filename))
     .map((filename) => {
       return new Promise((resolve) => {
-        import(`${absoluteRootDir}/${filename}`)
+        import(filename)
           .then((prefab) => {
             // JSON schema validation
             resolve(prefab.default);
@@ -233,7 +248,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
         }
 
         return transpiledFunction;
-      } catch (error) {
+      } catch (error: any) {
         error.file = file;
         throw error;
       }
@@ -269,7 +284,7 @@ const readPartialPrefabs: () => Promise<Prefab[]> = async (): Promise<
         }
 
         return transpiledFunction;
-      } catch (error) {
+      } catch (error: any) {
         error.file = file;
         throw error;
       }
@@ -304,7 +319,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
           function: code,
           ...extractInteractionCompatibility(`${srcDir}/${file}`),
         };
-      } catch (error) {
+      } catch (error: any) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         error.file = file;
 
@@ -317,17 +332,49 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
-  try {
-    const [newPrefabs, oldPrefabs, components, interactions, partialprefabs] =
-      await Promise.all([
-        readtsPrefabs(),
-        readPrefabs(),
-        readComponents(),
-        readInteractions(),
-        readPartialPrefabs(),
-      ]);
 
-    const prefabs = oldPrefabs.concat(newPrefabs);
+  const { runtimeVersion = 'v1' } = options;
+
+  try {
+    const [
+      styles,
+      tsxPrefabs,
+      jsPrefabs,
+      components,
+      interactions,
+      partialprefabs,
+    ] = await Promise.all([
+      readStyles(rootDir),
+      readtsPrefabs(),
+      readPrefabs(),
+      readComponents(),
+      runtimeVersion === 'v2' ? Promise.resolve([]) : readInteractions(),
+      readPartialPrefabs(),
+    ]);
+
+    const validStyleTypes = styles.map(({ type }) => type);
+    const prefabs = jsPrefabs
+      .concat(tsxPrefabs)
+      .filter((prefab): prefab is Prefab => !!prefab);
+
+    const stylesGroupedByTypeAndName = styles.reduce<GroupedStyles>(
+      (object, e) => {
+        const { name, type } = e;
+
+        const byType = object[type] || {};
+
+        return {
+          ...object,
+          [type]: {
+            ...byType,
+            [name]: e,
+          },
+        };
+      },
+      {},
+    );
+
+    const componentNames = components.map(({ name }) => name);
 
     checkNameReferences(prefabs, components);
 
@@ -338,9 +385,15 @@ void (async (): Promise<void> => {
     }, {});
 
     await Promise.all([
-      validateComponents(components),
-      validatePrefabs(prefabs, componentStyleMap),
-      validatePrefabs(partialprefabs, componentStyleMap, 'partial'),
+      validateStyles(styles, componentNames),
+      validateComponents(components, validStyleTypes),
+      validatePrefabs(prefabs, stylesGroupedByTypeAndName, componentStyleMap),
+      validatePrefabs(
+        partialprefabs,
+        stylesGroupedByTypeAndName,
+        componentStyleMap,
+        'partial',
+      ),
       interactions && validateInteractions(interactions),
     ]);
 
@@ -353,41 +406,33 @@ void (async (): Promise<void> => {
       };
     });
 
-    type BuildPrefab = PrefabComponent & {
-      hash: string;
-      style: PrefabComponent['style'];
-    };
-
-    type BuildPrefabComponent = BuildPrefab | PrefabPartial | PrefabWrapper;
-
-    const buildPrefab = (prefab: Prefab): Prefab => {
+    const buildPrefab = (prefab: Prefab): BuildPrefab => {
       const buildStructure = (
         structure: PrefabReference,
-      ): BuildPrefabComponent => {
+      ): BuildPrefabReference => {
         if (structure.type === 'PARTIAL') {
           return structure;
         }
 
         if (structure.type === 'WRAPPER') {
-          const wrapperStructure = structure;
-
-          if (wrapperStructure.descendants.length > 0) {
-            wrapperStructure.descendants =
-              wrapperStructure.descendants.map(buildStructure);
-          }
+          const { descendants = [], ...rest } = structure;
+          const wrapperStructure = {
+            ...rest,
+            descendants: descendants.map(buildStructure),
+          };
           return wrapperStructure;
         }
 
-        const newStructure = {
-          ...structure,
-          style: structure.style || {},
-          hash: hash(structure.options),
-        };
+        const { style, descendants, ...rest } = structure;
 
-        if (newStructure.descendants.length > 0) {
-          newStructure.descendants =
-            newStructure.descendants.map(buildStructure);
-        }
+        const styleReference = buildReferenceStyle(style);
+
+        const newStructure: BuildPrefabComponent = {
+          ...rest,
+          ...(styleReference ? { style: styleReference } : {}),
+          hash: hash(structure.options),
+          descendants: descendants.map(buildStructure),
+        };
 
         return newStructure;
       };
@@ -396,6 +441,8 @@ void (async (): Promise<void> => {
         structure: prefab.structure.map(buildStructure),
       };
     };
+
+    const buildStyles = styles.map(buildStyle);
 
     const buildPrefabs = prefabs.map(buildPrefab);
     const buildPartialprefabs = partialprefabs.map(buildPrefab);
@@ -408,7 +455,7 @@ void (async (): Promise<void> => {
 
     const comps = JSON.parse(
       readFileSync(`${distDir}/templates.json`, 'utf8'),
-    )?.map((comp) => {
+    )?.map((comp: any) => {
       if (comp.name === componentsWithHash[0].name) {
         comp = componentsWithHash[0];
       }
@@ -428,6 +475,10 @@ void (async (): Promise<void> => {
           JSON.parse(readFileSync(`${jsonDir}/interactions.json`, 'utf8')),
         ),
     ];
+
+    if (buildStyles.length > 0) {
+      outputPromises.push(outputJson(`${distDir}/styles.json`, buildStyles));
+    }
 
     const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');
 
@@ -463,8 +514,14 @@ void (async (): Promise<void> => {
 
     await Promise.all(outputPromises);
 
+    // v2
+
+    if (runtimeVersion === 'v2') {
+      await buildInteractions(rootDir);
+    }
+
     console.info(chalk.green('Success, the component set has been built'));
-  } catch (err) {
+  } catch (err: any) {
     // TODO: reduce scope of this try catch to narrow the type of error.
     // some errors will not contain these fields so it is unsafe to
     // destructure

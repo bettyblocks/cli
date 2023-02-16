@@ -1,3 +1,245 @@
+# [25.65.0](https://github.com/bettyblocks/cli/compare/v25.64.0...v25.65.0) (2023-02-14)
+
+
+### Features
+
+* add allow kinds to property option PAGE-2807 ([#404](https://github.com/bettyblocks/cli/issues/404)) ([12fb394](https://github.com/bettyblocks/cli/commit/12fb394))
+
+# [25.64.0](https://github.com/bettyblocks/cli/compare/v25.63.1...v25.64.0) (2023-02-10)
+
+
+### Features
+
+* add bar and pie chart icons ([#402](https://github.com/bettyblocks/cli/issues/402)) ([84106e8](https://github.com/bettyblocks/cli/commit/84106e8))
+
+## [25.63.1](https://github.com/bettyblocks/cli/compare/v25.63.0...v25.63.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* add showInAddChild and showInReconfigure ([#399](https://github.com/bettyblocks/cli/issues/399)) ([251fa97](https://github.com/bettyblocks/cli/commit/251fa97))
+
+# [25.63.0](https://github.com/bettyblocks/cli/compare/v25.62.1...v25.63.0) (2023-02-08)
+
+
+### Features
+
+* support new property option config values PAGE-2838 ([#396](https://github.com/bettyblocks/cli/issues/396)) ([71f0262](https://github.com/bettyblocks/cli/commit/71f0262))
+
+## [25.62.1](https://github.com/bettyblocks/cli/compare/v25.62.0...v25.62.1) (2023-01-25)
+
+
+### Bug Fixes
+
+* filter non-prefabs from prefabs-list ([#395](https://github.com/bettyblocks/cli/issues/395)) ([bf08124](https://github.com/bettyblocks/cli/commit/bf08124))
+
+# [25.62.0](https://github.com/bettyblocks/cli/compare/v25.61.1...v25.62.0) (2023-01-23)
+
+
+### Features
+
+* allow navigate param type ([#393](https://github.com/bettyblocks/cli/issues/393)) ([940bc83](https://github.com/bettyblocks/cli/commit/940bc83))
+
+## [25.61.1](https://github.com/bettyblocks/cli/compare/v25.61.0...v25.61.1) (2023-01-19)
+
+
+### Bug Fixes
+
+* rename create_page to display_logic ([#392](https://github.com/bettyblocks/cli/issues/392)) ([e69bd63](https://github.com/bettyblocks/cli/commit/e69bd63))
+
+# [25.61.0](https://github.com/bettyblocks/cli/compare/v25.60.2...v25.61.0) (2023-01-19)
+
+
+### Features
+
+* allow specified dependency imports ([#391](https://github.com/bettyblocks/cli/issues/391)) ([7516a9c](https://github.com/bettyblocks/cli/commit/7516a9c))
+
+## [25.60.2](https://github.com/bettyblocks/cli/compare/v25.60.1...v25.60.2) (2023-01-16)
+
+
+### Bug Fixes
+
+* add missing files on component generate ([#385](https://github.com/bettyblocks/cli/issues/385)) ([6ca75ad](https://github.com/bettyblocks/cli/commit/6ca75ad))
+* add prefab to the path of the temp prefab file ([#386](https://github.com/bettyblocks/cli/issues/386)) ([b2bfe5c](https://github.com/bettyblocks/cli/commit/b2bfe5c))
+
+## [25.60.1](https://github.com/bettyblocks/cli/compare/v25.60.0...v25.60.1) (2022-12-23)
+
+
+### Bug Fixes
+
+* allow .prefab-paths of only one layer deep ([5b52af6](https://github.com/bettyblocks/cli/commit/5b52af6))
+* downgrade to nodejs v8.9 ([031d73c](https://github.com/bettyblocks/cli/commit/031d73c))
+* stabilize compiling of tsx-prefab ([32bf95e](https://github.com/bettyblocks/cli/commit/32bf95e))
+
+# [25.60.0](https://github.com/bettyblocks/cli/compare/v25.59.1...v25.60.0) (2022-12-14)
+
+
+### Features
+
+* add new prefab icons ([#382](https://github.com/bettyblocks/cli/issues/382)) ([c29fafd](https://github.com/bettyblocks/cli/commit/c29fafd))
+
+## [25.59.1](https://github.com/bettyblocks/cli/compare/v25.59.0...v25.59.1) (2022-12-07)
+
+
+### Bug Fixes
+
+* removed extra new lines in component generation ([#381](https://github.com/bettyblocks/cli/issues/381)) ([2081784](https://github.com/bettyblocks/cli/commit/2081784))
+
+# [25.59.0](https://github.com/bettyblocks/cli/compare/v25.58.5...v25.59.0) (2022-12-07)
+
+
+### Features
+
+* create tsx prefab on component generate ([#379](https://github.com/bettyblocks/cli/issues/379)) ([b13d713](https://github.com/bettyblocks/cli/commit/b13d713))
+
+## [25.58.5](https://github.com/bettyblocks/cli/compare/v25.58.4...v25.58.5) (2022-12-06)
+
+
+### Bug Fixes
+
+* bump version ([#380](https://github.com/bettyblocks/cli/issues/380)) ([17b3a9c](https://github.com/bettyblocks/cli/commit/17b3a9c))
+
+## [25.58.4](https://github.com/bettyblocks/cli/compare/v25.58.3...v25.58.4) (2022-12-06)
+
+
+### Bug Fixes
+
+* bump version ([#377](https://github.com/bettyblocks/cli/issues/377)) ([8f19862](https://github.com/bettyblocks/cli/commit/8f19862))
+
+## [25.58.3](https://github.com/bettyblocks/cli/compare/v25.58.2...v25.58.3) (2022-12-06)
+
+
+### Bug Fixes
+
+* add reconfigure to component structure ([#375](https://github.com/bettyblocks/cli/issues/375)) ([dc7050c](https://github.com/bettyblocks/cli/commit/dc7050c))
+
+## [25.58.2](https://github.com/bettyblocks/cli/compare/v25.58.1...v25.58.2) (2022-12-06)
+
+
+### Bug Fixes
+
+* bump version ([#376](https://github.com/bettyblocks/cli/issues/376)) ([9425420](https://github.com/bettyblocks/cli/commit/9425420))
+
+## [25.58.1](https://github.com/bettyblocks/cli/compare/v25.58.0...v25.58.1) (2022-12-06)
+
+
+### Bug Fixes
+
+* prevent duplicate imports by forcing import all ([#374](https://github.com/bettyblocks/cli/issues/374)) ([07facd1](https://github.com/bettyblocks/cli/commit/07facd1))
+
+# [25.58.0](https://github.com/bettyblocks/cli/compare/v25.57.0...v25.58.0) (2022-11-21)
+
+
+### Features
+
+* add interaction parameter to invalidate queries ([#373](https://github.com/bettyblocks/cli/issues/373)) ([162075b](https://github.com/bettyblocks/cli/commit/162075b))
+
+# [25.57.0](https://github.com/bettyblocks/cli/compare/v25.56.1...v25.57.0) (2022-11-21)
+
+
+### Features
+
+* add allowRelations to optionConfiguration ([#371](https://github.com/bettyblocks/cli/issues/371)) ([9443f6b](https://github.com/bettyblocks/cli/commit/9443f6b))
+
+## [25.56.1](https://github.com/bettyblocks/cli/compare/v25.56.0...v25.56.1) (2022-11-16)
+
+
+### Bug Fixes
+
+* validation pattern for dependencies field ([#370](https://github.com/bettyblocks/cli/issues/370)) ([304ffb2](https://github.com/bettyblocks/cli/commit/304ffb2))
+
+# [25.56.0](https://github.com/bettyblocks/cli/compare/v25.55.0...v25.56.0) (2022-11-15)
+
+
+### Features
+
+* build v2 interactions ([c81ea40](https://github.com/bettyblocks/cli/commit/c81ea40))
+
+# [25.55.0](https://github.com/bettyblocks/cli/compare/v25.54.0...v25.55.0) (2022-11-14)
+
+
+### Features
+
+* retrigger pipelines ([#368](https://github.com/bettyblocks/cli/issues/368)) ([7cc65c8](https://github.com/bettyblocks/cli/commit/7cc65c8))
+
+# [25.54.0](https://github.com/bettyblocks/cli/compare/v25.53.0...v25.54.0) (2022-11-10)
+
+
+### Features
+
+* update readme ([#366](https://github.com/bettyblocks/cli/issues/366)) ([998b32e](https://github.com/bettyblocks/cli/commit/998b32e))
+
+# [25.53.0](https://github.com/bettyblocks/cli/compare/v25.52.0...v25.53.0) (2022-11-09)
+
+
+### Features
+
+* type for reconfigure in prefab ([#362](https://github.com/bettyblocks/cli/issues/362)) ([9db2068](https://github.com/bettyblocks/cli/commit/9db2068))
+
+# [25.52.0](https://github.com/bettyblocks/cli/compare/v25.51.0...v25.52.0) (2022-11-04)
+
+
+### Features
+
+* add create page component option type ([#360](https://github.com/bettyblocks/cli/issues/360)) ([7816d8f](https://github.com/bettyblocks/cli/commit/7816d8f))
+
+# [25.51.0](https://github.com/bettyblocks/cli/compare/v25.50.0...v25.51.0) (2022-11-02)
+
+
+### Features
+
+* check if component dependency version exists ([b5812d1](https://github.com/bettyblocks/cli/commit/b5812d1))
+
+# [25.50.0](https://github.com/bettyblocks/cli/compare/v25.49.0...v25.50.0) (2022-10-27)
+
+
+### Features
+
+* add auto-convert function icons command ([#357](https://github.com/bettyblocks/cli/issues/357)) ([e58074b](https://github.com/bettyblocks/cli/commit/e58074b))
+
+# [25.49.0](https://github.com/bettyblocks/cli/compare/v25.48.0...v25.49.0) (2022-10-25)
+
+
+### Bug Fixes
+
+* default icon for say hello and fix some tests ([2da1c21](https://github.com/bettyblocks/cli/commit/2da1c21))
+* remove json stringify for icon ([9c732ac](https://github.com/bettyblocks/cli/commit/9c732ac))
+* set correct icon for bb functions new ([5d4f280](https://github.com/bettyblocks/cli/commit/5d4f280))
+* validate function tests ([0eca2f9](https://github.com/bettyblocks/cli/commit/0eca2f9))
+
+
+### Features
+
+* json stringify icon object ([c94a214](https://github.com/bettyblocks/cli/commit/c94a214))
+
+# [25.48.0](https://github.com/bettyblocks/cli/compare/v25.47.0...v25.48.0) (2022-10-07)
+
+
+### Features
+
+* overwrite compatibility object with transpiledFunction ([#353](https://github.com/bettyblocks/cli/issues/353)) ([4590718](https://github.com/bettyblocks/cli/commit/4590718))
+
+# [25.47.0](https://github.com/bettyblocks/cli/compare/v25.46.1...v25.47.0) (2022-10-07)
+
+
+### Features
+
+* read, validate and build component styles ([#348](https://github.com/bettyblocks/cli/issues/348)) ([57a08a5](https://github.com/bettyblocks/cli/commit/57a08a5))
+
+## [25.46.1](https://github.com/bettyblocks/cli/compare/v25.46.0...v25.46.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* update optional flag and no isolated-vm installed error message ([#352](https://github.com/bettyblocks/cli/issues/352)) ([2fe4b64](https://github.com/bettyblocks/cli/commit/2fe4b64))
+
+# [25.46.0](https://github.com/bettyblocks/cli/compare/v25.45.2...v25.46.0) (2022-10-04)
+
+
+### Features
+
+* add isolated-vm as optional dependency ([#351](https://github.com/bettyblocks/cli/issues/351)) ([084330f](https://github.com/bettyblocks/cli/commit/084330f))
+
 ## [25.45.2](https://github.com/bettyblocks/cli/compare/v25.45.1...v25.45.2) (2022-09-29)
 
 

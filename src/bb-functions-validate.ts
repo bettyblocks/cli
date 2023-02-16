@@ -49,4 +49,20 @@ void (async (): Promise<void> => {
       )}?`,
     );
   }
+
+  if (
+    results.some(
+      ({ errors }) =>
+        errors &&
+        errors.some(
+          ({ stack }) => stack === 'instance.icon is not of a type(s) object',
+        ),
+    )
+  ) {
+    console.log(
+      `Maybe auto-convert your function icons using ${chalk.cyan(
+        'bb functions convert-icons',
+      )}?`,
+    );
+  }
 })();

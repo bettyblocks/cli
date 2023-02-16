@@ -131,6 +131,7 @@ const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
     options: JSON.stringify(schema.options || []),
     paths: JSON.stringify(schema.paths || {}),
   }));
+
   return JSON.stringify(updatedDefinitions);
 };
 
@@ -155,7 +156,10 @@ const newFunctionDefinition = (
         description: 'Description',
         label: startCase(functionName),
         category: 'Misc',
-        icon: 'CreateIcon',
+        icon: {
+          name: 'ActionsIcon',
+          color: 'Orange',
+        },
         options: [],
         yields: 'NONE',
       },

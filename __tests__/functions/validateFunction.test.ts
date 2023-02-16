@@ -14,7 +14,26 @@ const schema = {
       type: 'string',
     },
     icon: {
-      enum: ['CreateIcon', 'DeleteIcon'],
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        name: {
+          type: 'string',
+        },
+        color: {
+          enum: [
+            'Yellow',
+            'Green',
+            'Pink',
+            'Orange',
+            'Purple',
+            'Blue',
+            'Teal',
+            'Grey',
+          ],
+        },
+      },
+      required: ['name', 'color'],
     },
   },
   required: ['label'],
@@ -28,7 +47,10 @@ test('load in entire schema for validator', async (t: Context): Promise<void> =>
     path: '/path/to/schema/actions/function.json',
     schema: {
       label: 'Create',
-      icon: 'CreateIcon',
+      icon: {
+        name: 'ChatIcon',
+        color: 'Teal',
+      },
     },
   };
 
@@ -86,5 +108,5 @@ test('invalidate schemas that do not have valid values for properties', async (t
   } = await validateSchema(definition, validator);
 
   t.is(status, 'error');
-  t.is(message, 'is not one of enum values: CreateIcon,DeleteIcon');
+  t.is(message, 'is not of a type(s) object');
 });

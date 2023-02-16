@@ -38,6 +38,7 @@ const optionConfigurationSchemaBase = {
     }),
   ),
   allowedTypes: Joi.array().items(Joi.string()),
+  allowRelations: Joi.boolean(),
   as: Joi.string().valid(...CONFIGURATION_AS),
   component: Joi.string(),
   condition: optionConditionSchema,
@@ -50,6 +51,7 @@ const optionConfigurationSchemaBase = {
     generateCustomModel: Joi.boolean(),
     modelRequired: Joi.boolean(),
   }),
+  showOnDrop: Joi.boolean(),
 };
 
 const optionConfigurationSchema = Joi.when('type', {
@@ -63,6 +65,13 @@ const optionConfigurationSchema = Joi.when('type', {
       .messages({
         'any.invalid': 'API version 1 is no longer supported.',
       }),
+    allowedKinds: Joi.array().items(Joi.string()),
+    allowManageValues: Joi.boolean(),
+    createNewProperty: Joi.object({
+      type: Joi.string().required(),
+      dependsOn: Joi.string(),
+      value: Joi.string().required(),
+    }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
 })
@@ -97,6 +106,8 @@ export const optionSchema = Joi.object({
     then: Joi.forbidden(),
     otherwise: Joi.any(),
   }),
+  showInAddChild: Joi.boolean(),
+  showInReconfigure: Joi.boolean(),
   ref: refSchema,
 });
 

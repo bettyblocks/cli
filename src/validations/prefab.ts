@@ -3,7 +3,7 @@
 
 import chalk from 'chalk';
 import Joi from 'joi';
-import { ComponentStyleMap, Prefab } from '../types';
+import { ComponentStyleMap, GroupedStyles, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
 import {
   ICONS,
@@ -18,6 +18,7 @@ import { variableSchema } from './prefab/variable';
 
 export type PrefabTypes = 'partial' | 'page' | undefined;
 const schemaProvider = (
+  styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
   prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
@@ -40,18 +41,27 @@ const schemaProvider = (
     variables: Joi.array().items(variableSchema).max(MAX_VARIABLES),
     beforeCreate: Joi.any(),
     structure: Joi.array()
-      .items(Joi.custom(validateComponent(componentStyleMap, prefabType)))
+      .items(
+        Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
+      )
       .required(),
+    reconfigure: Joi.any(),
   });
 };
 
 const validate =
-  (componentStyleMap?: ComponentStyleMap, prefabType?: PrefabTypes) =>
+  (
+    styles: GroupedStyles,
+    componentStyleMap?: ComponentStyleMap,
+    prefabType?: PrefabTypes,
+  ) =>
   (prefab: Prefab): void => {
     const { actions, variables } = prefab;
-    const { error } = schemaProvider(componentStyleMap, prefabType).validate(
-      prefab,
-    );
+    const { error } = schemaProvider(
+      styles,
+      componentStyleMap,
+      prefabType,
+    ).validate(prefab);
 
     if (Array.isArray(actions)) {
       findDuplicates(actions, 'action', { ref: 'id' });
@@ -71,10 +81,11 @@ const validate =
 
 export default (
   prefabs: Prefab[],
+  styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
   prefabType?: PrefabTypes,
 ): void => {
-  prefabs.forEach(validate(componentStyleMap, prefabType));
+  prefabs.forEach(validate(styles, componentStyleMap, prefabType));
 
   findDuplicates(prefabs, 'prefab', 'name');
 };

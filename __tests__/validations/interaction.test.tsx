@@ -18,7 +18,7 @@ test('Pass without interactions array', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -32,7 +32,7 @@ test('Pass when interactions is the empty list', (t: Context): void => {
     structure: [],
   } as Prefab;
 
-  validatePrefabs([prefab]);
+  validatePrefabs([prefab], {});
 
   t.pass();
 });
@@ -46,7 +46,7 @@ test('Throw when a prefab interaction does not define a name', (t: Context): voi
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].name" is required at prefab: Prefab
 `,
@@ -62,7 +62,7 @@ test('Throw when a prefab interaction does not define a ref', (t: Context): void
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].ref" is required at prefab: Prefab
 `,
@@ -88,7 +88,7 @@ test('Throw when a prefab interaction does not define a type', (t: Context): voi
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].type" is required at prefab: Prefab
 `,
@@ -113,7 +113,7 @@ test('Throw when a prefab interaction does not define a sourceEvent', (t: Contex
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].sourceEvent" is required at prefab: Prefab
 `,
@@ -140,7 +140,7 @@ test('Throw when a prefab interaction type is not Global or Custom', (t: Context
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].type" must be one of [Global, Custom] at prefab: Prefab
 `,
@@ -156,7 +156,7 @@ test('Throw when a prefab interaction does not define a sourceComponentId', (t: 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].ref.sourceComponentId" is required at prefab: Prefab
 `,
@@ -183,7 +183,7 @@ test('Throw when a global prefab interaction does not define parameters', (t: Co
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].parameters" is required at prefab: Prefab
 `,
@@ -210,7 +210,7 @@ test('Throw when a custom prefab interaction defines parameters', (t: Context): 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].parameters" is not allowed at prefab: Prefab
 `,
@@ -238,7 +238,7 @@ test('Throw when a global prefab interaction parameter does not define a paramet
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].parameters[0].parameter" is required at prefab: Prefab
 `,
@@ -266,7 +266,7 @@ test('Throw when a global prefab interaction parameter does not define a name', 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].parameters[0].name" is required at prefab: Prefab
 `,
@@ -299,7 +299,7 @@ test('Throw when a global prefab interaction parameter does not reference a comp
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].parameters[0].ref" is required at prefab: Prefab
 `,
@@ -333,7 +333,7 @@ test('Throw when a global prefab interaction parameter does not define a compone
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].parameters[0].ref.componentId" is required at prefab: Prefab
 `,
@@ -366,7 +366,7 @@ Property: "interactions[0].parameters[0].ref.componentId" is required at prefab:
 //     structure: [],
 //   } as Prefab;
 
-//   t.throws(() => validatePrefabs([prefab]));
+//   t.throws(() => validatePrefabs([prefab], {}));
 // });
 
 // test('Pass when a prefab interaction name references an existing interaction', (t: Context): void => {
@@ -393,7 +393,7 @@ Property: "interactions[0].parameters[0].ref.componentId" is required at prefab:
 //     structure: [{ name: 'Component 1', ref: { id: 'component 1' } }],
 //   } as Prefab;
 
-//   t.throws(() => validatePrefabs([prefab]));
+//   t.throws(() => validatePrefabs([prefab], {}));
 // });
 
 // test('Throw when a prefab interaction does not reference an existing sourceComponentId', (t: Context): void => {});
@@ -428,7 +428,7 @@ test('Throw when a custom prefab interaction defines targetOptionName', (t: Cont
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab]), {
+  t.throws(() => validatePrefabs([prefab], {}), {
     message: `
 Property: "interactions[0].targetOptionName" is not allowed at prefab: Prefab
 `,
