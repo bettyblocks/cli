@@ -948,7 +948,7 @@ test('Success when the reconfigure configuration optioms of the prefabs are vali
                   value: 'New property',
                 },
                 showOnDrop: true,
-                showThemeColor: true,
+                showTextStyleColor: true,
               },
             },
           ],
