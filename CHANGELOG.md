@@ -1,3 +1,10 @@
+# [25.67.0](https://github.com/bettyblocks/cli/compare/v25.66.1...v25.67.0) (2023-02-17)
+
+
+### Features
+
+* add icon option to buttongroup values ([#407](https://github.com/bettyblocks/cli/issues/407)) ([85c65c7](https://github.com/bettyblocks/cli/commit/85c65c7))
+
 ## [25.66.1](https://github.com/bettyblocks/cli/compare/v25.66.0...v25.66.1) (2023-02-17)
 
 
