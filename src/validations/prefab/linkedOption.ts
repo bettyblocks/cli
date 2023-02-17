@@ -15,6 +15,7 @@ export const linkedOptionConfigurationSchema = Joi.object({
     Joi.object({
       name: Joi.string(),
       value: Joi.alternatives().try(Joi.boolean(), Joi.string(), Joi.number()),
+      icon: Joi.string(),
     }),
   ),
   condition: Joi.object({
