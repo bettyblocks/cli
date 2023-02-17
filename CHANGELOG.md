@@ -1,3 +1,10 @@
+## [25.66.1](https://github.com/bettyblocks/cli/compare/v25.66.0...v25.66.1) (2023-02-17)
+
+
+### Bug Fixes
+
+* rename show theme color ([#406](https://github.com/bettyblocks/cli/issues/406)) ([59291ca](https://github.com/bettyblocks/cli/commit/59291ca))
+
 # [25.66.0](https://github.com/bettyblocks/cli/compare/v25.65.0...v25.66.0) (2023-02-16)
 
 
