@@ -52,7 +52,7 @@ const optionConfigurationSchemaBase = {
     modelRequired: Joi.boolean(),
   }),
   showOnDrop: Joi.boolean(),
-  showThemeColor: Joi.boolean(),
+  showTextStyleColor: Joi.boolean(),
 };
 
 const optionConfigurationSchema = Joi.when('type', {
