@@ -35,6 +35,7 @@ const optionConfigurationSchemaBase = {
     Joi.object({
       name: Joi.string().allow(''),
       value: Joi.alternatives().try(Joi.boolean(), Joi.string(), Joi.number()),
+      icon: Joi.string(),
     }),
   ),
   allowedTypes: Joi.array().items(Joi.string()),
