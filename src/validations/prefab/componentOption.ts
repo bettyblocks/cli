@@ -70,9 +70,9 @@ const optionConfigurationSchema = Joi.when('type', {
     allowedKinds: Joi.array().items(Joi.string()),
     allowManageValues: Joi.boolean(),
     createNewProperty: Joi.object({
-      type: Joi.string().required(),
+      type: Joi.string(),
       dependsOn: Joi.string(),
-      value: Joi.string().required(),
+      value: Joi.string(),
     }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
