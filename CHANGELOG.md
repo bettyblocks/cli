@@ -1,3 +1,52 @@
+# [25.67.0](https://github.com/bettyblocks/cli/compare/v25.66.1...v25.67.0) (2023-02-17)
+
+
+### Features
+
+* add icon option to buttongroup values ([#407](https://github.com/bettyblocks/cli/issues/407)) ([85c65c7](https://github.com/bettyblocks/cli/commit/85c65c7))
+
+## [25.66.1](https://github.com/bettyblocks/cli/compare/v25.66.0...v25.66.1) (2023-02-17)
+
+
+### Bug Fixes
+
+* rename show theme color ([#406](https://github.com/bettyblocks/cli/issues/406)) ([59291ca](https://github.com/bettyblocks/cli/commit/59291ca))
+
+# [25.66.0](https://github.com/bettyblocks/cli/compare/v25.65.0...v25.66.0) (2023-02-16)
+
+
+### Features
+
+* add showThemeColor to configuration ([#405](https://github.com/bettyblocks/cli/issues/405)) ([1ba5b24](https://github.com/bettyblocks/cli/commit/1ba5b24))
+
+# [25.65.0](https://github.com/bettyblocks/cli/compare/v25.64.0...v25.65.0) (2023-02-14)
+
+
+### Features
+
+* add allow kinds to property option PAGE-2807 ([#404](https://github.com/bettyblocks/cli/issues/404)) ([12fb394](https://github.com/bettyblocks/cli/commit/12fb394))
+
+# [25.64.0](https://github.com/bettyblocks/cli/compare/v25.63.1...v25.64.0) (2023-02-10)
+
+
+### Features
+
+* add bar and pie chart icons ([#402](https://github.com/bettyblocks/cli/issues/402)) ([84106e8](https://github.com/bettyblocks/cli/commit/84106e8))
+
+## [25.63.1](https://github.com/bettyblocks/cli/compare/v25.63.0...v25.63.1) (2023-02-08)
+
+
+### Bug Fixes
+
+* add showInAddChild and showInReconfigure ([#399](https://github.com/bettyblocks/cli/issues/399)) ([251fa97](https://github.com/bettyblocks/cli/commit/251fa97))
+
+# [25.63.0](https://github.com/bettyblocks/cli/compare/v25.62.1...v25.63.0) (2023-02-08)
+
+
+### Features
+
+* support new property option config values PAGE-2838 ([#396](https://github.com/bettyblocks/cli/issues/396)) ([71f0262](https://github.com/bettyblocks/cli/commit/71f0262))
+
 ## [25.62.1](https://github.com/bettyblocks/cli/compare/v25.62.0...v25.62.1) (2023-01-25)
 
 
