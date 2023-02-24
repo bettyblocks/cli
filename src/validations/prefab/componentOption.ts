@@ -72,7 +72,7 @@ const optionConfigurationSchema = Joi.when('type', {
     createNewProperty: Joi.object({
       type: Joi.string(),
       dependsOn: Joi.string(),
-      value: Joi.string(),
+      value: Joi.string().allow(''),
     }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
