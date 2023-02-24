@@ -1,3 +1,10 @@
+## [25.67.1](https://github.com/bettyblocks/cli/compare/v25.67.0...v25.67.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* allow value to be empty in createProperty ([#409](https://github.com/bettyblocks/cli/issues/409)) ([5d91575](https://github.com/bettyblocks/cli/commit/5d91575))
+
 # [25.67.0](https://github.com/bettyblocks/cli/compare/v25.66.1...v25.67.0) (2023-02-17)
 
 
