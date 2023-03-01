@@ -24,6 +24,7 @@ export const linkedOptionConfigurationSchema = Joi.object({
     comparator: Joi.string().valid(...COMPARATORS),
     value: Joi.any(),
   }),
+  showOnDrop: Joi.boolean(),
 });
 
 export const linkedOptionSchema = Joi.object({
