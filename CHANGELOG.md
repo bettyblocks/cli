@@ -1,3 +1,10 @@
+# [25.68.0](https://github.com/bettyblocks/cli/compare/v25.67.1...v25.68.0) (2023-03-02)
+
+
+### Features
+
+* add showOnDrop to linked options ([#410](https://github.com/bettyblocks/cli/issues/410)) ([9a8bf6d](https://github.com/bettyblocks/cli/commit/9a8bf6d))
+
 ## [25.67.1](https://github.com/bettyblocks/cli/compare/v25.67.0...v25.67.1) (2023-02-24)
 
 
