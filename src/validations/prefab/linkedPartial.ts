@@ -15,6 +15,7 @@ export const linkedPartialConfigurationSchema = Joi.object({
     comparator: Joi.string().valid(...COMPARATORS),
     value: Joi.any(),
   }),
+  showOnDrop: Joi.boolean(),
 });
 
 export const linkedPartialSchema = Joi.object({

@@ -960,3 +960,48 @@ test('Success when the reconfigure configuration optioms of the prefabs are vali
 
   t.notThrows(() => validatePrefabs(prefabs, {}));
 });
+
+test('Does not throw when wrapper option has showOnDrop', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          options: [
+            {
+              key: '0',
+              type: 'LINKED_OPTION',
+              value: {
+                ref: {
+                  componentId: '#componentId1',
+                  optionId: '#componentId1OptionId1',
+                },
+              },
+              configuration: {
+                showOnDrop: true,
+              },
+            },
+            {
+              key: '1',
+              type: 'LINKED_PARTIAL',
+              value: {
+                ref: {
+                  componentId: '#sideMenuPartial',
+                },
+              },
+              configuration: {
+                showOnDrop: true,
+              },
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs, {}));
+});
