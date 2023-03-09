@@ -924,7 +924,7 @@ test('Throw when one of the prefabs configuration options is invalid', (t: Conte
   t.throws(() => validatePrefabs(prefabs, {}));
 });
 
-test('Success when the reconfigure configuration optioms of the prefabs are valid', (t: Context): void => {
+test('Success when the reconfigure configuration options of the prefabs are valid', (t: Context): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -942,10 +942,16 @@ test('Success when the reconfigure configuration optioms of the prefabs are vali
               configuration: {
                 allowedKinds: ['TEXT', 'URL'],
                 allowManageValues: true,
-                createNewProperty: {
+                createProperty: {
                   type: 'TEXT',
                   dependsOn: 'model',
                   value: 'New property',
+                },
+                createAction: {
+                  template: 'update',
+                  name: 'Action name',
+                  permissions: 'public',
+                  value: '',
                 },
                 showOnDrop: true,
                 showTextStyleColor: true,
