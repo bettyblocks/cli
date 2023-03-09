@@ -74,6 +74,12 @@ const optionConfigurationSchema = Joi.when('type', {
       dependsOn: Joi.string(),
       value: Joi.string().allow(''),
     }),
+    createNewAction: Joi.object({
+      name: Joi.string().optional(),
+      permissions: Joi.string().optional(),
+      template: Joi.string(),
+      value: Joi.string().allow(''),
+    }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
 })
