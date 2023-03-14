@@ -69,7 +69,7 @@ const optionConfigurationSchema = Joi.when('type', {
       }),
     allowedKinds: Joi.array().items(Joi.string()),
     allowManageValues: Joi.boolean(),
-    createNewProperty: Joi.object({
+    createProperty: Joi.object({
       type: Joi.string(),
       dependsOn: Joi.string(),
       value: Joi.string().allow(''),
@@ -92,6 +92,19 @@ const optionConfigurationSchema = Joi.when('type', {
         ),
       }),
     }),
+  })
+  .when('type', {
+    is: 'ACTION_JS',
+    then: Joi.object({
+      ...optionConfigurationSchemaBase,
+      createAction: Joi.object({
+        name: Joi.string().optional(),
+        permissions: Joi.string().optional(),
+        template: Joi.string(),
+        value: Joi.string().allow(''),
+      }),
+    }),
+    otherwise: Joi.object(optionConfigurationSchemaBase),
   })
 
   .default({});
