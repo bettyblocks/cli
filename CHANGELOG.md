@@ -1,3 +1,10 @@
+# [25.71.0](https://github.com/bettyblocks/cli/compare/v25.70.0...v25.71.0) (2023-03-14)
+
+
+### Features
+
+* added configs for propname and formatting ([#414](https://github.com/bettyblocks/cli/issues/414)) ([c9b0ef0](https://github.com/bettyblocks/cli/commit/c9b0ef0))
+
 # [25.70.0](https://github.com/bettyblocks/cli/compare/v25.69.0...v25.70.0) (2023-03-14)
 
 
