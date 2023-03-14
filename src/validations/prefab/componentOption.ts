@@ -39,6 +39,8 @@ const optionConfigurationSchemaBase = {
     }),
   ),
   allowedTypes: Joi.array().items(Joi.string()),
+  allowFormatting: Joi.boolean(),
+  allowPropertyName: Joi.boolean(),
   allowRelations: Joi.boolean(),
   as: Joi.string().valid(...CONFIGURATION_AS),
   component: Joi.string(),
