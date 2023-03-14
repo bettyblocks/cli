@@ -1,3 +1,10 @@
+# [25.70.0](https://github.com/bettyblocks/cli/compare/v25.69.0...v25.70.0) (2023-03-14)
+
+
+### Features
+
+* add createNewAction in component options ([#411](https://github.com/bettyblocks/cli/issues/411)) ([8aac99a](https://github.com/bettyblocks/cli/commit/8aac99a))
+
 # [25.69.0](https://github.com/bettyblocks/cli/compare/v25.68.0...v25.69.0) (2023-03-14)
 
 
