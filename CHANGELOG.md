@@ -1,3 +1,10 @@
+# [25.69.0](https://github.com/bettyblocks/cli/compare/v25.68.0...v25.69.0) (2023-03-14)
+
+
+### Features
+
+* add optionRef keys ([#412](https://github.com/bettyblocks/cli/issues/412)) ([ef76830](https://github.com/bettyblocks/cli/commit/ef76830))
+
 # [25.68.0](https://github.com/bettyblocks/cli/compare/v25.67.1...v25.68.0) (2023-03-02)
 
 
