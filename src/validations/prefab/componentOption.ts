@@ -111,6 +111,11 @@ export const optionSchema = Joi.object({
   showInAddChild: Joi.boolean(),
   showInReconfigure: Joi.boolean(),
   ref: refSchema,
+  optionRef: Joi.object({
+    id: Joi.string(),
+    sourceId: Joi.string(),
+    inherit: ['label', 'name'],
+  }),
 });
 
 export const optionCategorySchema = Joi.object({

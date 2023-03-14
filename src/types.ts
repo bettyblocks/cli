@@ -263,6 +263,11 @@ export interface PrefabComponentOptionBase {
   key: string;
   type: string;
   configuration?: unknown;
+  optionRef?: {
+    id?: string;
+    sourceId?: string;
+    inherit?: string;
+  };
 }
 
 export interface ValueDefault {

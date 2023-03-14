@@ -35,4 +35,9 @@ export const linkedOptionSchema = Joi.object({
   configuration: linkedOptionConfigurationSchema,
   showInAddChild: Joi.boolean(),
   showInReconfigure: Joi.boolean(),
+  optionRef: Joi.object({
+    id: Joi.string(),
+    sourceId: Joi.string(),
+    inherit: ['label', 'name'],
+  }),
 });
