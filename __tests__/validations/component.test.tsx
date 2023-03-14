@@ -947,6 +947,16 @@ test('Success when the reconfigure configuration options of the prefabs are vali
                   dependsOn: 'model',
                   value: 'New property',
                 },
+                showOnDrop: true,
+                showTextStyleColor: true,
+              },
+            },
+            {
+              value: '',
+              label: 'action',
+              key: 'action',
+              type: 'ACTION_JS',
+              configuration: {
                 createAction: {
                   template: 'update',
                   name: 'Action name',
