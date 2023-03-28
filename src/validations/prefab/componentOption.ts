@@ -68,12 +68,12 @@ const optionConfigurationSchema = Joi.when('type', {
         'any.invalid': 'API version 1 is no longer supported.',
       }),
     allowedKinds: Joi.array().items(Joi.string()),
-    allowManageValues: Joi.boolean(),
     createNewProperty: Joi.object({
       type: Joi.string(),
-      dependsOn: Joi.string(),
       value: Joi.string().allow(''),
     }),
+    schemaModel: Joi.string(),
+    showObjectValues: Joi.boolean(),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
 })

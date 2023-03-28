@@ -941,12 +941,12 @@ test('Success when the reconfigure configuration optioms of the prefabs are vali
               type: 'PROPERTY',
               configuration: {
                 allowedKinds: ['TEXT', 'URL'],
-                allowManageValues: true,
                 createNewProperty: {
                   type: 'TEXT',
-                  dependsOn: 'model',
                   value: 'New property',
                 },
+                schemaModel: 'model',
+                showObjectValues: true,
                 showOnDrop: true,
                 showTextStyleColor: true,
               },
