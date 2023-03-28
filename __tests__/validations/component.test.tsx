@@ -945,7 +945,6 @@ test('Success when the reconfigure configuration optioms of the prefabs are vali
                   type: 'TEXT',
                   value: 'New property',
                 },
-                schemaModel: 'model',
                 showObjectValues: true,
                 showOnDrop: true,
                 showTextStyleColor: true,

@@ -72,7 +72,6 @@ const optionConfigurationSchema = Joi.when('type', {
       type: Joi.string(),
       value: Joi.string().allow(''),
     }),
-    schemaModel: Joi.string(),
     showObjectValues: Joi.boolean(),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
