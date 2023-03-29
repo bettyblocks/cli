@@ -941,12 +941,16 @@ test('Success when the reconfigure configuration options of the prefabs are vali
               type: 'PROPERTY',
               configuration: {
                 allowedKinds: ['TEXT', 'URL'],
-                allowManageValues: true,
                 createProperty: {
                   type: 'TEXT',
                   value: 'New property',
                 },
-                showObjectValues: true,
+                manageObjectValues: {
+                  value: [
+                    { uuid: '', answer: 'yes', score: 100, boolean: true },
+                    { uuid: '', answer: 'no', score: 200, boolean: false },
+                  ],
+                },
                 showOnDrop: true,
                 showTextStyleColor: true,
               },
