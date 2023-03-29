@@ -39,6 +39,8 @@ const optionConfigurationSchemaBase = {
     }),
   ),
   allowedTypes: Joi.array().items(Joi.string()),
+  allowFormatting: Joi.boolean(),
+  allowPropertyName: Joi.boolean(),
   allowRelations: Joi.boolean(),
   as: Joi.string().valid(...CONFIGURATION_AS),
   component: Joi.string(),
@@ -68,7 +70,8 @@ const optionConfigurationSchema = Joi.when('type', {
         'any.invalid': 'API version 1 is no longer supported.',
       }),
     allowedKinds: Joi.array().items(Joi.string()),
-    createNewProperty: Joi.object({
+    allowManageValues: Joi.boolean(),
+    createProperty: Joi.object({
       type: Joi.string(),
       value: Joi.string().allow(''),
     }),
@@ -92,6 +95,19 @@ const optionConfigurationSchema = Joi.when('type', {
       }),
     }),
   })
+  .when('type', {
+    is: 'ACTION_JS',
+    then: Joi.object({
+      ...optionConfigurationSchemaBase,
+      createAction: Joi.object({
+        name: Joi.string().optional(),
+        permissions: Joi.string().optional(),
+        template: Joi.string(),
+        value: Joi.string().allow(''),
+      }),
+    }),
+    otherwise: Joi.object(optionConfigurationSchemaBase),
+  })
 
   .default({});
 
@@ -110,6 +126,11 @@ export const optionSchema = Joi.object({
   showInAddChild: Joi.boolean(),
   showInReconfigure: Joi.boolean(),
   ref: refSchema,
+  optionRef: Joi.object({
+    id: Joi.string(),
+    sourceId: Joi.string(),
+    inherit: ['label', 'name'],
+  }),
 });
 
 export const optionCategorySchema = Joi.object({

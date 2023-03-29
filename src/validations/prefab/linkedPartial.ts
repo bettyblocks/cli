@@ -24,4 +24,9 @@ export const linkedPartialSchema = Joi.object({
   type: Joi.string().valid('LINKED_PARTIAL').required(),
   value: linkedPartialValueSchema,
   configuration: linkedPartialConfigurationSchema,
+  optionRef: Joi.object({
+    id: Joi.string(),
+    sourceId: Joi.string(),
+    inherit: ['label', 'name'],
+  }),
 });
