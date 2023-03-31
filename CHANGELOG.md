@@ -1,3 +1,10 @@
+# [25.72.0](https://github.com/bettyblocks/cli/compare/v25.71.0...v25.72.0) (2023-03-31)
+
+
+### Features
+
+* add schema model ([#415](https://github.com/bettyblocks/cli/issues/415)) ([564c42b](https://github.com/bettyblocks/cli/commit/564c42b))
+
 # [25.71.0](https://github.com/bettyblocks/cli/compare/v25.70.0...v25.71.0) (2023-03-14)
 
 
