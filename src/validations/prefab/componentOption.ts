@@ -130,7 +130,7 @@ export const optionSchema = Joi.object({
   optionRef: Joi.object({
     id: Joi.string(),
     sourceId: Joi.string(),
-    inherit: ['label', 'name'],
+    inherit: ['label', 'name', 'variableProperty'],
   }),
 });
 
