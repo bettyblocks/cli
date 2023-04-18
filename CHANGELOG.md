@@ -1,3 +1,10 @@
+# [25.73.0](https://github.com/bettyblocks/cli/compare/v25.72.0...v25.73.0) (2023-04-18)
+
+
+### Features
+
+* add variableProperty to optionRef inherit ([#418](https://github.com/bettyblocks/cli/issues/418)) ([e493a32](https://github.com/bettyblocks/cli/commit/e493a32))
+
 # [25.72.0](https://github.com/bettyblocks/cli/compare/v25.71.0...v25.72.0) (2023-03-31)
 
 
