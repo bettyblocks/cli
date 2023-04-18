@@ -131,7 +131,9 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
   return Promise.all(components);
 };
 
-const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
+const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
+  isPartial = false,
+): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
   const outDir = `${absoluteRootDir}/tmp/${Math.floor(
@@ -144,13 +146,23 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     throw new Error(chalk.red('\nPrefabs folder not found\n'));
   }
 
-  const prefabTsFiles: string[] = await readFilesByType(srcDir, 'ts');
-  const prefabTsxFiles: string[] = await readFilesByType(srcDir, 'tsx');
+  const prefabTsFiles: string[] = !isPartial
+    ? await readFilesByType(srcDir, 'ts')
+    : [];
+  const prefabTsxFiles: string[] = !isPartial
+    ? await readFilesByType(srcDir, 'tsx')
+    : [];
+
+  const partialTsxFiles: string[] = isPartial
+    ? await readFilesByType(`${srcDir}/partials`, 'tsx')
+    : [];
 
   const prefabFiles = [...prefabTsFiles, ...prefabTsxFiles];
 
   const prefabProgram = ts.createProgram(
-    prefabFiles.map((file) => `${srcDir}/${file}`),
+    (isPartial ? partialTsxFiles : prefabFiles).map((file) =>
+      isPartial ? `${srcDir}/partials/${file}` : `${srcDir}/${file}`,
+    ),
     {
       allowSyntheticDefaultImports: false,
       esModuleInterop: true,
@@ -197,7 +209,11 @@ const readtsPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
   }
 
   const prefabs: Array<Promise<Prefab>> = (results.emittedFiles || [])
-    .filter((filename) => /prefabs\/\w+\.js$/.test(filename))
+    .filter((filename) =>
+      isPartial
+        ? /prefabs\/partials\/\w+\.js$/.test(filename)
+        : /prefabs\/\w+\.js$/.test(filename),
+    )
     .map((filename) => {
       return new Promise((resolve) => {
         import(filename)
@@ -332,6 +348,7 @@ void (async (): Promise<void> => {
       jsPrefabs,
       components,
       interactions,
+      tsxPartialPrefabs,
       partialprefabs,
     ] = await Promise.all([
       readStyles(rootDir),
@@ -339,12 +356,17 @@ void (async (): Promise<void> => {
       readPrefabs(),
       readComponents(),
       runtimeVersion === 'v2' ? Promise.resolve([]) : readInteractions(),
+      readtsPrefabs(true),
       readPartialPrefabs(),
     ]);
 
     const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = jsPrefabs
       .concat(tsxPrefabs)
+      .filter((prefab): prefab is Prefab => !!prefab);
+
+    const allPartialPrefabs = partialprefabs
+      .concat(tsxPartialPrefabs)
       .filter((prefab): prefab is Prefab => !!prefab);
 
     const stylesGroupedByTypeAndName = styles.reduce<GroupedStyles>(
@@ -379,7 +401,7 @@ void (async (): Promise<void> => {
       validateComponents(components, validStyleTypes),
       validatePrefabs(prefabs, stylesGroupedByTypeAndName, componentStyleMap),
       validatePrefabs(
-        partialprefabs,
+        allPartialPrefabs,
         stylesGroupedByTypeAndName,
         componentStyleMap,
         'partial',
@@ -435,7 +457,7 @@ void (async (): Promise<void> => {
     const buildStyles = styles.map(buildStyle);
 
     const buildPrefabs = prefabs.map(buildPrefab);
-    const buildPartialprefabs = partialprefabs.map(buildPrefab);
+    const buildPartialprefabs = allPartialPrefabs.map(buildPrefab);
 
     await mkdir(distDir, { recursive: true });
 
