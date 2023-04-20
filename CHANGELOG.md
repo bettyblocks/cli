@@ -1,3 +1,10 @@
+# [25.74.0](https://github.com/bettyblocks/cli/compare/v25.73.0...v25.74.0) (2023-04-20)
+
+
+### Features
+
+* support tsx format for partial prefabs ([#417](https://github.com/bettyblocks/cli/issues/417)) ([6068d38](https://github.com/bettyblocks/cli/commit/6068d38))
+
 # [25.73.0](https://github.com/bettyblocks/cli/compare/v25.72.0...v25.73.0) (2023-04-18)
 
 
