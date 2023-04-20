@@ -146,23 +146,23 @@ const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
     throw new Error(chalk.red('\nPrefabs folder not found\n'));
   }
 
-  const prefabTsFiles: string[] = !isPartial
-    ? await readFilesByType(srcDir, 'ts')
-    : [];
-  const prefabTsxFiles: string[] = !isPartial
-    ? await readFilesByType(srcDir, 'tsx')
-    : [];
+  let prefabTsFiles: string[] = [];
+  let prefabTsxFiles: string[] = [];
+  let partialTsxFiles: string[] = [];
 
-  const partialTsxFiles: string[] = isPartial
-    ? await readFilesByType(`${srcDir}/partials`, 'tsx')
-    : [];
+  if (isPartial) {
+    partialTsxFiles = await readFilesByType(`${srcDir}/partials`, 'tsx');
+  } else {
+    prefabTsFiles = await readFilesByType(srcDir, 'ts');
+    prefabTsxFiles = await readFilesByType(srcDir, 'tsx');
+  }
 
   const prefabFiles = [...prefabTsFiles, ...prefabTsxFiles];
 
+  const files = isPartial ? partialTsxFiles : prefabFiles;
+  const basePath = isPartial ? `${srcDir}/partials/` : `${srcDir}/`;
   const prefabProgram = ts.createProgram(
-    (isPartial ? partialTsxFiles : prefabFiles).map((file) =>
-      isPartial ? `${srcDir}/partials/${file}` : `${srcDir}/${file}`,
-    ),
+    files.map((file) => `${basePath}/${file}`),
     {
       allowSyntheticDefaultImports: false,
       esModuleInterop: true,
