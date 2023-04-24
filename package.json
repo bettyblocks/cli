@@ -27,9 +27,9 @@
     }
   },
   "devDependencies": {
-    "@commitlint/cli": "^15.0.0",
+    "@commitlint/cli": "^17.6.1",
     "@commitlint/config-angular": "^15.0.0",
-    "@commitlint/prompt-cli": "^15.0.0",
+    "@commitlint/prompt-cli": "^17.6.1",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/app-root-path": "^1.2.4",
@@ -53,7 +53,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^3.0.5",
     "prettier": "^2.5.0",
-    "semantic-release": "^19.0.3",
+    "semantic-release": "^21.0.1",
     "tsc-watch": "^2.2.1",
     "typescript": "^3.5.3"
   },
