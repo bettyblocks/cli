@@ -1,3 +1,10 @@
+# [25.75.0](https://github.com/bettyblocks/cli/compare/v25.74.0...v25.75.0) (2023-05-04)
+
+
+### Features
+
+* use property_label structure in optionRef ([#420](https://github.com/bettyblocks/cli/issues/420)) ([bbf8cc7](https://github.com/bettyblocks/cli/commit/bbf8cc7))
+
 # [25.74.0](https://github.com/bettyblocks/cli/compare/v25.73.0...v25.74.0) (2023-04-20)
 
 
