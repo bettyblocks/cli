@@ -1,7 +1,6 @@
 import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { readFile, readFileSync } from 'fs';
-import { pathExists } from 'fs-extra';
+import { readFile } from 'fs';
 
 import uploadBlob, {
   BlockBlobUploadResponseExtended,
