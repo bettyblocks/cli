@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-assignment */
+
 import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
 import { readFile } from 'fs';
@@ -33,7 +35,7 @@ if (!name || typeof name !== 'string' || !name.length) {
 }
 
 /* Execute functions */
-
+/* eslint-disable */
 const read = async (fileName: string): Promise<void> => {
   readFile(`${distDir}/${fileName}`, (err, data) => {
     if (data) {
@@ -76,6 +78,7 @@ const upload = async (
     throw new Error(chalk.red([defaultMessage, extraMessage].join('\n')));
   }
 };
+/* eslint-enable */
 const publish = async (
   fileName: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
@@ -86,6 +89,7 @@ const publish = async (
   return upload(objects, fileName);
 };
 
+// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['bundle.js', 'bundle.js.map'];
