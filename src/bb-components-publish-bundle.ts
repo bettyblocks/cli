@@ -39,13 +39,12 @@ const read = async (fileName: string): Promise<void> => {
     if (data) {
       return data;
     }
-    const error = err;
-    if (error) {
+    if (err) {
       throw new Error(
         chalk.red(
           [
             'There was an error trying to publish the bundle to the bucket',
-            error.code === 'ENOENT' ? error.message : err,
+            err.code === 'ENOENT' ? err.message : err,
           ].join('\n'),
         ),
       );
