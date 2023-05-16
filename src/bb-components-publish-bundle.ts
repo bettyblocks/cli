@@ -22,7 +22,6 @@ if (typeof AZURE_BLOB_ACCOUNT_KEY !== 'string') {
 program
   .usage('[options] [path]')
   .name('bb components publish bundle')
-  // what is meant with "The component set name?"
   .option('-b, --bucket [name]', 'the component set name')
   .parse(process.argv);
 
@@ -40,15 +39,17 @@ const read = async (fileName: string): Promise<void> => {
     if (data) {
       return data;
     }
-    const { code, message }: Error & { code: 'ENOENT' | string } = err;
-    throw new Error(
-      chalk.red(
-        [
-          'There was an error trying to publish the bundle to the bucket',
-          code === 'ENOENT' ? message : err,
-        ].join('\n'),
-      ),
-    );
+    const error = err;
+    if (error) {
+      throw new Error(
+        chalk.red(
+          [
+            'There was an error trying to publish the bundle to the bucket',
+            error.code === 'ENOENT' ? error.message : err,
+          ].join('\n'),
+        ),
+      );
+    }
   });
 };
 const upload = async (
