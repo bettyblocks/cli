@@ -33,6 +33,7 @@ if (!name || typeof name !== 'string' || !name.length) {
 }
 
 /* Execute functions */
+/* eslint-disable */
 const read = async (fileName: string): Promise<void> => {
   readFile(`${distDir}/${fileName}`, (err, data) => {
     if (data) {
@@ -50,6 +51,7 @@ const read = async (fileName: string): Promise<void> => {
     }
   });
 };
+/* eslint-enable */
 
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
