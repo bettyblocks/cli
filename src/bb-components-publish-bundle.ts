@@ -7,18 +7,6 @@ import { readFile } from 'fs';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import { publish } from './functions/bb-components-functions';
 
-const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
-
-if (typeof AZURE_BLOB_ACCOUNT !== 'string') {
-  throw new Error(chalk.red('\n$AZURE_BLOB_ACCOUNT is required\n'));
-}
-
-if (typeof AZURE_BLOB_ACCOUNT_KEY !== 'string') {
-  throw new Error(chalk.red('\n$AZURE_BLOB_ACCOUNT_KEY is required\n'));
-}
-
-/* Process arguments */
-
 program
   .usage('[options] [path]')
   .name('bb components publish bundle')
@@ -31,8 +19,6 @@ const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 if (!name || typeof name !== 'string' || !name.length) {
   throw new Error(chalk.red('\n-b or --bucket [name] is required\n'));
 }
-
-/* Execute functions */
 /* eslint-disable */
 const read = async (fileName: string): Promise<void> => {
   readFile(`${distDir}/${fileName}`, (err, data) => {
