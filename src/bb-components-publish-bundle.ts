@@ -4,10 +4,8 @@ import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
 import { readFile } from 'fs';
 
-import uploadBlob, {
-  BlockBlobUploadResponseExtended,
-} from './utils/uploadBlob';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import { publish } from './functions/bb-components-functions';
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
@@ -35,7 +33,6 @@ if (!name || typeof name !== 'string' || !name.length) {
 }
 
 /* Execute functions */
-/* eslint-disable */
 const read = async (fileName: string): Promise<void> => {
   readFile(`${distDir}/${fileName}`, (err, data) => {
     if (data) {
@@ -53,47 +50,14 @@ const read = async (fileName: string): Promise<void> => {
     }
   });
 };
-const upload = async (
-  objects: unknown,
-  fileName: string,
-): Promise<BlockBlobUploadResponseExtended> => {
-  try {
-    return await uploadBlob(name, fileName, JSON.stringify(objects));
-  } catch (error) {
-    const defaultMessage =
-      'There was an error trying to publish the bundle to the bucket';
-    const { body, message } = error;
-
-    if (!body) {
-      throw new Error(chalk.red([defaultMessage, message].join('\n')));
-    }
-
-    const { code, message: bodyMessage } = body;
-
-    const extraMessage =
-      code === 'AuthenticationFailed'
-        ? 'Make sure your azure blob account and key are correct'
-        : bodyMessage;
-
-    throw new Error(chalk.red([defaultMessage, extraMessage].join('\n')));
-  }
-};
-/* eslint-enable */
-const publish = async (
-  fileName: string,
-): Promise<BlockBlobUploadResponseExtended> => {
-  console.log(`Publishing ${fileName}.`);
-
-  const objects = await read(fileName);
-
-  return upload(objects, fileName);
-};
 
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['bundle.js', 'bundle.js.map'];
-  const [{ url }] = await Promise.all(files.map(publish));
+  const [{ url }] = await Promise.all(
+    files.map((fileName) => publish(fileName, name, read)),
+  );
 
   console.log(
     chalk.green(

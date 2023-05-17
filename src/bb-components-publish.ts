@@ -4,11 +4,8 @@
 import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
 import { readJSON, pathExists } from 'fs-extra';
-
-import uploadBlob, {
-  BlockBlobUploadResponseExtended,
-} from './utils/uploadBlob';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import { publish } from './functions/bb-components-functions';
 
 /* setup */
 
@@ -56,42 +53,6 @@ const read = async (fileName: string): Promise<void> => {
   }
 };
 
-const upload = async (
-  objects: unknown,
-  fileName: string,
-): Promise<BlockBlobUploadResponseExtended> => {
-  try {
-    return await uploadBlob(name, fileName, JSON.stringify(objects));
-  } catch (error) {
-    const defaultMessage =
-      'There was an error trying to publish your component set';
-    const { body, message } = error;
-
-    if (!body) {
-      throw new Error(chalk.red([defaultMessage, message].join('\n')));
-    }
-
-    const { code, message: bodyMessage } = body;
-
-    const extraMessage =
-      code === 'AuthenticationFailed'
-        ? 'Make sure your azure blob account and key are correct'
-        : bodyMessage;
-
-    throw new Error(chalk.red([defaultMessage, extraMessage].join('\n')));
-  }
-};
-
-const publish = async (
-  fileName: string,
-): Promise<BlockBlobUploadResponseExtended> => {
-  console.log(`Publishing ${fileName}.`);
-
-  const objects = await read(fileName);
-
-  return upload(objects, fileName);
-};
-
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
@@ -105,7 +66,9 @@ void (async (): Promise<void> => {
   if (existingPartialPath) {
     files.push('partials.json');
   }
-  const [{ url }] = await Promise.all(files.map(publish));
+  const [{ url }] = await Promise.all(
+    files.map((fileName) => publish(fileName, name, read)),
+  );
 
   console.log(
     chalk.green(
