@@ -1,3 +1,10 @@
+# [25.76.0](https://github.com/bettyblocks/cli/compare/v25.75.0...v25.76.0) (2023-05-19)
+
+
+### Features
+
+* add support for label and button label in manageObjectValues ([#422](https://github.com/bettyblocks/cli/issues/422)) ([60d893e](https://github.com/bettyblocks/cli/commit/60d893e))
+
 # [25.75.0](https://github.com/bettyblocks/cli/compare/v25.74.0...v25.75.0) (2023-05-04)
 
 
