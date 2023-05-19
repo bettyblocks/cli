@@ -42,3 +42,9 @@ export const publish = async (
 
   return upload(objects, fileName, bucketName);
 };
+
+export const validateBucketName = (name: string) => {
+  if (!name || typeof name !== 'string' || !name.length) {
+    throw new Error(chalk.red('\n-b or --bucket [name] is required\n'));
+  }
+};

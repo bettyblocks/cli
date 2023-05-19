@@ -5,22 +5,27 @@ import chalk from 'chalk';
 import { readFile } from 'fs';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
-import { publish } from './functions/bb-components-functions';
+import {
+  publish,
+  validateBucketName,
+} from './functions/bb-components-functions';
 
+interface CommanderBucket extends CommanderStatic {
+  bucket?: { name: string };
+}
 program
   .usage('[options] [path]')
-  .name('bb components publish bundle')
+  .name('bb components publish-bundle')
   .option('-b, --bucket [name]', 'the component set name')
   .parse(process.argv);
-
-const { args, bucket: name }: CommanderStatic = program;
+const { args, bucket }: CommanderBucket = program;
 const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
-
-if (!name || typeof name !== 'string' || !name.length) {
+if (!bucket) {
   throw new Error(chalk.red('\n-b or --bucket [name] is required\n'));
 }
+validateBucketName(bucket.name);
 /* eslint-disable */
-const read = async (fileName: string): Promise<void> => {
+const readJS = async (fileName: string): Promise<void> => {
   readFile(`${distDir}/${fileName}`, (err, data) => {
     if (data) {
       return data;
@@ -44,7 +49,7 @@ void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['bundle.js', 'bundle.js.map'];
   const [{ url }] = await Promise.all(
-    files.map((fileName) => publish(fileName, name, read)),
+    files.map((fileName) => publish(fileName, bucket?.name, readJS)),
   );
 
   console.log(
