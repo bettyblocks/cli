@@ -76,6 +76,8 @@ const optionConfigurationSchema = Joi.when('type', {
       value: Joi.string().allow(''),
     }),
     manageObjectValues: Joi.object({
+      buttonLabel: Joi.string().optional(),
+      label: Joi.string().optional(),
       value: Joi.array().items(Joi.object()),
     }),
   }),
