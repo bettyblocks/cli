@@ -1,3 +1,10 @@
+# [25.77.0](https://github.com/bettyblocks/cli/compare/v25.76.0...v25.77.0) (2023-05-22)
+
+
+### Features
+
+* create publish bundle function ([#421](https://github.com/bettyblocks/cli/issues/421)) ([5e44ea9](https://github.com/bettyblocks/cli/commit/5e44ea9))
+
 # [25.76.0](https://github.com/bettyblocks/cli/compare/v25.75.0...v25.76.0) (2023-05-19)
 
 
