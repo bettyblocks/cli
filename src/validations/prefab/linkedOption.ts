@@ -15,6 +15,7 @@ export const linkedOptionConfigurationSchema = Joi.object({
     Joi.object({
       name: Joi.string(),
       value: Joi.alternatives().try(Joi.boolean(), Joi.string(), Joi.number()),
+      icon: Joi.string(),
     }),
   ),
   condition: Joi.object({
@@ -23,6 +24,7 @@ export const linkedOptionConfigurationSchema = Joi.object({
     comparator: Joi.string().valid(...COMPARATORS),
     value: Joi.any(),
   }),
+  showOnDrop: Joi.boolean(),
 });
 
 export const linkedOptionSchema = Joi.object({
@@ -33,4 +35,9 @@ export const linkedOptionSchema = Joi.object({
   configuration: linkedOptionConfigurationSchema,
   showInAddChild: Joi.boolean(),
   showInReconfigure: Joi.boolean(),
+  optionRef: Joi.object({
+    id: Joi.string(),
+    sourceId: Joi.string(),
+    inherit: ['label', 'name', 'variableProperty'],
+  }),
 });

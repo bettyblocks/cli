@@ -4,9 +4,10 @@ import {
   COMPARATORS,
   CONDITION_TYPE,
   CONFIGURATION_AS,
+  INHERIT_TYPES,
+  MEDIA_TYPES,
   MODAL_TYPE,
   OPTIONS,
-  MEDIA_TYPES,
 } from '../constants';
 
 const refSchema = Joi.when('type', {
@@ -35,9 +36,12 @@ const optionConfigurationSchemaBase = {
     Joi.object({
       name: Joi.string().allow(''),
       value: Joi.alternatives().try(Joi.boolean(), Joi.string(), Joi.number()),
+      icon: Joi.string(),
     }),
   ),
   allowedTypes: Joi.array().items(Joi.string()),
+  allowFormatting: Joi.boolean(),
+  allowPropertyName: Joi.boolean(),
   allowRelations: Joi.boolean(),
   as: Joi.string().valid(...CONFIGURATION_AS),
   component: Joi.string(),
@@ -52,6 +56,7 @@ const optionConfigurationSchemaBase = {
     modelRequired: Joi.boolean(),
   }),
   showOnDrop: Joi.boolean(),
+  showTextStyleColor: Joi.boolean(),
 };
 
 const optionConfigurationSchema = Joi.when('type', {
@@ -66,11 +71,14 @@ const optionConfigurationSchema = Joi.when('type', {
         'any.invalid': 'API version 1 is no longer supported.',
       }),
     allowedKinds: Joi.array().items(Joi.string()),
-    allowManageValues: Joi.boolean(),
-    createNewProperty: Joi.object({
-      type: Joi.string().required(),
-      dependsOn: Joi.string(),
-      value: Joi.string().required(),
+    createProperty: Joi.object({
+      type: Joi.string(),
+      value: Joi.string().allow(''),
+    }),
+    manageObjectValues: Joi.object({
+      buttonLabel: Joi.string().optional(),
+      label: Joi.string().optional(),
+      value: Joi.array().items(Joi.object()),
     }),
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
@@ -91,8 +99,27 @@ const optionConfigurationSchema = Joi.when('type', {
       }),
     }),
   })
+  .when('type', {
+    is: 'ACTION_JS',
+    then: Joi.object({
+      ...optionConfigurationSchemaBase,
+      createAction: Joi.object({
+        name: Joi.string().optional(),
+        permissions: Joi.string().optional(),
+        template: Joi.string(),
+        value: Joi.string().allow(''),
+      }),
+    }),
+    otherwise: Joi.object(optionConfigurationSchemaBase),
+  })
 
   .default({});
+
+const OptionRefInheritObject = Joi.object({
+  type: Joi.string().valid(...INHERIT_TYPES),
+  name: Joi.string(),
+  id: Joi.string(),
+});
 
 export const optionSchema = Joi.object({
   label: Joi.string().required(),
@@ -109,6 +136,16 @@ export const optionSchema = Joi.object({
   showInAddChild: Joi.boolean(),
   showInReconfigure: Joi.boolean(),
   ref: refSchema,
+  optionRef: Joi.object({
+    id: Joi.string(),
+    sourceId: Joi.string(),
+    inherit: Joi.alternatives().try(
+      Joi.string().valid('name', 'label', 'value'),
+      Joi.array().items(
+        Joi.alternatives().try(Joi.string(), OptionRefInheritObject),
+      ),
+    ),
+  }),
 });
 
 export const optionCategorySchema = Joi.object({

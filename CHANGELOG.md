@@ -1,3 +1,101 @@
+# [25.77.0](https://github.com/bettyblocks/cli/compare/v25.76.0...v25.77.0) (2023-05-22)
+
+
+### Features
+
+* create publish bundle function ([#421](https://github.com/bettyblocks/cli/issues/421)) ([5e44ea9](https://github.com/bettyblocks/cli/commit/5e44ea9))
+
+# [25.76.0](https://github.com/bettyblocks/cli/compare/v25.75.0...v25.76.0) (2023-05-19)
+
+
+### Features
+
+* add support for label and button label in manageObjectValues ([#422](https://github.com/bettyblocks/cli/issues/422)) ([60d893e](https://github.com/bettyblocks/cli/commit/60d893e))
+
+# [25.75.0](https://github.com/bettyblocks/cli/compare/v25.74.0...v25.75.0) (2023-05-04)
+
+
+### Features
+
+* use property_label structure in optionRef ([#420](https://github.com/bettyblocks/cli/issues/420)) ([bbf8cc7](https://github.com/bettyblocks/cli/commit/bbf8cc7))
+
+# [25.74.0](https://github.com/bettyblocks/cli/compare/v25.73.0...v25.74.0) (2023-04-20)
+
+
+### Features
+
+* support tsx format for partial prefabs ([#417](https://github.com/bettyblocks/cli/issues/417)) ([6068d38](https://github.com/bettyblocks/cli/commit/6068d38))
+
+# [25.73.0](https://github.com/bettyblocks/cli/compare/v25.72.0...v25.73.0) (2023-04-18)
+
+
+### Features
+
+* add variableProperty to optionRef inherit ([#418](https://github.com/bettyblocks/cli/issues/418)) ([e493a32](https://github.com/bettyblocks/cli/commit/e493a32))
+
+# [25.72.0](https://github.com/bettyblocks/cli/compare/v25.71.0...v25.72.0) (2023-03-31)
+
+
+### Features
+
+* add schema model ([#415](https://github.com/bettyblocks/cli/issues/415)) ([564c42b](https://github.com/bettyblocks/cli/commit/564c42b))
+
+# [25.71.0](https://github.com/bettyblocks/cli/compare/v25.70.0...v25.71.0) (2023-03-14)
+
+
+### Features
+
+* added configs for propname and formatting ([#414](https://github.com/bettyblocks/cli/issues/414)) ([c9b0ef0](https://github.com/bettyblocks/cli/commit/c9b0ef0))
+
+# [25.70.0](https://github.com/bettyblocks/cli/compare/v25.69.0...v25.70.0) (2023-03-14)
+
+
+### Features
+
+* add createNewAction in component options ([#411](https://github.com/bettyblocks/cli/issues/411)) ([8aac99a](https://github.com/bettyblocks/cli/commit/8aac99a))
+
+# [25.69.0](https://github.com/bettyblocks/cli/compare/v25.68.0...v25.69.0) (2023-03-14)
+
+
+### Features
+
+* add optionRef keys ([#412](https://github.com/bettyblocks/cli/issues/412)) ([ef76830](https://github.com/bettyblocks/cli/commit/ef76830))
+
+# [25.68.0](https://github.com/bettyblocks/cli/compare/v25.67.1...v25.68.0) (2023-03-02)
+
+
+### Features
+
+* add showOnDrop to linked options ([#410](https://github.com/bettyblocks/cli/issues/410)) ([9a8bf6d](https://github.com/bettyblocks/cli/commit/9a8bf6d))
+
+## [25.67.1](https://github.com/bettyblocks/cli/compare/v25.67.0...v25.67.1) (2023-02-24)
+
+
+### Bug Fixes
+
+* allow value to be empty in createProperty ([#409](https://github.com/bettyblocks/cli/issues/409)) ([5d91575](https://github.com/bettyblocks/cli/commit/5d91575))
+
+# [25.67.0](https://github.com/bettyblocks/cli/compare/v25.66.1...v25.67.0) (2023-02-17)
+
+
+### Features
+
+* add icon option to buttongroup values ([#407](https://github.com/bettyblocks/cli/issues/407)) ([85c65c7](https://github.com/bettyblocks/cli/commit/85c65c7))
+
+## [25.66.1](https://github.com/bettyblocks/cli/compare/v25.66.0...v25.66.1) (2023-02-17)
+
+
+### Bug Fixes
+
+* rename show theme color ([#406](https://github.com/bettyblocks/cli/issues/406)) ([59291ca](https://github.com/bettyblocks/cli/commit/59291ca))
+
+# [25.66.0](https://github.com/bettyblocks/cli/compare/v25.65.0...v25.66.0) (2023-02-16)
+
+
+### Features
+
+* add showThemeColor to configuration ([#405](https://github.com/bettyblocks/cli/issues/405)) ([1ba5b24](https://github.com/bettyblocks/cli/commit/1ba5b24))
+
 # [25.65.0](https://github.com/bettyblocks/cli/compare/v25.64.0...v25.65.0) (2023-02-14)
 
 

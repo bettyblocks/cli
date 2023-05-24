@@ -924,7 +924,7 @@ test('Throw when one of the prefabs configuration options is invalid', (t: Conte
   t.throws(() => validatePrefabs(prefabs, {}));
 });
 
-test('Success when the reconfigure configuration optioms of the prefabs are valid', (t: Context): void => {
+test('Success when the reconfigure configuration options of the prefabs are valid', (t: Context): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -941,13 +941,36 @@ test('Success when the reconfigure configuration optioms of the prefabs are vali
               type: 'PROPERTY',
               configuration: {
                 allowedKinds: ['TEXT', 'URL'],
-                allowManageValues: true,
-                createNewProperty: {
+                createProperty: {
                   type: 'TEXT',
-                  dependsOn: 'model',
                   value: 'New property',
                 },
+                manageObjectValues: {
+                  buttonLabel: 'Manage something',
+                  label: 'something',
+                  value: [
+                    { uuid: '', answer: 'yes', score: 100, boolean: true },
+                    { uuid: '', answer: 'no', score: 200, boolean: false },
+                  ],
+                },
                 showOnDrop: true,
+                showTextStyleColor: true,
+              },
+            },
+            {
+              value: '',
+              label: 'action',
+              key: 'action',
+              type: 'ACTION_JS',
+              configuration: {
+                createAction: {
+                  template: 'update',
+                  name: 'Action name',
+                  permissions: 'public',
+                  value: '',
+                },
+                showOnDrop: true,
+                showTextStyleColor: true,
               },
             },
           ],
@@ -956,6 +979,137 @@ test('Success when the reconfigure configuration optioms of the prefabs are vali
       ],
     },
   ];
+
+  t.notThrows(() => validatePrefabs(prefabs, {}));
+});
+
+test('Does not throw when wrapper option has showOnDrop', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          options: [
+            {
+              key: '0',
+              type: 'LINKED_OPTION',
+              value: {
+                ref: {
+                  componentId: '#componentId1',
+                  optionId: '#componentId1OptionId1',
+                },
+              },
+              configuration: {
+                showOnDrop: true,
+              },
+            },
+            {
+              key: '1',
+              type: 'LINKED_PARTIAL',
+              value: {
+                ref: {
+                  componentId: '#sideMenuPartial',
+                },
+              },
+              configuration: {
+                showOnDrop: true,
+              },
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
+
+  t.notThrows(() => validatePrefabs(prefabs, {}));
+});
+
+test('Success when the optionRefs of the prefabs are valid', (t: Context): void => {
+  const prefabs: Prefab[] = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'PROPERTY',
+              optionRef: {
+                id: '#something',
+                sourceId: '#otherComp',
+                inherit: 'label',
+              },
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ];
+
+  t.notThrows(() => validatePrefabs(prefabs, {}));
+});
+
+test('Does not throw when wrapper option has a optionRef', (t: Context): void => {
+  const prefabs = [
+    {
+      name: 'Component name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          type: 'WRAPPER',
+          options: [
+            {
+              key: '0',
+              type: 'LINKED_OPTION',
+              value: {
+                ref: {
+                  componentId: '#componentId1',
+                  optionId: '#componentId1OptionId1',
+                },
+              },
+              optionRef: {
+                id: '#something',
+                sourceId: '#otherComp',
+                inherit: 'label',
+              },
+              configuration: {
+                showOnDrop: true,
+              },
+            },
+            {
+              key: '1',
+              type: 'LINKED_PARTIAL',
+              value: {
+                ref: {
+                  componentId: '#sideMenuPartial',
+                },
+              },
+              optionRef: {
+                id: '#something',
+                sourceId: '#otherComp',
+                inherit: 'label',
+              },
+              configuration: {
+                showOnDrop: true,
+              },
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ] as unknown as Prefab[];
 
   t.notThrows(() => validatePrefabs(prefabs, {}));
 });
