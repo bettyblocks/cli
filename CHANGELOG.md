@@ -1,3 +1,10 @@
+# [25.78.0](https://github.com/bettyblocks/cli/compare/v25.77.0...v25.78.0) (2023-05-24)
+
+
+### Features
+
+* **PAGE-3194:** Add label, buttonLabel & selectableObjectKey to manageObjectValues. ([#424](https://github.com/bettyblocks/cli/issues/424)) ([b5f3b6b](https://github.com/bettyblocks/cli/commit/b5f3b6b))
+
 # [25.77.0](https://github.com/bettyblocks/cli/compare/v25.76.0...v25.77.0) (2023-05-22)
 
 
