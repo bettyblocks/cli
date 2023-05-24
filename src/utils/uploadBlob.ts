@@ -19,6 +19,13 @@ import {
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
+if (!AZURE_BLOB_ACCOUNT) {
+  throw new Error(chalk.red('\n$AZURE_BLOB_ACCOUNT is required\n'));
+}
+
+if (!AZURE_BLOB_ACCOUNT_KEY) {
+  throw new Error(chalk.red('\n$AZURE_BLOB_ACCOUNT_KEY is required\n'));
+}
 export interface BlockBlobUploadResponseExtended
   extends BlockBlobUploadResponse {
   url: string;
@@ -26,13 +33,13 @@ export interface BlockBlobUploadResponseExtended
 
 const getServiceUrl = (): ServiceURL => {
   const sharedKeyCredential: SharedKeyCredential = new SharedKeyCredential(
-    AZURE_BLOB_ACCOUNT as string,
-    AZURE_BLOB_ACCOUNT_KEY as string,
+    AZURE_BLOB_ACCOUNT,
+    AZURE_BLOB_ACCOUNT_KEY,
   );
 
   const pipeline: Pipeline = StorageURL.newPipeline(sharedKeyCredential);
 
-  const url = `https://${AZURE_BLOB_ACCOUNT as string}.blob.core.windows.net`;
+  const url = `https://${AZURE_BLOB_ACCOUNT}.blob.core.windows.net`;
 
   return new ServiceURL(url, pipeline);
 };

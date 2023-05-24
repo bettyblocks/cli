@@ -4,9 +4,10 @@ import {
   COMPARATORS,
   CONDITION_TYPE,
   CONFIGURATION_AS,
+  INHERIT_TYPES,
+  MEDIA_TYPES,
   MODAL_TYPE,
   OPTIONS,
-  MEDIA_TYPES,
 } from '../constants';
 
 const refSchema = Joi.when('type', {
@@ -75,9 +76,9 @@ const optionConfigurationSchema = Joi.when('type', {
       value: Joi.string().allow(''),
     }),
     manageObjectValues: Joi.object({
-      label: Joi.string().optional(),
-      buttonLabel: Joi.string().optional(),
       selectableObjectKey: Joi.boolean().optional(),
+      buttonLabel: Joi.string().optional(),
+      label: Joi.string().optional(),
       value: Joi.array().items(Joi.object()),
     }),
   }),
@@ -115,6 +116,12 @@ const optionConfigurationSchema = Joi.when('type', {
 
   .default({});
 
+const OptionRefInheritObject = Joi.object({
+  type: Joi.string().valid(...INHERIT_TYPES),
+  name: Joi.string(),
+  id: Joi.string(),
+});
+
 export const optionSchema = Joi.object({
   label: Joi.string().required(),
   key: Joi.string().required(),
@@ -133,7 +140,12 @@ export const optionSchema = Joi.object({
   optionRef: Joi.object({
     id: Joi.string(),
     sourceId: Joi.string(),
-    inherit: ['label', 'name', 'variableProperty'],
+    inherit: Joi.alternatives().try(
+      Joi.string().valid('name', 'label', 'value'),
+      Joi.array().items(
+        Joi.alternatives().try(Joi.string(), OptionRefInheritObject),
+      ),
+    ),
   }),
 });
 

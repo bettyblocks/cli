@@ -1,3 +1,24 @@
+# [25.77.0](https://github.com/bettyblocks/cli/compare/v25.76.0...v25.77.0) (2023-05-22)
+
+
+### Features
+
+* create publish bundle function ([#421](https://github.com/bettyblocks/cli/issues/421)) ([5e44ea9](https://github.com/bettyblocks/cli/commit/5e44ea9))
+
+# [25.76.0](https://github.com/bettyblocks/cli/compare/v25.75.0...v25.76.0) (2023-05-19)
+
+
+### Features
+
+* add support for label and button label in manageObjectValues ([#422](https://github.com/bettyblocks/cli/issues/422)) ([60d893e](https://github.com/bettyblocks/cli/commit/60d893e))
+
+# [25.75.0](https://github.com/bettyblocks/cli/compare/v25.74.0...v25.75.0) (2023-05-04)
+
+
+### Features
+
+* use property_label structure in optionRef ([#420](https://github.com/bettyblocks/cli/issues/420)) ([bbf8cc7](https://github.com/bettyblocks/cli/commit/bbf8cc7))
+
 # [25.74.0](https://github.com/bettyblocks/cli/compare/v25.73.0...v25.74.0) (2023-04-20)
 
 
