@@ -946,6 +946,9 @@ test('Success when the reconfigure configuration options of the prefabs are vali
                   value: 'New property',
                 },
                 manageObjectValues: {
+                  label: 'foo',
+                  buttonLabel: 'bar',
+                  selectableObjectKey: true,
                   value: [
                     { uuid: '', answer: 'yes', score: 100, boolean: true },
                     { uuid: '', answer: 'no', score: 200, boolean: false },
