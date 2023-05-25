@@ -2,7 +2,13 @@
 import chalk from 'chalk';
 import path from 'path';
 import program, { CommanderStatic } from 'commander';
-import { outputJson, pathExists, promises, remove } from 'fs-extra';
+import {
+  outputJson,
+  pathExists,
+  promises,
+  readFileSync,
+  remove,
+} from 'fs-extra';
 import ts, { JsxEmit, ModuleKind, ScriptTarget } from 'typescript';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
@@ -62,6 +68,9 @@ const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
 const enableNewTranspile = !!options.transpile;
+const startTime = Date.now();
+let endTime;
+const buildAll = false;
 
 /* execute command */
 
@@ -465,44 +474,94 @@ void (async (): Promise<void> => {
       (prefab) => prefab.type !== 'page',
     );
 
-    const outputPromises = [
-      outputJson(`${distDir}/prefabs.json`, defaultPrefabs),
-      outputJson(`${distDir}/templates.json`, componentsWithHash),
-
-      interactions && outputJson(`${distDir}/interactions.json`, interactions),
-    ];
-
-    if (buildStyles.length > 0) {
-      outputPromises.push(outputJson(`${distDir}/styles.json`, buildStyles));
-    }
-
     const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');
-
-    if (pagePrefabs.length > 0) {
-      outputPromises.push(
-        outputJson(`${distDir}/pagePrefabs.json`, pagePrefabs),
-      );
-    }
-
     const existingPath = await pathExists(`${distDir}/pagePrefabs.json`);
-
-    if (pagePrefabs.length === 0 && existingPath) {
-      await remove(`${distDir}/pagePrefabs.json`);
-    }
-
-    if (buildPartialprefabs.length > 0) {
-      outputPromises.push(
-        outputJson(`${distDir}/partials.json`, buildPartialprefabs),
-      );
-    }
-
     const existingPartialPath = await pathExists(`${distDir}/partials.json`);
+
+    if (buildAll) {
+      const outputPromises = [
+        outputJson(`${distDir}/prefabs.json`, defaultPrefabs),
+        outputJson(`${distDir}/templates.json`, componentsWithHash),
+
+        interactions &&
+          outputJson(`${distDir}/interactions.json`, interactions),
+      ];
+
+      if (buildStyles.length > 0) {
+        outputPromises.push(outputJson(`${distDir}/styles.json`, buildStyles));
+      }
+
+      if (pagePrefabs.length > 0) {
+        outputPromises.push(
+          outputJson(`${distDir}/pagePrefabs.json`, pagePrefabs),
+        );
+      }
+
+      if (buildPartialprefabs.length > 0) {
+        outputPromises.push(
+          outputJson(`${distDir}/partials.json`, buildPartialprefabs),
+        );
+      }
+
+      await Promise.all(outputPromises);
+    } else {
+      const comps: Component[] = JSON.parse(
+        readFileSync(`${distDir}/templates.json`, 'utf8'),
+      );
+
+      const x = comps.map((comp: Component): Component[] => {
+        if (
+          componentsWithHash.length > 0 &&
+          comp.name === componentsWithHash[0].name
+        ) {
+          // eslint-disable-next-line prefer-destructuring, no-param-reassign
+          comp = componentsWithHash[0];
+        }
+        return comp as any;
+      });
+
+      const newOutputPromises = [
+        outputJson(
+          `${distDir}/prefabs.json`,
+          JSON.parse(readFileSync(`${distDir}/prefabs.json`, 'utf8')),
+        ),
+        outputJson(`${distDir}/templates.json`, x),
+
+        interactions &&
+          outputJson(
+            `${distDir}/interactions.json`,
+            JSON.parse(readFileSync(`${distDir}/interactions.json`, 'utf8')),
+          ),
+      ];
+
+      if (existingPath && pagePrefabs.length > 0) {
+        newOutputPromises.push(
+          outputJson(
+            `${distDir}/pagePrefabs.json`,
+            JSON.parse(readFileSync(`${distDir}/pagePrefabs.json`, 'utf8')),
+          ),
+        );
+      }
+
+      if (existingPartialPath && buildPartialprefabs.length > 0) {
+        newOutputPromises.push(
+          outputJson(
+            `${distDir}/partials.json`,
+            JSON.parse(readFileSync(`${distDir}/partials.json`, 'utf8')),
+          ),
+        );
+      }
+
+      await Promise.all(newOutputPromises);
+    }
 
     if (buildPartialprefabs.length === 0 && existingPartialPath) {
       await remove(`${distDir}/partials.json`);
     }
 
-    await Promise.all(outputPromises);
+    if (pagePrefabs.length === 0 && existingPath) {
+      await remove(`${distDir}/pagePrefabs.json`);
+    }
 
     // v2
 
@@ -536,4 +595,6 @@ void (async (): Promise<void> => {
 
     process.exit(1);
   }
+  endTime = Date.now();
+  console.info(`total time: ${(endTime - startTime) / 1000} seconds`);
 })();
