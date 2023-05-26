@@ -61,6 +61,7 @@ program
     'the runtime option to build for',
     'v1',
   )
+  .option('--buildlast', 'Build the last edited component.')
   .parse(process.argv);
 
 const { args }: CommanderStatic = program;
@@ -68,9 +69,14 @@ const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
 const enableNewTranspile = !!options.transpile;
+const arg = process.argv.slice(2);
 const startTime = Date.now();
 let endTime;
-const buildAll = false;
+let buildAll = true;
+
+if (arg.includes('--buildlast')) {
+  buildAll = false;
+}
 
 /* execute command */
 
@@ -84,7 +90,11 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
     throw new Error(chalk.red('\nComponents folder not found\n'));
   }
 
-  const componentFiles: string[] = await readFilesByType(srcDir);
+  const componentFiles: string[] = await readFilesByType(
+    srcDir,
+    'js',
+    buildAll,
+  );
 
   const components: Array<Promise<Component>> = componentFiles.map(
     async (file: string): Promise<Component> => {
@@ -160,10 +170,14 @@ const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
   let partialTsxFiles: string[] = [];
 
   if (isPartial) {
-    partialTsxFiles = await readFilesByType(`${srcDir}/partials`, 'tsx');
+    partialTsxFiles = await readFilesByType(
+      `${srcDir}/partials`,
+      'tsx',
+      buildAll,
+    );
   } else {
-    prefabTsFiles = await readFilesByType(srcDir, 'ts');
-    prefabTsxFiles = await readFilesByType(srcDir, 'tsx');
+    prefabTsFiles = await readFilesByType(srcDir, 'ts', buildAll);
+    prefabTsxFiles = await readFilesByType(srcDir, 'tsx', buildAll);
   }
 
   const prefabFiles = [...prefabTsFiles, ...prefabTsxFiles];
@@ -247,7 +261,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     throw new Error(chalk.red('\nPrefabs folder not found\n'));
   }
 
-  const prefabFiles: string[] = await readFilesByType(srcDir);
+  const prefabFiles: string[] = await readFilesByType(srcDir, 'js', buildAll);
 
   const prefabs: Array<Promise<Prefab>> = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
@@ -283,7 +297,11 @@ const readPartialPrefabs: () => Promise<Prefab[]> = async (): Promise<
     await mkdir(srcDir, { recursive: true });
   }
 
-  const partialPrefabFiles: string[] = await readFilesByType(srcDir);
+  const partialPrefabFiles: string[] = await readFilesByType(
+    srcDir,
+    'js',
+    buildAll,
+  );
 
   const partialPrefabs: Array<Promise<Prefab>> = partialPrefabFiles.map(
     async (file: string): Promise<Prefab> => {
@@ -321,7 +339,11 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     });
   }
 
-  const interactionFiles: string[] = await readFilesByType(srcDir, 'ts');
+  const interactionFiles: string[] = await readFilesByType(
+    srcDir,
+    'ts',
+    buildAll,
+  );
 
   return Promise.all(
     interactionFiles.map(async (file: string): Promise<Interaction> => {

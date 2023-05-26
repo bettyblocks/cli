@@ -23,18 +23,17 @@ const buildLast = async (dir: string, extension = 'js'): Promise<string[]> => {
 };
 
 const buildAll = async (dir: string, extension = 'js'): Promise<string[]> => {
-  console.log('ik zit in de de buildAll');
-
   const files: string[] = await readdir(dir);
-  console.log('type', extension);
 
   return files.filter((file: string): boolean =>
     file.endsWith(`.${extension}`),
   );
 };
 
-export default async (dir: string, extension = 'js'): Promise<string[]> => {
-  // return all ? buildAll(dir, extension) : buildLast(dir, extension);
-  // return buildAll(dir, extension);
-  return buildLast(dir, extension);
+export default async (
+  dir: string,
+  extension = 'js',
+  buildAllFiles = true,
+): Promise<string[]> => {
+  return buildAllFiles ? buildAll(dir, extension) : buildLast(dir, extension);
 };
