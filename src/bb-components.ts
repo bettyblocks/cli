@@ -14,6 +14,7 @@ const availableCommands: CommandComponents[] = [
   'publish',
   'help',
   'generate',
+  'publish-bundle',
 ];
 
 /* process arguments */
@@ -30,6 +31,7 @@ program
     'serve [path]',
     'serve the component set at a specific path, defaults to CWD',
   )
+  .command('publish-bundle [options] [path]', 'publish a bundle')
   .command(
     'publish [options] [path]',
     'publish the component set from a specific path, defaults to CWD',
