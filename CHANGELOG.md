@@ -1,3 +1,10 @@
+## [25.78.2](https://github.com/bettyblocks/cli/compare/v25.78.1...v25.78.2) (2023-05-26)
+
+
+### Bug Fixes
+
+* rename publish bundle ([#427](https://github.com/bettyblocks/cli/issues/427)) ([193454b](https://github.com/bettyblocks/cli/commit/193454b))
+
 ## [25.78.1](https://github.com/bettyblocks/cli/compare/v25.78.0...v25.78.1) (2023-05-26)
 
 
