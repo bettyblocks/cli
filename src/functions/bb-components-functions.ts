@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import chalk from 'chalk';
 import uploadBlob, {
   BlockBlobUploadResponseExtended,
-} from 'src/utils/uploadBlob';
-import chalk from 'chalk';
+} from '../utils/uploadBlob';
 
 export const upload = async (
   objects: unknown,
