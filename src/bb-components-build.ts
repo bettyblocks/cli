@@ -72,11 +72,7 @@ const enableNewTranspile = !!options.transpile;
 const arg = process.argv.slice(2);
 const startTime = Date.now();
 let endTime;
-let buildAll = true;
-
-if (arg.includes('--buildlast')) {
-  buildAll = false;
-}
+const buildAll = !arg.includes('--buildlast');
 
 /* execute command */
 
@@ -391,6 +387,10 @@ void (async (): Promise<void> => {
       readPartialPrefabs(),
     ]);
 
+    const existingComponents: Component[] = JSON.parse(
+      readFileSync(`${distDir}/templates.json`, 'utf8'),
+    );
+
     const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = jsPrefabs
       .concat(tsxPrefabs)
@@ -417,9 +417,9 @@ void (async (): Promise<void> => {
       {},
     );
 
-    const componentNames = components.map(({ name }) => name);
+    const componentNames = existingComponents.map(({ name }) => name);
 
-    checkNameReferences(prefabs, components);
+    checkNameReferences(prefabs, existingComponents);
 
     const componentStyleMap: ComponentStyleMap = components.reduce((acc, c) => {
       return c.styleType
@@ -527,50 +527,83 @@ void (async (): Promise<void> => {
 
       await Promise.all(outputPromises);
     } else {
-      const comps: Component[] = JSON.parse(
-        readFileSync(`${distDir}/templates.json`, 'utf8'),
+      const existingPrefabs: Prefab[] = JSON.parse(
+        readFileSync(`${distDir}/prefabs.json`, 'utf8'),
       );
 
-      const x = comps.map((comp: Component): Component[] => {
-        if (
-          componentsWithHash.length > 0 &&
-          comp.name === componentsWithHash[0].name
-        ) {
-          // eslint-disable-next-line prefer-destructuring, no-param-reassign
-          comp = componentsWithHash[0];
-        }
-        return comp as any;
-      });
+      interface ComponentWithHash extends Component {
+        componentHash: string;
+      }
+      type Element =
+        | ComponentWithHash
+        | Component
+        | Prefab
+        | Interaction
+        | BuildPrefab;
+
+      const replaceInSet = (
+        existingElements: Element[],
+        newElements: Element[],
+      ) => {
+        return existingElements.map((existingElement) => {
+          if (
+            newElements.length > 0 &&
+            existingElement.name === newElements[0].name
+          ) {
+            return newElements[0];
+          }
+          return existingElement;
+        });
+      };
+
+      const updatedPrefabs = replaceInSet(existingPrefabs, prefabs);
+
+      const updatedComponents = replaceInSet(
+        existingComponents,
+        componentsWithHash,
+      );
+
+      const existingInteractions: Interaction[] = JSON.parse(
+        readFileSync(`${distDir}/interactions.json`, 'utf8'),
+      );
+
+      const updatedInteractions = replaceInSet(
+        existingInteractions,
+        interactions,
+      );
 
       const newOutputPromises = [
-        outputJson(
-          `${distDir}/prefabs.json`,
-          JSON.parse(readFileSync(`${distDir}/prefabs.json`, 'utf8')),
-        ),
-        outputJson(`${distDir}/templates.json`, x),
+        outputJson(`${distDir}/prefabs.json`, updatedPrefabs),
+        outputJson(`${distDir}/templates.json`, updatedComponents),
 
         interactions &&
-          outputJson(
-            `${distDir}/interactions.json`,
-            JSON.parse(readFileSync(`${distDir}/interactions.json`, 'utf8')),
-          ),
+          outputJson(`${distDir}/interactions.json`, updatedInteractions),
       ];
+
+      const existingPagePrefabs: Prefab[] = JSON.parse(
+        readFileSync(`${distDir}/pagePrefabs.json`, 'utf8'),
+      );
+
+      const updatedPagePrefabs = replaceInSet(existingPagePrefabs, pagePrefabs);
 
       if (existingPath && pagePrefabs.length > 0) {
         newOutputPromises.push(
-          outputJson(
-            `${distDir}/pagePrefabs.json`,
-            JSON.parse(readFileSync(`${distDir}/pagePrefabs.json`, 'utf8')),
-          ),
+          outputJson(`${distDir}/pagePrefabs.json`, updatedPagePrefabs),
         );
       }
 
+      const existingPartials: Prefab[] = JSON.parse(
+        readFileSync(`${distDir}/partials.json`, 'utf8'),
+      );
+
+      const updatedPartials = replaceInSet(
+        existingPartials,
+        buildPartialprefabs,
+      );
+
       if (existingPartialPath && buildPartialprefabs.length > 0) {
         newOutputPromises.push(
-          outputJson(
-            `${distDir}/partials.json`,
-            JSON.parse(readFileSync(`${distDir}/partials.json`, 'utf8')),
-          ),
+          outputJson(`${distDir}/partials.json`, updatedPartials),
         );
       }
 
