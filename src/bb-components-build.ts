@@ -610,11 +610,11 @@ void (async (): Promise<void> => {
       await Promise.all(newOutputPromises);
     }
 
-    if (buildPartialprefabs.length === 0 && existingPartialPath) {
+    if (buildPartialprefabs.length === 0 && existingPartialPath && buildAll) {
       await remove(`${distDir}/partials.json`);
     }
 
-    if (pagePrefabs.length === 0 && existingPath) {
+    if (pagePrefabs.length === 0 && existingPath && buildAll) {
       await remove(`${distDir}/pagePrefabs.json`);
     }
 
