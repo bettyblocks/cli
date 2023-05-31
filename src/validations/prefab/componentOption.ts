@@ -120,6 +120,7 @@ const OptionRefInheritObject = Joi.object({
   type: Joi.string().valid(...INHERIT_TYPES),
   name: Joi.string(),
   id: Joi.string(),
+  useKey: Joi.string(),
 });
 
 export const optionSchema = Joi.object({
@@ -142,6 +143,7 @@ export const optionSchema = Joi.object({
     sourceId: Joi.string(),
     inherit: Joi.alternatives().try(
       Joi.string().valid('name', 'label', 'value'),
+      OptionRefInheritObject,
       Joi.array().items(
         Joi.alternatives().try(Joi.string(), OptionRefInheritObject),
       ),
