@@ -1,3 +1,10 @@
+# [25.79.0](https://github.com/bettyblocks/cli/compare/v25.78.2...v25.79.0) (2023-05-31)
+
+
+### Features
+
+* support object prop in option refs ([#428](https://github.com/bettyblocks/cli/issues/428)) ([b5bf7f1](https://github.com/bettyblocks/cli/commit/b5bf7f1))
+
 ## [25.78.2](https://github.com/bettyblocks/cli/compare/v25.78.1...v25.78.2) (2023-05-26)
 
 
