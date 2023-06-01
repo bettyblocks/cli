@@ -1,3 +1,10 @@
+# [25.81.0](https://github.com/bettyblocks/cli/compare/v25.80.2...v25.81.0) (2023-06-01)
+
+
+### Features
+
+* refactor upload files to blob ([#434](https://github.com/bettyblocks/cli/issues/434)) ([5a73617](https://github.com/bettyblocks/cli/commit/5a73617))
+
 ## [25.80.2](https://github.com/bettyblocks/cli/compare/v25.80.1...v25.80.2) (2023-06-01)
 
 
