@@ -15,7 +15,7 @@ interface CommanderBucket extends CommanderStatic {
 }
 program
   .usage('[options] [path]')
-  .name('bb components publish-bundle')
+  .name('bb components publishbundle')
   .option('-b, --bucket [name]', 'the component set name')
   .parse(process.argv);
 const { args, bucket }: CommanderBucket = program;
