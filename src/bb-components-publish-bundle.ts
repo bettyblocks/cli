@@ -2,7 +2,7 @@
 
 import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { readFile } from 'fs';
+import { readFileSync } from 'fs';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import {
@@ -25,22 +25,21 @@ if (!bucket) {
 }
 validateBucketName(bucket);
 /* eslint-disable */
-const readJS = async (fileName: string): Promise<void> => {
-  readFile(`${distDir}/${fileName}`, (err, data) => {
-    if (data) {
-      return data;
-    }
-    if (err) {
-      throw new Error(
-        chalk.red(
-          [
-            'There was an error trying to publish the bundle to the bucket',
-            err.code === 'ENOENT' ? err.message : err,
-          ].join('\n'),
-        ),
-      );
-    }
-  });
+const readJS = async (fileName: string): Promise<string> => {
+  try {
+    return readFileSync(`${distDir}/${fileName}`, 'utf8');
+  } catch (error) {
+    const { code, message }: Error & { code: 'ENOENT' | string } = error;
+
+    throw new Error(
+      chalk.red(
+        [
+          'There was an error trying to publish your component set',
+          code === 'ENOENT' ? message : error,
+        ].join('\n'),
+      ),
+    );
+  }
 };
 /* eslint-enable */
 
@@ -49,7 +48,10 @@ void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['bundle.js', 'bundle.js.map'];
   const [{ url }] = await Promise.all(
-    files.map((fileName) => publish(fileName, bucket, readJS)),
+    files.map(async (fileName) => {
+      const objects = await readJS(fileName);
+      return publish(fileName, bucket, objects, 'text/javascript');
+    }),
   );
 
   console.log(
