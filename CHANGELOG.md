@@ -1,3 +1,10 @@
+# [25.80.0](https://github.com/bettyblocks/cli/compare/v25.79.0...v25.80.0) (2023-06-01)
+
+
+### Features
+
+* trigger pipeline ([#430](https://github.com/bettyblocks/cli/issues/430)) ([5210c71](https://github.com/bettyblocks/cli/commit/5210c71))
+
 # [25.79.0](https://github.com/bettyblocks/cli/compare/v25.78.2...v25.79.0) (2023-05-31)
 
 
