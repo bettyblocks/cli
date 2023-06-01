@@ -5,12 +5,13 @@ import uploadBlob, {
 } from '../utils/uploadBlob';
 
 export const upload = async (
-  objects: unknown,
+  objects: string,
   fileName: string,
   bucketName: string,
+  blobContentType: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
   try {
-    return await uploadBlob(bucketName, fileName, JSON.stringify(objects));
+    return await uploadBlob(bucketName, fileName, objects, blobContentType);
   } catch (error) {
     const defaultMessage =
       'There was an error trying to publish your component set';
@@ -34,13 +35,12 @@ export const upload = async (
 export const publish = async (
   fileName: string,
   bucketName: string,
-  read: (fileName: string) => Promise<void>,
+  objects: string,
+  blobContentType: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
   console.log(`Publishing ${fileName}.`);
 
-  const objects = await read(fileName);
-
-  return upload(objects, fileName, bucketName);
+  return upload(objects, fileName, bucketName, blobContentType);
 };
 
 export const validateBucketName = (name: string) => {

@@ -89,11 +89,12 @@ const getBlockURL = async (
 const upload = (
   url: BlockBlobURL,
   content: string,
+  blobContentType: string,
 ): Promise<BlockBlobUploadResponse> =>
   url.upload(Aborter.none, content, content.length, {
     blobHTTPHeaders: {
       blobCacheControl: 'private, max-age=0, no-transform',
-      blobContentType: 'text/html',
+      blobContentType,
     },
   });
 
@@ -101,12 +102,13 @@ export default async (
   blobContainerName: string,
   blobName: string,
   blobContent: string,
+  blobContentType: string,
 ): Promise<BlockBlobUploadResponseExtended> => {
   const serviceURL = getServiceUrl();
   await setCorsRules(serviceURL);
   const containerURL = getContainerURL(serviceURL, blobContainerName);
   const blockURL = await getBlockURL(containerURL, blobName);
-  const uploadResponse = await upload(blockURL, blobContent);
+  const uploadResponse = await upload(blockURL, blobContent, blobContentType);
 
   return { ...uploadResponse, url: containerURL.url };
 };

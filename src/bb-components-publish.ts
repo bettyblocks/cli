@@ -51,7 +51,10 @@ void (async (): Promise<void> => {
     files.push('partials.json');
   }
   const [{ url }] = await Promise.all(
-    files.map((fileName) => publish(fileName, name, read)),
+    files.map(async (fileName) => {
+      const objects = await read(fileName);
+      return publish(fileName, name, JSON.stringify(objects), 'text/html');
+    }),
   );
 
   console.log(
