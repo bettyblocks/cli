@@ -11,7 +11,7 @@ import {
 } from './functions/bb-components-functions';
 
 interface CommanderBucket extends CommanderStatic {
-  bucket?: { name: string };
+  bucket?: string;
 }
 program
   .usage('[options] [path]')
@@ -23,7 +23,7 @@ const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 if (!bucket) {
   throw new Error(chalk.red('\n-b or --bucket [name] is required\n'));
 }
-validateBucketName(bucket.name);
+validateBucketName(bucket);
 /* eslint-disable */
 const readJS = async (fileName: string): Promise<void> => {
   readFile(`${distDir}/${fileName}`, (err, data) => {
@@ -49,7 +49,7 @@ void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['bundle.js', 'bundle.js.map'];
   const [{ url }] = await Promise.all(
-    files.map((fileName) => publish(fileName, bucket?.name, readJS)),
+    files.map((fileName) => publish(fileName, bucket, readJS)),
   );
 
   console.log(
