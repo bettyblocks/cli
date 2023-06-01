@@ -1,3 +1,10 @@
+## [25.80.2](https://github.com/bettyblocks/cli/compare/v25.80.1...v25.80.2) (2023-06-01)
+
+
+### Bug Fixes
+
+* get bucket name ([#433](https://github.com/bettyblocks/cli/issues/433)) ([79c13c9](https://github.com/bettyblocks/cli/commit/79c13c9))
+
 ## [25.80.1](https://github.com/bettyblocks/cli/compare/v25.80.0...v25.80.1) (2023-06-01)
 
 
