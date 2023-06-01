@@ -17,7 +17,7 @@ export type CommandComponents =
   | 'publish'
   | 'help'
   | 'generate'
-  | 'publishbundle';
+  | 'publish-bundle';
 
 export type CommandFunctions =
   | 'init'
