@@ -61,7 +61,7 @@ program
     'the runtime option to build for',
     'v1',
   )
-  .option('--buildlast', 'Build the last edited component.')
+  .option('--fast', 'Build the last edited component.')
   .parse(process.argv);
 
 const { args }: CommanderStatic = program;
@@ -72,7 +72,7 @@ const enableNewTranspile = !!options.transpile;
 const arg = process.argv.slice(2);
 const startTime = Date.now();
 let endTime;
-const buildAll = !arg.includes('--buildlast');
+const buildAll = !arg.includes('--fast');
 
 /* execute command */
 
