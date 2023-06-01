@@ -267,7 +267,10 @@ export interface PrefabComponentOptionBase {
   optionRef?: {
     id?: string;
     sourceId?: string;
-    inherit?: string | (OptionRefInheritObject | string)[];
+    inherit?:
+      | string
+      | (OptionRefInheritObject | string)[]
+      | OptionRefInheritObject;
   };
 }
 
@@ -494,7 +497,8 @@ export interface ComponentDependency {
 }
 
 export interface OptionRefInheritObject {
-  name: string;
   id: string;
   type: 'PROPERTY' | 'PROPERTY_LABEL';
+  name?: string;
+  useKey?: string;
 }
