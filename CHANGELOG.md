@@ -1,3 +1,10 @@
+## [25.80.1](https://github.com/bettyblocks/cli/compare/v25.80.0...v25.80.1) (2023-06-01)
+
+
+### Bug Fixes
+
+* revert publish command ([#431](https://github.com/bettyblocks/cli/issues/431)) ([97f0e5f](https://github.com/bettyblocks/cli/commit/97f0e5f))
+
 # [25.80.0](https://github.com/bettyblocks/cli/compare/v25.79.0...v25.80.0) (2023-06-01)
 
 
