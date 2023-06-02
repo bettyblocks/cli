@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import { FunctionDefinition } from 'src/functions/functionDefinitions';
+import { Block } from 'src/blocks/blockDefinitions';
 import {
   FunctionValidator,
   logValidationResult,
@@ -8,6 +9,8 @@ import {
 import Config from '../../functions/config';
 
 const workingDir = process.cwd();
+
+export const validateBlockConfig = ({ functions }: Block) => !!functions.length;
 
 export const validateBlockDependencies = (
   dependencies: string[],
@@ -48,7 +51,7 @@ export const validateFunctions = async (
 export const getErrorMessage = ({
   validFunctions,
   validBlockDependencies,
-  invalidDependencies,
+  invalidDependencies = [],
 }: {
   validFunctions: boolean;
   validBlockDependencies: boolean;
@@ -62,6 +65,10 @@ export const getErrorMessage = ({
     return `The following dependencies are not valid: ${invalidDependencies.join(
       ', ',
     )}`;
+  }
+
+  if (!validBlockDependencies && !invalidDependencies.length) {
+    return 'One of the block dependencies is not valid';
   }
 
   return 'Something went wrong';
