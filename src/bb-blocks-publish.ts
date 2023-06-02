@@ -22,6 +22,7 @@ import {
   validateFunctions,
   validateBlockDependencies,
   getErrorMessage,
+  validateBlockConfig,
 } from './validations/function-block-validations';
 
 program.name('bb blocks publish').parse(process.argv);
@@ -29,7 +30,6 @@ program.name('bb blocks publish').parse(process.argv);
 const workingDir = process.cwd();
 const baseBlocksPath = path.join(workingDir, 'blocks');
 const blocks = blockDefinitions(baseBlocksPath);
-const validateBlockConfig = (block: Block) => !!block.functions.length;
 
 const createBlockZip = (
   name: string,
