@@ -71,7 +71,6 @@ const distDir = `${rootDir}/dist`;
 const enableNewTranspile = !!options.transpile;
 const arg = process.argv.slice(2);
 const startTime = Date.now();
-let endTime;
 const buildAll = !arg.includes('--fast');
 
 /* execute command */
@@ -650,6 +649,5 @@ void (async (): Promise<void> => {
 
     process.exit(1);
   }
-  endTime = Date.now();
-  console.info(`total time: ${(endTime - startTime) / 1000} seconds`);
+  console.info(`Total time: ${(Date.now() - startTime) / 1000} seconds`);
 })();
