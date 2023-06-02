@@ -1,3 +1,10 @@
+# [25.82.0](https://github.com/bettyblocks/cli/compare/v25.81.0...v25.82.0) (2023-06-02)
+
+
+### Features
+
+* show proper error messages ([9f1125a](https://github.com/bettyblocks/cli/commit/9f1125a))
+
 # [25.81.0](https://github.com/bettyblocks/cli/compare/v25.80.2...v25.81.0) (2023-06-01)
 
 
