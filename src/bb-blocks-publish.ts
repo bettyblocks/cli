@@ -1,14 +1,10 @@
-/* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument */
-/* npm dependencies */
-
-import chalk from 'chalk';
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from 'fs-extra';
 import path from 'path';
 import program from 'commander';
 import prompts from 'prompts';
 import AdmZip from 'adm-zip';
-
-/* internal dependencies */
+import chalk from 'chalk';
 
 import {
   Block,
@@ -16,18 +12,17 @@ import {
   createPackageJson,
 } from './blocks/blockDefinitions';
 import {
-  FunctionDefinition,
   functionDefinitions,
   generateIndex,
   whitelistedFunctions,
 } from './functions/functionDefinitions';
 import publishBlocks from './blocks/publishBlocks';
-import Config from './functions/config';
+
 import {
-  FunctionValidator,
-  logValidationResult,
-  ValidationResult,
-} from './functions/validations';
+  validateFunctions,
+  validateBlockDependencies,
+  getErrorMessage,
+} from './validations/function-block-validations';
 
 program.name('bb blocks publish').parse(process.argv);
 
@@ -80,26 +75,6 @@ const createBlockZip = (
   }
 };
 
-const validateFunctions = async (
-  blockFunctions: FunctionDefinition[],
-): Promise<{ valid: boolean; results: ValidationResult[] }> => {
-  const baseFunctionsPath = path.join(workingDir, 'functions');
-  console.log(`Validating functions in ${baseFunctionsPath}`);
-  const config = new Config();
-  const validator = new FunctionValidator(config, baseFunctionsPath);
-  await validator.initSchema();
-  const results = await validator.validateFunctions('', blockFunctions);
-  let valid = true;
-  results.forEach((result) => {
-    if (result.status === 'error') {
-      valid = false;
-    }
-    logValidationResult(result);
-  });
-
-  return { valid, results };
-};
-
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   const choices = blocks.map((block) => ({
@@ -119,6 +94,7 @@ void (async (): Promise<void> => {
   selected.forEach((jsonFile) => {
     // eslint-disable-next-line no-void
     void (async (): Promise<void> => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const block: Block = fs.readJsonSync(jsonFile);
       const name = path.basename(jsonFile, '.json');
       if (validateBlockConfig(block)) {
@@ -129,33 +105,30 @@ void (async (): Promise<void> => {
             funcDefinitions,
             block.functions,
           );
-          const { valid, results } = await validateFunctions(blockFunctions);
-          if (valid) {
+
+          const { valid: validFunctions } = await validateFunctions(
+            blockFunctions,
+          );
+          const { valid: validBlockDependencies, invalidDependencies } =
+            validateBlockDependencies(block.dependencies);
+
+          if (validFunctions && validBlockDependencies) {
             const zip = createBlockZip(name, block);
             if (zip) await publishBlocks(block.functions, zip);
-          } else if (
-            results.some(
-              ({ errors }) =>
-                errors &&
-                errors.some(
-                  ({ stack }) =>
-                    stack === 'instance.icon is not of a type(s) object',
-                ),
-            )
-          ) {
-            console.log(
-              `Maybe auto-convert your function icons using ${chalk.cyan(
-                'bb functions convert-icons',
-              )}?`,
-            );
           } else {
-            console.error('Some functions are not valid');
+            const errorMessage = getErrorMessage({
+              validFunctions,
+              validBlockDependencies,
+              invalidDependencies,
+            });
+
+            throw Error(chalk.red(`\n${errorMessage}\n`));
           }
         } catch ({ message }) {
           console.error(message);
         }
       } else {
-        console.log(`Cannot publish invalid block ${name}`);
+        console.error(chalk.red(`\nFunctions can not be empty\n`));
       }
     })();
   });
