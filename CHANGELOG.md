@@ -1,3 +1,10 @@
+## [25.82.2](https://github.com/bettyblocks/cli/compare/v25.82.1...v25.82.2) (2023-06-05)
+
+
+### Bug Fixes
+
+* check for template.json ([#440](https://github.com/bettyblocks/cli/issues/440)) ([d934690](https://github.com/bettyblocks/cli/commit/d934690))
+
 ## [25.82.1](https://github.com/bettyblocks/cli/compare/v25.82.0...v25.82.1) (2023-06-05)
 
 
