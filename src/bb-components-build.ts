@@ -2,7 +2,13 @@
 import chalk from 'chalk';
 import path from 'path';
 import program, { CommanderStatic } from 'commander';
-import { outputJson, pathExists, promises, remove } from 'fs-extra';
+import {
+  outputJson,
+  pathExists,
+  promises,
+  readFileSync,
+  remove,
+} from 'fs-extra';
 import ts, { JsxEmit, ModuleKind, ScriptTarget } from 'typescript';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
@@ -55,6 +61,7 @@ program
     'the runtime option to build for',
     'v1',
   )
+  .option('--fast', 'Build the last edited component.')
   .parse(process.argv);
 
 const { args }: CommanderStatic = program;
@@ -62,6 +69,9 @@ const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;
 const enableNewTranspile = !!options.transpile;
+const arg = process.argv.slice(2);
+const startTime = Date.now();
+const buildAll = !arg.includes('--fast');
 
 /* execute command */
 
@@ -75,7 +85,11 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
     throw new Error(chalk.red('\nComponents folder not found\n'));
   }
 
-  const componentFiles: string[] = await readFilesByType(srcDir);
+  const componentFiles: string[] = await readFilesByType(
+    srcDir,
+    'js',
+    buildAll,
+  );
 
   const components: Array<Promise<Component>> = componentFiles.map(
     async (file: string): Promise<Component> => {
@@ -151,10 +165,14 @@ const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
   let partialTsxFiles: string[] = [];
 
   if (isPartial) {
-    partialTsxFiles = await readFilesByType(`${srcDir}/partials`, 'tsx');
+    partialTsxFiles = await readFilesByType(
+      `${srcDir}/partials`,
+      'tsx',
+      buildAll,
+    );
   } else {
-    prefabTsFiles = await readFilesByType(srcDir, 'ts');
-    prefabTsxFiles = await readFilesByType(srcDir, 'tsx');
+    prefabTsFiles = await readFilesByType(srcDir, 'ts', buildAll);
+    prefabTsxFiles = await readFilesByType(srcDir, 'tsx', buildAll);
   }
 
   const prefabFiles = [...prefabTsFiles, ...prefabTsxFiles];
@@ -238,7 +256,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
     throw new Error(chalk.red('\nPrefabs folder not found\n'));
   }
 
-  const prefabFiles: string[] = await readFilesByType(srcDir);
+  const prefabFiles: string[] = await readFilesByType(srcDir, 'js', buildAll);
 
   const prefabs: Array<Promise<Prefab>> = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
@@ -274,7 +292,11 @@ const readPartialPrefabs: () => Promise<Prefab[]> = async (): Promise<
     await mkdir(srcDir, { recursive: true });
   }
 
-  const partialPrefabFiles: string[] = await readFilesByType(srcDir);
+  const partialPrefabFiles: string[] = await readFilesByType(
+    srcDir,
+    'js',
+    buildAll,
+  );
 
   const partialPrefabs: Array<Promise<Prefab>> = partialPrefabFiles.map(
     async (file: string): Promise<Prefab> => {
@@ -312,7 +334,11 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
     });
   }
 
-  const interactionFiles: string[] = await readFilesByType(srcDir, 'ts');
+  const interactionFiles: string[] = await readFilesByType(
+    srcDir,
+    'ts',
+    buildAll,
+  );
 
   return Promise.all(
     interactionFiles.map(async (file: string): Promise<Interaction> => {
@@ -360,6 +386,10 @@ void (async (): Promise<void> => {
       readPartialPrefabs(),
     ]);
 
+    const existingComponents: Component[] = JSON.parse(
+      readFileSync(`${distDir}/templates.json`, 'utf8'),
+    );
+
     const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = jsPrefabs
       .concat(tsxPrefabs)
@@ -386,9 +416,9 @@ void (async (): Promise<void> => {
       {},
     );
 
-    const componentNames = components.map(({ name }) => name);
+    const componentNames = existingComponents.map(({ name }) => name);
 
-    checkNameReferences(prefabs, components);
+    checkNameReferences(prefabs, existingComponents);
 
     const componentStyleMap: ComponentStyleMap = components.reduce((acc, c) => {
       return c.styleType
@@ -465,44 +495,127 @@ void (async (): Promise<void> => {
       (prefab) => prefab.type !== 'page',
     );
 
-    const outputPromises = [
-      outputJson(`${distDir}/prefabs.json`, defaultPrefabs),
-      outputJson(`${distDir}/templates.json`, componentsWithHash),
-
-      interactions && outputJson(`${distDir}/interactions.json`, interactions),
-    ];
-
-    if (buildStyles.length > 0) {
-      outputPromises.push(outputJson(`${distDir}/styles.json`, buildStyles));
-    }
-
     const pagePrefabs = prefabs.filter((prefab) => prefab.type === 'page');
-
-    if (pagePrefabs.length > 0) {
-      outputPromises.push(
-        outputJson(`${distDir}/pagePrefabs.json`, pagePrefabs),
-      );
-    }
-
     const existingPath = await pathExists(`${distDir}/pagePrefabs.json`);
-
-    if (pagePrefabs.length === 0 && existingPath) {
-      await remove(`${distDir}/pagePrefabs.json`);
-    }
-
-    if (buildPartialprefabs.length > 0) {
-      outputPromises.push(
-        outputJson(`${distDir}/partials.json`, buildPartialprefabs),
-      );
-    }
-
     const existingPartialPath = await pathExists(`${distDir}/partials.json`);
 
-    if (buildPartialprefabs.length === 0 && existingPartialPath) {
+    if (buildAll) {
+      const outputPromises = [
+        outputJson(`${distDir}/prefabs.json`, defaultPrefabs),
+        outputJson(`${distDir}/templates.json`, componentsWithHash),
+
+        interactions &&
+          outputJson(`${distDir}/interactions.json`, interactions),
+      ];
+
+      if (buildStyles.length > 0) {
+        outputPromises.push(outputJson(`${distDir}/styles.json`, buildStyles));
+      }
+
+      if (pagePrefabs.length > 0) {
+        outputPromises.push(
+          outputJson(`${distDir}/pagePrefabs.json`, pagePrefabs),
+        );
+      }
+
+      if (buildPartialprefabs.length > 0) {
+        outputPromises.push(
+          outputJson(`${distDir}/partials.json`, buildPartialprefabs),
+        );
+      }
+
+      await Promise.all(outputPromises);
+    } else {
+      const existingPrefabs: Prefab[] = JSON.parse(
+        readFileSync(`${distDir}/prefabs.json`, 'utf8'),
+      );
+
+      interface ComponentWithHash extends Component {
+        componentHash: string;
+      }
+      type Element =
+        | ComponentWithHash
+        | Component
+        | Prefab
+        | Interaction
+        | BuildPrefab;
+
+      const replaceInSet = (
+        existingElements: Element[],
+        newElements: Element[],
+      ) => {
+        return existingElements.map((existingElement) => {
+          if (
+            newElements.length > 0 &&
+            existingElement.name === newElements[0].name
+          ) {
+            return newElements[0];
+          }
+          return existingElement;
+        });
+      };
+
+      const updatedPrefabs = replaceInSet(existingPrefabs, prefabs);
+
+      const updatedComponents = replaceInSet(
+        existingComponents,
+        componentsWithHash,
+      );
+
+      const existingInteractions: Interaction[] = JSON.parse(
+        readFileSync(`${distDir}/interactions.json`, 'utf8'),
+      );
+
+      const updatedInteractions = replaceInSet(
+        existingInteractions,
+        interactions,
+      );
+
+      const newOutputPromises = [
+        outputJson(`${distDir}/prefabs.json`, updatedPrefabs),
+        outputJson(`${distDir}/templates.json`, updatedComponents),
+
+        interactions &&
+          outputJson(`${distDir}/interactions.json`, updatedInteractions),
+      ];
+
+      const existingPagePrefabs: Prefab[] = JSON.parse(
+        readFileSync(`${distDir}/pagePrefabs.json`, 'utf8'),
+      );
+
+      const updatedPagePrefabs = replaceInSet(existingPagePrefabs, pagePrefabs);
+
+      if (existingPath && pagePrefabs.length > 0) {
+        newOutputPromises.push(
+          outputJson(`${distDir}/pagePrefabs.json`, updatedPagePrefabs),
+        );
+      }
+
+      const existingPartials: Prefab[] = JSON.parse(
+        readFileSync(`${distDir}/partials.json`, 'utf8'),
+      );
+
+      const updatedPartials = replaceInSet(
+        existingPartials,
+        buildPartialprefabs,
+      );
+
+      if (existingPartialPath && buildPartialprefabs.length > 0) {
+        newOutputPromises.push(
+          outputJson(`${distDir}/partials.json`, updatedPartials),
+        );
+      }
+
+      await Promise.all(newOutputPromises);
+    }
+
+    if (buildPartialprefabs.length === 0 && existingPartialPath && buildAll) {
       await remove(`${distDir}/partials.json`);
     }
 
-    await Promise.all(outputPromises);
+    if (pagePrefabs.length === 0 && existingPath && buildAll) {
+      await remove(`${distDir}/pagePrefabs.json`);
+    }
 
     // v2
 
@@ -536,4 +649,5 @@ void (async (): Promise<void> => {
 
     process.exit(1);
   }
+  console.info(`Total time: ${(Date.now() - startTime) / 1000} seconds`);
 })();
