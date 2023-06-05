@@ -1,3 +1,10 @@
+## [25.82.1](https://github.com/bettyblocks/cli/compare/v25.82.0...v25.82.1) (2023-06-05)
+
+
+### Bug Fixes
+
+* trigger cli ([#439](https://github.com/bettyblocks/cli/issues/439)) ([349e674](https://github.com/bettyblocks/cli/commit/349e674))
+
 # [25.82.0](https://github.com/bettyblocks/cli/compare/v25.81.0...v25.82.0) (2023-06-02)
 
 
