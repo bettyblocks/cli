@@ -9,6 +9,7 @@ import {
   readFileSync,
   remove,
 } from 'fs-extra';
+import fs from 'fs';
 import ts, { JsxEmit, ModuleKind, ScriptTarget } from 'typescript';
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
@@ -386,9 +387,15 @@ void (async (): Promise<void> => {
       readPartialPrefabs(),
     ]);
 
-    const existingComponents: Component[] = JSON.parse(
-      readFileSync(`${distDir}/templates.json`, 'utf8'),
-    );
+    const templatesPath = path.join(distDir, 'templates.json');
+    let existingComponents: Component[] = [];
+
+    if (fs.existsSync(templatesPath)) {
+      const templatesData = fs.readFileSync(templatesPath, 'utf8');
+      existingComponents = JSON.parse(templatesData);
+    } else {
+      console.warn('templates.json file not found: building template.json');
+    }
 
     const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = jsPrefabs
@@ -416,9 +423,18 @@ void (async (): Promise<void> => {
       {},
     );
 
-    const componentNames = existingComponents.map(({ name }) => name);
+    let finalComponents: Component[];
+    if (fs.existsSync(templatesPath)) {
+      const templatesData = fs.readFileSync(templatesPath, 'utf8');
+      finalComponents = JSON.parse(templatesData);
+    } else {
+      // Here we have to build templates
+      finalComponents = components;
+    }
 
-    checkNameReferences(prefabs, existingComponents);
+    const componentNames = finalComponents.map(({ name }) => name);
+
+    checkNameReferences(prefabs, finalComponents);
 
     const componentStyleMap: ComponentStyleMap = components.reduce((acc, c) => {
       return c.styleType
