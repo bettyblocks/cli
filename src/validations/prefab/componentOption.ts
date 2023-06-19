@@ -57,6 +57,7 @@ const optionConfigurationSchemaBase = {
   }),
   showOnDrop: Joi.boolean(),
   showTextStyleColor: Joi.boolean(),
+  pushToWrapper: Joi.boolean(),
 };
 
 const optionConfigurationSchema = Joi.when('type', {
