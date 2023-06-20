@@ -1,3 +1,10 @@
+# [25.83.0](https://github.com/bettyblocks/cli/compare/v25.82.2...v25.83.0) (2023-06-19)
+
+
+### Features
+
+* add pushToWrapper key ([#441](https://github.com/bettyblocks/cli/issues/441)) ([26d370f](https://github.com/bettyblocks/cli/commit/26d370f))
+
 ## [25.82.2](https://github.com/bettyblocks/cli/compare/v25.82.1...v25.82.2) (2023-06-05)
 
 
