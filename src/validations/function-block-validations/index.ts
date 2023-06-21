@@ -17,7 +17,7 @@ const validateBlockName = (name: string): boolean => {
   return kebabCaseRegex.test(name);
 };
 
-const validateBlockDependencies = (
+export const validateBlockDependencies = (
   dependencies: string[],
 ): { valid: boolean; invalidDependencies: string[] } => {
   const packageJson = fs.readJsonSync(
@@ -33,7 +33,7 @@ const validateBlockDependencies = (
   return { valid: true, invalidDependencies: [] };
 };
 
-const validateBlockFunctions = async (
+export const validateBlockFunctions = async (
   blockFunctions: FunctionDefinition[],
 ): Promise<{ valid: boolean }> => {
   const baseFunctionsPath = path.join(workingDir, 'functions');
@@ -53,7 +53,7 @@ const validateBlockFunctions = async (
   return { valid };
 };
 
-const getErrorMessage = ({
+export const getErrorMessage = ({
   validFunctions,
   validBlockDependencies,
   validBlockName,
