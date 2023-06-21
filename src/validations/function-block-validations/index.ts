@@ -12,7 +12,12 @@ const workingDir = process.cwd();
 
 export const validateBlockConfig = ({ functions }: Block) => !!functions.length;
 
-export const validateBlockDependencies = (
+const validateBlockName = (name: string): boolean => {
+  const kebabCaseRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  return kebabCaseRegex.test(name);
+};
+
+const validateBlockDependencies = (
   dependencies: string[],
 ): { valid: boolean; invalidDependencies: string[] } => {
   const packageJson = fs.readJsonSync(
@@ -28,7 +33,7 @@ export const validateBlockDependencies = (
   return { valid: true, invalidDependencies: [] };
 };
 
-export const validateFunctions = async (
+const validateBlockFunctions = async (
   blockFunctions: FunctionDefinition[],
 ): Promise<{ valid: boolean }> => {
   const baseFunctionsPath = path.join(workingDir, 'functions');
@@ -48,15 +53,23 @@ export const validateFunctions = async (
   return { valid };
 };
 
-export const getErrorMessage = ({
+const getErrorMessage = ({
   validFunctions,
   validBlockDependencies,
+  validBlockName,
   invalidDependencies = [],
+  blockName,
 }: {
+  blockName: string;
   validFunctions: boolean;
   validBlockDependencies: boolean;
+  validBlockName: boolean;
   invalidDependencies: string[];
 }) => {
+  if (!validBlockName) {
+    return `${blockName} is not valid as it should be kebab case`;
+  }
+
   if (!validFunctions) {
     return 'One or more functions are not valid';
   }
@@ -72,4 +85,33 @@ export const getErrorMessage = ({
   }
 
   return 'Something went wrong';
+};
+
+export const validateBlock = async ({
+  block: { dependencies },
+  blockFunctions,
+  blockName,
+}: {
+  block: Block;
+  blockFunctions: FunctionDefinition[];
+  blockName: string;
+}) => {
+  const { valid: validFunctions } = await validateBlockFunctions(
+    blockFunctions,
+  );
+  const { valid: validBlockDependencies, invalidDependencies } =
+    validateBlockDependencies(dependencies);
+
+  const validBlockName = validateBlockName(blockName);
+
+  return {
+    valid: validFunctions && validBlockDependencies && validBlockName,
+    errorMessage: getErrorMessage({
+      validFunctions,
+      validBlockDependencies,
+      validBlockName,
+      invalidDependencies,
+      blockName,
+    }),
+  };
 };

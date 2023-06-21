@@ -19,10 +19,8 @@ import {
 import publishBlocks from './blocks/publishBlocks';
 
 import {
-  validateFunctions,
-  validateBlockDependencies,
-  getErrorMessage,
   validateBlockConfig,
+  validateBlock,
 } from './validations/function-block-validations';
 
 program.name('bb blocks publish').parse(process.argv);
@@ -106,22 +104,16 @@ void (async (): Promise<void> => {
             block.functions,
           );
 
-          const { valid: validFunctions } = await validateFunctions(
+          const { valid, errorMessage } = await validateBlock({
             blockFunctions,
-          );
-          const { valid: validBlockDependencies, invalidDependencies } =
-            validateBlockDependencies(block.dependencies);
+            block,
+            blockName: name,
+          });
 
-          if (validFunctions && validBlockDependencies) {
+          if (valid) {
             const zip = createBlockZip(name, block);
             if (zip) await publishBlocks(block.functions, zip);
           } else {
-            const errorMessage = getErrorMessage({
-              validFunctions,
-              validBlockDependencies,
-              invalidDependencies,
-            });
-
             throw Error(chalk.red(`\n${errorMessage}\n`));
           }
         } catch ({ message }) {
