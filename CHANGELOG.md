@@ -1,3 +1,10 @@
+## [25.84.1](https://github.com/bettyblocks/cli/compare/v25.84.0...v25.84.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* change string to object in pushToWrapper ([#447](https://github.com/bettyblocks/cli/issues/447)) ([f199bfc](https://github.com/bettyblocks/cli/commit/f199bfc))
+
 # [25.84.0](https://github.com/bettyblocks/cli/compare/v25.83.0...v25.84.0) (2023-06-20)
 
 
