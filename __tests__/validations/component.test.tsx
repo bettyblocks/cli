@@ -956,7 +956,15 @@ test('Success when the reconfigure configuration options of the prefabs are vali
                 },
                 showOnDrop: true,
                 showTextStyleColor: true,
-                pushToWrapper: 'wrapperLabel',
+                pushToWrapper: {
+                  name: 'wrapperLabel',
+                  condition: {
+                    type: 'HIDE',
+                    option: 'option1',
+                    comparator: 'EQ',
+                    value: false,
+                  },
+                },
               },
             },
             {
