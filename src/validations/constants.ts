@@ -166,7 +166,7 @@ export const OPTIONS = [
 
 export const MEDIA_TYPES = ['IMAGE', 'VIDEO'];
 export const CONDITION_TYPE = ['HIDE', 'SHOW'];
-export const COMPARATORS = ['EQ'];
+export const COMPARATORS = ['EQ', 'EQ_COMPONENT_ID'];
 export const MODAL_TYPE = ['MODEL_AND_PROPERTIES'];
 export const INHERIT_TYPES = ['PROPERTY', 'PROPERTY_LABEL'];
 
