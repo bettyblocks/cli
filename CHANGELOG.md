@@ -1,3 +1,24 @@
+## [25.84.2](https://github.com/bettyblocks/cli/compare/v25.84.1...v25.84.2) (2023-06-26)
+
+
+### Bug Fixes
+
+* change string to object in pushToWrapper ([#448](https://github.com/bettyblocks/cli/issues/448)) ([6c2ee57](https://github.com/bettyblocks/cli/commit/6c2ee57))
+
+## [25.84.1](https://github.com/bettyblocks/cli/compare/v25.84.0...v25.84.1) (2023-06-26)
+
+
+### Bug Fixes
+
+* change string to object in pushToWrapper ([#447](https://github.com/bettyblocks/cli/issues/447)) ([f199bfc](https://github.com/bettyblocks/cli/commit/f199bfc))
+
+# [25.84.0](https://github.com/bettyblocks/cli/compare/v25.83.0...v25.84.0) (2023-06-20)
+
+
+### Features
+
+* retrigger pipelines ([#445](https://github.com/bettyblocks/cli/issues/445)) ([57e12fb](https://github.com/bettyblocks/cli/commit/57e12fb))
+
 # [25.83.0](https://github.com/bettyblocks/cli/compare/v25.82.2...v25.83.0) (2023-06-19)
 
 
