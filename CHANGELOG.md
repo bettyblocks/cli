@@ -1,3 +1,10 @@
+## [25.85.1](https://github.com/bettyblocks/cli/compare/v25.85.0...v25.85.1) (2023-07-17)
+
+
+### Bug Fixes
+
+* validate block name ([2ec1244](https://github.com/bettyblocks/cli/commit/2ec1244))
+
 # [25.85.0](https://github.com/bettyblocks/cli/compare/v25.84.2...v25.85.0) (2023-06-29)
 
 
