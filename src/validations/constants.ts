@@ -155,6 +155,7 @@ export const OPTIONS = [
   'UNIT',
   'VARIABLE',
   'DISPLAY_LOGIC',
+  'PAGE_VARIABLE',
   // v2
   'BOOLEAN',
   'NUMERAL',
