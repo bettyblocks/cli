@@ -1,3 +1,10 @@
+# [25.86.0](https://github.com/bettyblocks/cli/compare/v25.85.1...v25.86.0) (2023-08-02)
+
+
+### Features
+
+* add page variable option type ([#452](https://github.com/bettyblocks/cli/issues/452)) ([fa778f9](https://github.com/bettyblocks/cli/commit/fa778f9))
+
 ## [25.85.1](https://github.com/bettyblocks/cli/compare/v25.85.0...v25.85.1) (2023-07-17)
 
 
