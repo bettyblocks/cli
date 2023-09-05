@@ -4,11 +4,12 @@ import Case from 'case';
 import { Interaction, InteractionOptionType } from '../types';
 
 const allowedTypes = [
-  'boolean',
   'Event',
   'Locale',
-  'number',
   'Page',
+  'PageVariable',
+  'boolean',
+  'number',
   'string',
   'void',
 ];
