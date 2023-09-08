@@ -8,6 +8,7 @@ import FormData from 'form-data';
 
 /* internal dependencies */
 
+import chalk from 'chalk';
 import {
   functionDefinitions,
   stringifyDefinitions,
@@ -87,9 +88,11 @@ const publishBlocks = async (
   zip: string,
 ): Promise<void> => {
   const config = new Config();
-  console.log(`Publishing to ${config.host} (${config.zone})`);
+  console.log(chalk.bold(`\nPublishing to ${config.host} (${config.zone})`));
   await createAndPublishFiles(config, functions, zip);
-  console.log('Done.');
+  console.log(
+    chalk.green.underline(`✔ Your blocks are published to the block store.`),
+  );
 };
 
 export default publishBlocks;
