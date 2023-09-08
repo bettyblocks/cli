@@ -53,9 +53,7 @@ const validateFunctions = async () => {
       )}`,
     );
   }
-
-  return { valid };
 };
 
 // eslint-disable-next-line no-void
-void (async (): Promise<{ valid: boolean }> => validateFunctions())();
+void (async (): Promise<void> => validateFunctions())();

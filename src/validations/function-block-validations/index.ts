@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { FunctionDefinition } from 'src/functions/functionDefinitions';
 import { Block } from 'src/blocks/blockDefinitions';
+import chalk from 'chalk';
 import {
   FunctionValidator,
   logValidationResult,
@@ -33,22 +34,32 @@ export const validateBlockDependencies = (
   return { valid: true, invalidDependencies: [] };
 };
 
-export const validateBlockFunctions = async (
-  blockFunctions: FunctionDefinition[],
-): Promise<{ valid: boolean }> => {
+const validateBlockFunctions = async (blockFunctions: FunctionDefinition[]) => {
   const baseFunctionsPath = path.join(workingDir, 'functions');
-  console.log(`Validating functions in ${baseFunctionsPath}`);
   const config = new Config();
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
+
+  console.log(chalk.bold(`Validating functions in ${baseFunctionsPath}`));
+
   const results = await validator.validateFunctions('', blockFunctions);
-  let valid = true;
-  results.forEach((result) => {
-    if (result.status === 'error') {
-      valid = false;
-    }
-    logValidationResult(result);
-  });
+  results.forEach(logValidationResult);
+
+  const valid = results.every((result) => result.status === 'ok');
+
+  if (valid) {
+    console.log(
+      `\n${chalk.green.underline(
+        `✔ All your block functions are valid and ready to be published!`,
+      )}`,
+    );
+  } else {
+    console.log(
+      `\n${chalk.red.underline(
+        `✖ Certain functions in your project are invalid.`,
+      )}`,
+    );
+  }
 
   return { valid };
 };
