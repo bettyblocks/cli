@@ -2,19 +2,19 @@
 /* npm dependencies */
 
 import fs from 'fs-extra';
-import chalk from 'chalk';
+
 import path from 'path';
 import program from 'commander';
 
 /* internal dependencies */
 
-import { functionDefinitions } from './functions/functionDefinitions';
+import chalk from 'chalk';
 import publishAppFunctions from './functions/publishAppFunctions';
 import publishCustomFunctions from './functions/publishCustomFunctions';
+
 import {
   FunctionValidator,
   logValidationResult,
-  ValidationResult,
 } from './functions/validations';
 import Config from './functions/config';
 
@@ -37,62 +37,45 @@ const { host, skip, bump, skipCompile } = program;
 
 const workingDir = process.cwd();
 
-const validateFunctions = async (): Promise<{
-  valid: boolean;
-  results: ValidationResult[];
-}> => {
-  const baseFunctionsPath = path.join(workingDir, 'functions');
-  console.log(`Validating functions in ${baseFunctionsPath}`);
+const baseFunctionsPath = path.join(workingDir, 'functions');
 
-  const config = new Config();
+const config = new Config();
+
+const validateFunctions = async () => {
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
+
+  console.log(chalk.bold(`Validating functions in ${baseFunctionsPath}`));
+
   const results = await validator.validateFunctions();
+  results.forEach(logValidationResult);
 
-  let valid = true;
-  results.forEach((result) => {
-    if (result.status === 'error') {
-      valid = false;
-    }
-    logValidationResult(result);
-  });
+  const valid = results.every((result) => result.status === 'ok');
 
-  return { valid, results };
+  if (valid) {
+    console.log(
+      `\n${chalk.green.underline(
+        `✔ All your functions are valid and ready to be published!`,
+      )}`,
+    );
+  } else {
+    console.log(
+      `\n${chalk.red.underline(
+        `✖ Certain functions in your project are invalid.`,
+      )}`,
+    );
+  }
+
+  return { valid };
 };
 
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
-    const { valid, results } = await validateFunctions();
+    const { valid } = await validateFunctions();
 
     if (valid) {
       await publishAppFunctions({ skipCompile });
-    } else if (
-      results.some(
-        ({ errors }) =>
-          errors &&
-          errors.some(
-            ({ stack }) => stack === 'instance.icon is not of a type(s) object',
-          ),
-      )
-    ) {
-      console.log(
-        `Maybe auto-convert your function icons using ${chalk.cyan(
-          'bb functions convert-icons',
-        )}?`,
-      );
-    } else {
-      const baseFunctionsPath = path.join(workingDir, 'functions');
-      const allFunctions = functionDefinitions(baseFunctionsPath, true);
-      const versionedFunctions = functionDefinitions(baseFunctionsPath);
-
-      if (allFunctions.length !== versionedFunctions.length) {
-        console.log(
-          `Maybe auto-version your functions without a version number using ${chalk.cyan(
-            'bb functions autoversion',
-          )}?`,
-        );
-      }
     }
   } else {
     publishCustomFunctions(host, bump, skip);

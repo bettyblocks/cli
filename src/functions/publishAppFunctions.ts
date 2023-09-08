@@ -35,6 +35,7 @@ type PublishResponse = {
   updated: FunctionResult[];
   deleted: FunctionResult[];
   compiled: boolean;
+  message?: string;
 };
 
 type PublishOptions = {
@@ -63,7 +64,7 @@ const uploadAppFunctions = async (
   functionDefinitionsFile: string,
   functionsJson: string,
   config: Config,
-): Promise<boolean> => {
+): Promise<{ success: boolean; message: string }> => {
   const fusionAuth = new FusionAuth(config);
 
   const form = new FormData();
@@ -90,24 +91,29 @@ const uploadAppFunctions = async (
       await fusionAuth.ensureLogin();
       return uploadAppFunctions(functionDefinitionsFile, functionsJson, config);
     }
-    if (res.status !== 201) {
+
+    if (res.status !== 201 && res.status !== 409) {
       throw new Error(
         `Couldn't publish functions, Error: ${res.status},${await res.text()}`,
       );
     }
 
-    const { created, updated, deleted, compiled } =
+    const { created, updated, deleted, compiled, message } =
       (await res.json()) as PublishResponse;
 
-    created.forEach((result) => logResult(result, 'Create'));
-    updated.forEach((result) => logResult(result, 'Update'));
-    deleted.forEach((result) => logResult(result, 'Delete'));
+    created.forEach((result) => logResult(result, 'Create:'));
+    updated.forEach((result) => logResult(result, 'Update:'));
+    deleted.forEach((result) => logResult(result, 'Delete:'));
+
     if (!config.skipCompile) {
       const compiledStatus = compiled ? 'ok' : 'error';
       logResult({ status: compiledStatus, name: 'triggered' }, 'Compilation');
     }
 
-    return true;
+    return {
+      success: res.status === 201,
+      message: message || 'Your functions are published to your application.',
+    };
   });
 };
 
@@ -118,7 +124,17 @@ const publishFunctions = async (config: Config): Promise<void> => {
   const functions = functionDefinitions(functionsDir);
   const functionsJson = stringifyDefinitions(functions);
 
-  await uploadAppFunctions(zipFile, functionsJson, config);
+  const { success, message } = await uploadAppFunctions(
+    zipFile,
+    functionsJson,
+    config,
+  );
+
+  if (success) {
+    console.log(`\n${chalk.green.underline(`✔ ${message}`)}`);
+  } else {
+    console.log(`\n${chalk.red.underline(`✖ ${message}`)}`);
+  }
 };
 
 const publishAppFunctions = async ({
@@ -126,9 +142,8 @@ const publishAppFunctions = async ({
 }: PublishOptions): Promise<void> => {
   const config = new Config({ skipCompile });
 
-  console.log(`Publishing to ${config.host} (${config.zone})`);
+  console.log(chalk.bold(`\nPublishing to ${config.host} (${config.zone})`));
   await publishFunctions(config);
-  console.log('Done.');
 };
 
 export default publishAppFunctions;
