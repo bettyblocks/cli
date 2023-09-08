@@ -11,8 +11,6 @@ import {
   logValidationResult,
 } from './functions/validations';
 
-import { functionDefinitions } from './functions/functionDefinitions';
-
 import Config from './functions/config';
 
 /* process arguments */
@@ -31,38 +29,33 @@ const baseFunctionsPath = path.join(workingDir, 'functions');
 
 const config = new Config();
 
-// eslint-disable-next-line no-void
-void (async (): Promise<void> => {
+const validateFunctions = async () => {
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
+
+  console.log(chalk.bold(`Validating functions in ${baseFunctionsPath}`));
 
   const results = await validator.validateFunctions(inputFunctionName);
   results.forEach(logValidationResult);
 
-  const allFunctions = functionDefinitions(baseFunctionsPath, true);
-  const versionedFunctions = functionDefinitions(baseFunctionsPath);
+  const valid = results.every((result) => result.status === 'ok');
 
-  if (allFunctions.length !== versionedFunctions.length) {
+  if (valid) {
     console.log(
-      `Maybe auto-version your functions without a version number using ${chalk.cyan(
-        'bb functions autoversion',
-      )}?`,
+      `\n${chalk.green.underline(
+        `✔ All your functions are valid and ready to be published!`,
+      )}`,
+    );
+  } else {
+    console.log(
+      `\n${chalk.red.underline(
+        `✖ Certain functions in your project are invalid.`,
+      )}`,
     );
   }
 
-  if (
-    results.some(
-      ({ errors }) =>
-        errors &&
-        errors.some(
-          ({ stack }) => stack === 'instance.icon is not of a type(s) object',
-        ),
-    )
-  ) {
-    console.log(
-      `Maybe auto-convert your function icons using ${chalk.cyan(
-        'bb functions convert-icons',
-      )}?`,
-    );
-  }
-})();
+  return { valid };
+};
+
+// eslint-disable-next-line no-void
+void (async (): Promise<{ valid: boolean }> => validateFunctions())();
