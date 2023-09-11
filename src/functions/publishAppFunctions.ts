@@ -87,33 +87,58 @@ const uploadAppFunctions = async (
       Authorization: `Bearer ${fusionAuth.jwt()}`,
     },
   }).then(async (res) => {
-    if (res.status === 401 || res.status === 403) {
-      await fusionAuth.ensureLogin();
-      return uploadAppFunctions(functionDefinitionsFile, functionsJson, config);
+    switch (res.status) {
+      case 401:
+      case 403: {
+        await fusionAuth.ensureLogin();
+        return uploadAppFunctions(
+          functionDefinitionsFile,
+          functionsJson,
+          config,
+        );
+      }
+      case 201: {
+        const { created, updated, deleted, compiled } =
+          (await res.json()) as PublishResponse;
+
+        created.forEach((result) => logResult(result, 'Create:'));
+        updated.forEach((result) => logResult(result, 'Update:'));
+        deleted.forEach((result) => logResult(result, 'Delete:'));
+
+        if (!config.skipCompile) {
+          const compiledStatus = compiled ? 'ok' : 'error';
+          logResult(
+            { status: compiledStatus, name: 'triggered' },
+            'Compilation',
+          );
+        }
+
+        return {
+          success: true,
+          message: 'Your functions are published to your application.',
+        };
+      }
+      case 409: {
+        const { created, updated, deleted, message } =
+          (await res.json()) as PublishResponse;
+
+        created.forEach((result) => logResult(result, 'Create:'));
+        updated.forEach((result) => logResult(result, 'Update:'));
+        deleted.forEach((result) => logResult(result, 'Delete:'));
+
+        return {
+          success: false,
+          message: message || '409 Conflict',
+        };
+      }
+
+      default:
+        throw new Error(
+          `Couldn't publish functions, Error: ${
+            res.status
+          },${await res.text()}`,
+        );
     }
-
-    if (res.status !== 201 && res.status !== 409) {
-      throw new Error(
-        `Couldn't publish functions, Error: ${res.status},${await res.text()}`,
-      );
-    }
-
-    const { created, updated, deleted, compiled, message } =
-      (await res.json()) as PublishResponse;
-
-    created.forEach((result) => logResult(result, 'Create:'));
-    updated.forEach((result) => logResult(result, 'Update:'));
-    deleted.forEach((result) => logResult(result, 'Delete:'));
-
-    if (!config.skipCompile) {
-      const compiledStatus = compiled ? 'ok' : 'error';
-      logResult({ status: compiledStatus, name: 'triggered' }, 'Compilation');
-    }
-
-    return {
-      success: res.status === 201,
-      message: message || 'Your functions are published to your application.',
-    };
   });
 };
 
