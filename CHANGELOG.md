@@ -1,3 +1,13 @@
+## [25.86.1](https://github.com/bettyblocks/cli/compare/v25.86.0...v25.86.1) (2023-09-13)
+
+
+### Bug Fixes
+
+* bb functions validate ([bceb66b](https://github.com/bettyblocks/cli/commit/bceb66b))
+* catch 409 response code ([b679f06](https://github.com/bettyblocks/cli/commit/b679f06))
+* improve validation for blocks publish ([5c39375](https://github.com/bettyblocks/cli/commit/5c39375))
+* remove autoversion and convert icons from commands ([11d1c5e](https://github.com/bettyblocks/cli/commit/11d1c5e))
+
 # [25.86.0](https://github.com/bettyblocks/cli/compare/v25.85.1...v25.86.0) (2023-08-02)
 
 
