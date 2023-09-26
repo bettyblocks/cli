@@ -1,3 +1,10 @@
+# [25.87.0](https://github.com/bettyblocks/cli/compare/v25.86.1...v25.87.0) (2023-09-26)
+
+
+### Features
+
+* add pageVariable type ([#453](https://github.com/bettyblocks/cli/issues/453)) ([d60db94](https://github.com/bettyblocks/cli/commit/d60db94))
+
 ## [25.86.1](https://github.com/bettyblocks/cli/compare/v25.86.0...v25.86.1) (2023-09-13)
 
 
