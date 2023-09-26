@@ -82,5 +82,8 @@ typings/
 # VSCode
 .vscode
 
+# JetBrains
+.idea/
+
 # Test artifacts
 __tests__/support/tmpFunctions*
