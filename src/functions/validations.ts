@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/restrict-template-expressions */
 import fetch from 'node-fetch';
 import path from 'path';
+import https, { AgentOptions } from 'https';
+import fs from 'fs-extra';
 import chalk from 'chalk';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
@@ -22,8 +24,31 @@ export type ValidationResult = {
   errors: ValidationError[] | Error[];
 };
 
-const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {
-  const res = await fetch(schemaUrl);
+const fetchRemoteSchema = async (
+  schemaUrl: string,
+  agentOptions?: AgentOptions,
+): Promise<Schema> => {
+  let options: AgentOptions | undefined;
+  if (agentOptions) {
+    options = (['ca', 'cert', 'key'] as const).reduce<AgentOptions>(
+      (acc, key) => {
+        if (typeof agentOptions[key] === 'string') {
+          return {
+            ...acc,
+            [key]: fs.readFileSync(
+              path.resolve(__dirname, agentOptions[key] as string),
+            ),
+          };
+        }
+
+        return acc;
+      },
+      agentOptions,
+    );
+  }
+
+  const agent = agentOptions && options ? new https.Agent(options) : undefined;
+  const res = await fetch(schemaUrl, { agent });
   const json = await res.json();
   return json as Schema;
 };
@@ -31,15 +56,17 @@ const fetchRemoteSchema = async (schemaUrl: string): Promise<Schema> => {
 const importNextSchema = async (
   validator: Validator,
   schemaId: string,
+  config: Config,
 ): Promise<Validator> => {
-  const schemaJSON = await fetchRemoteSchema(schemaId);
+  const { agentOptions } = config;
+  const schemaJSON = await fetchRemoteSchema(schemaId, agentOptions);
   validator.addSchema(schemaJSON, schemaId);
 
   const nextSchemaId = validator.unresolvedRefs.shift();
   if (!nextSchemaId) {
     return validator;
   }
-  return importNextSchema(validator, nextSchemaId);
+  return importNextSchema(validator, nextSchemaId, config);
 };
 
 const importSchema = async (
@@ -47,7 +74,7 @@ const importSchema = async (
   config: Config,
 ): Promise<Validator> => {
   const functionSchemaUrl = config.schemaUrl + config.functionSchemaPath;
-  return importNextSchema(validator, functionSchemaUrl);
+  return importNextSchema(validator, functionSchemaUrl, config);
 };
 
 const functionValidator = async (config: Config): Promise<Validator> => {
