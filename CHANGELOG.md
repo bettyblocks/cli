@@ -1,3 +1,15 @@
+# [25.88.0](https://github.com/bettyblocks/cli/compare/v25.87.0...v25.88.0) (2023-10-12)
+
+
+### Bug Fixes
+
+* remove dirname from path resolve ([bf2598d](https://github.com/bettyblocks/cli/commit/bf2598d))
+
+
+### Features
+
+* add support for https agent by adding an option to the config file ([9b25db1](https://github.com/bettyblocks/cli/commit/9b25db1))
+
 # [25.87.0](https://github.com/bettyblocks/cli/compare/v25.86.1...v25.87.0) (2023-09-26)
 
 
