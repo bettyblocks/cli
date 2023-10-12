@@ -2,6 +2,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import os from 'os';
 import prompts from 'prompts';
+import { AgentOptions } from 'https';
 
 export type GlobalConfig = {
   auth: {
@@ -14,6 +15,7 @@ export type GlobalConfig = {
 
 export type LocalConfig = {
   schemaUrl: string;
+  agentOptions?: AgentOptions;
   functionSchemaPath: string;
   cacheDir: string;
   fusionAuthUrl: string;
@@ -129,6 +131,7 @@ class Config {
       blockstoreApiUrl:
         'https://my{ZONEPOSTFIX}.bettyblocks.com/block-store-api',
       domain: 'bettyblocks.com',
+      agentOptions: undefined,
       skipCompile: false,
       includes: [],
     } as LocalConfig;
@@ -260,6 +263,10 @@ class Config {
 
   get schemaUrl(): string {
     return this.config.schemaUrl;
+  }
+
+  get agentOptions(): AgentOptions | undefined {
+    return this.config.agentOptions;
   }
 
   get functionSchemaPath(): string {
