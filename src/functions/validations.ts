@@ -33,11 +33,10 @@ const fetchRemoteSchema = async (
     options = (['ca', 'cert', 'key'] as const).reduce<AgentOptions>(
       (acc, key) => {
         if (typeof agentOptions[key] === 'string') {
+          console.log(path.resolve(agentOptions[key] as string));
           return {
             ...acc,
-            [key]: fs.readFileSync(
-              path.resolve(__dirname, agentOptions[key] as string),
-            ),
+            [key]: fs.readFileSync(path.resolve(agentOptions[key] as string)),
           };
         }
 
