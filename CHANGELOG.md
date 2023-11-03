@@ -1,3 +1,10 @@
+## [25.88.1](https://github.com/bettyblocks/cli/compare/v25.88.0...v25.88.1) (2023-11-03)
+
+
+### Bug Fixes
+
+* error when there is no partial folder ([#456](https://github.com/bettyblocks/cli/issues/456)) ([52adeb1](https://github.com/bettyblocks/cli/commit/52adeb1))
+
 # [25.88.0](https://github.com/bettyblocks/cli/compare/v25.87.0...v25.88.0) (2023-10-12)
 
 
