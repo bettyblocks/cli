@@ -383,8 +383,8 @@ void (async (): Promise<void> => {
       readPrefabs(),
       readComponents(),
       runtimeVersion === 'v2' ? Promise.resolve([]) : readInteractions(),
-      readtsPrefabs(true),
       readPartialPrefabs(),
+      readtsPrefabs(true),
     ]);
 
     const templatesPath = path.join(distDir, 'templates.json');
