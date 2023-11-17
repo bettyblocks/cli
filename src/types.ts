@@ -348,10 +348,12 @@ export interface Prefab {
   type?: string;
   description?: string;
   reconfigure?: { children: PrefabComponent[] };
+  version?: string;
 }
 
 export interface BuildPrefab extends Omit<Prefab, 'structure'> {
   structure: BuildPrefabReference[];
+  version: string;
 }
 
 export enum InteractionType {
