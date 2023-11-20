@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/restrict-template-expressions */
 import fetch from 'node-fetch';
 import path from 'path';
-import https, { AgentOptions } from 'https';
-import fs from 'fs-extra';
 import chalk from 'chalk';
 import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
@@ -12,6 +10,7 @@ import {
   isFunctionVersion,
 } from './functionDefinitions';
 import Config from './config';
+import { setHttpsAgent } from './utils';
 
 export type Schema = {
   $id: string;
@@ -26,27 +25,9 @@ export type ValidationResult = {
 
 const fetchRemoteSchema = async (
   schemaUrl: string,
-  agentOptions?: AgentOptions,
+  config: Config,
 ): Promise<Schema> => {
-  let options: AgentOptions | undefined;
-  if (agentOptions) {
-    options = (['ca', 'cert', 'key'] as const).reduce<AgentOptions>(
-      (acc, key) => {
-        if (typeof agentOptions[key] === 'string') {
-          console.log(path.resolve(agentOptions[key] as string));
-          return {
-            ...acc,
-            [key]: fs.readFileSync(path.resolve(agentOptions[key] as string)),
-          };
-        }
-
-        return acc;
-      },
-      agentOptions,
-    );
-  }
-
-  const agent = agentOptions && options ? new https.Agent(options) : undefined;
+  const agent = setHttpsAgent(config);
   const res = await fetch(schemaUrl, { agent });
   const json = await res.json();
   return json as Schema;
@@ -57,8 +38,7 @@ const importNextSchema = async (
   schemaId: string,
   config: Config,
 ): Promise<Validator> => {
-  const { agentOptions } = config;
-  const schemaJSON = await fetchRemoteSchema(schemaId, agentOptions);
+  const schemaJSON = await fetchRemoteSchema(schemaId, config);
   validator.addSchema(schemaJSON, schemaId);
 
   const nextSchemaId = validator.unresolvedRefs.shift();

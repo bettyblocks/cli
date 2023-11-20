@@ -9,6 +9,7 @@ import FormData from 'form-data';
 /* internal dependencies */
 
 import chalk from 'chalk';
+import { setHttpsAgent } from '../functions/utils';
 import {
   functionDefinitions,
   stringifyDefinitions,
@@ -29,6 +30,8 @@ const uploadBlock = async (
 ): Promise<boolean> => {
   const fusionAuth = new FusionAuth(config);
 
+  const agent = setHttpsAgent(config);
+
   const form = new FormData();
   form.append('name', path.basename(blockDefinitionsFile, '.zip'));
   form.append('functions', functionsJson);
@@ -43,6 +46,7 @@ const uploadBlock = async (
   const url = `${config.blockstoreApiUrl}/blocks/publish`;
 
   return fetch(url, {
+    agent,
     method: 'POST',
     body: form,
     headers: {
