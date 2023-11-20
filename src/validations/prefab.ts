@@ -33,6 +33,7 @@ const schemaProvider = (
       prefabType === 'partial' ? Joi.forbidden() : Joi.string().valid('page'),
     description: Joi.string(),
     isPublicPage: Joi.boolean(),
+    developerMode: Joi.string().valid('basic', 'advanced'),
     detail: Joi.string(),
     previewImage: Joi.string(),
     previewUrl: Joi.string(),
