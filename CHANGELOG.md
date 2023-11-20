@@ -1,3 +1,10 @@
+# [25.89.0](https://github.com/bettyblocks/cli/compare/v25.88.1...v25.89.0) (2023-11-20)
+
+
+### Features
+
+* add setHttpsAgent function to set agent for https requests ([#458](https://github.com/bettyblocks/cli/issues/458)) ([5332745](https://github.com/bettyblocks/cli/commit/5332745))
+
 ## [25.88.1](https://github.com/bettyblocks/cli/compare/v25.88.0...v25.88.1) (2023-11-03)
 
 
