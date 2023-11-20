@@ -76,6 +76,7 @@ class FusionAuth {
 
     const additionalHeaders = this.config.additionalHeaders();
     return fetch(`${this.config.fusionAuthUrl}/api/login`, {
+      agent: this.config.agent,
       method: 'POST',
       body: JSON.stringify({
         loginId: email,
@@ -110,6 +111,7 @@ class FusionAuth {
     ])) as { code: string };
 
     return fetch(`${this.config.fusionAuthUrl}/api/two-factor/login`, {
+      agent: this.config.agent,
       method: 'POST',
       body: JSON.stringify({
         code,

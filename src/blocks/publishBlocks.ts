@@ -43,6 +43,7 @@ const uploadBlock = async (
   const url = `${config.blockstoreApiUrl}/blocks/publish`;
 
   return fetch(url, {
+    agent: config.agent,
     method: 'POST',
     body: form,
     headers: {

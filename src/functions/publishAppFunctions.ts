@@ -80,6 +80,7 @@ const uploadAppFunctions = async (
   }
   const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
   return fetch(url, {
+    agent: config.agent,
     method: 'POST',
     body: form,
     headers: {
