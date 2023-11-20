@@ -10,7 +10,6 @@ import {
   isFunctionVersion,
 } from './functionDefinitions';
 import Config from './config';
-import { setHttpsAgent } from './utils';
 
 export type Schema = {
   $id: string;
@@ -27,8 +26,7 @@ const fetchRemoteSchema = async (
   schemaUrl: string,
   config: Config,
 ): Promise<Schema> => {
-  const agent = setHttpsAgent(config);
-  const res = await fetch(schemaUrl, { agent });
+  const res = await fetch(schemaUrl, { agent: config.agent });
   const json = await res.json();
   return json as Schema;
 };

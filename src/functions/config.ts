@@ -2,7 +2,8 @@ import fs from 'fs-extra';
 import path from 'path';
 import os from 'os';
 import prompts from 'prompts';
-import { AgentOptions } from 'https';
+import https, { AgentOptions } from 'https';
+import { setHttpsAgent } from './utils';
 
 export type GlobalConfig = {
   auth: {
@@ -29,6 +30,7 @@ export type LocalConfig = {
   skipCompile?: boolean;
   includes?: string[];
   tenantId?: string;
+  agent?: https.Agent;
 };
 
 export type CustomConfig = {
@@ -158,6 +160,10 @@ class Config {
 
   get skipCompile(): boolean {
     return !!this.config.skipCompile;
+  }
+
+  get agent(): https.Agent | undefined {
+    return setHttpsAgent(this.config.agentOptions);
   }
 
   get identifier(): string {

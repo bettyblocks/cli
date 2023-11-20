@@ -17,7 +17,6 @@ import {
 } from './functionDefinitions';
 
 import Config from './config';
-import { setHttpsAgent } from './utils';
 
 /* execute command */
 
@@ -67,7 +66,6 @@ const uploadAppFunctions = async (
   config: Config,
 ): Promise<{ success: boolean; message: string }> => {
   const fusionAuth = new FusionAuth(config);
-  const agent = setHttpsAgent(config);
 
   const form = new FormData();
   form.append('functions', functionsJson);
@@ -82,7 +80,7 @@ const uploadAppFunctions = async (
   }
   const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
   return fetch(url, {
-    agent,
+    agent: config.agent,
     method: 'POST',
     body: form,
     headers: {

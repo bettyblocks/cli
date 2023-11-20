@@ -1,6 +1,5 @@
 import prompts from 'prompts';
 import fetch from 'node-fetch';
-import { setHttpsAgent } from '../functions/utils';
 import Config, { GlobalConfig } from '../functions/config';
 
 type LoginResponse = {
@@ -74,11 +73,10 @@ class FusionAuth {
 
   async ensureLogin(): Promise<void> {
     const { email, password } = await promptCredentials();
-    const agent = setHttpsAgent(this.config);
 
     const additionalHeaders = this.config.additionalHeaders();
     return fetch(`${this.config.fusionAuthUrl}/api/login`, {
-      agent,
+      agent: this.config.agent,
       method: 'POST',
       body: JSON.stringify({
         loginId: email,
@@ -112,10 +110,8 @@ class FusionAuth {
       },
     ])) as { code: string };
 
-    const agent = setHttpsAgent(this.config);
-
     return fetch(`${this.config.fusionAuthUrl}/api/two-factor/login`, {
-      agent,
+      agent: this.config.agent,
       method: 'POST',
       body: JSON.stringify({
         code,

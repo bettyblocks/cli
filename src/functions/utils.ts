@@ -1,10 +1,10 @@
 import path from 'path';
 import fs from 'fs-extra';
 import https, { AgentOptions } from 'https';
-import Config from './config';
 
-export function setHttpsAgent(config: Config): https.Agent | undefined {
-  const { agentOptions } = config;
+export function setHttpsAgent(
+  agentOptions?: AgentOptions,
+): https.Agent | undefined {
   let options: AgentOptions | undefined;
 
   if (agentOptions) {
