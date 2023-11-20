@@ -1,3 +1,10 @@
+# [25.90.0](https://github.com/bettyblocks/cli/compare/v25.89.0...v25.90.0) (2023-11-20)
+
+
+### Features
+
+* add developerMode validation to prefab schema ([#459](https://github.com/bettyblocks/cli/issues/459)) ([132cd88](https://github.com/bettyblocks/cli/commit/132cd88))
+
 # [25.89.0](https://github.com/bettyblocks/cli/compare/v25.88.1...v25.89.0) (2023-11-20)
 
 
