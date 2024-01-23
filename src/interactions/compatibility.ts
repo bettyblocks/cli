@@ -11,6 +11,7 @@ const allowedTypes = [
   'boolean',
   'number',
   'string',
+  'unknown',
   'void',
 ];
 
