@@ -311,6 +311,7 @@ export enum InteractionOptionType {
   Void = 'Void',
   Page = 'Page',
   Locale = 'Locale',
+  Unknown = 'Unknown',
 }
 
 // TODO: Add support

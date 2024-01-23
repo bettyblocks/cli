@@ -53,6 +53,23 @@ test('extract compatibility for: ({ event, price, quantity }: { event: Event, pr
   });
 });
 
+test('add compatibility for unknown type', (t: Context): void => {
+  const compatibility = toCompatibility('__tests__/assets/unknownEvent.ts');
+
+  t.deepEqual(compatibility, {
+    function: `function unknownEvent(_a) {
+    var event = _a.event;
+    return 1;
+}
+`,
+    name: 'unknownEvent',
+    parameters: {
+      event: InteractionOptionType.Unknown,
+    },
+    type: InteractionOptionType.Number,
+  });
+});
+
 test('fail extraction when passing no interaction', (t: Context): void => {
   t.throws(() => toCompatibility('__tests__/assets/empty.ts'), {
     name: 'RangeError',
