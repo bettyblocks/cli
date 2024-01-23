@@ -1,3 +1,10 @@
+# [25.91.0](https://github.com/bettyblocks/cli/compare/v25.90.0...v25.91.0) (2024-01-23)
+
+
+### Features
+
+* add support for unknown type ([#461](https://github.com/bettyblocks/cli/issues/461)) ([e60c422](https://github.com/bettyblocks/cli/commit/e60c422))
+
 # [25.90.0](https://github.com/bettyblocks/cli/compare/v25.89.0...v25.90.0) (2023-11-20)
 
 
