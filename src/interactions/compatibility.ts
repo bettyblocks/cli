@@ -8,6 +8,7 @@ const allowedTypes = [
   'Locale',
   'Page',
   'PageVariable',
+  'PageVariableId',
   'boolean',
   'number',
   'string',
