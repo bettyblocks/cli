@@ -1,3 +1,10 @@
+# [25.93.0](https://github.com/bettyblocks/cli/compare/v25.92.0...v25.93.0) (2024-01-24)
+
+
+### Features
+
+* add keys to disable splitbutton and clickthrough ([#460](https://github.com/bettyblocks/cli/issues/460)) ([25b64ef](https://github.com/bettyblocks/cli/commit/25b64ef))
+
 # [25.92.0](https://github.com/bettyblocks/cli/compare/v25.91.0...v25.92.0) (2024-01-24)
 
 
