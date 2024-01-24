@@ -1,3 +1,10 @@
+# [25.92.0](https://github.com/bettyblocks/cli/compare/v25.91.0...v25.92.0) (2024-01-24)
+
+
+### Features
+
+* added pageVariableId type ([#462](https://github.com/bettyblocks/cli/issues/462)) ([f389ac2](https://github.com/bettyblocks/cli/commit/f389ac2))
+
 # [25.91.0](https://github.com/bettyblocks/cli/compare/v25.90.0...v25.91.0) (2024-01-23)
 
 
