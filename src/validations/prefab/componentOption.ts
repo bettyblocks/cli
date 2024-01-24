@@ -75,6 +75,8 @@ const optionConfigurationSchema = Joi.when('type', {
         'any.invalid': 'API version 1 is no longer supported.',
       }),
     allowedKinds: Joi.array().items(Joi.string()),
+    allowedSplitButtonKinds: Joi.array().items(Joi.string()),
+    allowedClickThroughKinds: Joi.array().items(Joi.string()),
     createProperty: Joi.object({
       type: Joi.string(),
       value: Joi.string().allow(''),
@@ -88,6 +90,15 @@ const optionConfigurationSchema = Joi.when('type', {
   }),
   otherwise: Joi.object(optionConfigurationSchemaBase),
 })
+  .when('type', {
+    is: 'VARIABLE',
+    then: Joi.object({
+      ...optionConfigurationSchemaBase,
+      allowedKinds: Joi.array().items(Joi.string()),
+      allowedSplitButtonKinds: Joi.array().items(Joi.string()),
+      allowedClickThroughKinds: Joi.array().items(Joi.string()),
+    }),
+  })
   .when('type', {
     is: 'PUBLIC_FILE',
     then: Joi.object({
