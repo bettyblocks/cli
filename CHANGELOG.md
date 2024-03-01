@@ -1,3 +1,10 @@
+# [25.94.0](https://github.com/bettyblocks/cli/compare/v25.93.0...v25.94.0) (2024-03-01)
+
+
+### Features
+
+* add displayType to wrapper ([#464](https://github.com/bettyblocks/cli/issues/464)) ([abebcdd](https://github.com/bettyblocks/cli/commit/abebcdd))
+
 # [25.93.0](https://github.com/bettyblocks/cli/compare/v25.92.0...v25.93.0) (2024-01-24)
 
 
