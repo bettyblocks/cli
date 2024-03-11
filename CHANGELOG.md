@@ -1,3 +1,10 @@
+# [25.95.0](https://github.com/bettyblocks/cli/compare/v25.94.0...v25.95.0) (2024-03-11)
+
+
+### Features
+
+* add normal options to wrapper ([#465](https://github.com/bettyblocks/cli/issues/465)) ([8cc0d84](https://github.com/bettyblocks/cli/commit/8cc0d84))
+
 # [25.94.0](https://github.com/bettyblocks/cli/compare/v25.93.0...v25.94.0) (2024-03-01)
 
 
