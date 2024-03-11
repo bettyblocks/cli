@@ -113,11 +113,8 @@ const wrapperSchema = (
     label: Joi.string(),
     optionCategories: Joi.array().items(optionCategorySchema).min(1),
     options: Joi.array()
-      .items(linkedOptionSchema, linkedPartialSchema)
+      .items(optionSchema, linkedOptionSchema, linkedPartialSchema)
       .required(),
-    displayType: Joi.string()
-      .valid('inline-block', 'block', 'inline')
-      .optional(),
     descendants: Joi.array()
       .items(
         Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
