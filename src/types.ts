@@ -32,7 +32,7 @@ export type CommandFunctions =
   | 'bump'
   | 'test';
 
-export type CommandBlocks = 'publish' | 'new';
+export type CommandBlocks = 'publish' | 'release' | 'new';
 
 export type CommandInteractions = 'generate';
 
