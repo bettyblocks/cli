@@ -18,6 +18,7 @@
     "prettier:check": "yarn prettier:base --list-different \"src/**/*.{ts,tsx}\"",
     "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\"",
     "test": "ava ./__tests__/**/*.test.{ts,tsx}",
+    "test-vi": "vitest ./__tests__/",
     "all": "yarn test && yarn lint --fix && yarn prettier:write"
   },
   "husky": {
@@ -38,13 +39,11 @@
     "@types/fs-extra": "^8.0.0",
     "@types/glob": "^7.2.0",
     "@types/lodash": "^4.14.176",
-    "@types/node": "^12.6.8",
     "@types/promise-sequential": "^1.1.0",
     "@types/semver": "^7.3.9",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "app-root-path": "^2.2.1",
-    "ava": "^3.15.0",
     "eslint": "^8.3.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^16.1.0",
@@ -55,7 +54,8 @@
     "prettier": "^2.5.0",
     "semantic-release": "^19.0.3",
     "tsc-watch": "^2.2.1",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "vitest": "^2.0.3"
   },
   "dependencies": {
     "@azure/ms-rest-js": "^2.0.4",
@@ -95,16 +95,6 @@
   },
   "optionalDependencies": {
     "isolated-vm": "^4.0.0"
-  },
-  "ava": {
-    "extensions": [
-      "ts",
-      "tsx"
-    ],
-    "require": [
-      "ts-node/register",
-      "tsconfig-paths/register"
-    ]
   },
   "resolutions": {
     "@types/react": "^16.9.9"

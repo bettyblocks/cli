@@ -1,4 +1,3 @@
-import test, { ExecutionContext } from 'ava';
 import path from 'path';
 import { Validator } from 'jsonschema';
 import { functionDefinition } from '../../src/functions/functionDefinitions';
@@ -42,7 +41,7 @@ const schema = {
 const validator = new Validator();
 validator.addSchema(schema, schema.$id);
 
-test('load in entire schema for validator', async (t: Context): Promise<void> => {
+test('load in entire schema for validator', async () => {
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
@@ -56,11 +55,11 @@ test('load in entire schema for validator', async (t: Context): Promise<void> =>
 
   const { status, errors } = await validateSchema(definition, validator);
 
-  t.is(status, 'ok');
-  t.is(errors.length, 0);
+  expect(status).toBe('ok');
+  expect(errors.length).toBe(0);
 });
 
-test('validate templates', async (t: Context): Promise<void> => {
+test('validate templates', async () => {
   const functionPath = path.join(
     process.cwd(),
     'assets/app-functions/templates',
@@ -74,10 +73,10 @@ test('validate templates', async (t: Context): Promise<void> => {
 
   const { status } = await validateSchema(functionJson, validator);
 
-  t.is(status, 'ok');
+  expect(status).toBe('ok');
 });
 
-test('invalidate empty schemas', async (t: Context): Promise<void> => {
+test('invalidate empty schemas', async () => {
   const {
     status,
     errors: [{ message }],
@@ -89,11 +88,11 @@ test('invalidate empty schemas', async (t: Context): Promise<void> => {
     validator,
   );
 
-  t.is(status, 'error');
-  t.is(message, 'requires property "label"');
+  expect(status).toBe('error');
+  expect(message).toBe('requires property "label"');
 });
 
-test('invalidate schemas that do not have valid values for properties', async (t: Context): Promise<void> => {
+test('invalidate schemas that do not have valid values for properties', async () => {
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
@@ -107,6 +106,6 @@ test('invalidate schemas that do not have valid values for properties', async (t
     errors: [{ message }],
   } = await validateSchema(definition, validator);
 
-  t.is(status, 'error');
-  t.is(message, 'is not of a type(s) object');
+  expect(status).toBe('error');
+  expect(message).toBe('is not of a type(s) object');
 });

@@ -1,5 +1,4 @@
 import fs from 'fs-extra';
-import test, { ExecutionContext } from 'ava';
 import path from 'path';
 
 import {
@@ -18,41 +17,39 @@ type Context = ExecutionContext<unknown>;
 const supportDir = path.join(process.cwd(), '__tests__/support/');
 const functionsPath = path.join(supportDir, 'functions');
 
-test('functionDefinitionPath', async (t: Context): Promise<void> => {
-  t.is(
-    functionDefinitionPath('/functions/loop/1.0'),
-    '/functions/loop/1.0/function.json',
-  );
+test('functionDefinitionPath', async () => {
+  expect(functionDefinitionPath('/functions/loop/1.0')).toBe('/functions/loop/1.0/function.json');
 });
 
-test('isFunctionDefinition', async (t: Context): Promise<void> => {
+test('isFunctionDefinition', async () => {
   const correctPath = path.join(functionsPath, 'say-hello', '1.0');
-  t.true(isFunctionDefinition(correctPath));
+  expect(isFunctionDefinition(correctPath)).toBe(true);
 
-  t.false(isFunctionDefinition(functionsPath));
+  expect(isFunctionDefinition(functionsPath)).toBe(false);
 });
 
-test('isFunctionVersion', async (t: Context): Promise<void> => {
+test('isFunctionVersion', async () => {
   const versioned = path.join(functionsPath, 'say-hello', '1.0');
-  t.true(isFunctionVersion(versioned, functionsPath));
+  expect(isFunctionVersion(versioned, functionsPath)).toBe(true);
 
   const nonversioned = path.join(functionsPath, 'ooops');
-  t.false(isFunctionVersion(nonversioned, functionsPath));
+  expect(isFunctionVersion(nonversioned, functionsPath)).toBe(false);
 
   const underversioned = path.join(functionsPath, 'sorry', '0.9');
-  t.false(isFunctionVersion(underversioned, functionsPath));
+  expect(isFunctionVersion(underversioned, functionsPath)).toBe(false);
 });
 
-test('functionDefinition', async (t: Context): Promise<void> => {
+test('functionDefinition', async () => {
   const functionPath = path.join(functionsPath, 'say-hello', '1.0');
-  t.like(functionDefinition(functionPath, functionsPath), {
+
+  expect(functionDefinition(functionPath, functionsPath)).toMatchObject({
     schema: {
       label: 'Say Hello',
     },
-  });
+  })
 });
 
-test('creating a new functionDefinition', async (t: Context): Promise<void> => {
+test('creating a new functionDefinition', async () => {
   const tmpFunctionsDir = `tmpFunctions${Math.random().toString()}`;
   const tmpFunctionsPath = path.join(supportDir, tmpFunctionsDir);
   newFunctionDefinition(tmpFunctionsPath, 'ciao-mondo');
@@ -61,31 +58,33 @@ test('creating a new functionDefinition', async (t: Context): Promise<void> => {
   const { schema } = functionDefinition(functionPath, functionsPath);
 
   fs.removeSync(tmpFunctionsPath);
-  t.like(schema, {
+
+  expect(schema).toMatchObject({
     label: 'Ciao Mondo',
-  });
+  })
 });
 
-test('functionDefinitions for a directory with functions', async (t: Context): Promise<void> => {
+test('functionDefinitions for a directory with functions', async () => {
   const [{ schema }] = functionDefinitions(functionsPath);
-  t.like(schema, {
+
+  expect(schema).toMatchObject({
     label: 'Say Hello',
-  });
+  })
 });
 
-test('functionDefinitions for a directory without functions', async (t: Context): Promise<void> => {
+test('functionDefinitions for a directory without functions', async () => {
   const wrongFunctionsPath = supportDir;
-  t.deepEqual(functionDefinitions(wrongFunctionsPath), []);
+  expect(functionDefinitions(wrongFunctionsPath)).toEqual([]);
 });
 
-test('stringifying function definitions', async (t: Context): Promise<void> => {
+test('stringifying function definitions', async () => {
   const expected =
     '[{"name":"sayHello","version":"1.0","description":"Say Hello to the world","label":"Say Hello","category":"Misc","icon":{"name":"ChatIcon","color":"Teal"},"options":"[{\\"meta\\":{\\"type\\":\\"Text\\"},\\"name\\":\\"name\\",\\"label\\":\\"Name\\",\\"info\\":\\"The name that\'s going to be used to say hello to the world!\\",\\"advanced\\":false,\\"configuration\\":{\\"placeholder\\":\\"Betty Blocks\\"}}]","yields":"NONE","paths":"{}"}]';
   const definitions = functionDefinitions(functionsPath);
-  t.is(stringifyDefinitions(definitions), expected);
+  expect(stringifyDefinitions(definitions)).toBe(expected);
 });
 
-test('generating the package index.js', async (t: Context): Promise<void> => {
+test('generating the package index.js', async () => {
   const expected = `import { default as sayHello_1_0 } from './functions/say-hello/1.0';
 
 const fn = {
@@ -95,5 +94,5 @@ const fn = {
 export default fn;
 `;
 
-  t.is(generateIndex(functionsPath), expected);
+  expect(generateIndex(functionsPath)).toBe(expected);
 });

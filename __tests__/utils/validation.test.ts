@@ -1,11 +1,9 @@
-import test, { ExecutionContext } from 'ava';
-
 import { checkOptionCategoryReferences } from '../../src/utils/validation';
 import type { Prefab } from '../../src/types';
 
 type Context = ExecutionContext<unknown>;
 
-test('Throws when option category references do not match an option', (t: Context): void => {
+test('Throws when option category references do not match an option', () => {
   const prefabs = [
     {
       name: 'Component name',
@@ -53,5 +51,5 @@ test('Throws when option category references do not match an option', (t: Contex
     },
   ] as unknown as Prefab[];
 
-  t.throws(() => checkOptionCategoryReferences(prefabs));
+  expect(() => checkOptionCategoryReferences(prefabs)).toThrow();
 });
