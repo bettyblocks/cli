@@ -3,8 +3,6 @@ import { Validator } from 'jsonschema';
 import { functionDefinition } from '../../src/functions/functionDefinitions';
 import { validateSchema } from '../../src/functions/validations';
 
-type Context = ExecutionContext<unknown>;
-
 const schema = {
   $id: '/schema/actions/function.json',
   title: 'Function',

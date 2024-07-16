@@ -1,5 +1,3 @@
-import test, { ExecutionContext } from 'ava';
-
 import {
   InteractionType,
   Prefab,
@@ -8,9 +6,7 @@ import {
 } from '../../src/types';
 import validatePrefabs from '../../src/validations/prefab';
 
-type Context = ExecutionContext<unknown>;
-
-test('Pass without interactions array', (t: Context): void => {
+test('Pass without interactions array', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -19,11 +15,9 @@ test('Pass without interactions array', (t: Context): void => {
   } as Prefab;
 
   validatePrefabs([prefab], {});
-
-  t.pass();
 });
 
-test('Pass when interactions is the empty list', (t: Context): void => {
+test('Pass when interactions is the empty list', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -33,11 +27,9 @@ test('Pass when interactions is the empty list', (t: Context): void => {
   } as Prefab;
 
   validatePrefabs([prefab], {});
-
-  t.pass();
 });
 
-test('Throw when a prefab interaction does not define a name', (t: Context): void => {
+test('Throw when a prefab interaction does not define a name', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -46,14 +38,12 @@ test('Throw when a prefab interaction does not define a name', (t: Context): voi
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].name" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].name" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a prefab interaction does not define a ref', (t: Context): void => {
+test('Throw when a prefab interaction does not define a ref', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -62,14 +52,12 @@ test('Throw when a prefab interaction does not define a ref', (t: Context): void
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].ref" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].ref" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a prefab interaction does not define a type', (t: Context): void => {
+test('Throw when a prefab interaction does not define a type', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -88,14 +76,12 @@ test('Throw when a prefab interaction does not define a type', (t: Context): voi
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].type" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].type" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a prefab interaction does not define a sourceEvent', (t: Context): void => {
+test('Throw when a prefab interaction does not define a sourceEvent', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -113,14 +99,12 @@ test('Throw when a prefab interaction does not define a sourceEvent', (t: Contex
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].sourceEvent" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].sourceEvent" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a prefab interaction type is not Global or Custom', (t: Context): void => {
+test('Throw when a prefab interaction type is not Global or Custom', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -140,14 +124,12 @@ test('Throw when a prefab interaction type is not Global or Custom', (t: Context
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].type" must be one of [Global, Custom] at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].type" must be one of [Global, Custom] at prefab: Prefab',
+  );
 });
 
-test('Throw when a prefab interaction does not define a sourceComponentId', (t: Context): void => {
+test('Throw when a prefab interaction does not define a sourceComponentId', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -156,19 +138,17 @@ test('Throw when a prefab interaction does not define a sourceComponentId', (t: 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].ref.sourceComponentId" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].ref.sourceComponentId" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a global prefab interaction does not define parameters', (t: Context): void => {
+test('Throw when a global prefab interaction does not define parameters', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     interactions: [
-      ({
+      {
         name: 'interaction 1',
         ref: {
           sourceComponentId: 'component 1',
@@ -177,25 +157,23 @@ test('Throw when a global prefab interaction does not define parameters', (t: Co
         targetOptionName: 'option1',
         sourceEvent: 'Click',
         type: 'Global',
-      } as unknown) as PrefabInteraction,
+      } as unknown as PrefabInteraction,
     ],
     name: 'Prefab',
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].parameters" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].parameters" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a custom prefab interaction defines parameters', (t: Context): void => {
+test('Throw when a custom prefab interaction defines parameters', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     interactions: [
-      ({
+      {
         name: 'interaction 1',
         parameters: [],
         ref: {
@@ -204,20 +182,18 @@ test('Throw when a custom prefab interaction defines parameters', (t: Context): 
         },
         sourceEvent: 'Click',
         type: 'Custom',
-      } as unknown) as PrefabInteraction,
+      } as unknown as PrefabInteraction,
     ],
     name: 'Prefab',
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].parameters" is not allowed at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].parameters" is not allowed at prefab: Prefab',
+  );
 });
 
-test('Throw when a global prefab interaction parameter does not define a parameter', (t: Context): void => {
+test('Throw when a global prefab interaction parameter does not define a parameter', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -238,14 +214,12 @@ test('Throw when a global prefab interaction parameter does not define a paramet
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].parameters[0].parameter" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].parameters[0].parameter" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a global prefab interaction parameter does not define a name', (t: Context): void => {
+test('Throw when a global prefab interaction parameter does not define a name', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -266,14 +240,12 @@ test('Throw when a global prefab interaction parameter does not define a name', 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].parameters[0].name" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].parameters[0].name" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a global prefab interaction parameter does not reference a component', (t: Context): void => {
+test('Throw when a global prefab interaction parameter does not reference a component', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -299,14 +271,12 @@ test('Throw when a global prefab interaction parameter does not reference a comp
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].parameters[0].ref" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].parameters[0].ref" is required at prefab: Prefab',
+  );
 });
 
-test('Throw when a global prefab interaction parameter does not define a component id', (t: Context): void => {
+test('Throw when a global prefab interaction parameter does not define a component id', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -333,11 +303,9 @@ test('Throw when a global prefab interaction parameter does not define a compone
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].parameters[0].ref.componentId" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].parameters[0].ref.componentId" is required at prefab: Prefab',
+  );
 });
 
 // /* References */
@@ -408,12 +376,12 @@ Property: "interactions[0].parameters[0].ref.componentId" is required at prefab:
 
 // test('Throw when a global prefab interaction component does not reference an existing component', (t: Context): void => {});
 
-test('Throw when a custom prefab interaction defines targetOptionName', (t: Context): void => {
+test('Throw when a custom prefab interaction defines targetOptionName', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     interactions: [
-      ({
+      {
         name: 'interaction 1',
         targetOptionName: 'foo',
         ref: {
@@ -422,15 +390,13 @@ test('Throw when a custom prefab interaction defines targetOptionName', (t: Cont
         },
         sourceEvent: 'Click',
         type: 'Custom',
-      } as unknown) as PrefabInteraction,
+      } as unknown as PrefabInteraction,
     ],
     name: 'Prefab',
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "interactions[0].targetOptionName" is not allowed at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    'Property: "interactions[0].targetOptionName" is not allowed at prefab: Prefab',
+  );
 });

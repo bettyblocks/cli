@@ -7,8 +7,6 @@ import {
   newBlockDefinition,
 } from '../../src/blocks/blockDefinitions';
 
-type Context = ExecutionContext<unknown>;
-
 console.log(process.cwd());
 
 const supportDir = path.join(process.cwd(), '__tests__/support/blocks/');
@@ -24,7 +22,9 @@ test('blockDefinitionPath', async () => {
 test('creating a new blockDefinition', async () => {
   const blockName = `block${Math.random().toString()}`;
 
-  expect(newBlockDefinition(supportDir, blockName)).toBe(`blocks/${blockName}.json created`);
+  expect(newBlockDefinition(supportDir, blockName)).toBe(
+    `blocks/${blockName}.json created`,
+  );
 });
 
 test('returns 2 blocks', async () => {
@@ -53,7 +53,7 @@ test('creating a package.json', async () => {
     2,
   );
 
-  expect(createPackageJson('test', '__tests__/blocks/rootPackage.json', [
-    'lodash',
-  ])).toBe(packageJson)
+  expect(
+    createPackageJson('test', '__tests__/blocks/rootPackage.json', ['lodash']),
+  ).toBe(packageJson);
 });

@@ -6,8 +6,6 @@ import {
 } from '../../src/validations/function-block-validations';
 import { Block } from '../../src/blocks/blockDefinitions';
 
-type Context = ExecutionContext<unknown>;
-
 test('It validates invalid block dependencies', () => {
   const { valid, invalidDependencies } = validateBlockDependencies([
     'lodash',
@@ -93,7 +91,9 @@ test('It validates the block name on kebab case and is not valid', async () => {
   });
 
   expect(valid).toBe(false);
-  expect(errorMessage).toBe('test Block is not valid as it should be kebab case');
+  expect(errorMessage).toBe(
+    'test Block is not valid as it should be kebab case',
+  );
 });
 
 test('It validates the block name on kebab case and is valid', async () => {

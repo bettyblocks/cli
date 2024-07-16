@@ -1,11 +1,7 @@
-import test, { ExecutionContext } from 'ava';
-
 import { Prefab, PrefabVariable } from '../../src/types';
 import validatePrefabs from '../../src/validations/prefab';
 
-type Context = ExecutionContext<unknown>;
-
-test('Pass without variables array', (t: Context): void => {
+test('Pass without variables array', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -14,11 +10,9 @@ test('Pass without variables array', (t: Context): void => {
   } as Prefab;
 
   validatePrefabs([prefab], {});
-
-  t.pass();
 });
 
-test('Pass when variables array is the empty list', (t: Context): void => {
+test('Pass when variables array is the empty list', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -28,36 +22,32 @@ test('Pass when variables array is the empty list', (t: Context): void => {
   } as Prefab;
 
   validatePrefabs([prefab], {});
-
-  t.pass();
 });
 
-test('Throw when variable kind is unsupported', (t: Context): void => {
+test('Throw when variable kind is unsupported', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
     variables: [
-      ({
+      {
         name: 'foo',
         kind: 'collection',
         ref: {
           endpointId: '#endpointId',
           id: '#variableId',
         },
-      } as unknown) as PrefabVariable,
+      } as unknown as PrefabVariable,
     ],
     name: 'Prefab',
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "variables[0].kind" must be one of [construct, object, string, integer] at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    /Property: "variables\[0\]\.kind" must be one of \[construct, object, string, integer\] at prefab: Prefab/,
+  );
 });
 
-test('Throw when construct variable does not have a modelId', (t: Context): void => {
+test('Throw when construct variable does not have a modelId', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -76,14 +66,12 @@ test('Throw when construct variable does not have a modelId', (t: Context): void
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "variables[0].options.modelId" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    /Property: "variables\[0\]\.options\.modelId" is required at prefab: Prefab/,
+  );
 });
 
-test('Throw when construct variable does not have a name', (t: Context): void => {
+test('Throw when construct variable does not have a name', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -94,14 +82,12 @@ test('Throw when construct variable does not have a name', (t: Context): void =>
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "variables[0].name" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    /Property: "variables\[0\]\.name" is required at prefab: Prefab/,
+  );
 });
 
-test('Throw when construct variable does not have a ref', (t: Context): void => {
+test('Throw when construct variable does not have a ref', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -120,14 +106,12 @@ test('Throw when construct variable does not have a ref', (t: Context): void => 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "variables[0].options.ref" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    /Property: "variables\[0\]\.options\.ref" is required at prefab: Prefab/,
+  );
 });
 
-test('Throw when construct variable does not have a id ref', (t: Context): void => {
+test('Throw when construct variable does not have a id ref', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -147,14 +131,12 @@ test('Throw when construct variable does not have a id ref', (t: Context): void 
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "variables[0].ref.id" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    /Property: "variables\[0\]\.ref\.id" is required at prefab: Prefab/,
+  );
 });
 
-test('Throw when construct variable does not have a customModelId ref', (t: Context): void => {
+test('Throw when construct variable does not have a customModelId ref', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -176,14 +158,12 @@ test('Throw when construct variable does not have a customModelId ref', (t: Cont
     structure: [],
   } as Prefab;
 
-  t.throws(() => validatePrefabs([prefab], {}), {
-    message: `
-Property: "variables[0].options.ref.customModelId" is required at prefab: Prefab
-`,
-  });
+  expect(() => validatePrefabs([prefab], {})).toThrowError(
+    /Property: "variables\[0\]\.options\.ref\.customModelId" is required at prefab: Prefab/,
+  );
 });
 
-test('Pass for valid construct variable', (t: Context): void => {
+test('Pass for valid construct variable', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -206,11 +186,9 @@ test('Pass for valid construct variable', (t: Context): void => {
   } as Prefab;
 
   validatePrefabs([prefab], {});
-
-  t.pass();
 });
 
-test('Pass when using a string variable', (t: Context): void => {
+test('Pass when using a string variable', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -229,11 +207,9 @@ test('Pass when using a string variable', (t: Context): void => {
   } as Prefab;
 
   validatePrefabs([prefab], {});
-
-  t.pass();
 });
 
-test('Pass when using a object variable', (t: Context): void => {
+test('Pass when using a object variable', () => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
@@ -255,6 +231,4 @@ test('Pass when using a object variable', (t: Context): void => {
   } as Prefab;
 
   validatePrefabs([prefab], {});
-
-  t.pass();
 });

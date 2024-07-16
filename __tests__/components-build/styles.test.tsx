@@ -1,7 +1,3 @@
-import test, { ExecutionContext } from 'ava';
-
-type Context = ExecutionContext<unknown>;
-
 import { buildReferenceStyle, buildStyle } from '../../src/components-build';
 import {
   BuildStyle,
@@ -10,7 +6,7 @@ import {
   StyleDefinitionContentOverwrites,
 } from '../../src/types';
 
-test('it build a styleReference for the componentPrefab backwards compatible', (t: Context): void => {
+test('it build a styleReference for the componentPrefab backwards compatible', () => {
   const style = {
     name: 'Filled',
     overwrite: {
@@ -18,10 +14,10 @@ test('it build a styleReference for the componentPrefab backwards compatible', (
     },
   };
 
-  t.deepEqual(buildReferenceStyle(style), style);
+  expect(buildReferenceStyle(style)).toEqual(style);
 });
 
-test('it build a styleReference for the componentPrefab for states', (t: Context): void => {
+test('it build a styleReference for the componentPrefab for states', () => {
   const overwrite: StyleDefinitionContentOverwrites[] = [
     {
       name: 'basis',
@@ -50,10 +46,10 @@ test('it build a styleReference for the componentPrefab for states', (t: Context
     },
   };
 
-  t.deepEqual(buildReferenceStyle(style), expected);
+  expect(buildReferenceStyle(style)).toEqual(expected);
 });
 
-test('it build a style ', (t: Context): void => {
+test('it build a style ', () => {
   const style: StyleDefinition = {
     name: 'Filled',
     type: 'Button',
@@ -77,5 +73,5 @@ test('it build a style ', (t: Context): void => {
     },
   };
 
-  t.deepEqual(buildStyle(style), expected);
+  expect(buildStyle(style)).toEqual(expected);
 });

@@ -2,8 +2,6 @@
 import toCompatibility from '../src/interactions/compatibility';
 import { InteractionOptionType } from '../src/types';
 
-type Context = ExecutionContext<unknown>;
-
 test('extract compatibility for: () => boolean', () => {
   const compatibility = toCompatibility('__tests__/assets/yes.ts');
 
@@ -69,28 +67,35 @@ test('add compatibility for unknown type', () => {
 });
 
 test('fail extraction when passing no interaction', () => {
-  expect(() => toCompatibility('__tests__/assets/empty.ts')).toThrowError(new RangeError(`
+  expect(() => toCompatibility('__tests__/assets/empty.ts')).toThrowError(
+    new RangeError(`
     expected expression of the kind
       function empty({ event, argument }: { event: Event, argument: ArgumentType }): ReturnType {
         // body
       }
-    `));
+    `),
+  );
 });
 
 test('fail when passing an arrow function instead of a function', () => {
-  expect(() => toCompatibility('__tests__/assets/arrow.ts')).toThrowError(new RangeError(`
+  expect(() => toCompatibility('__tests__/assets/arrow.ts')).toThrowError(
+    new RangeError(`
     expected expression of the kind
       function arrow({ event, argument }: { event: Event, argument: ArgumentType }): ReturnType {
         // body
       }
-    `,
-  ));
+    `),
+  );
 });
 
 test('fail extraction when passing incompatible type for: subtotal({ event, price }: { event: Event, price: PriceType }): number => number', () => {
-  expect(() => toCompatibility('__tests__/assets/incompatibleType.ts')).toThrowError(new TypeError('unsupported type for: price'));
+  expect(() =>
+    toCompatibility('__tests__/assets/incompatibleType.ts'),
+  ).toThrowError(new TypeError('unsupported type for: price'));
 });
 
 test('fail extraction with multiple function statements', () => {
-  expect(() => toCompatibility('__tests__/assets/multiple.ts')).toThrowError(new RangeError('file contains multiple statements'));
+  expect(() => toCompatibility('__tests__/assets/multiple.ts')).toThrowError(
+    new RangeError('file contains multiple statements'),
+  );
 });

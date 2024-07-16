@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import toCompatibility from '../src/components/compatibility';
 
-type Context = ExecutionContext<unknown>;
-
 test('extract compatibility for simple button with custom trigger and function', () => {
   const code = `
 (() => ({

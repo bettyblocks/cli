@@ -1,8 +1,6 @@
 import { checkOptionCategoryReferences } from '../../src/utils/validation';
 import type { Prefab } from '../../src/types';
 
-type Context = ExecutionContext<unknown>;
-
 test('Throws when option category references do not match an option', () => {
   const prefabs = [
     {

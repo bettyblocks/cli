@@ -12,13 +12,13 @@ import {
   stringifyDefinitions,
 } from '../../src/functions/functionDefinitions';
 
-type Context = ExecutionContext<unknown>;
-
 const supportDir = path.join(process.cwd(), '__tests__/support/');
 const functionsPath = path.join(supportDir, 'functions');
 
 test('functionDefinitionPath', async () => {
-  expect(functionDefinitionPath('/functions/loop/1.0')).toBe('/functions/loop/1.0/function.json');
+  expect(functionDefinitionPath('/functions/loop/1.0')).toBe(
+    '/functions/loop/1.0/function.json',
+  );
 });
 
 test('isFunctionDefinition', async () => {
@@ -46,7 +46,7 @@ test('functionDefinition', async () => {
     schema: {
       label: 'Say Hello',
     },
-  })
+  });
 });
 
 test('creating a new functionDefinition', async () => {
@@ -61,7 +61,7 @@ test('creating a new functionDefinition', async () => {
 
   expect(schema).toMatchObject({
     label: 'Ciao Mondo',
-  })
+  });
 });
 
 test('functionDefinitions for a directory with functions', async () => {
@@ -69,7 +69,7 @@ test('functionDefinitions for a directory with functions', async () => {
 
   expect(schema).toMatchObject({
     label: 'Say Hello',
-  })
+  });
 });
 
 test('functionDefinitions for a directory without functions', async () => {

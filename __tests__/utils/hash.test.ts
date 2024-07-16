@@ -1,8 +1,6 @@
 import { Component } from '../../src/types';
 import hash from '../../src/utils/hash';
 
-type Context = ExecutionContext<unknown>;
-
 const ComponentA: Component = {
   name: 'Test',
   orientation: 'HORIZONTAL',
