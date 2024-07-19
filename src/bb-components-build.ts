@@ -47,7 +47,6 @@ import {
   buildStyle,
   buildReferenceStyle,
 } from './components-build';
-import { buildInteractions } from './components-build/v2/buildInteractions';
 
 const { mkdir, readFile } = promises;
 
@@ -57,11 +56,6 @@ program
   .usage('[path]')
   .name('bb components build')
   .option('-t, --transpile', 'enable new transpilation')
-  .option(
-    '--runtime-version [version]',
-    'the runtime option to build for',
-    'v1',
-  )
   .option('--fast', 'Build the last edited component.')
   .parse(process.argv);
 
@@ -382,7 +376,7 @@ void (async (): Promise<void> => {
       readtsPrefabs(),
       readPrefabs(),
       readComponents(),
-      runtimeVersion === 'v2' ? Promise.resolve([]) : readInteractions(),
+      readInteractions(),
       readPartialPrefabs(),
       readtsPrefabs(true),
     ]);
@@ -631,12 +625,6 @@ void (async (): Promise<void> => {
 
     if (pagePrefabs.length === 0 && existingPath && buildAll) {
       await remove(`${distDir}/pagePrefabs.json`);
-    }
-
-    // v2
-
-    if (runtimeVersion === 'v2') {
-      await buildInteractions(rootDir);
     }
 
     console.info(chalk.green('Success, the component set has been built'));
