@@ -120,7 +120,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
           );
         }
 
-        if (transpiledFunction.dependencies) {
+        if (transpiledFunction.dependencies && !hasOfflineFlag) {
           const usedPackages = (
             transpiledFunction.dependencies as ComponentDependency[]
           ).map((usedDependency) => usedDependency.package);
