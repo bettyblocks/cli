@@ -1,3 +1,10 @@
+# [25.97.0](https://github.com/bettyblocks/cli/compare/v25.96.0...v25.97.0) (2024-07-31)
+
+
+### Features
+
+* retrigger pipelines ([#473](https://github.com/bettyblocks/cli/issues/473)) ([9926385](https://github.com/bettyblocks/cli/commit/9926385))
+
 # [25.96.0](https://github.com/bettyblocks/cli/compare/v25.95.1...v25.96.0) (2024-07-29)
 
 
