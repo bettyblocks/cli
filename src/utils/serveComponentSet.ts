@@ -58,8 +58,13 @@ const serveComponentSet = (options: ServeOptions): Promise<void> => {
   });
 };
 
-export default async (options: ServeOptions): Promise<void> => {
-  await checkUpdateAvailableCLI();
+export default async (
+  options: ServeOptions,
+  hasOfflineFlag: boolean,
+): Promise<void> => {
+  if (!hasOfflineFlag) {
+    await checkUpdateAvailableCLI();
+  }
   if (!existsSync(`${options.rootDir}/dist`)) {
     throw new Error(`Directory '${options.rootDir}/dist' does not exists.`);
   }

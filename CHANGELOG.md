@@ -1,3 +1,24 @@
+# [25.97.0](https://github.com/bettyblocks/cli/compare/v25.96.0...v25.97.0) (2024-07-31)
+
+
+### Features
+
+* retrigger pipelines ([#473](https://github.com/bettyblocks/cli/issues/473)) ([9926385](https://github.com/bettyblocks/cli/commit/9926385))
+
+# [25.96.0](https://github.com/bettyblocks/cli/compare/v25.95.1...v25.96.0) (2024-07-29)
+
+
+### Features
+
+* retrigger pipelines ([#471](https://github.com/bettyblocks/cli/issues/471)) ([4a25025](https://github.com/bettyblocks/cli/commit/4a25025))
+
+## [25.95.1](https://github.com/bettyblocks/cli/compare/v25.95.0...v25.95.1) (2024-07-25)
+
+
+### Bug Fixes
+
+* able to skip update check ([#468](https://github.com/bettyblocks/cli/issues/468)) ([d914e75](https://github.com/bettyblocks/cli/commit/d914e75))
+
 # [25.95.0](https://github.com/bettyblocks/cli/compare/v25.94.0...v25.95.0) (2024-03-11)
 
 

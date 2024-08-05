@@ -23,6 +23,7 @@ program
   .option('--ssl', 'Serve using HTTPS.', false)
   .option('--ssl-key [ssl-key]', 'SSL certificate to use for serving HTTPS.')
   .option('--ssl-cert [ssl-cert]', 'SSL key to use for serving HTTPS.')
+  .option('--offline', 'skip update check')
   .parse(process.argv);
 
 const options: ServeOptions = {
@@ -34,8 +35,11 @@ const options: ServeOptions = {
   sslCert: program.sslCert as string,
 };
 
+const arg = process.argv.slice(2);
+const hasOfflineFlag = arg.includes('--offline');
+
 /* execute command */
-serveComponentSet(options).then(
+serveComponentSet(options, hasOfflineFlag).then(
   () => {
     const scheme = options.ssl ? 'https' : 'http';
     const url = `${scheme}://${options.host}:${options.port}`;

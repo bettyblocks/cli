@@ -56,6 +56,7 @@ program
   .usage('[path]')
   .name('bb components build')
   .option('-t, --transpile', 'enable new transpilation')
+  .option('--offline', 'skip update check')
   .option('--fast', 'Build the last edited component.')
   .parse(process.argv);
 
@@ -67,6 +68,7 @@ const enableNewTranspile = !!options.transpile;
 const arg = process.argv.slice(2);
 const startTime = Date.now();
 const buildAll = !arg.includes('--fast');
+const hasOfflineFlag = arg.includes('--offline');
 
 /* execute command */
 
@@ -112,7 +114,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
           );
         }
 
-        if (transpiledFunction.dependencies) {
+        if (transpiledFunction.dependencies && !hasOfflineFlag) {
           const usedPackages = (
             transpiledFunction.dependencies as ComponentDependency[]
           ).map((usedDependency) => usedDependency.package);
@@ -358,7 +360,9 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
 
 // eslint-disable-next-line no-void
 void (async (): Promise<void> => {
-  await checkUpdateAvailableCLI();
+  if (!hasOfflineFlag) {
+    await checkUpdateAvailableCLI();
+  }
 
   const { runtimeVersion = 'v1' } = options;
 
