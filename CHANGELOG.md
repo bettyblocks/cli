@@ -1,3 +1,10 @@
+# [25.98.0](https://github.com/bettyblocks/cli/compare/v25.97.0...v25.98.0) (2024-08-23)
+
+
+### Features
+
+* add blocks publish --all command ([#466](https://github.com/bettyblocks/cli/issues/466)) ([b800eac](https://github.com/bettyblocks/cli/commit/b800eac))
+
 # [25.97.0](https://github.com/bettyblocks/cli/compare/v25.96.0...v25.97.0) (2024-07-31)
 
 
