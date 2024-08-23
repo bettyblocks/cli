@@ -23,7 +23,7 @@ import {
   validateBlock,
 } from './validations/function-block-validations';
 
-program.name('bb blocks publish').parse(process.argv);
+program.option('--all').name('bb blocks publish').parse(process.argv);
 
 const workingDir = process.cwd();
 const baseBlocksPath = path.join(workingDir, 'blocks');
@@ -79,15 +79,24 @@ void (async (): Promise<void> => {
     title: path.basename(block, '.json'),
     value: block,
   }));
-  const { selected } = (await prompts([
-    {
-      type: 'multiselect',
-      name: 'selected',
-      message: 'Which blocks do you want to publish?',
-      choices,
-      instructions: false,
-    },
-  ])) as { selected: string[] };
+  const { all } = program.opts();
+
+  let selected: string[] = [];
+
+  if (all) {
+    selected = blocks;
+  } else {
+    const results = (await prompts([
+      {
+        type: 'multiselect',
+        name: 'selected',
+        message: 'Which blocks do you want to publish?',
+        choices,
+        instructions: false,
+      },
+    ])) as { selected: string[] };
+    selected = results.selected;
+  }
 
   selected.forEach((jsonFile) => {
     // eslint-disable-next-line no-void
