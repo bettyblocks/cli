@@ -24,6 +24,7 @@ const schema = (validStyleTypes: string[]): ObjectSchema => {
     name: Joi.string().required(),
     icon: Joi.string(), // DEPRECATED
     category: Joi.string(), // DEPRECATED
+    compilerTarget: Joi.string(),
     $afterCreate: Joi.object({
       query: Joi.string().required(),
       input: Joi.object().pattern(Joi.string(), Joi.any()).required(),
