@@ -1123,3 +1123,55 @@ test('Does not throw when wrapper option has a optionRef', (t: Context): void =>
 
   t.notThrows(() => validatePrefabs(prefabs, {}));
 });
+
+test('Success when value is an array with empty string in variable option', (t: Context): void => {
+  const prefabs: Prefab[] = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: [''],
+              label: 'something',
+              key: 'something',
+              type: 'VARIABLE',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ];
+
+  t.notThrows(() => validatePrefabs(prefabs, {}));
+});
+
+test('Throws error when value is an empty string in variable option', (t: Context): void => {
+  const prefabs: Prefab[] = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: '',
+              label: 'something',
+              key: 'something',
+              type: 'VARIABLE',
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ];
+
+  t.throws(() => validatePrefabs(prefabs, {}));
+});
