@@ -91,6 +91,16 @@ const optionConfigurationSchema = Joi.when('type', {
   otherwise: Joi.object(optionConfigurationSchemaBase),
 })
   .when('type', {
+    is: 'ACTION_JS_VARIABLE',
+    then: Joi.object({
+      ...optionConfigurationSchemaBase,
+      createActionInputVariable: Joi.object({
+        name: Joi.string().required(),
+        type: Joi.string().required(),
+      }),
+    }),
+  })
+  .when('type', {
     is: 'VARIABLE',
     then: Joi.object({
       ...optionConfigurationSchemaBase,
