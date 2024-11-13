@@ -1,3 +1,10 @@
+## [25.98.1](https://github.com/bettyblocks/cli/compare/v25.98.0...v25.98.1) (2024-11-13)
+
+
+### Bug Fixes
+
+* only allow a array as value in variable option ([#474](https://github.com/bettyblocks/cli/issues/474)) ([7705f02](https://github.com/bettyblocks/cli/commit/7705f02))
+
 # [25.98.0](https://github.com/bettyblocks/cli/compare/v25.97.0...v25.98.0) (2024-08-23)
 
 
