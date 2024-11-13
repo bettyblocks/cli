@@ -138,6 +138,16 @@ const OptionRefInheritObject = Joi.object({
   useKey: Joi.string(),
 });
 
+const optionValueSchema = Joi.when('ref', {
+  is: Joi.object({ value: Joi.exist() }).exist(),
+  then: Joi.forbidden(),
+  otherwise: Joi.any(),
+}).when('type', {
+  is: 'VARIABLE',
+  then: Joi.array().items(Joi.string().allow('')).required(),
+  otherwise: Joi.any(),
+});
+
 export const optionSchema = Joi.object({
   label: Joi.string().required(),
   key: Joi.string().required(),
@@ -145,11 +155,7 @@ export const optionSchema = Joi.object({
     .valid(...OPTIONS)
     .required(),
   configuration: optionConfigurationSchema,
-  value: Joi.when('ref', {
-    is: Joi.object({ value: Joi.exist() }).exist(),
-    then: Joi.forbidden(),
-    otherwise: Joi.any(),
-  }),
+  value: optionValueSchema,
   showInAddChild: Joi.boolean(),
   showInReconfigure: Joi.boolean(),
   ref: refSchema,

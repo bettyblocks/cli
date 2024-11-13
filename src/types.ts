@@ -275,7 +275,7 @@ export interface PrefabComponentOptionBase {
 }
 
 export interface ValueDefault {
-  value: string | ValueConfig;
+  value: string | string[] | ValueConfig;
   ref?: { id?: string };
 }
 
