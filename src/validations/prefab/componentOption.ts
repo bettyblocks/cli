@@ -95,7 +95,7 @@ const optionConfigurationSchema = Joi.when('type', {
     then: Joi.object({
       ...optionConfigurationSchemaBase,
       createActionInputVariable: Joi.object({
-        name: Joi.string().required(),
+        name: Joi.string().optional(),
         type: Joi.string().required(),
         value: Joi.string().allow(''),
       }),
