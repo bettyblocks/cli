@@ -1,3 +1,10 @@
+# [25.99.0](https://github.com/bettyblocks/cli/compare/v25.98.1...v25.99.0) (2024-11-18)
+
+
+### Features
+
+* add createActionInputVariable ([#475](https://github.com/bettyblocks/cli/issues/475)) ([879d251](https://github.com/bettyblocks/cli/commit/879d251))
+
 ## [25.98.1](https://github.com/bettyblocks/cli/compare/v25.98.0...v25.98.1) (2024-11-13)
 
 
