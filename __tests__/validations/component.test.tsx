@@ -1175,3 +1175,35 @@ test('Success when value is an array with empty string in variable option', (t: 
 
   t.notThrows(() => validatePrefabs(prefabs, {}));
 });
+
+test('Success when adding createActionInputVariable in the option configuration of an ACTION_JS_INPUT', (t: Context): void => {
+  const prefabs: Prefab[] = [
+    {
+      name: 'Component Name',
+      icon: 'TitleIcon',
+      category: 'CONTENT',
+      structure: [
+        {
+          name: 'something',
+          options: [
+            {
+              value: [''],
+              label: 'something',
+              key: 'something',
+              type: 'ACTION_JS_VARIABLE',
+              configuration: {
+                createActionInputVariable: {
+                  name: 'Test Name',
+                  type: 'STRING',
+                },
+              },
+            },
+          ],
+          descendants: [],
+        },
+      ],
+    },
+  ];
+
+  t.notThrows(() => validatePrefabs(prefabs, {}));
+});
