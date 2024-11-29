@@ -81,6 +81,11 @@ const optionConfigurationSchema = Joi.when('type', {
       type: Joi.string(),
       value: Joi.string().allow(''),
     }),
+    createActionInputVariable: Joi.object({
+      name: Joi.string(),
+      type: Joi.string().required(),
+      value: Joi.string().allow(''),
+    }),
     manageObjectValues: Joi.object({
       selectableObjectKey: Joi.boolean().optional(),
       buttonLabel: Joi.string().optional(),
@@ -95,7 +100,7 @@ const optionConfigurationSchema = Joi.when('type', {
     then: Joi.object({
       ...optionConfigurationSchemaBase,
       createActionInputVariable: Joi.object({
-        name: Joi.string().required(),
+        name: Joi.string(),
         type: Joi.string().required(),
         value: Joi.string().allow(''),
       }),

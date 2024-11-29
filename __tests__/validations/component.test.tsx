@@ -945,6 +945,9 @@ test('Success when the reconfigure configuration options of the prefabs are vali
                   type: 'TEXT',
                   value: 'New property',
                 },
+                createActionInputVariable: {
+                  type: 'TEXT',
+                },
                 manageObjectValues: {
                   selectableObjectKey: true,
                   buttonLabel: 'Manage something',
