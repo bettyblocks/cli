@@ -206,7 +206,7 @@ const componentSchema = (
     overwrite: overwriteSchema,
   });
 
-  const optionsTemplateSchema = Joi.object({
+  const optionTemplatesSchema = Joi.object({
     addChild: Joi.object({
       options: Joi.array().items(optionSchema).required(),
     }),
@@ -223,7 +223,7 @@ const componentSchema = (
     }),
     optionCategories: Joi.array().items(optionCategorySchema).min(1),
     options: Joi.array().items(optionSchema).required(),
-    optionsTemplate: optionsTemplateSchema,
+    optionTemplates: optionTemplatesSchema,
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
       .items(
