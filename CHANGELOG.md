@@ -1,3 +1,10 @@
+# [25.100.0](https://github.com/bettyblocks/cli/compare/v25.99.0...v25.100.0) (2024-12-16)
+
+
+### Features
+
+* bump version ([#479](https://github.com/bettyblocks/cli/issues/479)) ([1a13598](https://github.com/bettyblocks/cli/commit/1a13598))
+
 # [25.99.0](https://github.com/bettyblocks/cli/compare/v25.98.1...v25.99.0) (2024-11-18)
 
 
