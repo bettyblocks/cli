@@ -1,3 +1,10 @@
+# [25.101.0](https://github.com/bettyblocks/cli/compare/v25.100.0...v25.101.0) (2024-12-16)
+
+
+### Features
+
+* accepts options template key page 4926 ([#481](https://github.com/bettyblocks/cli/issues/481)) ([1e02c00](https://github.com/bettyblocks/cli/commit/1e02c00))
+
 # [25.100.0](https://github.com/bettyblocks/cli/compare/v25.99.0...v25.100.0) (2024-12-16)
 
 
