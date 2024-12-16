@@ -206,6 +206,12 @@ const componentSchema = (
     overwrite: overwriteSchema,
   });
 
+  const optionTemplatesSchema = Joi.object({
+    addChild: Joi.object({
+      options: Joi.array().items(optionSchema).required(),
+    }),
+  });
+
   const deprecatedStylesFlag = Object.keys(styles).length === 0;
 
   return Joi.object({
@@ -217,6 +223,7 @@ const componentSchema = (
     }),
     optionCategories: Joi.array().items(optionCategorySchema).min(1),
     options: Joi.array().items(optionSchema).required(),
+    optionTemplates: optionTemplatesSchema,
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
       .items(
