@@ -81,6 +81,11 @@ const optionConfigurationSchema = Joi.when('type', {
       type: Joi.string(),
       value: Joi.string().allow(''),
     }),
+    createActionInputVariable: Joi.object({
+      name: Joi.string().optional(),
+      type: Joi.string().required(),
+      value: Joi.string().allow('').optional(),
+    }),
     manageObjectValues: Joi.object({
       selectableObjectKey: Joi.boolean().optional(),
       buttonLabel: Joi.string().optional(),
