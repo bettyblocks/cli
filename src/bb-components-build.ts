@@ -48,6 +48,7 @@ import {
   buildReferenceStyle,
 } from './components-build';
 import { buildInteractions } from './components-build/v2/buildInteractions';
+import { reduce } from 'lodash';
 
 const { mkdir, readFile } = promises;
 
@@ -440,20 +441,38 @@ void (async (): Promise<void> => {
 
     checkNameReferences(prefabs, finalComponents);
 
-    const componentStyleMap: ComponentStyleMap = components.reduce((acc, c) => {
-      return c.styleType
-        ? Object.assign(acc, { [c.name]: { styleType: c.styleType } })
-        : acc;
-    }, {});
+    const {
+      availableNames: availableComponentNames,
+      styleMap: componentStyleMap,
+    } = components.reduce(
+      ({ availableNames, styleMap }, c) => {
+        const newNames = availableNames.includes(c.name)
+          ? availableNames
+          : [...availableNames, c.name];
+
+        const newStyleMap = c.styleType
+          ? Object.assign(styleMap, { [c.name]: { styleType: c.styleType } })
+          : styleMap;
+
+        return { availableNames: newNames, styleMap: newStyleMap };
+      },
+      { availableNames: [] as string[], styleMap: {} },
+    );
 
     await Promise.all([
       validateStyles(styles, componentNames),
       validateComponents(components, validStyleTypes),
-      validatePrefabs(prefabs, stylesGroupedByTypeAndName, componentStyleMap),
+      validatePrefabs(
+        prefabs,
+        stylesGroupedByTypeAndName,
+        componentStyleMap,
+        availableComponentNames,
+      ),
       validatePrefabs(
         allPartialPrefabs,
         stylesGroupedByTypeAndName,
         componentStyleMap,
+        availableComponentNames,
         'partial',
       ),
       interactions && validateInteractions(interactions),

@@ -111,6 +111,7 @@ const partialSchema = (): Joi.ObjectSchema => {
 const wrapperSchema = (
   styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
+  availableComponentNames?: string[],
   prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
   return Joi.object({
@@ -122,7 +123,14 @@ const wrapperSchema = (
       .required(),
     descendants: Joi.array()
       .items(
-        Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
+        Joi.custom(
+          validateComponent(
+            styles,
+            componentStyleMap,
+            availableComponentNames,
+            prefabType,
+          ),
+        ),
       )
       .required(),
   });
@@ -213,9 +221,17 @@ const optionActionsObject = ({
     onCreate: Joi.array().items(baseAction(onCreateActions)),
   });
 
-const optionTemplatesSchema = (transformationActions: TransformationActions) =>
+const optionTemplatesSchema = (
+  transformationActions: TransformationActions,
+  availableComponentNames?: string[],
+) =>
   Joi.object({
     addChild: Joi.object({
+      condition: Joi.object({
+        onlyShowWhenDroppedIn: Joi.string().valid(
+          ...(availableComponentNames || []),
+        ),
+      }),
       options: Joi.array().items(optionSchema).required(),
       optionActions: Joi.object().pattern(
         Joi.string(),
@@ -227,6 +243,7 @@ const optionTemplatesSchema = (transformationActions: TransformationActions) =>
 const componentSchema = (
   styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
+  availableComponentNames?: string[],
   styleType?: keyof StyleValidator,
   prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
@@ -267,11 +284,19 @@ const componentSchema = (
     options: Joi.array().items(optionSchema).required(),
     optionTemplates: optionTemplatesSchema(
       definedinternalTransformationActions,
+      availableComponentNames,
     ),
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
       .items(
-        Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
+        Joi.custom(
+          validateComponent(
+            styles,
+            componentStyleMap,
+            availableComponentNames,
+            prefabType,
+          ),
+        ),
       )
       .required(),
     reconfigure: Joi.any(),
@@ -350,6 +375,7 @@ export const validateComponent =
   (
     styles: GroupedStyles,
     componentStyleMap?: ComponentStyleMap,
+    availableComponentNames?: string[],
     prefabType?: PrefabTypes,
   ) =>
   (component: PrefabReference): Prefab | unknown => {
@@ -373,6 +399,7 @@ export const validateComponent =
       const { error } = wrapperSchema(
         styles,
         componentStyleMap,
+        availableComponentNames,
         prefabType,
       ).validate(component);
       const { optionCategories = [], options } = component;
@@ -398,6 +425,7 @@ export const validateComponent =
       const { error } = componentSchema(
         styles,
         componentStyleMap,
+        availableComponentNames,
         styleType as keyof StyleValidator,
         prefabType,
       ).validate(component);
