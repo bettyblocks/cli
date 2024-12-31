@@ -817,7 +817,7 @@ test('Does not throw when valid partial Prefab', (t: Context): void => {
     },
   ];
 
-  validatePrefabs(prefabs, {}, {}, 'partial');
+  validatePrefabs(prefabs, {}, {}, [], 'partial');
   t.pass();
 });
 
@@ -836,7 +836,7 @@ test('Throw when partialcomponent in partial Prefab', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}, {}, 'partial'));
+  t.throws(() => validatePrefabs(prefabs, {}, {}, [], 'partial'));
 });
 
 test('Throw when type key in partial Prefab', (t: Context): void => {
@@ -862,7 +862,7 @@ test('Throw when type key in partial Prefab', (t: Context): void => {
       ],
     },
   ];
-  t.throws(() => validatePrefabs(prefabs, {}, {}, 'partial'));
+  t.throws(() => validatePrefabs(prefabs, {}, {}, [], 'partial'));
 });
 
 test("throws an error when a reserved keyword is used 'PARTIAL'", (t: Context): void => {
