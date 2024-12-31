@@ -23,11 +23,6 @@ import { linkedPartialSchema } from './linkedPartial';
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
 
-type TransformationActions = {
-  onChangeActions: string[];
-  onCreateActions: string[];
-};
-
 const shadows = [
   'none',
   '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
@@ -202,29 +197,29 @@ const validateComponentStyle =
     return prefabObject;
   };
 
-const baseAction = (allowedActions: string[]) =>
-  Joi.object({
-    action: Joi.string()
-      .valid(...allowedActions)
-      .messages({
-        valid: `onChangeAction not of value: ${JSON.stringify(allowedActions)}`,
-      }),
-    target: Joi.string(),
-  });
+const allowedChangeActions = ['setVariable', 'setModel'];
 
-const optionActionsObject = ({
-  onChangeActions,
-  onCreateActions,
-}: TransformationActions) =>
-  Joi.object({
-    onChange: Joi.array().items(baseAction(onChangeActions)),
-    onCreate: Joi.array().items(baseAction(onCreateActions)),
-  });
+const onChangeAction = Joi.object({
+  action: Joi.string()
+    .valid(...allowedChangeActions)
+    .messages({
+      valid: `onChangeAction not of value: ${JSON.stringify(
+        allowedChangeActions,
+      )}`,
+    }),
+  format: Joi.string().when('action', {
+    is: 'setVariable',
+    then: Joi.valid('propertyLabel', 'propertyValue', 'static'),
+    otherwise: Joi.forbidden(),
+  }),
+  target: Joi.string(),
+});
 
-const optionTemplatesSchema = (
-  transformationActions: TransformationActions,
-  availableComponentNames?: string[],
-) =>
+const optionActionsObject = Joi.object({
+  onChange: Joi.array().items(onChangeAction),
+});
+
+const optionTemplatesSchema = (availableComponentNames?: string[]) =>
   Joi.object({
     addChild: Joi.object({
       condition: Joi.object({
@@ -233,10 +228,7 @@ const optionTemplatesSchema = (
         ),
       }),
       options: Joi.array().items(optionSchema).required(),
-      optionActions: Joi.object().pattern(
-        Joi.string(),
-        optionActionsObject(transformationActions),
-      ),
+      optionActions: Joi.object().pattern(Joi.string(), optionActionsObject),
     }),
   });
 
@@ -258,19 +250,6 @@ const componentSchema = (
     overwrite: overwriteSchema,
   });
 
-  // internal actions list.
-  const definedinternalTransformationActions = {
-    onChangeActions: [
-      'setVariableOptionWithPropertyLabel',
-      'setVariableOptionWithPropertyValue',
-      'setVariableOptionWithInputVariableName',
-    ],
-    onCreateActions: [
-      'createAndSetActionInputVariableOption',
-      'createAndSetPropertyOption',
-    ],
-  };
-
   const deprecatedStylesFlag = Object.keys(styles).length === 0;
 
   return Joi.object({
@@ -282,10 +261,7 @@ const componentSchema = (
     }),
     optionCategories: Joi.array().items(optionCategorySchema).min(1),
     options: Joi.array().items(optionSchema).required(),
-    optionTemplates: optionTemplatesSchema(
-      definedinternalTransformationActions,
-      availableComponentNames,
-    ),
+    optionTemplates: optionTemplatesSchema(availableComponentNames),
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
       .items(

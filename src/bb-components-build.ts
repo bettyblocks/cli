@@ -19,7 +19,6 @@ import {
   Component,
   Interaction,
   Prefab,
-  ComponentStyleMap,
   PrefabReference,
   GroupedStyles,
   BuildPrefabReference,
@@ -48,7 +47,6 @@ import {
   buildReferenceStyle,
 } from './components-build';
 import { buildInteractions } from './components-build/v2/buildInteractions';
-import { reduce } from 'lodash';
 
 const { mkdir, readFile } = promises;
 
@@ -444,19 +442,24 @@ void (async (): Promise<void> => {
     const {
       availableNames: availableComponentNames,
       styleMap: componentStyleMap,
-    } = components.reduce(
-      ({ availableNames, styleMap }, c) => {
-        const newNames = availableNames.includes(c.name)
+    } = components.reduce<{
+      availableNames: string[];
+      styleMap: Record<string, { styleType: string }>;
+    }>(
+      ({ availableNames, styleMap }, component) => {
+        const newNames = availableNames.includes(component.name)
           ? availableNames
-          : [...availableNames, c.name];
+          : [...availableNames, component.name];
 
-        const newStyleMap = c.styleType
-          ? Object.assign(styleMap, { [c.name]: { styleType: c.styleType } })
+        const newStyleMap = component.styleType
+          ? Object.assign(styleMap, {
+              [component.name]: { styleType: component.styleType },
+            })
           : styleMap;
 
         return { availableNames: newNames, styleMap: newStyleMap };
       },
-      { availableNames: [] as string[], styleMap: {} },
+      { availableNames: [], styleMap: {} },
     );
 
     await Promise.all([
