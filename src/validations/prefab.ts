@@ -20,6 +20,7 @@ export type PrefabTypes = 'partial' | 'page' | undefined;
 const schemaProvider = (
   styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
+  availableComponentNames?: string[],
   prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
   return Joi.object({
@@ -43,7 +44,14 @@ const schemaProvider = (
     beforeCreate: Joi.any(),
     structure: Joi.array()
       .items(
-        Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
+        Joi.custom(
+          validateComponent(
+            styles,
+            componentStyleMap,
+            availableComponentNames,
+            prefabType,
+          ),
+        ),
       )
       .required(),
     reconfigure: Joi.any(),
@@ -54,6 +62,7 @@ const validate =
   (
     styles: GroupedStyles,
     componentStyleMap?: ComponentStyleMap,
+    availableComponentNames?: string[],
     prefabType?: PrefabTypes,
   ) =>
   (prefab: Prefab): void => {
@@ -61,6 +70,7 @@ const validate =
     const { error } = schemaProvider(
       styles,
       componentStyleMap,
+      availableComponentNames,
       prefabType,
     ).validate(prefab);
 
@@ -84,9 +94,12 @@ export default (
   prefabs: Prefab[],
   styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
+  availableComponentNames?: string[],
   prefabType?: PrefabTypes,
 ): void => {
-  prefabs.forEach(validate(styles, componentStyleMap, prefabType));
+  prefabs.forEach(
+    validate(styles, componentStyleMap, availableComponentNames, prefabType),
+  );
 
   findDuplicates(prefabs, 'prefab', 'name');
 };

@@ -106,6 +106,7 @@ const partialSchema = (): Joi.ObjectSchema => {
 const wrapperSchema = (
   styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
+  availableComponentNames?: string[],
   prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
   return Joi.object({
@@ -117,7 +118,14 @@ const wrapperSchema = (
       .required(),
     descendants: Joi.array()
       .items(
-        Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
+        Joi.custom(
+          validateComponent(
+            styles,
+            componentStyleMap,
+            availableComponentNames,
+            prefabType,
+          ),
+        ),
       )
       .required(),
   });
@@ -189,9 +197,45 @@ const validateComponentStyle =
     return prefabObject;
   };
 
+const allowedChangeActions = ['setVariable', 'setModel'];
+
+const onChangeAction = Joi.object({
+  action: Joi.string()
+    .valid(...allowedChangeActions)
+    .messages({
+      valid: `onChangeAction not of value: ${JSON.stringify(
+        allowedChangeActions,
+      )}`,
+    }),
+  format: Joi.string().when('action', {
+    is: 'setVariable',
+    then: Joi.valid('propertyLabel', 'propertyValue', 'static'),
+    otherwise: Joi.forbidden(),
+  }),
+  target: Joi.string(),
+});
+
+const optionActionsObject = Joi.object({
+  onChange: Joi.array().items(onChangeAction),
+});
+
+const optionTemplatesSchema = (availableComponentNames?: string[]) =>
+  Joi.object({
+    addChild: Joi.object({
+      condition: Joi.object({
+        onlyShowWhenDroppedIn: Joi.string().valid(
+          ...(availableComponentNames || []),
+        ),
+      }),
+      options: Joi.array().items(optionSchema).required(),
+      optionActions: Joi.object().pattern(Joi.string(), optionActionsObject),
+    }),
+  });
+
 const componentSchema = (
   styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
+  availableComponentNames?: string[],
   styleType?: keyof StyleValidator,
   prefabType?: PrefabTypes,
 ): Joi.ObjectSchema => {
@@ -206,12 +250,6 @@ const componentSchema = (
     overwrite: overwriteSchema,
   });
 
-  const optionTemplatesSchema = Joi.object({
-    addChild: Joi.object({
-      options: Joi.array().items(optionSchema).required(),
-    }),
-  });
-
   const deprecatedStylesFlag = Object.keys(styles).length === 0;
 
   return Joi.object({
@@ -223,11 +261,18 @@ const componentSchema = (
     }),
     optionCategories: Joi.array().items(optionCategorySchema).min(1),
     options: Joi.array().items(optionSchema).required(),
-    optionTemplates: optionTemplatesSchema,
+    optionTemplates: optionTemplatesSchema(availableComponentNames),
     type: Joi.string().valid('COMPONENT').default('COMPONENT'),
     descendants: Joi.array()
       .items(
-        Joi.custom(validateComponent(styles, componentStyleMap, prefabType)),
+        Joi.custom(
+          validateComponent(
+            styles,
+            componentStyleMap,
+            availableComponentNames,
+            prefabType,
+          ),
+        ),
       )
       .required(),
     reconfigure: Joi.any(),
@@ -306,6 +351,7 @@ export const validateComponent =
   (
     styles: GroupedStyles,
     componentStyleMap?: ComponentStyleMap,
+    availableComponentNames?: string[],
     prefabType?: PrefabTypes,
   ) =>
   (component: PrefabReference): Prefab | unknown => {
@@ -329,6 +375,7 @@ export const validateComponent =
       const { error } = wrapperSchema(
         styles,
         componentStyleMap,
+        availableComponentNames,
         prefabType,
       ).validate(component);
       const { optionCategories = [], options } = component;
@@ -354,6 +401,7 @@ export const validateComponent =
       const { error } = componentSchema(
         styles,
         componentStyleMap,
+        availableComponentNames,
         styleType as keyof StyleValidator,
         prefabType,
       ).validate(component);

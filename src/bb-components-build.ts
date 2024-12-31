@@ -19,7 +19,6 @@ import {
   Component,
   Interaction,
   Prefab,
-  ComponentStyleMap,
   PrefabReference,
   GroupedStyles,
   BuildPrefabReference,
@@ -440,20 +439,43 @@ void (async (): Promise<void> => {
 
     checkNameReferences(prefabs, finalComponents);
 
-    const componentStyleMap: ComponentStyleMap = components.reduce((acc, c) => {
-      return c.styleType
-        ? Object.assign(acc, { [c.name]: { styleType: c.styleType } })
-        : acc;
-    }, {});
+    const {
+      availableNames: availableComponentNames,
+      styleMap: componentStyleMap,
+    } = components.reduce<{
+      availableNames: string[];
+      styleMap: Record<string, { styleType: string }>;
+    }>(
+      ({ availableNames, styleMap }, component) => {
+        const newNames = availableNames.includes(component.name)
+          ? availableNames
+          : [...availableNames, component.name];
+
+        const newStyleMap = component.styleType
+          ? Object.assign(styleMap, {
+              [component.name]: { styleType: component.styleType },
+            })
+          : styleMap;
+
+        return { availableNames: newNames, styleMap: newStyleMap };
+      },
+      { availableNames: [], styleMap: {} },
+    );
 
     await Promise.all([
       validateStyles(styles, componentNames),
       validateComponents(components, validStyleTypes),
-      validatePrefabs(prefabs, stylesGroupedByTypeAndName, componentStyleMap),
+      validatePrefabs(
+        prefabs,
+        stylesGroupedByTypeAndName,
+        componentStyleMap,
+        availableComponentNames,
+      ),
       validatePrefabs(
         allPartialPrefabs,
         stylesGroupedByTypeAndName,
         componentStyleMap,
+        availableComponentNames,
         'partial',
       ),
       interactions && validateInteractions(interactions),
