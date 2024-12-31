@@ -1,3 +1,10 @@
+# [25.102.0](https://github.com/bettyblocks/cli/compare/v25.101.0...v25.102.0) (2024-12-31)
+
+
+### Features
+
+* validate optionactions structure page-4876 ([#482](https://github.com/bettyblocks/cli/issues/482)) ([97b1610](https://github.com/bettyblocks/cli/commit/97b1610))
+
 # [25.101.0](https://github.com/bettyblocks/cli/compare/v25.100.0...v25.101.0) (2024-12-16)
 
 
