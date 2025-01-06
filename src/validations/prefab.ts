@@ -55,6 +55,7 @@ const schemaProvider = (
       )
       .required(),
     reconfigure: Joi.any(),
+    version: Joi.string(),
   });
 };
 
