@@ -1,3 +1,10 @@
+## [25.102.1](https://github.com/bettyblocks/cli/compare/v25.102.0...v25.102.1) (2025-01-07)
+
+
+### Bug Fixes
+
+* allow setProperty as action ([#483](https://github.com/bettyblocks/cli/issues/483)) ([0ff30b7](https://github.com/bettyblocks/cli/commit/0ff30b7))
+
 # [25.102.0](https://github.com/bettyblocks/cli/compare/v25.101.0...v25.102.0) (2024-12-31)
 
 
