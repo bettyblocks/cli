@@ -1195,6 +1195,7 @@ test('Success when adding createActionInputVariable in the option configuration 
               key: 'something',
               type: 'ACTION_JS_VARIABLE',
               configuration: {
+                allowedKinds: ['STRING', 'INTEGER'],
                 createActionInputVariable: {
                   name: 'Test Name',
                   type: 'STRING',
