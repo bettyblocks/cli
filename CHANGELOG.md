@@ -1,3 +1,10 @@
+# [25.103.0](https://github.com/bettyblocks/cli/compare/v25.102.1...v25.103.0) (2025-01-16)
+
+
+### Features
+
+* add allowedKinds to action js variable option ([#484](https://github.com/bettyblocks/cli/issues/484)) ([a931edf](https://github.com/bettyblocks/cli/commit/a931edf))
+
 ## [25.102.1](https://github.com/bettyblocks/cli/compare/v25.102.0...v25.102.1) (2025-01-07)
 
 
