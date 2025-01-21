@@ -941,6 +941,7 @@ test('Success when the reconfigure configuration options of the prefabs are vali
               type: 'PROPERTY',
               configuration: {
                 allowedKinds: ['TEXT', 'URL'],
+                disabledNames: ['id', 'created_at', 'updated_at'],
                 createProperty: {
                   type: 'TEXT',
                   value: 'New property',
