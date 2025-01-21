@@ -1,3 +1,10 @@
+## [25.104.1](https://github.com/bettyblocks/cli/compare/v25.104.0...v25.104.1) (2025-01-21)
+
+
+### Bug Fixes
+
+* change optionAction to optionEvents ([#485](https://github.com/bettyblocks/cli/issues/485)) ([fadcc03](https://github.com/bettyblocks/cli/commit/fadcc03))
+
 # [25.104.0](https://github.com/bettyblocks/cli/compare/v25.103.0...v25.104.0) (2025-01-21)
 
 
