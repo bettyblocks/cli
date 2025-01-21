@@ -215,8 +215,11 @@ const onChangeAction = Joi.object({
   target: Joi.string(),
 });
 
-const optionActionsObject = Joi.object({
-  onChange: Joi.array().items(onChangeAction),
+const optionEventRecord = Joi.object({
+  onChange: Joi.object().pattern(
+    Joi.string(),
+    Joi.array().items(onChangeAction),
+  ),
 });
 
 const optionTemplatesSchema = (availableComponentNames?: string[]) =>
@@ -228,7 +231,7 @@ const optionTemplatesSchema = (availableComponentNames?: string[]) =>
         ),
       }),
       options: Joi.array().items(optionSchema).required(),
-      optionActions: Joi.object().pattern(Joi.string(), optionActionsObject),
+      optionEvents: optionEventRecord,
     }),
   });
 
