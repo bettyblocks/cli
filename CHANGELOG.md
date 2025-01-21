@@ -1,3 +1,10 @@
+# [25.104.0](https://github.com/bettyblocks/cli/compare/v25.103.0...v25.104.0) (2025-01-21)
+
+
+### Features
+
+* add disabledNames to property options to disable these properties ([#486](https://github.com/bettyblocks/cli/issues/486)) ([8bcf2f8](https://github.com/bettyblocks/cli/commit/8bcf2f8))
+
 # [25.103.0](https://github.com/bettyblocks/cli/compare/v25.102.1...v25.103.0) (2025-01-16)
 
 
