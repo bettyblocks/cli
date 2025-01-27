@@ -197,7 +197,13 @@ const validateComponentStyle =
     return prefabObject;
   };
 
-const allowedChangeActions = ['setVariable', 'setProperty', 'setModel'];
+const allowedChangeActions = [
+  'setVariable',
+  'setProperty',
+  'setModel',
+  'setToDefault',
+  'setActionJSInputVariable',
+];
 
 const onChangeAction = Joi.object({
   action: Joi.string()
