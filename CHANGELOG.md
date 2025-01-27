@@ -1,3 +1,10 @@
+# [25.105.0](https://github.com/bettyblocks/cli/compare/v25.104.1...v25.105.0) (2025-01-27)
+
+
+### Features
+
+* extend allowedActions for optionEvents. ([#487](https://github.com/bettyblocks/cli/issues/487)) ([7cf7d00](https://github.com/bettyblocks/cli/commit/7cf7d00))
+
 ## [25.104.1](https://github.com/bettyblocks/cli/compare/v25.104.0...v25.104.1) (2025-01-21)
 
 
