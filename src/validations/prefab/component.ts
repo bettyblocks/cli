@@ -203,7 +203,17 @@ const allowedChangeActions = [
   'setModel',
   'setToDefault',
   'setActionJSInputVariable',
+  'setButtonGroup',
 ];
+
+const propertyKindFormat = Joi.object({
+  kind: Joi.allow('relation', 'multiRelation', 'property'),
+});
+
+const condition = Joi.object({
+  is: Joi.string() || propertyKindFormat,
+  value: Joi.string(),
+});
 
 const onChangeAction = Joi.object({
   action: Joi.string()
@@ -219,6 +229,7 @@ const onChangeAction = Joi.object({
     otherwise: Joi.forbidden(),
   }),
   target: Joi.string(),
+  conditions: Joi.array().items(condition),
 });
 
 const optionEventRecord = Joi.object({
