@@ -218,11 +218,6 @@ const onChangeAction = Joi.object({
     then: Joi.valid('propertyLabel', 'propertyValue', 'static'),
     otherwise: Joi.forbidden(),
   }),
-  type: Joi.string().when('action', {
-    is: 'setModel',
-    then: Joi.valid('parent', 'referencedModel'),
-    otherwise: Joi.forbidden(),
-  }),
   target: Joi.string(),
 });
 
