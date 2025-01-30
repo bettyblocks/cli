@@ -207,11 +207,11 @@ const allowedChangeActions = [
 ];
 
 const propertyKindFormat = Joi.object({
-  kind: Joi.allow('relation', 'multiRelation', 'property'),
+  kind: Joi.string().valid('relation', 'multiRelation', 'property'),
 });
 
 const condition = Joi.object({
-  is: Joi.string() || propertyKindFormat,
+  is: Joi.alternatives().try(Joi.string().allow(''), propertyKindFormat),
   value: Joi.string(),
 });
 
