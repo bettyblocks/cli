@@ -206,13 +206,11 @@ const allowedChangeActions = [
   'setButtonGroup',
 ];
 
-const propertyKindFormat = Joi.object({
-  kind: Joi.string().valid('relation', 'multiRelation', 'property'),
-});
-
 const condition = Joi.object({
-  is: Joi.alternatives().try(Joi.string().allow(''), propertyKindFormat),
-  value: Joi.string(),
+  condition: Joi.string()
+    .required()
+    .allow('property_is_relation', 'property_is_property', 'value_is_empty'),
+  result: Joi.string(),
 });
 
 const onChangeAction = Joi.object({
