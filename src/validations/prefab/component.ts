@@ -203,7 +203,15 @@ const allowedChangeActions = [
   'setModel',
   'setToDefault',
   'setActionJSInputVariable',
+  'setButtonGroup',
 ];
+
+const condition = Joi.object({
+  condition: Joi.string()
+    .required()
+    .allow('property_is_relation', 'property_is_property', 'value_is_empty'),
+  result: Joi.string(),
+});
 
 const onChangeAction = Joi.object({
   action: Joi.string()
@@ -213,12 +221,17 @@ const onChangeAction = Joi.object({
         allowedChangeActions,
       )}`,
     }),
+  target: Joi.string(),
   format: Joi.string().when('action', {
     is: 'setVariable',
     then: Joi.valid('propertyLabel', 'propertyValue', 'static'),
     otherwise: Joi.forbidden(),
   }),
-  target: Joi.string(),
+  conditions: Joi.when('action', {
+    is: 'setButtonGroup',
+    then: Joi.array().items(condition).required(),
+    otherwise: Joi.forbidden(),
+  }),
 });
 
 const optionEventRecord = Joi.object({
