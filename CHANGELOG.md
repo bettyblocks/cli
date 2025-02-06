@@ -1,3 +1,10 @@
+# [25.107.0](https://github.com/bettyblocks/cli/compare/v25.106.0...v25.107.0) (2025-02-06)
+
+
+### Features
+
+* add conditions to onChangeAction ([#490](https://github.com/bettyblocks/cli/issues/490)) ([af333f8](https://github.com/bettyblocks/cli/commit/af333f8))
+
 # [25.106.0](https://github.com/bettyblocks/cli/compare/v25.105.0...v25.106.0) (2025-01-29)
 
 
