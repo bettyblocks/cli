@@ -522,6 +522,7 @@ void (async (): Promise<void> => {
       };
       return {
         ...prefab,
+        version: prefab.version || 'no version',
         structure: prefab.structure.map(buildStructure),
       };
     };
