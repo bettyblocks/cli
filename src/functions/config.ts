@@ -126,7 +126,7 @@ class Config {
     return {
       schemaUrl: 'https://raw.githubusercontent.com',
       functionSchemaPath:
-        '/bettyblocks/json-schema/master/schemas/actions/function.json',
+        '/bettyblocks/json-schema/{BRANCHNAME}/schemas/actions/function.json',
       cacheDir: '.tmp/',
       fusionAuthUrl: 'https://id{ZONEPOSTFIX}.bettyblocks.com',
       builderApiUrl: '{HOST}/api/builder',
@@ -210,6 +210,15 @@ class Config {
     }
 
     return this.config.fusionAuthUrl.replace('{ZONEPOSTFIX}', postfix);
+  }
+
+  get jsonSchemaUrl(): string {
+    let branch = 'master';
+    if (this.zone === 'acceptance' || this.zone === 'edge') {
+      branch = this.zone;
+    }
+
+    return this.config.functionSchemaPath.replace('{BRANCHNAME}', branch);
   }
 
   get builderApiUrl(): string {
