@@ -1,3 +1,10 @@
+# [25.108.0](https://github.com/bettyblocks/cli/compare/v25.107.0...v25.108.0) (2025-07-22)
+
+
+### Features
+
+* added hasThemeInherit configuration option ([#491](https://github.com/bettyblocks/cli/issues/491)) ([a921ca2](https://github.com/bettyblocks/cli/commit/a921ca2))
+
 # [25.107.0](https://github.com/bettyblocks/cli/compare/v25.106.0...v25.107.0) (2025-02-06)
 
 
