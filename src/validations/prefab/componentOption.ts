@@ -146,6 +146,13 @@ const optionConfigurationSchema = Joi.when('type', {
     }),
     otherwise: Joi.object(optionConfigurationSchemaBase),
   })
+  .when('type', {
+    is: 'COLOR',
+    then: Joi.object({
+      ...optionConfigurationSchemaBase,
+      hasThemeInherit: Joi.boolean().optional(),
+    }),
+  })
 
   .default({});
 
