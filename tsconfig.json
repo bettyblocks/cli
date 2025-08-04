@@ -1,18 +1,19 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "build",
-    "module": "commonjs",
-    "target": "es6",
-    "jsx": "preserve",
-    "sourceMap": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "typeRoots": ["./node_modules/@types"],
+    "allowImportingTsExtensions": true,
+    "allowJs": true,
     "baseUrl": ".",
-    "watch": false,
-    "resolveJsonModule": true,
+    "lib": ["ESNext"],
+    "module": "ESNext",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ESNext",
+    "verbatimModuleSyntax": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "__tests__", "src/interactions"],
+  "exclude": ["node_modules", "__tests__"]
 }
