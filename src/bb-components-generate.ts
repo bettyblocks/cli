@@ -1,15 +1,14 @@
 /* npm dependencies */
-
-import program, { CommanderStatic } from 'commander';
+import { Command } from 'commander';
 import chalk from 'chalk';
 import { pathExists, outputFile, outputFileSync } from 'fs-extra';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
-/* process arguments */
 
+const program = new Command();
 program.usage('[name]').name('bb components generate').parse(process.argv);
 
-const { args }: CommanderStatic = program;
+const { args } = program;
 
 if (args.length === 0) {
   program.help();

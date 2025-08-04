@@ -1,15 +1,15 @@
 /* npm dependencies */
 import chalk from 'chalk';
-import program, { CommanderStatic } from 'commander';
+import { Command } from 'commander';
 import { pathExists, outputFile } from 'fs-extra';
 
-/* internal dependencies */
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
-/* process arguments */
+const program = new Command();
+
 program.usage('[name]').name('bb interactions generate').parse(process.argv);
 
-const { args }: CommanderStatic = program;
+const { args } = program;
 
 if (args.length === 0) {
   program.help();

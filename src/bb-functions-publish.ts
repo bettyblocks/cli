@@ -1,10 +1,7 @@
-/* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument */
-/* npm dependencies */
-
 import fs from 'fs-extra';
 
 import path from 'path';
-import program from 'commander';
+import { Command } from 'commander';
 
 /* internal dependencies */
 
@@ -18,7 +15,7 @@ import {
 } from './functions/validations';
 import Config from './functions/config';
 
-/* process arguments */
+const program = new Command();
 
 program
   .name('bb functions publish')
@@ -31,9 +28,7 @@ program
   )
   .parse(process.argv);
 
-const { host, skip, bump, skipCompile } = program;
-
-/* execute command */
+const { host, skip, bump, skipCompile } = program.opts();
 
 const workingDir = process.cwd();
 

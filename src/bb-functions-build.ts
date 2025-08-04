@@ -5,14 +5,12 @@ import { spawn } from 'child_process';
 import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
-import program from 'commander';
-
-/* internal dependencies */
+import { Command } from 'commander';
 
 import rootDir from './utils/rootDir';
 import acquireCustomFunctionsProject from './functions/acquireCustomFunctionsProject';
 
-/* process arguments */
+const program = new Command();
 
 program.name('bb functions build').parse(process.argv);
 

@@ -1,15 +1,11 @@
-/* npm dependencies */
-
 import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
-import program, { CommanderStatic } from 'commander';
-
-/* internal dependencies */
+import { Command } from 'commander';
 
 import rootDir from './utils/rootDir';
 
-/* process arguments */
+const program = new Command();
 
 program
   .usage('[identifier]')
@@ -17,9 +13,8 @@ program
   .option('-a, --app', 'Initialize an app functions project.')
   .parse(process.argv);
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const initAppFunctions = program.app;
-const { args }: CommanderStatic = program;
+const initAppFunctions = program.opts().app;
+const { args } = program;
 
 if (args.length !== 1) {
   console.log(

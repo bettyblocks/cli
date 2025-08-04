@@ -1,16 +1,10 @@
-/* npm dependencies */
+import { Command } from 'commander';
 
-import program from 'commander';
-
-/* internal dependencies */
-
-import { CommandInteractions } from './types';
-
-/* setup */
+import type { CommandInteractions } from './types';
 
 const availableCommands: CommandInteractions[] = ['generate'];
 
-/* process arguments */
+const program = new Command();
 
 program
   .usage(`<${availableCommands.join('|')}>`)

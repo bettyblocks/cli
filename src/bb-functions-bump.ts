@@ -1,9 +1,11 @@
 import path from 'path';
 import fs from 'fs-extra';
-import program from 'commander';
+import { Command } from 'commander';
 import prompts from 'prompts';
 import chalk from 'chalk';
 import { functionDefinitions } from './functions/functionDefinitions';
+
+const program = new Command();
 
 program.name('bb functions bump');
 

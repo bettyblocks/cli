@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-return,@typescript-eslint/restrict-template-expressions */
 import chalk from 'chalk';
 import path from 'path';
-import program, { CommanderStatic } from 'commander';
+import { Command } from 'commander';
 import {
   outputJson,
   pathExists,
@@ -50,7 +50,7 @@ import { buildInteractions } from './components-build/v2/buildInteractions';
 
 const { mkdir, readFile } = promises;
 
-/* process arguments */
+const program = new Command();
 
 program
   .usage('[path]')
@@ -65,7 +65,7 @@ program
   .option('--fast', 'Build the last edited component.')
   .parse(process.argv);
 
-const { args }: CommanderStatic = program;
+const { args } = program;
 const options = program.opts();
 const rootDir: string = parseDir(args);
 const distDir = `${rootDir}/dist`;

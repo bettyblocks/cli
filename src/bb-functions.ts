@@ -1,12 +1,6 @@
-/* npm dependencies */
+import { Command } from 'commander';
 
-import program from 'commander';
-
-/* internal dependencies */
-
-import { CommandFunctions } from './types';
-
-/* setup */
+import type { CommandFunctions } from './types';
 
 const availableCommands: CommandFunctions[] = [
   'init',
@@ -20,7 +14,7 @@ const availableCommands: CommandFunctions[] = [
   'test',
 ];
 
-/* process arguments */
+const program = new Command();
 
 program
   .usage(`<${availableCommands.join('|')}>`)

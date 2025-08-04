@@ -1,14 +1,12 @@
-/* npm dependencies */
-
 import chalk from 'chalk';
-import program from 'commander';
+import { Command } from 'commander';
 import { parseDir, parsePort } from './utils/arguments';
 import serveComponentSet from './utils/serveComponentSet';
-import { ServeOptions } from './types';
+import type { ServeOptions } from './types';
 
-/* internal dependencies */
+const program = new Command();
 
-/* process arguments */
+const programOpts = program.opts();
 
 program
   .usage('[path]')
@@ -28,11 +26,11 @@ program
 
 const options: ServeOptions = {
   rootDir: parseDir(program.args),
-  port: program.port as number,
-  host: program.host as string,
-  ssl: program.ssl as boolean,
-  sslKey: program.sslKey as string,
-  sslCert: program.sslCert as string,
+  port: programOpts.port as number,
+  host: programOpts.host as string,
+  ssl: programOpts.ssl as boolean,
+  sslKey: programOpts.sslKey as string,
+  sslCert: programOpts.sslCert as string,
 };
 
 const arg = process.argv.slice(2);

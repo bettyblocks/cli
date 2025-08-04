@@ -1,5 +1,7 @@
-import program from 'commander';
+import { Command } from 'commander';
 import releaseBlocks from './blocks/releaseBlocks';
+
+const program = new Command();
 
 program
   .usage('[options] [blockIds...]')

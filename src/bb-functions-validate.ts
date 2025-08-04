@@ -1,10 +1,6 @@
-/* npm dependencies */
-
 import chalk from 'chalk';
 import path from 'path';
-import program from 'commander';
-
-/* internal dependencies */
+import { Command } from 'commander';
 
 import {
   FunctionValidator,
@@ -13,7 +9,8 @@ import {
 
 import Config from './functions/config';
 
-/* process arguments */
+const program = new Command();
+
 program
   .usage('[function-name]')
   .name('bb functions validate')
@@ -22,7 +19,6 @@ program
 const {
   args: [inputFunctionName],
 } = program;
-/* execute command */
 
 const workingDir = process.cwd();
 const baseFunctionsPath = path.join(workingDir, 'functions');

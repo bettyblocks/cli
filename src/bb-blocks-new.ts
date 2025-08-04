@@ -1,4 +1,4 @@
-import program from 'commander';
+import { Command } from 'commander';
 import path from 'path';
 import fs from 'fs-extra';
 import kebabCase from 'lodash/kebabCase';

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from 'fs-extra';
 import path from 'path';
-import program from 'commander';
+import { Command } from 'commander';
 import prompts from 'prompts';
 import AdmZip from 'adm-zip';
 import chalk from 'chalk';
 
 import {
-  Block,
+  type Block,
   blockDefinitions,
   createPackageJson,
 } from './blocks/blockDefinitions';
@@ -22,6 +22,8 @@ import {
   validateBlockConfig,
   validateBlock,
 } from './validations/function-block-validations';
+
+const program = new Command();
 
 program.option('--all').name('bb blocks publish').parse(process.argv);
 

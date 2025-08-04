@@ -2,13 +2,14 @@
   "name": "@betty-blocks/cli",
   "version": "25.108.0",
   "description": "A Betty Blocks CLI",
-  "main": "build/index.js",
-  "license": "Apache-2.0",
+  "module": "./src/bb.ts",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "https://github.com/bettyblocks/cli"
   },
   "scripts": {
+    "build": "bun run build.ts",
     "typecheck": "tsc",
     "lint": "eslint \"src/**\"",
     "prettier:base": "prettier --parser typescript --single-quote",
@@ -19,6 +20,7 @@
     "clean": "rm -rf build/ && rm -rf node_modules/"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-angular": "^15.0.0",
     "@commitlint/prompt-cli": "^15.0.0",
@@ -43,7 +45,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^3.0.5",
     "prettier": "^2.5.0",
     "semantic-release": "^19.0.3",
     "typescript": "^5.8.2"
@@ -60,11 +61,10 @@
     "@types/prompts": "^2.0.14",
     "@types/react": "^16.9.9",
     "@types/serve-handler": "^6.1.0",
-    "minimatch": "10.0.3",
     "adm-zip": "^0.5.3",
     "case": "^1.6.3",
-    "chalk": "^2.4.2",
-    "commander": "^2.20.0",
+    "chalk": "^5.5.0",
+    "commander": "^14.0.0",
     "form-data": "^4.0.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.2.0",
@@ -72,6 +72,7 @@
     "jsdoc-api": "^7.1.0",
     "jsonschema": "^1.4.0",
     "lodash": "^4.17.21",
+    "minimatch": "10.0.3",
     "minimist": "^1.2.5",
     "node-fetch": "^2.6.0",
     "ora": "^5.0.0",
@@ -96,11 +97,11 @@
       "tsconfig-paths/register"
     ]
   },
+  "bin": {
+    "bb": "./src/bb.ts"
+  },
   "resolutions": {
     "@types/react": "^16.9.9"
-  },
-  "bin": {
-    "bb": "./build/bb.js"
   },
   "files": [
     "assets/",

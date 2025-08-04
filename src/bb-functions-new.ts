@@ -1,9 +1,10 @@
-import program from 'commander';
+import { Command } from 'commander';
 import path from 'path';
 import fs from 'fs-extra';
 import { newFunctionDefinition } from './functions/functionDefinitions';
 
-/* process arguments */
+const program = new Command();
+
 program.usage('[function-name]').name('bb functions new').parse(process.argv);
 
 const {

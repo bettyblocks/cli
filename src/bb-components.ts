@@ -1,11 +1,5 @@
-/* npm dependencies */
-
-import program from 'commander';
-import { CommandComponents } from './types';
-
-/* internal dependencies */
-
-/* setup */
+import { Command } from 'commander';
+import { type CommandComponents } from './types';
 
 const availableCommands: CommandComponents[] = [
   'create',
@@ -17,7 +11,7 @@ const availableCommands: CommandComponents[] = [
   'publish-bundle',
 ];
 
-/* process arguments */
+const program = new Command();
 
 program
   .usage(`<${availableCommands.join('|')}>`)

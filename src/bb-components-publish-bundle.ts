@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-assignment */
-
-import program, { CommanderStatic } from 'commander';
+import { Command } from 'commander';
 import chalk from 'chalk';
 import { readFileSync } from 'fs';
 
@@ -10,16 +8,16 @@ import {
   validateBucketName,
 } from './functions/bb-components-functions';
 
-interface CommanderBucket extends CommanderStatic {
-  bucket?: string;
-}
+const program = new Command();
+
 program
   .usage('[options] [path]')
   .name('bb components publish-bundle')
   .option('-b, --bucket [name]', 'the component set name')
   .parse(process.argv);
-const { args, bucket }: CommanderBucket = program;
+const { args } = program;
 const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
+const bucket = program.opts().bucket;
 if (!bucket) {
   throw new Error(chalk.red('\n-b or --bucket [name] is required\n'));
 }
@@ -29,16 +27,20 @@ const readJS = async (fileName: string): Promise<string> => {
   try {
     return readFileSync(`${distDir}/${fileName}`, 'utf8');
   } catch (error) {
-    const { code, message }: Error & { code: 'ENOENT' | string } = error;
+    if (error instanceof Error) {
+      const { message } = error;
 
-    throw new Error(
-      chalk.red(
-        [
-          'There was an error trying to publish your component set',
-          code === 'ENOENT' ? message : error,
-        ].join('\n'),
-      ),
-    );
+      throw new Error(
+        chalk.red(
+          [
+            'There was an error trying to publish your component set',
+            message,
+          ].join('\n'),
+        ),
+      );
+    }
+
+    throw new Error('Unknown error occurred');
   }
 };
 /* eslint-enable */
