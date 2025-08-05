@@ -89,9 +89,14 @@ export function walkCompilerAstAndFindComments(
 function createParams(params: object): ts.ObjectLiteralElementLike[] {
   return Object.entries(params).map(([key, value]) => {
     const result = Array.isArray(value)
-      ? ts.createArrayLiteral(value.map((n) => ts.createStringLiteral(n)))
-      : ts.createObjectLiteral(createParams(value));
-    return ts.createPropertyAssignment(ts.createStringLiteral(key), result);
+      ? ts.factory.createArrayLiteralExpression(
+          value.map((n) => ts.factory.createStringLiteral(n)),
+        )
+      : ts.factory.createObjectLiteralExpression(createParams(value));
+    return ts.factory.createPropertyAssignment(
+      ts.factory.createStringLiteral(key),
+      result,
+    );
   });
 }
 
@@ -100,9 +105,9 @@ export function createLiteralObjectExpression(
 ): ts.ObjectLiteralElementLike[] {
   return params.map((param) => {
     const [[key, value]] = Object.entries(param);
-    return ts.createPropertyAssignment(
-      ts.createStringLiteral(key),
-      ts.createObjectLiteral(createParams(value)),
+    return ts.factory.createPropertyAssignment(
+      ts.factory.createStringLiteral(key),
+      ts.factory.createObjectLiteralExpression(createParams(value)),
     );
   });
 }

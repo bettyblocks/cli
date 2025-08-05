@@ -1,8 +1,8 @@
 import path from 'path';
 import ts from 'typescript';
-import { pathExists, promises } from 'fs-extra';
+import { pathExists, ensureDir } from 'fs-extra';
 
-import {
+import type {
   StyleDefinition,
   BuildStyleDefinition,
   PrefabComponent,
@@ -13,8 +13,6 @@ import {
 import readFilesByType from '../utils/readFilesByType';
 
 import { reportDiagnostics } from './reportDiagnostics';
-
-const { mkdir } = promises;
 
 export const readStyles: (
   rootDir: string,
@@ -27,7 +25,7 @@ export const readStyles: (
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    await mkdir(srcDir, { recursive: true });
+    await ensureDir(srcDir);
   }
 
   const styleFiles: string[] = await readFilesByType(srcDir, 'ts');

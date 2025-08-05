@@ -5,7 +5,8 @@ import { Command } from 'commander';
 import {
   outputJson,
   pathExists,
-  promises,
+  ensureDir,
+  readFile,
   readFileSync,
   remove,
 } from 'fs-extra';
@@ -15,7 +16,7 @@ import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
 import extractInteractionCompatibility from './interactions/compatibility';
 import getDiagnostics from './interactions/diagnostics';
-import {
+import type {
   Component,
   Interaction,
   Prefab,
@@ -46,9 +47,6 @@ import {
   buildStyle,
   buildReferenceStyle,
 } from './components-build';
-import { buildInteractions } from './components-build/v2/buildInteractions';
-
-const { mkdir, readFile } = promises;
 
 const program = new Command();
 
@@ -56,11 +54,6 @@ program
   .usage('[path]')
   .name('bb components build')
   .option('-t, --transpile', 'enable new transpilation')
-  .option(
-    '--runtime-version [version]',
-    'the runtime option to build for',
-    'v1',
-  )
   .option('--offline', 'skip update check')
   .option('--fast', 'Build the last edited component.')
   .parse(process.argv);
@@ -138,8 +131,7 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
           ...transpiledFunction,
         };
       } catch (error) {
-        error.file = file;
-        throw error;
+        throw new Error(`in ${file}: ${error}`);
       }
     },
   );
@@ -152,10 +144,7 @@ const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
 ): Promise<Prefab[]> => {
   const absoluteRootDir = path.resolve(process.cwd(), rootDir);
   const srcDir = `${absoluteRootDir}/src/prefabs`;
-  const outDir = `${absoluteRootDir}/tmp/${Math.floor(
-    Date.now() / 1000,
-  )}/prefabs`;
-
+  const outDir = `${absoluteRootDir}/tmp/${Math.floor(Date.now() / 1000)}`;
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
@@ -195,7 +184,6 @@ const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
   );
 
   const diagnostics = [...ts.getPreEmitDiagnostics(prefabProgram)];
-
   if (diagnostics.length > 0) {
     reportDiagnostics(diagnostics);
     process.exit(1);
@@ -275,8 +263,7 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
 
         return transpiledFunction;
       } catch (error) {
-        error.file = file;
-        throw error;
+        throw new Error(`in ${file}: ${error}`);
       }
     },
   );
@@ -291,7 +278,7 @@ const readPartialPrefabs: () => Promise<Prefab[]> = async (): Promise<
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    await mkdir(srcDir, { recursive: true });
+    await ensureDir(srcDir);
   }
 
   const partialPrefabFiles: string[] = await readFilesByType(
@@ -315,8 +302,7 @@ const readPartialPrefabs: () => Promise<Prefab[]> = async (): Promise<
 
         return transpiledFunction;
       } catch (error) {
-        error.file = file;
-        throw error;
+        throw new Error(`in ${file}: ${error}`);
       }
     },
   );
@@ -354,10 +340,7 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
           ...extractInteractionCompatibility(`${srcDir}/${file}`),
         };
       } catch (error) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        error.file = file;
-
-        throw error;
+        throw new Error(`in ${file}: ${error}`);
       }
     }),
   );
@@ -368,8 +351,6 @@ void (async (): Promise<void> => {
   if (!hasOfflineFlag) {
     await checkUpdateAvailableCLI();
   }
-
-  const { runtimeVersion = 'v1' } = options;
 
   try {
     const [
@@ -385,7 +366,7 @@ void (async (): Promise<void> => {
       readtsPrefabs(),
       readPrefabs(),
       readComponents(),
-      runtimeVersion === 'v2' ? Promise.resolve([]) : readInteractions(),
+      readInteractions(),
       readPartialPrefabs(),
       readtsPrefabs(true),
     ]);
@@ -403,7 +384,8 @@ void (async (): Promise<void> => {
     const validStyleTypes = styles.map(({ type }) => type);
     const prefabs = jsPrefabs
       .concat(tsxPrefabs)
-      .filter((prefab): prefab is Prefab => !!prefab);
+      .filter((prefab): prefab is Prefab => !!prefab)
+      .filter((prefab) => prefab.name);
 
     const allPartialPrefabs = partialprefabs
       .concat(tsxPartialPrefabs)
@@ -531,7 +513,7 @@ void (async (): Promise<void> => {
     const buildPrefabs = prefabs.map(buildPrefab);
     const buildPartialprefabs = allPartialPrefabs.map(buildPrefab);
 
-    await mkdir(distDir, { recursive: true });
+    await ensureDir(distDir);
 
     const defaultPrefabs = buildPrefabs.filter(
       (prefab) => prefab.type !== 'page',
@@ -657,12 +639,6 @@ void (async (): Promise<void> => {
 
     if (pagePrefabs.length === 0 && existingPath && buildAll) {
       await remove(`${distDir}/pagePrefabs.json`);
-    }
-
-    // v2
-
-    if (runtimeVersion === 'v2') {
-      await buildInteractions(rootDir);
     }
 
     console.info(chalk.green('Success, the component set has been built'));

@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { Component, Prefab, PrefabReference } from '../types';
+import type { Component, Prefab, PrefabReference } from '../types';
 
 function fromStructure<
   KString extends string & keyof T,

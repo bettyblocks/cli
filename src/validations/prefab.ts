@@ -3,7 +3,7 @@
 
 import chalk from 'chalk';
 import Joi from 'joi';
-import { ComponentStyleMap, GroupedStyles, Prefab } from '../types';
+import type { ComponentStyleMap, GroupedStyles, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
 import {
   ICONS,

@@ -14,8 +14,8 @@ program
   .option(
     '-p, --port [port]',
     'Port to listen on.',
-    (value: string) => parsePort(value, 5001),
-    5001,
+    (value: string) => parsePort(value, 5002),
+    5002,
   )
   .option('--host [host]', 'Host to listen on.', 'localhost')
   .option('--ssl', 'Serve using HTTPS.', false)

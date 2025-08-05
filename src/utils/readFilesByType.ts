@@ -1,8 +1,6 @@
 import { statSync } from 'fs';
-import { promises } from 'fs-extra';
+import { readdir } from 'fs-extra';
 import path from 'path';
-
-const { readdir } = promises;
 
 const buildLast = async (dir: string, extension = 'js'): Promise<string[]> => {
   const files: string[] = await readdir(dir);

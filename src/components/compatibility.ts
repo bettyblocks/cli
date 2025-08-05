@@ -1,24 +1,21 @@
-import {
-  createArrayLiteral,
-  createNodeArray,
-  createObjectLiteral,
-  createPropertyAssignment,
-  createStatement,
-  createStringLiteral,
-  isCallExpression,
-  isIdentifier,
-  isMethodDeclaration,
-  isPropertyAccessExpression,
-  isSourceFile,
+import type {
   Node,
   SourceFile,
   TransformationContext,
   Transformer,
   TransformerFactory,
+  Visitor,
+} from 'typescript';
+
+import {
+  isCallExpression,
+  isIdentifier,
+  isMethodDeclaration,
+  isPropertyAccessExpression,
+  isSourceFile,
   transpileModule,
   visitEachChild,
   visitNode,
-  Visitor,
 } from 'typescript';
 
 import {
@@ -78,6 +75,14 @@ const compatibilityTransformer =
     const functions: string[] = [];
     const triggers: string[] = [];
     const comments: object[] = [];
+    const {
+      createArrayLiteralExpression,
+      createExpressionStatement,
+      createObjectLiteralExpression,
+      createPropertyAssignment,
+      createStringLiteral,
+      updateSourceFile,
+    } = context.factory;
 
     const visit: Visitor = (node: Node): Node => {
       addCompatibility('defineFunction', functions, node);
@@ -91,23 +96,26 @@ const compatibilityTransformer =
       walkCompilerAstAndFindComments(node, comments);
 
       if (isSourceFile(node)) {
-        // eslint-disable-next-line no-param-reassign
-        node.statements = createNodeArray([
-          createStatement(
-            createObjectLiteral([
+        return updateSourceFile(node, [
+          createExpressionStatement(
+            createObjectLiteralExpression([
               createPropertyAssignment(
                 createStringLiteral('functions'),
-                createArrayLiteral(
+                createArrayLiteralExpression(
                   functions.map((n) => createStringLiteral(n)),
                 ),
               ),
               createPropertyAssignment(
                 createStringLiteral('triggers'),
-                createArrayLiteral(triggers.map((n) => createStringLiteral(n))),
+                createArrayLiteralExpression(
+                  triggers.map((n) => createStringLiteral(n)),
+                ),
               ),
               createPropertyAssignment(
                 createStringLiteral('interactions'),
-                createObjectLiteral(createLiteralObjectExpression(comments)),
+                createObjectLiteralExpression(
+                  createLiteralObjectExpression(comments),
+                ),
               ),
             ]),
           ),

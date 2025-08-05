@@ -3,11 +3,11 @@ import {
   IncomingMessage,
   ServerResponse,
 } from 'http';
-import { createServer as createHttpsServer, ServerOptions } from 'https';
+import { createServer as createHttpsServer, type ServerOptions } from 'https';
 import { existsSync, readFileSync } from 'fs';
 import handler from 'serve-handler';
 import { checkUpdateAvailableCLI } from './checkUpdateAvailable';
-import { ServeOptions } from '../types';
+import type { ServeOptions } from '../types';
 
 const serveComponentSet = (options: ServeOptions): Promise<void> => {
   return new Promise<void>((resolve, reject): void => {
