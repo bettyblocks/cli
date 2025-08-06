@@ -6,7 +6,11 @@ import { pathExists, outputFile, outputFileSync } from 'fs-extra';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 const program = new Command();
-program.usage('[name]').name('bb components generate').parse(process.argv);
+
+program
+  .argument('<name>', 'name of the component')
+  .name('bb components generate')
+  .parse(process.argv);
 
 const { args } = program;
 

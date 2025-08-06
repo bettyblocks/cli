@@ -17,7 +17,10 @@ const LIST = [
   '.prettierrc.json',
 ];
 
-program.usage('[path]').name('bb components create').parse(process.argv);
+program
+  .argument('<path>', 'path where to create the component set')
+  .name('bb components create')
+  .parse(process.argv);
 
 const { args } = program;
 

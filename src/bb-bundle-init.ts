@@ -8,7 +8,10 @@ import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 const program = new Command();
 
-program.usage('[path]').name('bb bundle init').parse(process.argv);
+program
+  .argument('<path>', 'path where to initialize the bundle')
+  .name('bb bundle init')
+  .parse(process.argv);
 
 const { args } = program;
 
