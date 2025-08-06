@@ -15,12 +15,12 @@
     "prettier:base": "prettier --parser typescript --single-quote",
     "prettier:check": "yarn prettier:base --list-different \"src/**/*.{ts,tsx}\"",
     "prettier:write": "yarn prettier:base --write \"src/**/*.{ts,tsx}\"",
-    "test": "ava ./__tests__/**/*.test.{ts,tsx}",
+    "test": "bun test __tests__",
+    "test:watch": "bun test --watch __tests__",
     "all": "yarn test && yarn lint --fix && yarn prettier:write",
     "clean": "rm -rf build/ && rm -rf node_modules/"
   },
   "devDependencies": {
-    "@types/bun": "latest",
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-angular": "^15.0.0",
     "@commitlint/prompt-cli": "^15.0.0",
@@ -29,6 +29,7 @@
     "@types/app-root-path": "^1.2.4",
     "@types/babel__generator": "^7.6.3",
     "@types/babel__traverse": "^7.0.7",
+    "@types/bun": "^1.2.19",
     "@types/fs-extra": "^8.0.0",
     "@types/glob": "^7.2.0",
     "@types/lodash": "^4.14.176",
@@ -38,7 +39,6 @@
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "app-root-path": "^2.2.1",
-    "ava": "^3.15.0",
     "eslint": "^8.3.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^16.1.0",
@@ -86,16 +86,6 @@
   },
   "optionalDependencies": {
     "isolated-vm": "^4.0.0"
-  },
-  "ava": {
-    "extensions": [
-      "ts",
-      "tsx"
-    ],
-    "require": [
-      "ts-node/register",
-      "tsconfig-paths/register"
-    ]
   },
   "bin": {
     "bb": "./src/bb.ts"

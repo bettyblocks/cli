@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import test, { ExecutionContext } from 'ava';
+import { test, expect } from 'bun:test';
 
 import toCompatibility from '../src/components/compatibility';
 
-type Context = ExecutionContext<unknown>;
-
-test('extract compatibility for simple button with custom trigger and function', (t: Context): void => {
+test('extract compatibility for simple button with custom trigger and function', (): void => {
   const code = `
 (() => ({
   name: 'Button',
@@ -34,14 +32,14 @@ test('extract compatibility for simple button with custom trigger and function',
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
+  expect(compatibility).toEqual({
     triggers: ['CustomTrigger'],
     functions: ['CustomFunction'],
     interactions: {},
   });
 });
 
-test('extract compatibility for complex button with multiple triggers and functions', (t: Context): void => {
+test('extract compatibility for complex button with multiple triggers and functions', (): void => {
   const code = `
   (() => ({
     name: 'Button',
@@ -131,14 +129,14 @@ test('extract compatibility for complex button with multiple triggers and functi
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
+  expect(compatibility).toEqual({
     triggers: ['CustomTrigger1', 'CustomTrigger2', 'CustomTrigger3'],
     functions: ['CustomFunction1', 'CustomFunction2', 'CustomFunction3'],
     interactions: {},
   });
 });
 
-test('extract compatibility for simple button with custom trigger with changing input', (t: Context): void => {
+test('extract compatibility for simple button with custom trigger with changing input', (): void => {
   const code = `
 (() => ({
   name: 'Button',
@@ -180,7 +178,7 @@ test('extract compatibility for simple button with custom trigger with changing 
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
+  expect(compatibility).toEqual({
     triggers: [
       'CustomTrigger1',
       'CustomTrigger2',
@@ -195,7 +193,7 @@ test('extract compatibility for simple button with custom trigger with changing 
   });
 });
 
-test('extract compatibility for simple button with custom inline triggers', (t: Context): void => {
+test('extract compatibility for simple button with custom inline triggers', (): void => {
   const code = `
 (() => ({
   name: 'Button',
@@ -222,7 +220,7 @@ test('extract compatibility for simple button with custom inline triggers', (t: 
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
+  expect(compatibility).toEqual({
     triggers: [
       'CustomTrigger1',
       'CustomTrigger2',
@@ -234,7 +232,7 @@ test('extract compatibility for simple button with custom inline triggers', (t: 
   });
 });
 
-test('compatibility galore', (t: Context): void => {
+test('compatibility galore', (): void => {
   const code = `
 (() => ({
   name: 'Button',
@@ -320,7 +318,7 @@ test('compatibility galore', (t: Context): void => {
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
+  expect(compatibility).toEqual({
     triggers: [
       'CustomTrigger1',
       'CustomTrigger2',

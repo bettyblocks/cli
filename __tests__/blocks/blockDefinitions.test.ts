@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import test, { ExecutionContext } from 'ava';
+import { test, expect, afterEach } from 'bun:test';
 import path from 'path';
 import {
   blockDefinitionPath,
@@ -8,30 +8,27 @@ import {
   newBlockDefinition,
 } from '../../src/blocks/blockDefinitions';
 
-type Context = ExecutionContext<unknown>;
-
 console.log(process.cwd());
 
 const supportDir = path.join(process.cwd(), '__tests__/support/blocks/');
 
-test.afterEach(() => {
+afterEach(() => {
   fs.emptyDirSync(supportDir);
 });
 
-test('blockDefinitionPath', async (t: Context): Promise<void> => {
-  t.is(blockDefinitionPath('/blocks', 'test'), '/blocks/test.json');
+test('blockDefinitionPath', async (): Promise<void> => {
+  expect(blockDefinitionPath('/blocks', 'test')).toBe('/blocks/test.json');
 });
 
-test('creating a new blockDefinition', async (t: Context): Promise<void> => {
+test('creating a new blockDefinition', async (): Promise<void> => {
   const blockName = `block${Math.random().toString()}`;
 
-  t.is(
-    newBlockDefinition(supportDir, blockName),
+  expect(newBlockDefinition(supportDir, blockName)).toBe(
     `blocks/${blockName}.json created`,
   );
 });
 
-test('returns 2 blocks', async (t: Context): Promise<void> => {
+test('returns 2 blocks', async (): Promise<void> => {
   fs.emptyDirSync(supportDir);
   const newBlocks = ['test', 'block'];
 
@@ -40,10 +37,10 @@ test('returns 2 blocks', async (t: Context): Promise<void> => {
   const blocks = blockDefinitions(supportDir);
   const numberOfBlocks = blocks.length;
 
-  t.assert(numberOfBlocks === 2);
+  expect(numberOfBlocks).toBe(2);
 });
 
-test('creating a package.json', async (t: Context): Promise<void> => {
+test('creating a package.json', async (): Promise<void> => {
   const packageJson = JSON.stringify(
     {
       name: 'test',
@@ -57,9 +54,7 @@ test('creating a package.json', async (t: Context): Promise<void> => {
     2,
   );
 
-  t.assert(
-    createPackageJson('test', '__tests__/blocks/rootPackage.json', [
-      'lodash',
-    ]) === packageJson,
-  );
+  expect(
+    createPackageJson('test', '__tests__/blocks/rootPackage.json', ['lodash']),
+  ).toBe(packageJson);
 });

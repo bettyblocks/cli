@@ -1,22 +1,20 @@
-import test, { ExecutionContext } from 'ava';
+import { test, expect } from 'bun:test';
 
 import { Component, Prefab } from '../../src/types';
 import validateComponents from '../../src/validations/component';
 import validatePrefabs from '../../src/validations/prefab';
 
-type Context = ExecutionContext<unknown>;
-
-test('Throw when one of the components is invalid', (t: Context): void => {
+test('Throw when one of the components is invalid', (): void => {
   const components: { name: string }[] = [
     {
       name: 'HelloWorld',
     },
   ];
 
-  t.throws(() => validateComponents(components as Component[], []));
+  expect(() => validateComponents(components as Component[], [])).toThrow();
 });
 
-test('Throw when component styleType is not a valid type', (t: Context): void => {
+test('Throw when component styleType is not a valid type', (): void => {
   const components = [
     {
       name: 'HelloWorld',
@@ -29,10 +27,10 @@ test('Throw when component styleType is not a valid type', (t: Context): void =>
     },
   ] as Component[];
 
-  t.throws(() => validateComponents(components, []));
+  expect(() => validateComponents(components, [])).toThrow();
 });
 
-test('Throw when two components have the same name', (t: Context): void => {
+test('Throw when two components have the same name', (): void => {
   const components = [
     {
       name: 'HelloWorld',
@@ -52,10 +50,10 @@ test('Throw when two components have the same name', (t: Context): void => {
     },
   ] as Component[];
 
-  t.throws(() => validateComponents(components, []));
+  expect(() => validateComponents(components, [])).toThrow();
 });
 
-test("Don't throw when all components are valid", (t: Context): void => {
+test("Don't throw when all components are valid", (): void => {
   const components = [
     {
       name: 'HelloWorld',
@@ -67,20 +65,20 @@ test("Don't throw when all components are valid", (t: Context): void => {
     },
   ] as Component[];
 
-  t.notThrows(() => validateComponents(components, []));
+  expect(() => validateComponents(components, [])).not.toThrow();
 });
 
-test('Throw when one of the prefabs is invalid', (t: Context): void => {
+test('Throw when one of the prefabs is invalid', (): void => {
   const prefabs = [
     {
       name: 'Component Name',
     },
   ] as Prefab[];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
 
-test("Don't throw when all prefabs are valid", (t: Context): void => {
+test("Don't throw when all prefabs are valid", (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -90,10 +88,10 @@ test("Don't throw when all prefabs are valid", (t: Context): void => {
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Throw when one of the prefabs options is invalid', (t: Context): void => {
+test('Throw when one of the prefabs options is invalid', (): void => {
   const prefabs = [
     {
       name: 'Component Name',
@@ -117,10 +115,10 @@ test('Throw when one of the prefabs options is invalid', (t: Context): void => {
     },
   ] as unknown as Prefab[];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
 
-test('Throw when type partial has descendants', (t: Context): void => {
+test('Throw when type partial has descendants', (): void => {
   const prefabs = [
     {
       name: 'Component Name',
@@ -148,9 +146,9 @@ test('Throw when type partial has descendants', (t: Context): void => {
     },
   ] as unknown as Prefab[];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
-test('Throw when type partial has name', (t: Context): void => {
+test('Throw when type partial has name', (): void => {
   const prefabs = [
     {
       name: 'Component Name',
@@ -178,9 +176,9 @@ test('Throw when type partial has name', (t: Context): void => {
     },
   ] as unknown as Prefab[];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
-test('Throw when type partial has options', (t: Context): void => {
+test('Throw when type partial has options', (): void => {
   const prefabs = [
     {
       name: 'Component Name',
@@ -208,9 +206,9 @@ test('Throw when type partial has options', (t: Context): void => {
     },
   ] as unknown as Prefab[];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
-test('Throw when type component has partialId', (t: Context): void => {
+test('Throw when type component has partialId', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -253,10 +251,10 @@ test('Throw when type component has partialId', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
 
-test('Does not throw when partial object is within the structure', (t: Context): void => {
+test('Does not throw when partial object is within the structure', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -271,10 +269,10 @@ test('Does not throw when partial object is within the structure', (t: Context):
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Does not throw when wrapper object is within the structure', (t: Context): void => {
+test('Does not throw when wrapper object is within the structure', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -290,10 +288,10 @@ test('Does not throw when wrapper object is within the structure', (t: Context):
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Does not throw when nesting wrapper objects', (t: Context): void => {
+test('Does not throw when nesting wrapper objects', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -315,10 +313,10 @@ test('Does not throw when nesting wrapper objects', (t: Context): void => {
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Does not throw when component option categories with condition', (t: Context): void => {
+test('Does not throw when component option categories with condition', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component name',
@@ -369,10 +367,10 @@ test('Does not throw when component option categories with condition', (t: Conte
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Does not throw when component option categories are valid', (t: Context): void => {
+test('Does not throw when component option categories are valid', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component name',
@@ -405,10 +403,10 @@ test('Does not throw when component option categories are valid', (t: Context): 
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Does not throw when wrapper option categories are valid', (t: Context): void => {
+test('Does not throw when wrapper option categories are valid', (): void => {
   const prefabs = [
     {
       name: 'Component name',
@@ -436,10 +434,10 @@ test('Does not throw when wrapper option categories are valid', (t: Context): vo
     },
   ] as unknown as Prefab[];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Throws when component option category has no label', (t: Context): void => {
+test('Throws when component option category has no label', (): void => {
   const prefabs = [
     {
       name: 'Component name',
@@ -463,10 +461,10 @@ test('Throws when component option category has no label', (t: Context): void =>
     },
   ] as unknown as Prefab[];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {}));
 });
 
-test('Throws when component option category has no entries', (t: Context): void => {
+test('Throws when component option category has no entries', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component name',
@@ -490,10 +488,10 @@ test('Throws when component option category has no entries', (t: Context): void 
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {}));
 });
 
-test('Throws when component option category members has no entries', (t: Context): void => {
+test('Throws when component option category members has no entries', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component name',
@@ -517,10 +515,10 @@ test('Throws when component option category members has no entries', (t: Context
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {}));
 });
 
-test('Does not throw when button prefabs style override options are valid', (t: Context): void => {
+test('Does not throw when button prefabs style override options are valid', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component name',
@@ -574,12 +572,12 @@ test('Does not throw when button prefabs style override options are valid', (t: 
     },
   ];
 
-  t.notThrows(() =>
+  expect(() =>
     validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }),
-  );
+  ).not.toThrow();
 });
 
-test('Throw when one of the prefabs style override string options is invalid', (t: Context): void => {
+test('Throw when one of the prefabs style override string options is invalid', (): void => {
   const prefabs = [
     {
       name: 'Component name',
@@ -608,12 +606,12 @@ test('Throw when one of the prefabs style override string options is invalid', (
     },
   ] as unknown as Prefab[];
 
-  t.throws(() =>
+  expect(() =>
     validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }),
   );
 });
 
-test('Throw when one of the prefabs style override array options is invalid', (t: Context): void => {
+test('Throw when one of the prefabs style override array options is invalid', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component name',
@@ -642,12 +640,12 @@ test('Throw when one of the prefabs style override array options is invalid', (t
     },
   ];
 
-  t.throws(() =>
+  expect(() =>
     validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }),
   );
 });
 
-test('Throw when style name is non-alphanumeric', (t: Context): void => {
+test('Throw when style name is non-alphanumeric', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -673,10 +671,10 @@ test('Throw when style name is non-alphanumeric', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
 
-test('Dont throw when prefab component has a ref', (t: Context): void => {
+test('Dont throw when prefab component has a ref', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -703,10 +701,10 @@ test('Dont throw when prefab component has a ref', (t: Context): void => {
   ];
 
   validatePrefabs(prefabs, {});
-  t.pass();
+  expect(true).toBe(true);
 });
 
-test('Dont throw when prefab component option has a ref', (t: Context): void => {
+test('Dont throw when prefab component option has a ref', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -733,10 +731,10 @@ test('Dont throw when prefab component option has a ref', (t: Context): void => 
   ];
 
   validatePrefabs(prefabs, {});
-  t.pass();
+  expect(true).toBe(true);
 });
 
-test('Throw when the prefabs option type is not referring to one the correct types', (t: Context): void => {
+test('Throw when the prefabs option type is not referring to one the correct types', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -759,10 +757,10 @@ test('Throw when the prefabs option type is not referring to one the correct typ
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
 
-test('Throw when two options with the same key are being used', (t: Context): void => {
+test('Throw when two options with the same key are being used', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -791,10 +789,10 @@ test('Throw when two options with the same key are being used', (t: Context): vo
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
 
-test('Does not throw when valid partial Prefab', (t: Context): void => {
+test('Does not throw when valid partial Prefab', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'partial Prefab',
@@ -817,11 +815,10 @@ test('Does not throw when valid partial Prefab', (t: Context): void => {
     },
   ];
 
-  validatePrefabs(prefabs, {}, {}, [], 'partial');
-  t.pass();
+  expect(() => validatePrefabs(prefabs, {}, {}, [], 'partial')).not.toThrow();
 });
 
-test('Throw when partialcomponent in partial Prefab', (t: Context): void => {
+test('Throw when partialcomponent in partial Prefab', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'partial Prefab',
@@ -836,10 +833,10 @@ test('Throw when partialcomponent in partial Prefab', (t: Context): void => {
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}, {}, [], 'partial'));
+  expect(() => validatePrefabs(prefabs, {}, {}, [], 'partial')).toThrow();
 });
 
-test('Throw when type key in partial Prefab', (t: Context): void => {
+test('Throw when type key in partial Prefab', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'partial Prefab',
@@ -862,10 +859,10 @@ test('Throw when type key in partial Prefab', (t: Context): void => {
       ],
     },
   ];
-  t.throws(() => validatePrefabs(prefabs, {}, {}, [], 'partial'));
+  expect(() => validatePrefabs(prefabs, {}, {}, [], 'partial')).toThrow();
 });
 
-test("throws an error when a reserved keyword is used 'PARTIAL'", (t: Context): void => {
+test("throws an error when a reserved keyword is used 'PARTIAL'", (): void => {
   const components = [
     {
       name: 'HelloWorld',
@@ -877,10 +874,10 @@ test("throws an error when a reserved keyword is used 'PARTIAL'", (t: Context): 
     },
   ] as Component[];
 
-  t.throws(() => validateComponents(components, []));
+  expect(() => validateComponents(components, [])).toThrow();
 });
 
-test("throws an error when a reserved keyword is used 'WRAPPER'", (t: Context): void => {
+test("throws an error when a reserved keyword is used 'WRAPPER'", (): void => {
   const components = [
     {
       name: 'HelloWorld',
@@ -892,10 +889,10 @@ test("throws an error when a reserved keyword is used 'WRAPPER'", (t: Context): 
     },
   ] as Component[];
 
-  t.throws(() => validateComponents(components, []));
+  expect(() => validateComponents(components, [])).toThrow();
 });
 
-test('Throw when one of the prefabs configuration options is invalid', (t: Context): void => {
+test('Throw when one of the prefabs configuration options is invalid', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -921,10 +918,10 @@ test('Throw when one of the prefabs configuration options is invalid', (t: Conte
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
 
-test('Success when the reconfigure configuration options of the prefabs are valid', (t: Context): void => {
+test('Success when the reconfigure configuration options of the prefabs are valid', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -994,10 +991,10 @@ test('Success when the reconfigure configuration options of the prefabs are vali
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Does not throw when wrapper option has showOnDrop', (t: Context): void => {
+test('Does not throw when wrapper option has showOnDrop', (): void => {
   const prefabs = [
     {
       name: 'Component name',
@@ -1039,10 +1036,10 @@ test('Does not throw when wrapper option has showOnDrop', (t: Context): void => 
     },
   ] as unknown as Prefab[];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Success when the optionRefs of the prefabs are valid', (t: Context): void => {
+test('Success when the optionRefs of the prefabs are valid', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -1070,10 +1067,10 @@ test('Success when the optionRefs of the prefabs are valid', (t: Context): void 
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Throws error when value is an empty string in variable option', (t: Context): void => {
+test('Throws error when value is an empty string in variable option', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Test Component',
@@ -1096,10 +1093,10 @@ test('Throws error when value is an empty string in variable option', (t: Contex
     },
   ];
 
-  t.throws(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).toThrow();
 });
 
-test('Does not throw when wrapper option has a optionRef', (t: Context): void => {
+test('Does not throw when wrapper option has a optionRef', (): void => {
   const prefabs = [
     {
       name: 'Component name',
@@ -1151,10 +1148,10 @@ test('Does not throw when wrapper option has a optionRef', (t: Context): void =>
     },
   ] as unknown as Prefab[];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Success when value is an array with empty string in variable option', (t: Context): void => {
+test('Success when value is an array with empty string in variable option', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -1177,10 +1174,10 @@ test('Success when value is an array with empty string in variable option', (t: 
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
 
-test('Success when adding createActionInputVariable in the option configuration of an ACTION_JS_INPUT', (t: Context): void => {
+test('Success when adding createActionInputVariable in the option configuration of an ACTION_JS_INPUT', (): void => {
   const prefabs: Prefab[] = [
     {
       name: 'Component Name',
@@ -1210,5 +1207,5 @@ test('Success when adding createActionInputVariable in the option configuration 
     },
   ];
 
-  t.notThrows(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
 });
