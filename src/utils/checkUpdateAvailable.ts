@@ -5,7 +5,7 @@ import { tmpdir } from 'os';
 import { lt } from 'semver';
 import chalk from 'chalk';
 
-import { Versions } from '../types';
+import type { Versions } from '../types';
 // eslint-disable-next-line
 const { version: versionCLI, name: nameCLI } = require('../../package.json');
 

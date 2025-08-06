@@ -4,7 +4,7 @@
 import chalk from 'chalk';
 import Joi from 'joi';
 
-import {
+import type {
   Prefab,
   ComponentStyleMap,
   Component,

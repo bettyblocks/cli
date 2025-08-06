@@ -2,7 +2,10 @@ import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
-import Webhead, { WebheadInstance, WebheadRequestOptions } from 'webhead';
+import Webhead, {
+  type WebheadInstance,
+  type WebheadRequestOptions,
+} from 'webhead';
 
 import Config from '../functions/config';
 

@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import path from 'path';
 import Case from 'case';
-import { Interaction, InteractionOptionType } from '../types';
+import { type Interaction, type InteractionOptionType } from '../types';
 
 const allowedTypes = [
   'Event',

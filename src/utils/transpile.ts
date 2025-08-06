@@ -1,7 +1,7 @@
 import generate from '@babel/generator';
 import { parse } from '@babel/parser';
 import traverse from '@babel/traverse';
-import { stringLiteral, File } from '@babel/types';
+import { stringLiteral, type File } from '@babel/types';
 
 const generateInnerCode = (ast: File, keys: string[]): void => {
   traverse(ast, {

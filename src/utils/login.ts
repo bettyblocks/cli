@@ -1,6 +1,6 @@
 import prompts from 'prompts';
 import fetch from 'node-fetch';
-import Config, { GlobalConfig } from '../functions/config';
+import Config, { type GlobalConfig } from '../functions/config';
 
 type LoginResponse = {
   token: string;

@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { FunctionDefinition } from 'src/functions/functionDefinitions';
-import { Block } from 'src/blocks/blockDefinitions';
+import { type FunctionDefinition } from 'src/functions/functionDefinitions';
+import { type Block } from 'src/blocks/blockDefinitions';
 import chalk from 'chalk';
 import {
   FunctionValidator,

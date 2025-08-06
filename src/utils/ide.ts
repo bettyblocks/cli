@@ -6,9 +6,9 @@ import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
 import Webhead, {
-  AnyObject,
-  WebheadInstance,
-  WebheadRequestParameters,
+  type AnyObject,
+  type WebheadInstance,
+  type WebheadRequestParameters,
 } from 'webhead';
 
 import FusionAuth from './fusionAuth';

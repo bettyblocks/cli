@@ -1,10 +1,10 @@
 import {
-  CustomTransformerFactory,
+  type CustomTransformerFactory,
   flattenDiagnosticMessageText,
   JsxEmit,
   ScriptTarget,
-  SourceFile,
-  TransformerFactory,
+  type SourceFile,
+  type TransformerFactory,
   transpileModule,
 } from 'typescript';
 

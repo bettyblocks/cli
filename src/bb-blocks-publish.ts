@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from 'fs-extra';
 import path from 'path';
 import { Command } from 'commander';
@@ -70,8 +69,8 @@ const createBlockZip = (
     zip.writeZip(zipFilePath);
 
     return zipFilePath;
-  } catch ({ message }) {
-    return console.error(message);
+  } catch (error) {
+    throw new Error(`in ${name}: ${error}`);
   }
 };
 
@@ -127,8 +126,8 @@ void (async (): Promise<void> => {
           } else {
             throw Error(chalk.red(`\n${errorMessage}\n`));
           }
-        } catch ({ message }) {
-          console.error(message);
+        } catch (error) {
+          throw new Error(`in ${name}: ${error}`);
         }
       } else {
         console.error(chalk.red(`\nFunctions can not be empty\n`));

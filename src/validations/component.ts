@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import Joi, { ObjectSchema, ValidationResult } from 'joi';
+import Joi, { type ObjectSchema, type ValidationResult } from 'joi';
 
-import { Component } from '../types';
+import type { Component } from '../types';
 import { findDuplicates } from '../utils/validation';
 
 const reservedTypes = (value: string) => {

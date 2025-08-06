@@ -1,6 +1,6 @@
 import {
   createProgram,
-  Diagnostic,
+  type Diagnostic,
   flattenDiagnosticMessageText,
   getPreEmitDiagnostics,
   getDefaultCompilerOptions,

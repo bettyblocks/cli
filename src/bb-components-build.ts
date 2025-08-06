@@ -331,12 +331,8 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
   return Promise.all(
     interactionFiles.map(async (file: string): Promise<Interaction> => {
       try {
-        const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
-
         getDiagnostics(`${srcDir}/${file}`);
-
         return {
-          function: code,
           ...extractInteractionCompatibility(`${srcDir}/${file}`),
         };
       } catch (error) {
@@ -642,27 +638,26 @@ void (async (): Promise<void> => {
     }
 
     console.info(chalk.green('Success, the component set has been built'));
-  } catch (err) {
-    // TODO: reduce scope of this try catch to narrow the type of error.
-    // some errors will not contain these fields so it is unsafe to
-    // destructure
-
-    // eslint-disable-next-line prefer-destructuring
-    const name = err.name;
-    // eslint-disable-next-line prefer-destructuring
-    const file = err.file;
-    // eslint-disable-next-line prefer-destructuring
-    const message = err.message;
-
-    if (!name || !file || !message) {
-      console.error(err);
-      process.exit(1);
-    }
-
-    if (file) {
+  } catch (error) {
+    // Handle both Error objects and custom error objects
+    if (
+      error &&
+      typeof error === 'object' &&
+      'name' in error &&
+      'file' in error &&
+      'message' in error
+    ) {
+      const { name, file, message } = error as {
+        name: string;
+        file: string;
+        message: string;
+      };
       console.error(chalk.red(`\n${name} in ${file}: ${message}\n`));
+    } else if (error instanceof Error) {
+      console.error(chalk.red(`\nError: ${error.message}\n`));
     } else {
-      console.error(chalk.red(`\n${name}: ${message}\n`));
+      console.error(chalk.red('\nAn unknown error occurred:\n'));
+      console.error(error);
     }
 
     process.exit(1);
