@@ -255,7 +255,7 @@ export type ComponentStyleMap = Record<
   { styleType: Component['styleType'] }
 >;
 
-export type Icon = typeof ICONS[number];
+export type Icon = (typeof ICONS)[number];
 
 export type ValueConfig = Record<string, unknown>;
 
