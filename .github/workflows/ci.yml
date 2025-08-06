@@ -15,7 +15,7 @@ jobs:
       - name: Commit lint
         run: bun commitlint --from $(git rev-parse --short HEAD^1) --to $(git rev-parse --short HEAD^2)
       - name: Run prettier
-        run: bun prettier:write
+        run: bun run fix
       - name: Run build
         run: bun run build
       - name: Run linting
