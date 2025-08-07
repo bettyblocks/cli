@@ -1,12 +1,9 @@
-/* npm dependencies */
-
 import chalk from 'chalk';
 import FormData from 'form-data';
 import fs from 'fs-extra';
 import fetch from 'node-fetch';
 import path from 'path';
 
-/* internal dependencies */
 import FusionAuth from '../utils/login';
 import Config from './config';
 import {
@@ -14,8 +11,6 @@ import {
   stringifyDefinitions,
   zipFunctionDefinitions,
 } from './functionDefinitions';
-
-/* execute command */
 
 const workingDir = process.cwd();
 

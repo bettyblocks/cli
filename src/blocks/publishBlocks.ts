@@ -1,6 +1,3 @@
-/* npm dependencies */
-
-/* internal dependencies */
 import chalk from 'chalk';
 import FormData from 'form-data';
 import fs from 'fs-extra';
@@ -14,8 +11,6 @@ import {
   whitelistedFunctions,
 } from '../functions/functionDefinitions';
 import FusionAuth from '../utils/login';
-
-/* execute command */
 
 const workingDir = process.cwd();
 
