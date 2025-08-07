@@ -55,7 +55,12 @@ void (async (): Promise<void> => {
   const [{ url }] = await Promise.all(
     files.map(async (fileName) => {
       const objects = await read(fileName);
-      return publish(fileName, name, JSON.stringify(objects), 'text/html');
+      return publish({
+        blobContentType: 'text/html',
+        bucketName: name,
+        fileName,
+        objects: JSON.stringify(objects),
+      });
     }),
   );
 

@@ -442,19 +442,19 @@ void (async (): Promise<void> => {
     await Promise.all([
       validateStyles(styles, componentNames),
       validateComponents(components, validStyleTypes),
-      validatePrefabs(
+      validatePrefabs({
+        availableComponentNames,
+        componentStyleMap,
         prefabs,
-        stylesGroupedByTypeAndName,
-        componentStyleMap,
+        styles: stylesGroupedByTypeAndName,
+      }),
+      validatePrefabs({
         availableComponentNames,
-      ),
-      validatePrefabs(
-        allPartialPrefabs,
-        stylesGroupedByTypeAndName,
         componentStyleMap,
-        availableComponentNames,
-        'partial',
-      ),
+        prefabType: 'partial',
+        prefabs: allPartialPrefabs,
+        styles: stylesGroupedByTypeAndName,
+      }),
       interactions && validateInteractions(interactions),
     ]);
 
