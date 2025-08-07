@@ -1,20 +1,21 @@
 import fs from 'fs-extra';
-import path from 'path';
-import os from 'os';
-import prompts from 'prompts';
 import https, { AgentOptions } from 'https';
+import os from 'os';
+import path from 'path';
+import prompts from 'prompts';
+
 import { setHttpsAgent } from './utils';
 
-export type GlobalConfig = {
+export interface GlobalConfig {
   auth: {
     email: string;
     [key: string]: string | undefined;
   };
-  applicationMap: { [key: string]: string };
+  applicationMap: Record<string, string>;
   skipCompile?: boolean;
-};
+}
 
-export type LocalConfig = {
+export interface LocalConfig {
   schemaUrl: string;
   agentOptions?: AgentOptions;
   functionSchemaPath: string;
@@ -31,11 +32,11 @@ export type LocalConfig = {
   includes?: string[];
   tenantId?: string;
   agent?: https.Agent;
-};
+}
 
-export type CustomConfig = {
+export interface CustomConfig {
   skipCompile: boolean;
-};
+}
 
 class Config {
   /* static */
@@ -109,9 +110,7 @@ class Config {
   private static applicationIdKey = (
     identifier: string,
     zone: string,
-  ): string => {
-    return `${identifier}.${zone}`;
-  };
+  ): string => `${identifier}.${zone}`;
 
   private static readConfig = (): LocalConfig | undefined => {
     const cfgPath = Config.localConfigPath;
@@ -122,8 +121,8 @@ class Config {
     return {} as LocalConfig;
   };
 
-  private static defaultConfig = (): LocalConfig => {
-    return {
+  private static defaultConfig = (): LocalConfig =>
+    ({
       schemaUrl: 'https://raw.githubusercontent.com',
       functionSchemaPath:
         '/bettyblocks/json-schema/master/schemas/actions/function.json',
@@ -136,8 +135,7 @@ class Config {
       agentOptions: undefined,
       skipCompile: false,
       includes: [],
-    } as LocalConfig;
-  };
+    }) as LocalConfig;
 
   /* instance */
   private config: LocalConfig;

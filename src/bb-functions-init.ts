@@ -1,7 +1,7 @@
 import chalk from 'chalk';
+import { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
-import { Command } from 'commander';
 
 import rootDir from './utils/rootDir';
 

@@ -32,6 +32,5 @@ export default async (
   dir: string,
   extension = 'js',
   buildAllFiles = true,
-): Promise<string[]> => {
-  return buildAllFiles ? buildAll(dir, extension) : buildLast(dir, extension);
-};
+): Promise<string[]> =>
+  buildAllFiles ? buildAll(dir, extension) : buildLast(dir, extension);

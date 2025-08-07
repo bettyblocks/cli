@@ -1,12 +1,12 @@
-import { Command } from 'commander';
 import chalk from 'chalk';
+import { Command } from 'commander';
 import { readFileSync } from 'fs';
 
-import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import {
   publish,
   validateBucketName,
 } from './functions/bb-components-functions';
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 const program = new Command();
 
@@ -17,12 +17,12 @@ program
   .parse(process.argv);
 const { args } = program;
 const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
-const bucket = program.opts().bucket;
+const { bucket } = program.opts();
 if (!bucket) {
   throw new Error(chalk.red('\n-b or --bucket [name] is required\n'));
 }
 validateBucketName(bucket);
-/* eslint-disable */
+
 const readJS = async (fileName: string): Promise<string> => {
   try {
     return readFileSync(`${distDir}/${fileName}`, 'utf8');
@@ -43,9 +43,7 @@ const readJS = async (fileName: string): Promise<string> => {
     throw new Error('Unknown error occurred');
   }
 };
-/* eslint-enable */
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['bundle.js', 'bundle.js.map'];

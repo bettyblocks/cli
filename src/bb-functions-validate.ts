@@ -1,13 +1,12 @@
 import chalk from 'chalk';
-import path from 'path';
 import { Command } from 'commander';
+import path from 'path';
 
+import Config from './functions/config';
 import {
   FunctionValidator,
   logValidationResult,
 } from './functions/validations';
-
-import Config from './functions/config';
 
 const program = new Command();
 
@@ -51,5 +50,4 @@ const validateFunctions = async () => {
   }
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => validateFunctions())();

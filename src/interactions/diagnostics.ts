@@ -2,8 +2,8 @@ import {
   createProgram,
   type Diagnostic,
   flattenDiagnosticMessageText,
-  getPreEmitDiagnostics,
   getDefaultCompilerOptions,
+  getPreEmitDiagnostics,
 } from 'typescript';
 
 const reportDiagnostics = (diagnostics: Diagnostic[]): void => {

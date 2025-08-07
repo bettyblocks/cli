@@ -1,7 +1,7 @@
 /* npm dependencies */
 import chalk from 'chalk';
 import { Command } from 'commander';
-import { pathExists, outputFile } from 'fs-extra';
+import { outputFile, pathExists } from 'fs-extra';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
@@ -18,7 +18,7 @@ if (args.length === 0) {
 const name: string = args[0];
 
 /* generate file */
-// eslint-disable-next-line no-void
+
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   if (name.includes(' ')) {

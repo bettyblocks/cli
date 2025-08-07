@@ -1,8 +1,9 @@
-import path from 'path';
-import fs from 'fs-extra';
-import { Command } from 'commander';
-import prompts from 'prompts';
 import chalk from 'chalk';
+import { Command } from 'commander';
+import fs from 'fs-extra';
+import path from 'path';
+import prompts from 'prompts';
+
 import { functionDefinitions } from './functions/functionDefinitions';
 
 const program = new Command();
@@ -25,7 +26,7 @@ const collectBumpInput = async (): Promise<{
 
   const versionedFunctions = functionDefinitions(baseFunctionsPath);
 
-  const functions = versionedFunctions.reduce<{ [key: string]: string }>(
+  const functions = versionedFunctions.reduce<Record<string, string>>(
     (acc, { schema: { label }, path: functionPath }) => {
       const name = functionDir(functionPath);
       acc[name] = label;
@@ -72,7 +73,6 @@ const collectBumpInput = async (): Promise<{
   };
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   const { dirName, newVersion, currentVersion } = await collectBumpInput();
   const sourceDir = path.join(workingDir, 'functions', dirName, currentVersion);

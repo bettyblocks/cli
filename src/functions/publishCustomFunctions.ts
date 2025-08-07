@@ -1,4 +1,3 @@
-/* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
 /* npm dependencies */
 
 import { spawn } from 'child_process';
@@ -9,10 +8,8 @@ import path from 'path';
 import vm from 'vm';
 
 /* internal dependencies */
-
 import IDE from '../utils/ide';
 import Config from './config';
-
 import {
   MetaData,
   NamedObject,
@@ -24,11 +21,11 @@ import {
 
 const workingDir = process.cwd();
 
-type Action = {
+interface Action {
   id: string;
   description: string;
   use_new_runtime: boolean;
-};
+}
 
 type Actions = Action[];
 
@@ -49,9 +46,8 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
   const metaData = fs.readJsonSync(functionsJsonFile);
 
   const groomedMetaData = await Object.keys(customFunctions).reduce(
-    async (promise: Promise<MetaData>, name: string): Promise<MetaData> => {
-      return promise.then(async (groomed) => {
-        // eslint-disable-next-line no-param-reassign
+    async (promise: Promise<MetaData>, name: string): Promise<MetaData> =>
+      promise.then(async (groomed) => {
         groomed[name] = metaData[name];
 
         if (!groomed[name]) {
@@ -63,7 +59,6 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
             .map((m) => `${m.slice(15, -2)}:string`)
             .join(' ');
 
-          // eslint-disable-next-line no-param-reassign
           groomed = await resolveMissingFunction(
             groomed,
             metaData,
@@ -73,8 +68,7 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
         }
 
         return groomed;
-      });
-    },
+      }),
     Promise.resolve({} as MetaData),
   );
 
@@ -165,7 +159,6 @@ const publishCustomFunctions = (
       console.log('Done.');
     })
     .catch((err: NodeJS.ErrnoException) => {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.log(`${err}\nAbort.`);
       process.exit();
     });

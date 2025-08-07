@@ -1,25 +1,24 @@
-import fs from 'fs-extra';
-import path from 'path';
-import { Command } from 'commander';
-import prompts from 'prompts';
 import AdmZip from 'adm-zip';
 import chalk from 'chalk';
+import { Command } from 'commander';
+import fs from 'fs-extra';
+import path from 'path';
+import prompts from 'prompts';
 
 import {
   type Block,
   blockDefinitions,
   createPackageJson,
 } from './blocks/blockDefinitions';
+import publishBlocks from './blocks/publishBlocks';
 import {
   functionDefinitions,
   generateIndex,
   whitelistedFunctions,
 } from './functions/functionDefinitions';
-import publishBlocks from './blocks/publishBlocks';
-
 import {
-  validateBlockConfig,
   validateBlock,
+  validateBlockConfig,
 } from './validations/function-block-validations';
 
 const program = new Command();
@@ -74,7 +73,6 @@ const createBlockZip = (
   }
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   const choices = blocks.map((block) => ({
     title: path.basename(block, '.json'),
@@ -100,9 +98,7 @@ void (async (): Promise<void> => {
   }
 
   selected.forEach((jsonFile) => {
-    // eslint-disable-next-line no-void
     void (async (): Promise<void> => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const block: Block = fs.readJsonSync(jsonFile);
       const name = path.basename(jsonFile, '.json');
       if (validateBlockConfig(block)) {

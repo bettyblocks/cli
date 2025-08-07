@@ -1,35 +1,41 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-return,@typescript-eslint/restrict-template-expressions */
 import chalk from 'chalk';
-import path from 'path';
 import { Command } from 'commander';
+import fs from 'fs';
 import {
+  ensureDir,
   outputJson,
   pathExists,
-  ensureDir,
   readFile,
   readFileSync,
   remove,
 } from 'fs-extra';
-import fs from 'fs';
+import path from 'path';
 import ts, { JsxEmit, ModuleKind, ScriptTarget } from 'typescript';
+
 import extractComponentCompatibility from './components/compatibility';
 import { doTranspile } from './components/transformers';
+import {
+  buildReferenceStyle,
+  buildStyle,
+  readStyles,
+  reportDiagnostics,
+} from './components-build';
 import extractInteractionCompatibility from './interactions/compatibility';
 import getDiagnostics from './interactions/diagnostics';
 import type {
+  BuildPrefab,
+  BuildPrefabComponent,
+  BuildPrefabReference,
   Component,
+  ComponentDependency,
+  GroupedStyles,
   Interaction,
   Prefab,
   PrefabReference,
-  GroupedStyles,
-  BuildPrefabReference,
-  BuildPrefabComponent,
-  BuildPrefab,
-  ComponentDependency,
 } from './types';
 import { parseDir } from './utils/arguments';
-import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import { checkPackageVersion } from './utils/checkPackageVersion';
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 import hash from './utils/hash';
 import readFilesByType from './utils/readFilesByType';
 import transpile from './utils/transpile';
@@ -38,15 +44,9 @@ import {
   checkOptionCategoryReferences,
 } from './utils/validation';
 import validateComponents from './validations/component';
-import validateStyles from './validations/styles';
 import validateInteractions from './validations/interaction';
 import validatePrefabs from './validations/prefab';
-import {
-  reportDiagnostics,
-  readStyles,
-  buildStyle,
-  buildReferenceStyle,
-} from './components-build';
+import validateStyles from './validations/styles';
 
 const program = new Command();
 
@@ -86,14 +86,13 @@ const readComponents: () => Promise<Component[]> = async (): Promise<
     buildAll,
   );
 
-  const components: Array<Promise<Component>> = componentFiles.map(
+  const components: Promise<Component>[] = componentFiles.map(
     async (file: string): Promise<Component> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
 
         const compatibility = extractComponentCompatibility(code);
 
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval
         const transpiledFunction = Function(
           `return ${transpile(code, ['jsx', 'styles'])}`,
         )();
@@ -216,24 +215,25 @@ const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
     process.exit(1);
   }
 
-  const prefabs: Array<Promise<Prefab>> = (results.emittedFiles || [])
+  const prefabs: Promise<Prefab>[] = (results.emittedFiles || [])
     .filter((filename) =>
       isPartial
         ? /prefabs\/partials\/\w+\.js$/.test(filename)
         : /prefabs\/\w+\.js$/.test(filename),
     )
-    .map((filename) => {
-      return new Promise((resolve) => {
-        import(filename)
-          .then((prefab) => {
-            // JSON schema validation
-            resolve(prefab.default);
-          })
-          .catch((error) => {
-            throw new Error(`in ${filename}: ${error}`);
-          });
-      });
-    });
+    .map(
+      (filename) =>
+        new Promise((resolve) => {
+          import(filename)
+            .then((prefab) => {
+              // JSON schema validation
+              resolve(prefab.default);
+            })
+            .catch((error) => {
+              throw new Error(`in ${filename}: ${error}`);
+            });
+        }),
+    );
 
   return Promise.all(prefabs);
 };
@@ -248,11 +248,11 @@ const readPrefabs: () => Promise<Prefab[]> = async (): Promise<Prefab[]> => {
 
   const prefabFiles: string[] = await readFilesByType(srcDir, 'js', buildAll);
 
-  const prefabs: Array<Promise<Prefab>> = prefabFiles.map(
+  const prefabs: Promise<Prefab>[] = prefabFiles.map(
     async (file: string): Promise<Prefab> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval,@typescript-eslint/no-unsafe-assignment
+
         const transpiledFunction = Function(
           `return ${transpile(code, ['beforeCreate'])}`,
         )();
@@ -287,11 +287,11 @@ const readPartialPrefabs: () => Promise<Prefab[]> = async (): Promise<
     buildAll,
   );
 
-  const partialPrefabs: Array<Promise<Prefab>> = partialPrefabFiles.map(
+  const partialPrefabs: Promise<Prefab>[] = partialPrefabFiles.map(
     async (file: string): Promise<Prefab> => {
       try {
         const code: string = await readFile(`${srcDir}/${file}`, 'utf-8');
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval,@typescript-eslint/no-unsafe-assignment
+
         const transpiledFunction = Function(
           `return ${transpile(code, ['beforeCreate'])}`,
         )();
@@ -342,7 +342,6 @@ const readInteractions: () => Promise<Interaction[]> = async (): Promise<
   );
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   if (!hasOfflineFlag) {
     await checkUpdateAvailableCLI();
@@ -461,12 +460,10 @@ void (async (): Promise<void> => {
 
     checkOptionCategoryReferences(prefabs);
 
-    const componentsWithHash = components.map((component) => {
-      return {
-        ...component,
-        componentHash: hash(component),
-      };
-    });
+    const componentsWithHash = components.map((component) => ({
+      ...component,
+      componentHash: hash(component),
+    }));
 
     const buildPrefab = (prefab: Prefab): BuildPrefab => {
       const buildStructure = (
@@ -563,8 +560,8 @@ void (async (): Promise<void> => {
       const replaceInSet = (
         existingElements: Element[],
         newElements: Element[],
-      ) => {
-        return existingElements.map((existingElement) => {
+      ) =>
+        existingElements.map((existingElement) => {
           if (
             newElements.length > 0 &&
             existingElement.name === newElements[0].name
@@ -573,7 +570,6 @@ void (async (): Promise<void> => {
           }
           return existingElement;
         });
-      };
 
       const updatedPrefabs = replaceInSet(existingPrefabs, prefabs);
 

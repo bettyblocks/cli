@@ -1,5 +1,6 @@
+import type { RequestInit, Response } from 'node-fetch';
 import fetch from 'node-fetch';
-import type { Response, RequestInit } from 'node-fetch';
+
 import Config from '../functions/config';
 import FusionAuth from '../utils/login';
 
@@ -21,7 +22,7 @@ const sendBlockstoreRequest = async (
     body,
     headers: {
       'content-type': 'application/json',
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
       Authorization: `Bearer ${fusionAuth.jwt()}`,
       ApplicationId: applicationId,
       Accept: 'application/json',
@@ -47,8 +48,8 @@ const fetchAllDevBlocks = async (
   config: Config,
   fusionAuth: FusionAuth,
   applicationId: string,
-): Promise<Response> => {
-  return sendBlockstoreRequest(
+): Promise<Response> =>
+  sendBlockstoreRequest(
     GET_DEV_BLOCKS,
     'GET',
     undefined,
@@ -56,7 +57,6 @@ const fetchAllDevBlocks = async (
     fusionAuth,
     applicationId,
   );
-};
 
 const releaseBlocksInBlockstore = async (
   blockIds: string[],

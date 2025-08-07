@@ -1,8 +1,9 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
+
+import type { ServeOptions } from './types';
 import { parseDir, parsePort } from './utils/arguments';
 import serveComponentSet from './utils/serveComponentSet';
-import type { ServeOptions } from './types';
 
 const program = new Command();
 
@@ -45,7 +46,6 @@ serveComponentSet(options, hasOfflineFlag).then(
     console.info(chalk.green(`Serving the component set at ${url}`));
   },
   (error) => {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     console.error(chalk.red(`\n${error}\n`));
     process.exit(1);
   },

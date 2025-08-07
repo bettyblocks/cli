@@ -1,8 +1,9 @@
-import { Command } from 'commander';
 import chalk from 'chalk';
-import { readJSON, pathExists } from 'fs-extra';
-import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+import { Command } from 'commander';
+import { pathExists, readJSON } from 'fs-extra';
+
 import { publish } from './functions/bb-components-functions';
+import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 const program = new Command();
 
@@ -39,7 +40,6 @@ const read = async (fileName: string): Promise<void> => {
   }
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['prefabs.json', 'templates.json', 'interactions.json'];

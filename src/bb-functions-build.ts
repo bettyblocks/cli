@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
 /* npm dependencies */
 
 import { spawn } from 'child_process';
+import { Command } from 'commander';
 import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
-import { Command } from 'commander';
 
-import rootDir from './utils/rootDir';
 import acquireCustomFunctionsProject from './functions/acquireCustomFunctionsProject';
+import rootDir from './utils/rootDir';
 
 const program = new Command();
 

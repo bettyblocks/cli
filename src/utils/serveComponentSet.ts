@@ -1,16 +1,17 @@
+import { existsSync, readFileSync } from 'fs';
 import {
   createServer as createHttpServer,
   IncomingMessage,
   ServerResponse,
 } from 'http';
 import { createServer as createHttpsServer, type ServerOptions } from 'https';
-import { existsSync, readFileSync } from 'fs';
 import handler from 'serve-handler';
-import { checkUpdateAvailableCLI } from './checkUpdateAvailable';
-import type { ServeOptions } from '../types';
 
-const serveComponentSet = (options: ServeOptions): Promise<void> => {
-  return new Promise<void>((resolve, reject): void => {
+import type { ServeOptions } from '../types';
+import { checkUpdateAvailableCLI } from './checkUpdateAvailable';
+
+const serveComponentSet = (options: ServeOptions): Promise<void> =>
+  new Promise<void>((resolve, reject): void => {
     const serverOptions: ServerOptions = {};
     const createServer = options.ssl ? createHttpsServer : createHttpServer;
 
@@ -50,13 +51,10 @@ const serveComponentSet = (options: ServeOptions): Promise<void> => {
         ],
       });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     createServer(serverOptions, listener)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       .on('error', (error) => reject(error.message))
       .listen(options.port, options.host, () => resolve());
   });
-};
 
 export default async (
   options: ServeOptions,

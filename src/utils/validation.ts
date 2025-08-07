@@ -86,7 +86,7 @@ export const checkNameReferences = (
   prefabs: Prefab[],
   components: Component[],
 ): void => {
-  const componentNames: Set<string> = new Set(
+  const componentNames = new Set<string>(
     components.map(({ name }: Component): string => name),
   );
 

@@ -1,9 +1,9 @@
-import { readJson, mkdir, writeJson, pathExists } from 'fs-extra';
-import { promisify } from 'util';
+import chalk from 'chalk';
 import { exec } from 'child_process';
+import { mkdir, pathExists, readJson, writeJson } from 'fs-extra';
 import { tmpdir } from 'os';
 import { lt } from 'semver';
-import chalk from 'chalk';
+import { promisify } from 'util';
 
 import type { Versions } from '../types';
 // eslint-disable-next-line
@@ -89,7 +89,6 @@ export const checkUpdateAvailableCLI = async (): Promise<void> => {
   try {
     const { remoteVersionCLI } = await readFile();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     logUpdateAvailable(versionCLI, remoteVersionCLI, nameCLI);
   } catch {
     console.error('Unable to check for a new version');

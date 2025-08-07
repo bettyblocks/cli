@@ -6,7 +6,6 @@ import type {
   TransformerFactory,
   Visitor,
 } from 'typescript';
-
 import {
   isCallExpression,
   isIdentifier,
@@ -19,8 +18,8 @@ import {
 } from 'typescript';
 
 import {
-  walkCompilerAstAndFindComments,
   createLiteralObjectExpression,
+  walkCompilerAstAndFindComments,
 } from './comments';
 
 export interface ComponentCompatibility {
@@ -131,7 +130,6 @@ export default (code: string): ComponentCompatibility => {
     transformers: { before: [compatibilityTransformer()] },
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const component = JSON.parse(
     outputText.replace(/^[^{]+/, '').replace(/[^}]+$/, ''),
   );

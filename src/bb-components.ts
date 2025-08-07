@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+
 import { type CommandComponents } from './types';
 
 const availableCommands: CommandComponents[] = [

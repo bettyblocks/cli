@@ -1,6 +1,7 @@
 import { Command } from 'commander';
-import path from 'path';
 import fs from 'fs-extra';
+import path from 'path';
+
 import { newFunctionDefinition } from './functions/functionDefinitions';
 
 const program = new Command();
@@ -20,7 +21,6 @@ if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     console.log(`functions/${inputFunctionName} created`);
   } catch (err) {
     console.log(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `functions/${inputFunctionName} could not be created. Error: ${err}`,
     );
   }

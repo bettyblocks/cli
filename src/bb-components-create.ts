@@ -1,6 +1,6 @@
-import { Command } from 'commander';
 import chalk from 'chalk';
-import { existsSync, copy, move } from 'fs-extra';
+import { Command } from 'commander';
+import { copy, existsSync, move } from 'fs-extra';
 import path from 'path';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
@@ -38,7 +38,6 @@ if (existsSync(dest)) {
   );
 }
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {

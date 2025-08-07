@@ -100,9 +100,10 @@ export type StyleStateKeys =
   | 'invalid'
   | 'readOnly';
 
-type StyleDefinitionContentBase = {
-  [key in StyleStateKeys | 'basis']: StyleDefinitionCssObject;
-};
+type StyleDefinitionContentBase = Record<
+  StyleStateKeys | 'basis',
+  StyleDefinitionCssObject
+>;
 
 export type StyleDefinitionContent = Partial<StyleDefinitionContentBase> &
   Pick<StyleDefinitionContentBase, 'basis'>;
@@ -110,9 +111,9 @@ export type StyleDefinitionContent = Partial<StyleDefinitionContentBase> &
 export type BuildStyleDefinitionContentOverwrites =
   Partial<StyleDefinitionContentBase>;
 
-export type StyleDefinitionContentKeys = {
-  [key in StyleStateKeys]?: string[];
-} & { basis: string[] };
+export type StyleDefinitionContentKeys = Partial<
+  Record<StyleStateKeys, string[]>
+> & { basis: string[] };
 
 export interface StyleDefinitionContentOverwrites
   extends Omit<StyleDefinitionState, 'name'> {
@@ -172,10 +173,10 @@ export type BuildStyleOverwrite =
     }
   | BuildStyleDefinitionContentOverwrites;
 
-export type BuildStyle = {
+export interface BuildStyle {
   name?: string; // TODO: make this required
   overwrite?: BuildStyleOverwrite;
-};
+}
 
 export interface BuildPrefabComponent
   extends Omit<PrefabComponent, 'style' | 'descendants'> {
@@ -193,17 +194,17 @@ export type BuildPrefabReference =
   | PrefabPartial
   | BuildPrefabWrapper;
 
-export type PrefabPartial = {
+export interface PrefabPartial {
   type: 'PARTIAL';
   partialId: string;
-};
+}
 
-export type PrefabWrapper = {
+export interface PrefabWrapper {
   type: 'WRAPPER';
   descendants: PrefabReference[];
   optionCategories?: PrefabComponentOptionCategory[];
   options: PrefabComponentOption[];
-};
+}
 
 type PrefabComponentStyleOverwrite =
   | {
@@ -286,7 +287,7 @@ export interface ValueRef {
   };
 }
 
-export type PrefabComponentOptionCategory = {
+export interface PrefabComponentOptionCategory {
   label: string;
   extended?: boolean;
   members: string[];
@@ -296,7 +297,7 @@ export type PrefabComponentOptionCategory = {
     comparator: string;
     value: string | boolean | number;
   };
-};
+}
 
 export type PrefabComponentOption = PrefabComponentOptionBase &
   (ValueDefault | ValueRef);

@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
-import * as ts from 'typescript';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import * as jsdoc from 'jsdoc-api';
+import * as ts from 'typescript';
 
 /**
  * Retrieves the JSDoc-style comments associated with a specific AST node.
@@ -68,9 +67,8 @@ export function walkCompilerAstAndFindComments(
     );
 
     const returnType = returns.reduce(
-      (acc: string[], curr: { type: { names: string[] } }) => {
-        return acc.concat(curr.type.names);
-      },
+      (acc: string[], curr: { type: { names: string[] } }) =>
+        acc.concat(curr.type.names),
       [],
     );
 

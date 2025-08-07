@@ -1,7 +1,7 @@
-import { Command } from 'commander';
 import chalk from 'chalk';
-import pkg from '../package.json';
+import { Command } from 'commander';
 
+import pkg from '../package.json';
 import { type CommandBB } from './types';
 
 const availableCommands: CommandBB[] = [

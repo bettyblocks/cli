@@ -1,8 +1,8 @@
-/* eslint-disable no-use-before-define */
 // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
 
 import chalk from 'chalk';
 import Joi from 'joi';
+
 import type { ComponentStyleMap, GroupedStyles, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
 import {
@@ -22,8 +22,8 @@ const schemaProvider = (
   componentStyleMap?: ComponentStyleMap,
   availableComponentNames?: string[],
   prefabType?: PrefabTypes,
-): Joi.ObjectSchema => {
-  return Joi.object({
+): Joi.ObjectSchema =>
+  Joi.object({
     name: Joi.string().required(),
     keywords: Joi.array(),
     icon: Joi.string()
@@ -56,7 +56,6 @@ const schemaProvider = (
       .required(),
     reconfigure: Joi.any(),
   });
-};
 
 const validate =
   (

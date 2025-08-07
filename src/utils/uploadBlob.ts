@@ -1,21 +1,19 @@
-import chalk from 'chalk';
-
 import {
   Aborter,
   BlobURL,
   BlockBlobURL,
   ContainerURL,
+  Pipeline,
+  RestError,
   ServiceURL,
   SharedKeyCredential,
   StorageURL,
-  Pipeline,
-  RestError,
 } from '@azure/storage-blob';
-
 import {
-  ServiceSetPropertiesResponse,
   BlockBlobUploadResponse,
+  ServiceSetPropertiesResponse,
 } from '@azure/storage-blob/src/generated/src/models';
+import chalk from 'chalk';
 
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
@@ -72,11 +70,10 @@ const getBlockURL = async (
   try {
     await url.create(Aborter.none, { access: 'blob' });
   } catch (error) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { statusCode }: RestError = error;
 
     if (statusCode !== 409) {
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal,@typescript-eslint/no-unsafe-argument
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
       throw chalk.red(error);
     }
   }

@@ -1,18 +1,15 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable @typescript-eslint/no-use-before-define */
-
 import chalk from 'chalk';
 import Joi from 'joi';
 
 import type {
-  Prefab,
-  ComponentStyleMap,
   Component,
-  PrefabReference,
-  PrefabComponentOptionCategory,
+  ComponentStyleMap,
   GroupedStyles,
-  StyleDefinitionState,
+  Prefab,
+  PrefabComponentOptionCategory,
+  PrefabReference,
   StyleDefinitionContentKeys,
+  StyleDefinitionState,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
 import { overwriteSchema } from '../styles';
@@ -93,23 +90,22 @@ const styleValidator: StyleValidator = {
   }),
 };
 
-const partialSchema = (): Joi.ObjectSchema => {
-  return Joi.object({
+const partialSchema = (): Joi.ObjectSchema =>
+  Joi.object({
     ref: Joi.object({
       id: Joi.string().required(),
     }),
     type: Joi.string().valid('PARTIAL').required(),
     partialId: Joi.string().allow('').required(),
   });
-};
 
 const wrapperSchema = (
   styles: GroupedStyles,
   componentStyleMap?: ComponentStyleMap,
   availableComponentNames?: string[],
   prefabType?: PrefabTypes,
-): Joi.ObjectSchema => {
-  return Joi.object({
+): Joi.ObjectSchema =>
+  Joi.object({
     type: Joi.string().valid('WRAPPER').required(),
     label: Joi.string(),
     optionCategories: Joi.array().items(optionCategorySchema).min(1),
@@ -129,7 +125,6 @@ const wrapperSchema = (
       )
       .required(),
   });
-};
 
 const validateComponentStyle =
   (styles: GroupedStyles, deprecatedStylesFlag: boolean) =>
@@ -356,9 +351,10 @@ const findCategoryMemberDuplicates = (
   optionCategories: PrefabComponentOptionCategory[],
   componentType: string,
 ): void => {
-  const memberKeys = optionCategories.reduce<string[]>((acc, { members }) => {
-    return [...acc, ...members];
-  }, []);
+  const memberKeys = optionCategories.reduce<string[]>(
+    (acc, { members }) => [...acc, ...members],
+    [],
+  );
 
   if (memberKeys.length !== new Set(memberKeys).size) {
     throw new Error(

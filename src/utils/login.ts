@@ -1,19 +1,18 @@
-import prompts from 'prompts';
 import fetch from 'node-fetch';
+import prompts from 'prompts';
+
 import Config, { type GlobalConfig } from '../functions/config';
 
-type LoginResponse = {
+interface LoginResponse {
   token: string;
   twoFactorId: string;
-};
+}
 
-type TwoFactorLoginResponse = {
+interface TwoFactorLoginResponse {
   token: string;
-};
+}
 
-const readAuthConfig = (): GlobalConfig => {
-  return Config.readGlobalConfig();
-};
+const readAuthConfig = (): GlobalConfig => Config.readGlobalConfig();
 
 const storeAuthConfig = (auth: object): void => {
   Config.writeToGlobalConfig('auth', {

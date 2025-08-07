@@ -1,7 +1,8 @@
 import { Command } from 'commander';
-import path from 'path';
 import fs from 'fs-extra';
 import kebabCase from 'lodash/kebabCase';
+import path from 'path';
+
 import { newBlockDefinition } from './blocks/blockDefinitions';
 
 const program = new Command();
@@ -19,7 +20,6 @@ if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     console.log(newBlockDefinition(blocksDir, inputBlockName));
   } catch (err) {
     console.log(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `blocks/${inputBlockName}.json could not be created. Error: ${err}`,
     );
   }

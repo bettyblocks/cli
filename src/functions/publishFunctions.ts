@@ -1,22 +1,23 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access */
 import prompts from 'prompts';
+
 import IDE from '../utils/ide';
 
 export type NamedObject = Record<string, string | object>;
 
-export type MetaData = {
-  [name: string]: {
+export type MetaData = Record<
+  string,
+  {
     replace?: string;
     returnType: string;
     inputVariables: NamedObject;
-  };
-};
+  }
+>;
 
-export type CustomFunction = {
+export interface CustomFunction {
   id: string;
   name: string;
   revision: number;
-};
+}
 
 export type CustomFunctions = CustomFunction[];
 
@@ -60,11 +61,10 @@ const resolveMissingFunction = async (
       ).value;
     }
 
-    // eslint-disable-next-line no-param-reassign
     groomed[name] = metaData[replacedFunction];
-    // eslint-disable-next-line no-param-reassign
+
     groomed[name].replace = replacedFunction;
-    // eslint-disable-next-line no-param-reassign
+
     delete metaData[replacedFunction];
   } else {
     const { returnType, inputVariables } = await prompts([
@@ -87,16 +87,15 @@ const resolveMissingFunction = async (
       } as prompts.PromptObject,
     ]);
 
-    // eslint-disable-next-line no-param-reassign
     groomed[name] = {
       returnType,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+
       inputVariables: inputVariables
         .split(/(\s|,)/)
         .reduce((variables: NamedObject, variable: string): NamedObject => {
           if (variable.length) {
             const [varName, varType] = variable.split(':');
-            // eslint-disable-next-line no-param-reassign
+
             variables[varName] = varType;
           }
           return variables;
@@ -139,7 +138,6 @@ const storeCustomFunctions = async (
         input_variables: inputVariables,
       };
       return ide[method](
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `custom_functions/${id || 'new'}`,
         { json: { record: params } },
         `${action} custom function "${replace || name}" ...`,

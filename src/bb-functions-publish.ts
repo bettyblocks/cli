@@ -1,19 +1,16 @@
-import fs from 'fs-extra';
-
-import path from 'path';
-import { Command } from 'commander';
-
 /* internal dependencies */
-
 import chalk from 'chalk';
+import { Command } from 'commander';
+import fs from 'fs-extra';
+import path from 'path';
+
+import Config from './functions/config';
 import publishAppFunctions from './functions/publishAppFunctions';
 import publishCustomFunctions from './functions/publishCustomFunctions';
-
 import {
   FunctionValidator,
   logValidationResult,
 } from './functions/validations';
-import Config from './functions/config';
 
 const program = new Command();
 
@@ -64,7 +61,6 @@ const validateFunctions = async () => {
   return { valid };
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     const { valid } = await validateFunctions();

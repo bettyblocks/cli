@@ -9,20 +9,20 @@ import Webhead, {
 
 import Config from '../functions/config';
 
-type LoginResponse = {
+interface LoginResponse {
   token: string;
   refreshToken: string;
   twoFactorId: string;
-};
+}
 
-type TwoFactorLoginResponse = {
+interface TwoFactorLoginResponse {
   token: string;
   refreshToken: string;
-};
+}
 
-type UserResponse = {
+interface UserResponse {
   user: object;
-};
+}
 
 class FusionAuth {
   private configFile: string;
@@ -144,7 +144,7 @@ class FusionAuth {
       await this.webhead.get(this.config.fusionAuthUrl);
     }
     await this.webhead[method](urlPath, options);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+
     return this.webhead.json() || this.webhead.text();
   }
 
@@ -156,11 +156,9 @@ class FusionAuth {
     let jwt;
 
     if (fs.pathExistsSync(this.configFile)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
       jwt = fs.readJsonSync(this.configFile).jwt;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return jwt || null;
   }
 }

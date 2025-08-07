@@ -1,22 +1,19 @@
-/* eslint-disable camelcase */
 /* npm dependencies */
 
-import path from 'path';
+/* internal dependencies */
+import chalk from 'chalk';
+import FormData from 'form-data';
 import fs from 'fs-extra';
 import fetch from 'node-fetch';
-import FormData from 'form-data';
+import path from 'path';
 
-/* internal dependencies */
-
-import chalk from 'chalk';
+import Config from '../functions/config';
 import {
   functionDefinitions,
   stringifyDefinitions,
   whitelistedFunctions,
 } from '../functions/functionDefinitions';
 import FusionAuth from '../utils/login';
-
-import Config from '../functions/config';
 
 /* execute command */
 
@@ -47,7 +44,6 @@ const uploadBlock = async (
     method: 'POST',
     body: form,
     headers: {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       Authorization: `Bearer ${fusionAuth.jwt()}`,
       ApplicationId: applicationId,
       Accept: 'application/json',

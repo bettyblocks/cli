@@ -1,22 +1,22 @@
 import AdmZip from 'adm-zip';
-import camelCase from 'lodash/camelCase';
-import startCase from 'lodash/startCase';
 import fs from 'fs-extra';
 import glob from 'glob';
-import path from 'path';
 import { concat } from 'lodash';
+import camelCase from 'lodash/camelCase';
+import startCase from 'lodash/startCase';
+import path from 'path';
 
-type Schema = {
+interface Schema {
   label: string;
   [other: string]: unknown;
-};
+}
 
-export type FunctionDefinition = {
+export interface FunctionDefinition {
   name: string;
   version: string;
   path: string;
   schema: Schema;
-};
+}
 
 /* @doc functionDefinitionPath
   Expands the function dir with `function.json`.
@@ -105,7 +105,6 @@ const functionDefinition = (
       schema,
     } as FunctionDefinition;
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not load json from ${filePath}: ${err}`);
   }
 };
@@ -117,11 +116,10 @@ const functionDefinition = (
 const functionDefinitions = (
   functionsDir: string,
   includeNonversioned = false,
-): FunctionDefinition[] => {
-  return functionDirs(functionsDir, includeNonversioned).map((functionDir) =>
+): FunctionDefinition[] =>
+  functionDirs(functionsDir, includeNonversioned).map((functionDir) =>
     functionDefinition(functionDir, functionsDir),
   );
-};
 
 const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
   const updatedDefinitions = definitions.map(({ name, version, schema }) => ({
@@ -171,7 +169,6 @@ const newFunctionDefinition = (
       `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
     );
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not initialize new function ${functionDir}: ${err}`);
   }
 };
@@ -279,10 +276,10 @@ const zipFunctionDefinitions = (
 };
 
 export {
-  functionDirs,
-  functionDefinitionPath,
   functionDefinition,
+  functionDefinitionPath,
   functionDefinitions,
+  functionDirs,
   generateIndex,
   isFunctionDefinition,
   isFunctionVersion,

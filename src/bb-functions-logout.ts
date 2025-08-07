@@ -1,4 +1,5 @@
 import { Command } from 'commander';
+
 import Config from './functions/config';
 import FusionAuth from './utils/login';
 

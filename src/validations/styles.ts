@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import Joi from 'joi';
-import { type StyleDefinition, AllowedStateKeys } from '../types';
+
+import { AllowedStateKeys, type StyleDefinition } from '../types';
 
 const shadows = [
   'none',

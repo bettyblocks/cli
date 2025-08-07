@@ -1,13 +1,15 @@
+import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
-import { type FunctionDefinition } from 'src/functions/functionDefinitions';
+
 import { type Block } from 'src/blocks/blockDefinitions';
-import chalk from 'chalk';
+import { type FunctionDefinition } from 'src/functions/functionDefinitions';
+
+import Config from '../../functions/config';
 import {
   FunctionValidator,
   logValidationResult,
 } from '../../functions/validations';
-import Config from '../../functions/config';
 
 const workingDir = process.cwd();
 
@@ -23,7 +25,7 @@ export const validateBlockDependencies = (
 ): { valid: boolean; invalidDependencies: string[] } => {
   const packageJson = fs.readJsonSync(
     path.join(workingDir, 'package.json'),
-  ) as { dependencies: { [key: string]: string } };
+  ) as { dependencies: Record<string, string> };
   const packageJsonDependencies = Object.keys(packageJson.dependencies);
   const invalidDependencies = dependencies.filter(
     (dependency) => !packageJsonDependencies.includes(dependency),
@@ -107,9 +109,8 @@ export const validateBlock = async ({
   blockFunctions: FunctionDefinition[];
   blockName: string;
 }) => {
-  const { valid: validFunctions } = await validateBlockFunctions(
-    blockFunctions,
-  );
+  const { valid: validFunctions } =
+    await validateBlockFunctions(blockFunctions);
   const { valid: validBlockDependencies, invalidDependencies } =
     validateBlockDependencies(dependencies);
 

@@ -1,26 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/restrict-template-expressions */
+import chalk from 'chalk';
+import { ValidationError, Validator, ValidatorResult } from 'jsonschema';
 import fetch from 'node-fetch';
 import path from 'path';
-import chalk from 'chalk';
-import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
+import Config from './config';
 import {
   FunctionDefinition,
   functionDefinitions,
   isFunctionVersion,
 } from './functionDefinitions';
-import Config from './config';
 
-export type Schema = {
+export interface Schema {
   $id: string;
-};
+}
 
-export type ValidationResult = {
+export interface ValidationResult {
   path: string;
   status: string;
   functionName?: string;
   errors: ValidationError[] | Error[];
-};
+}
 
 const fetchRemoteSchema = async (
   schemaUrl: string,
@@ -64,9 +63,9 @@ const validateFunctionDefinition = (
   validator: Validator,
   definition: object,
 ): ValidatorResult => {
-  const functionSchemaId = Object.keys(validator.schemas).find((k) => {
-    return k.match(/function\.json$/);
-  });
+  const functionSchemaId = Object.keys(validator.schemas).find((k) =>
+    k.match(/function\.json$/),
+  );
 
   if (!functionSchemaId) {
     throw new Error(`Cannot find Function schema Id, ${functionSchemaId}`);
@@ -187,6 +186,6 @@ const logValidationResult = ({
 export {
   FunctionValidator,
   functionValidator,
-  validateSchema,
   logValidationResult,
+  validateSchema,
 };
