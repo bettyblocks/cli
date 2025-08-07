@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import * as jsdoc from 'jsdoc-api';
 import * as ts from 'typescript';
 
@@ -9,7 +7,10 @@ import * as ts from 'typescript';
  * Based on ts.getJSDocCommentRanges() from the compiler.
  * https://github.com/microsoft/TypeScript/blob/v3.0.3/src/compiler/utilities.ts#L924
  */
-function getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] {
+const getJSDocCommentRanges = (
+  node: ts.Node,
+  text: string,
+): ts.CommentRange[] => {
   const commentRanges: ts.CommentRange[] = [];
   switch (node.kind) {
     case ts.SyntaxKind.Parameter:
@@ -18,13 +19,13 @@ function getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] {
     case ts.SyntaxKind.ArrowFunction:
     case ts.SyntaxKind.ParenthesizedExpression:
       commentRanges.push(
-        ...(ts.getTrailingCommentRanges(text, node.pos) || []),
+        ...(ts.getTrailingCommentRanges(text, node.pos) ?? []),
       );
       break;
     default:
       break;
   }
-  commentRanges.push(...(ts.getLeadingCommentRanges(text, node.pos) || []));
+  commentRanges.push(...(ts.getLeadingCommentRanges(text, node.pos) ?? []));
   // True if the comment starts with '/**' but not if it is '/**/'
   return commentRanges.filter(
     (comment) =>
@@ -34,11 +35,12 @@ function getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] {
         0x2a /* ts.CharacterCodes.asterisk */ &&
       text.charCodeAt(comment.pos + 3) !== 0x2f /* ts.CharacterCodes.slash */,
   );
-}
-export function walkCompilerAstAndFindComments(
+};
+
+export const walkCompilerAstAndFindComments = (
   node: ts.Node,
   foundComments: object[],
-): void {
+): void => {
   // The TypeScript AST doesn't store code comments directly.  If you want to find *every* comment,
   // you would need to rescan the SourceFile tokens similar to how tsutils.forEachComment() works:
   // https://github.com/ajafff/tsutils/blob/v3.0.0/util/util.ts#L453
@@ -82,10 +84,10 @@ export function walkCompilerAstAndFindComments(
   return node.forEachChild((child) =>
     walkCompilerAstAndFindComments(child, foundComments),
   );
-}
+};
 
-function createParams(params: object): ts.ObjectLiteralElementLike[] {
-  return Object.entries(params).map(([key, value]) => {
+const createParams = (params: object): ts.ObjectLiteralElementLike[] =>
+  Object.entries(params).map(([key, value]) => {
     const result = Array.isArray(value)
       ? ts.factory.createArrayLiteralExpression(
           value.map((n) => ts.factory.createStringLiteral(n)),
@@ -96,16 +98,14 @@ function createParams(params: object): ts.ObjectLiteralElementLike[] {
       result,
     );
   });
-}
 
-export function createLiteralObjectExpression(
+export const createLiteralObjectExpression = (
   params: object[],
-): ts.ObjectLiteralElementLike[] {
-  return params.map((param) => {
+): ts.ObjectLiteralElementLike[] =>
+  params.map((param) => {
     const [[key, value]] = Object.entries(param);
     return ts.factory.createPropertyAssignment(
       ts.factory.createStringLiteral(key),
       ts.factory.createObjectLiteralExpression(createParams(value)),
     );
   });
-}

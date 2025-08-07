@@ -150,12 +150,12 @@ class FunctionValidator {
     blockFunctions?: FunctionDefinition[],
   ): Promise<ValidationResult[]> {
     const definitions = functionDefinitions(this.functionsDir, true);
-    const functions = blockFunctions || definitions;
+    const functions = blockFunctions ?? definitions;
     const validations: ValidationResult[] = [];
     functions.forEach((definition) => {
       const preleadingPath = path.join(
         this.functionsDir,
-        functionName || '',
+        functionName ?? '',
         path.sep,
       );
       if (definition.path.indexOf(preleadingPath) === 0) {
@@ -179,7 +179,7 @@ const logValidationResult = ({
   } else {
     const msg = chalk.red(`${errors}`);
     const mark = chalk.red(`✖`);
-    console.log(`${mark} Validate: ${functionName || functionPath}\n\t${msg}`);
+    console.log(`${mark} Validate: ${functionName ?? functionPath}\n\t${msg}`);
   }
 };
 

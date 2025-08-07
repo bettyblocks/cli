@@ -176,7 +176,7 @@ const validateComponentStyle =
         );
       }
 
-      const validCssKeys = validCssObjectValues[stateName] || [];
+      const validCssKeys = validCssObjectValues[stateName] ?? [];
 
       Object.keys(content).forEach((cssKey) => {
         if (!validCssKeys.includes(cssKey)) {
@@ -241,7 +241,7 @@ const optionTemplatesSchema = (availableComponentNames?: string[]) =>
     addChild: Joi.object({
       condition: Joi.object({
         onlyShowWhenDroppedIn: Joi.string().valid(
-          ...(availableComponentNames || []),
+          ...(availableComponentNames ?? []),
         ),
       }),
       options: Joi.array().items(optionSchema).required(),
@@ -259,7 +259,7 @@ const componentSchema = (
   const canValidateOldStyle = styleType && styleValidator[styleType];
   const deprecatedStyleSchema = Joi.object({
     name: Joi.string().max(255).alphanum(),
-    overwrite: canValidateOldStyle || Joi.any(),
+    overwrite: canValidateOldStyle ?? Joi.any(),
   });
 
   const styleSchema = Joi.object({

@@ -126,8 +126,8 @@ const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
     name,
     version,
     ...schema,
-    options: JSON.stringify(schema.options || []),
-    paths: JSON.stringify(schema.paths || {}),
+    options: JSON.stringify(schema.options ?? []),
+    paths: JSON.stringify(schema.paths ?? {}),
   }));
 
   return JSON.stringify(updatedDefinitions);
@@ -263,7 +263,7 @@ const zipFunctionDefinitions = (
   zip.addFile('index.js', Buffer.from(generateIndex(functionsPath)));
   zip.addLocalFolder(functionsPath, functionsPath.replace(cwd, ''));
 
-  (includes || []).forEach((include) => {
+  (includes ?? []).forEach((include) => {
     zip.addLocalFolder(path.join(cwd, include), include);
   });
 

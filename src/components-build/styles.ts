@@ -73,7 +73,7 @@ export const readStyles: (
     process.exit(1);
   }
 
-  const styles: Promise<StyleDefinition>[] = (results.emittedFiles || [])
+  const styles: Promise<StyleDefinition>[] = (results.emittedFiles ?? [])
     .filter((filename) => /\.(\w+\/){1}\w+\.js/.test(filename))
     .map(
       (filename) =>

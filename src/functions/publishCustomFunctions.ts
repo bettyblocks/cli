@@ -50,7 +50,7 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
             .toString()
             .match(/await context\((["'])(.*?)\1\)/g);
 
-          const defaultInputVariables = (matches || [])
+          const defaultInputVariables = (matches ?? [])
             .map((m) => `${m.slice(15, -2)}:string`)
             .join(' ');
 

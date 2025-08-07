@@ -46,12 +46,12 @@ export const logResult = (
   const delimiter = version ? '-' : '';
   if (status === 'ok') {
     console.log(
-      `${chalk.green(`✔`)} ${operation} ${name}${delimiter}${version || ''}.`,
+      `${chalk.green(`✔`)} ${operation} ${name}${delimiter}${version ?? ''}.`,
     );
   } else {
     console.log(
       `${chalk.red(`✖`)} ${operation} ${name}${delimiter}${
-        version || ''
+        version ?? ''
       } failed. Errors: ${JSON.stringify(error)}.`,
     );
   }
@@ -124,7 +124,7 @@ const uploadAppFunctions = async (
         deleted.forEach((result) => logResult(result, 'Delete:'));
 
         return {
-          message: message || '409 Conflict',
+          message: message ?? '409 Conflict',
           success: false,
         };
       }

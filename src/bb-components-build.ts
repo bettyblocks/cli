@@ -215,7 +215,7 @@ const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
     process.exit(1);
   }
 
-  const prefabs: Promise<Prefab>[] = (results.emittedFiles || [])
+  const prefabs: Promise<Prefab>[] = (results.emittedFiles ?? [])
     .filter((filename) =>
       isPartial
         ? /prefabs\/partials\/\w+\.js$/.test(filename)
@@ -560,7 +560,7 @@ void (async (): Promise<void> => {
       const replaceInSet = (
         existingElements: Element[],
         newElements: Element[],
-      ) =>
+      ): Element[] =>
         existingElements.map((existingElement) => {
           if (
             newElements.length > 0 &&

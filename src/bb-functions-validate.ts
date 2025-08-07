@@ -24,7 +24,7 @@ const baseFunctionsPath = path.join(workingDir, 'functions');
 
 const config = new Config();
 
-const validateFunctions = async () => {
+const validateFunctions = async (): Promise<void> => {
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
 

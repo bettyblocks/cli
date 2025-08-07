@@ -34,8 +34,7 @@ const getRemoteVersionCLI = async (): Promise<string> => {
   const remoteVersionCLI = output.toString().trim();
 
   if (error) {
-    // eslint-disable-next-line @typescript-eslint/no-throw-literal
-    throw error;
+    throw new Error(error);
   }
 
   return remoteVersionCLI;
@@ -45,10 +44,10 @@ const writeToFile = async (): Promise<void> => {
   const remoteVersionCLI = await getRemoteVersionCLI();
 
   await writeJson(`${TEMP_FOLDER}/versions.json`, {
+    timestamp: Date.now(),
     versions: {
       remoteVersionCLI,
     },
-    timestamp: Date.now(),
   });
 };
 

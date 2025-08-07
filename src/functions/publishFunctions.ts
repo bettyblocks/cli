@@ -127,7 +127,7 @@ const storeCustomFunctions = async (
     async (promise: Promise<string | object | null>, name: string) => {
       await promise;
       const { replace, returnType, inputVariables } = metaData[name];
-      const id = ids[replace || name];
+      const id = ids[replace ?? name];
       const method = id ? 'put' : 'post';
       const action = id ? 'Updating' : 'Creating';
       const params = {
@@ -139,7 +139,7 @@ const storeCustomFunctions = async (
       return ide[method](
         `custom_functions/${id || 'new'}`,
         { json: { record: params } },
-        `${action} custom function "${replace || name}" ...`,
+        `${action} custom function "${replace ?? name}" ...`,
       );
     },
     Promise.resolve(null),

@@ -23,9 +23,7 @@ if (args.length !== 1) {
   process.exit();
 }
 
-/* execute command */
-
-const identifier = args[0];
+const [identifier] = args;
 const workingDir = process.cwd();
 const targetDir = path.join(workingDir, identifier);
 

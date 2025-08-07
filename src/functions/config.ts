@@ -152,7 +152,7 @@ class Config {
     this.config = {
       ...Config.defaultConfig(),
       ...Config.readConfig(),
-      ...(config || {}),
+      ...(config ?? {}),
     };
   }
 
@@ -165,21 +165,17 @@ class Config {
   }
 
   get identifier(): string {
-    if (!this._identifier) {
-      this._identifier =
-        this.config.identifier || path.basename(process.cwd()).split('.')[0];
-    }
+    this._identifier ??=
+      this.config.identifier ?? path.basename(process.cwd()).split('.')[0];
 
     return this._identifier;
   }
 
   get zone(): string {
-    if (!this._zone) {
-      this._zone =
-        this.config.zone ||
-        path.basename(process.cwd()).split('.')[1] ||
-        'production';
-    }
+    this._zone ??=
+      this.config.zone ??
+      path.basename(process.cwd()).split('.')[1] ??
+      'production';
 
     return this._zone;
   }
@@ -192,9 +188,7 @@ class Config {
   }
 
   get host(): string {
-    if (!this._host) {
-      this._host = this.config.host || this.defaultHost();
-    }
+    this._host ??= this.config.host ?? this.defaultHost();
 
     return this._host;
   }
@@ -227,7 +221,7 @@ class Config {
     let tenantId = null;
 
     if (this.config.tenantId) {
-      tenantId = this.config.tenantId;
+      ({ tenantId } = this.config);
     } else {
       switch (this.zone) {
         case 'edge':
@@ -248,10 +242,8 @@ class Config {
   }
 
   async applicationId(): Promise<string | undefined> {
-    if (!this._applicationId) {
-      this._applicationId =
-        this.config.applicationId || (await this.fetchApplicationId());
-    }
+    this._applicationId ??=
+      this.config.applicationId ?? (await this.fetchApplicationId());
 
     return this._applicationId;
   }
@@ -287,7 +279,7 @@ class Config {
   }
 
   get includes(): string[] {
-    return this.config.includes || [];
+    return this.config.includes ?? [];
   }
 }
 

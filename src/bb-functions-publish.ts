@@ -1,4 +1,3 @@
-/* internal dependencies */
 import chalk from 'chalk';
 import { Command } from 'commander';
 import fs from 'fs-extra';
@@ -33,7 +32,7 @@ const baseFunctionsPath = path.join(workingDir, 'functions');
 
 const config = new Config();
 
-const validateFunctions = async () => {
+const validateFunctions = async (): Promise<{ valid: boolean }> => {
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
 

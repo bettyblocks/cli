@@ -21,7 +21,7 @@ const collectBumpInput = async (): Promise<{
   currentVersion: string;
   dirName: string;
 }> => {
-  const functionDir = (functionPath: string) =>
+  const functionDir = (functionPath: string): string =>
     path.basename(path.dirname(path.dirname(functionPath)));
 
   const versionedFunctions = functionDefinitions(baseFunctionsPath);

@@ -32,7 +32,7 @@ const blocks = blockDefinitions(baseBlocksPath);
 const createBlockZip = (
   name: string,
   { functions, includes, dependencies }: Block,
-) => {
+): string => {
   const zip = new AdmZip();
   const tmpDir = '.tmp';
   const zipFilePath = path.join(tmpDir, `${name}.zip`);
@@ -94,7 +94,7 @@ void (async (): Promise<void> => {
         type: 'multiselect',
       },
     ])) as { selected: string[] };
-    selected = results.selected;
+    ({ selected } = results);
   }
 
   selected.forEach((jsonFile) => {

@@ -14,7 +14,11 @@ const check = chalk.green(`✔`);
 const cross = chalk.red(`✖`);
 
 const migrate = (functionsPath: string, verbose = false): void => {
-  const log = (msg: string) => verbose && console.log(msg);
+  const log = (msg: string): void => {
+    if (verbose) {
+      console.log(msg);
+    }
+  };
 
   log('Checking for unversioned functions ...');
 
@@ -50,7 +54,7 @@ const migrate = (functionsPath: string, verbose = false): void => {
         fs.renameSync(functionPath, tempDir);
         fs.mkdirSync(targetDir);
         fs.moveSync(tempDir, path.join(targetDir, version));
-      } catch (err) {
+      } catch {
         log(`${cross} Failed to version: ${name}`);
         return;
       }

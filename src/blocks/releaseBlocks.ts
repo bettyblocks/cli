@@ -1,5 +1,4 @@
-import type { RequestInit, Response } from 'node-fetch';
-import fetch from 'node-fetch';
+import fetch, { type RequestInit, type Response } from 'node-fetch';
 
 import Config from '../functions/config';
 import FusionAuth from '../utils/login';

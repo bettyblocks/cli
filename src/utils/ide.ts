@@ -38,14 +38,13 @@ class IDE {
     }
 
     this.webhead = Webhead({
-      jarFile: this.configFile,
       beforeSend: (
         { method, url, options }: WebheadRequestParameters,
         { csrfToken }: AnyObject,
       ) => {
         if (method !== 'GET' && csrfToken) {
           // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          options.headers || (options.headers = {});
+          options.headers ?? (options.headers = {});
 
           options.headers['X-Csrf-Token'] = csrfToken;
         }
@@ -64,6 +63,7 @@ class IDE {
           }
         }
       },
+      jarFile: this.configFile,
     });
 
     this.fusionAuth = new FusionAuth(
@@ -114,7 +114,7 @@ class IDE {
       spinner[statusCode.toString().match(/^2/) ? 'succeed' : 'fail']();
     }
 
-    return this.webhead.json() || this.webhead.text();
+    return this.webhead.json() ?? this.webhead.text();
   }
 
   private async relogin(): Promise<void> {
@@ -155,8 +155,7 @@ class IDE {
           },
         ]);
 
-        email = credentials.email;
-        password = credentials.password;
+        ({ email, password } = credentials);
 
         config.email = email;
         fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));

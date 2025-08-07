@@ -47,7 +47,7 @@ class FusionAuth {
   async ensureLogin(): Promise<void> {
     const response = await this.get<UserResponse>('/api/user', {
       headers: {
-        Authorization: `Bearer ${this.jwt() || ''}`,
+        Authorization: `Bearer ${this.jwt() ?? ''}`,
       },
     });
 
@@ -111,12 +111,12 @@ class FusionAuth {
     await this.ensureLogin();
     const applicationId = await config.applicationId();
     const url = `${config.builderApiUrl}/artifacts/actions/${
-      applicationId || ''
+      applicationId ?? ''
     }/functions`;
 
     const { statusCode } = await this.webhead.post(url, {
       headers: {
-        Authorization: `Bearer ${this.jwt() || ''}`,
+        Authorization: `Bearer ${this.jwt() ?? ''}`,
       },
       multiPartData: [
         { file: zipFile, name: 'file' },
@@ -145,7 +145,7 @@ class FusionAuth {
     }
     await this.webhead[method](urlPath, options);
 
-    return this.webhead.json() || this.webhead.text();
+    return this.webhead.json() ?? this.webhead.text();
   }
 
   private storeTokens(jwt: string, refreshToken: string): void {
@@ -156,10 +156,10 @@ class FusionAuth {
     let jwt;
 
     if (fs.pathExistsSync(this.configFile)) {
-      jwt = fs.readJsonSync(this.configFile).jwt;
+      ({ jwt } = fs.readJsonSync(this.configFile));
     }
 
-    return jwt || null;
+    return jwt ?? null;
   }
 }
 

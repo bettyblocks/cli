@@ -4,7 +4,7 @@ import Joi, { type ObjectSchema, type ValidationResult } from 'joi';
 import type { Component } from '../types';
 import { findDuplicates } from '../utils/validation';
 
-const reservedTypes = (value: string) => {
+const reservedTypes = (value: string): string => {
   if (value === 'PARTIAL' || value === 'WRAPPER') {
     throw new Error(
       chalk.red(
