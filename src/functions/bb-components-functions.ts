@@ -27,7 +27,12 @@ export const upload = async ({
   } catch (error) {
     const defaultMessage =
       'There was an error trying to publish your component set';
-    const { body, message } = error;
+
+    const errorObject = error as {
+      body?: { code?: string; message?: string };
+      message?: string;
+    };
+    const { body, message } = errorObject;
 
     if (!body) {
       throw new Error(chalk.red([defaultMessage, message].join('\n')));

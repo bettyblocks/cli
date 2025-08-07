@@ -11,8 +11,8 @@
   "scripts": {
     "build": "bun run build.ts",
     "typecheck": "tsc",
-    "lint": "eslint ./src",
-    "lint:fix": "eslint ./src --fix",
+    "lint:check": "eslint ./src",
+    "lint": "eslint ./src --fix",
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "test": "bun test __tests__",
