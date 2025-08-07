@@ -31,9 +31,9 @@ export const validateBlockDependencies = (
     (dependency) => !packageJsonDependencies.includes(dependency),
   );
   if (invalidDependencies.length) {
-    return { valid: false, invalidDependencies };
+    return { invalidDependencies, valid: false };
   }
-  return { valid: true, invalidDependencies: [] };
+  return { invalidDependencies: [], valid: true };
 };
 
 const validateBlockFunctions = async (blockFunctions: FunctionDefinition[]) => {
@@ -117,13 +117,13 @@ export const validateBlock = async ({
   const validBlockName = validateBlockName(blockName);
 
   return {
-    valid: validFunctions && validBlockDependencies && validBlockName,
     errorMessage: getErrorMessage({
-      validFunctions,
+      blockName,
+      invalidDependencies,
       validBlockDependencies,
       validBlockName,
-      invalidDependencies,
-      blockName,
+      validFunctions,
     }),
+    valid: validFunctions && validBlockDependencies && validBlockName,
   };
 };

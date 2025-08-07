@@ -18,15 +18,14 @@ const sendBlockstoreRequest = async (
   const url = `${config.blockstoreApiUrl}${urlPath}`;
   return fetch(url, {
     agent: config.agent,
-    method,
     body,
     headers: {
-      'content-type': 'application/json',
-
-      Authorization: `Bearer ${fusionAuth.jwt()}`,
-      ApplicationId: applicationId,
       Accept: 'application/json',
+      ApplicationId: applicationId,
+      Authorization: `Bearer ${fusionAuth.jwt()}`,
+      'content-type': 'application/json',
     },
+    method,
   }).then(async (res) => {
     if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();

@@ -27,9 +27,9 @@ export const actionSchema = Joi.object({
                 then: Joi.object({
                   authenticationProfileId: Joi.string().allow('').required(),
                   ref: Joi.object({
-                    username: Joi.string().required(),
-                    password: Joi.string().required(),
                     jwtAs: Joi.string().required(),
+                    password: Joi.string().required(),
+                    username: Joi.string().required(),
                   }),
                 }),
               },

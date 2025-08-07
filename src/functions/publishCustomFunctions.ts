@@ -1,5 +1,3 @@
-/* npm dependencies */
-
 import { spawn } from 'child_process';
 import fs from 'fs-extra';
 import ora from 'ora';
@@ -7,17 +5,14 @@ import os from 'os';
 import path from 'path';
 import vm from 'vm';
 
-/* internal dependencies */
 import IDE from '../utils/ide';
 import Config from './config';
 import {
-  MetaData,
-  NamedObject,
+  type MetaData,
+  type NamedObject,
   resolveMissingFunction,
   storeCustomFunctions,
 } from './publishFunctions';
-
-/* execute command */
 
 const workingDir = process.cwd();
 
@@ -90,7 +85,7 @@ const publishFunctions = async (
 
   await ide.post(
     `custom_functions/${revision}`,
-    { multiPartData: [{ name: 'code', file: customJsFile }] },
+    { multiPartData: [{ file: customJsFile, name: 'code' }] },
     `Uploading "${revision}.js" ...`,
   );
 

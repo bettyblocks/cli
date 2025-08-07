@@ -1,20 +1,18 @@
-import type {
-  Node,
-  SourceFile,
-  TransformationContext,
-  Transformer,
-  TransformerFactory,
-  Visitor,
-} from 'typescript';
 import {
   isCallExpression,
   isIdentifier,
   isMethodDeclaration,
   isPropertyAccessExpression,
   isSourceFile,
+  type Node,
+  type SourceFile,
+  type TransformationContext,
+  type Transformer,
+  type TransformerFactory,
   transpileModule,
   visitEachChild,
   visitNode,
+  type Visitor,
 } from 'typescript';
 
 import {

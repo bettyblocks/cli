@@ -27,10 +27,10 @@ const createPackageJson = (
   );
   const packageJson = JSON.stringify(
     {
-      name,
-      version: '1.0.0',
-      private: 'true',
       dependencies: rootDependencies,
+      name,
+      private: 'true',
+      version: '1.0.0',
     },
     null,
     2,

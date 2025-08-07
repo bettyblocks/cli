@@ -41,13 +41,13 @@ const uploadBlock = async (
 
   return fetch(url, {
     agent: config.agent,
-    method: 'POST',
     body: form,
     headers: {
-      Authorization: `Bearer ${fusionAuth.jwt()}`,
-      ApplicationId: applicationId,
       Accept: 'application/json',
+      ApplicationId: applicationId,
+      Authorization: `Bearer ${fusionAuth.jwt()}`,
     },
+    method: 'POST',
   }).then(async (res) => {
     if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();

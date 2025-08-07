@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 
 import uploadBlob, {
-  BlockBlobUploadResponseExtended,
+  type BlockBlobUploadResponseExtended,
 } from '../utils/uploadBlob';
 
 export const upload = async (

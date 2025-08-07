@@ -100,4 +100,10 @@ export default [
       ],
     },
   },
+  {
+    files: ['src/validations/**/*'],
+    rules: {
+      'sort-keys': 'off', // Disabled in validations because of readability with Joi
+    },
+  },
 ];

@@ -100,9 +100,9 @@ const functionDefinition = (
   try {
     return {
       name,
-      version,
       path: filePath,
       schema,
+      version,
     } as FunctionDefinition;
   } catch (err) {
     throw new Error(`could not load json from ${filePath}: ${err}`);
@@ -151,13 +151,10 @@ const newFunctionDefinition = (
     fs.writeJSONSync(
       functionDefinitionPath(functionDir),
       {
-        description: 'Description',
-        label: startCase(functionName),
         category: 'Misc',
-        icon: {
-          name: 'ActionsIcon',
-          color: 'Orange',
-        },
+        description: 'Description',
+        icon: { color: 'Orange', name: 'ActionsIcon' },
+        label: startCase(functionName),
         options: [],
         yields: 'NONE',
       },

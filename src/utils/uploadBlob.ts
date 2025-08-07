@@ -9,7 +9,7 @@ import {
   SharedKeyCredential,
   StorageURL,
 } from '@azure/storage-blob';
-import {
+import type {
   BlockBlobUploadResponse,
   ServiceSetPropertiesResponse,
 } from '@azure/storage-blob/src/generated/src/models';
@@ -48,9 +48,9 @@ const setCorsRules = (
   serviceURL.setProperties(Aborter.none, {
     cors: [
       {
-        allowedOrigins: '*',
         allowedHeaders: '*',
         allowedMethods: 'GET',
+        allowedOrigins: '*',
         exposedHeaders: '*',
         maxAgeInSeconds: 86400,
       },

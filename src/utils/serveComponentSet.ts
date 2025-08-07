@@ -33,10 +33,8 @@ const serveComponentSet = (options: ServeOptions): Promise<void> =>
       request: ServerResponse,
     ): Promise<void> =>
       handler(response, request, {
-        public: `${options.rootDir}/dist`,
         headers: [
           {
-            source: '**/*.@(json)',
             headers: [
               {
                 key: 'Access-Control-Allow-Origin',
@@ -47,8 +45,10 @@ const serveComponentSet = (options: ServeOptions): Promise<void> =>
                 value: 'no-cache ',
               },
             ],
+            source: '**/*.@(json)',
           },
         ],
+        public: `${options.rootDir}/dist`,
       });
 
     createServer(serverOptions, listener)

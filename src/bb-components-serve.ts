@@ -26,12 +26,12 @@ program
   .parse(process.argv);
 
 const options: ServeOptions = {
-  rootDir: parseDir(program.args),
-  port: programOpts.port as number,
   host: programOpts.host as string,
+  port: programOpts.port as number,
+  rootDir: parseDir(program.args),
   ssl: programOpts.ssl as boolean,
-  sslKey: programOpts.sslKey as string,
   sslCert: programOpts.sslCert as string,
+  sslKey: programOpts.sslKey as string,
 };
 
 const arg = process.argv.slice(2);

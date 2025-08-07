@@ -28,12 +28,12 @@ const resolveMissingFunction = async (
   defaultInputVariables?: string,
 ): Promise<MetaData> => {
   const { replace } = (await prompts({
-    type: 'toggle',
-    name: 'replace',
-    message: `Function "${name}" is missing. What do you want to do?`,
-    initial: false,
     active: 'replace',
     inactive: 'add',
+    initial: false,
+    message: `Function "${name}" is missing. What do you want to do?`,
+    name: 'replace',
+    type: 'toggle',
   })) as { replace: boolean };
 
   if (replace) {
@@ -42,21 +42,21 @@ const resolveMissingFunction = async (
 
     if (choices.length === 1) {
       const confirm = await prompts({
-        type: 'confirm',
-        name: 'value',
-        message: `Replace "${choices[0]}"?`,
         initial: true,
+        message: `Replace "${choices[0]}"?`,
+        name: 'value',
+        type: 'confirm',
       });
       if (confirm.value) [replacedFunction] = choices;
       else throw new Error('Abort.');
     } else {
       replacedFunction = (
         await prompts({
-          type: 'select',
-          name: 'value',
-          message: 'Replace',
           choices: choices.map((key) => ({ title: key, value: key })),
           initial: 0,
+          message: 'Replace',
+          name: 'value',
+          type: 'select',
         })
       ).value;
     }
@@ -69,27 +69,25 @@ const resolveMissingFunction = async (
   } else {
     const { returnType, inputVariables } = await prompts([
       {
-        type: 'select',
-        name: 'returnType',
-        message: `What is the return type of the function?`,
         choices: [
           { title: 'string', value: 'string' },
           { title: 'integer', value: 'integer' },
           { title: 'boolean', value: 'boolean' },
         ],
         initial: 0,
+        message: `What is the return type of the function?`,
+        name: 'returnType',
+        type: 'select',
       } as prompts.PromptObject,
       {
-        type: 'text',
-        name: 'inputVariables',
-        message: 'What are the input variables? (`name:type name:type ...`)',
         initial: defaultInputVariables,
+        message: 'What are the input variables? (`name:type name:type ...`)',
+        name: 'inputVariables',
+        type: 'text',
       } as prompts.PromptObject,
     ]);
 
     groomed[name] = {
-      returnType,
-
       inputVariables: inputVariables
         .split(/(\s|,)/)
         .reduce((variables: NamedObject, variable: string): NamedObject => {
@@ -100,6 +98,7 @@ const resolveMissingFunction = async (
           }
           return variables;
         }, {} as NamedObject),
+      returnType,
     };
   }
 
@@ -132,10 +131,10 @@ const storeCustomFunctions = async (
       const method = id ? 'put' : 'post';
       const action = id ? 'Updating' : 'Creating';
       const params = {
-        name,
-        revision,
-        return_type: returnType,
         input_variables: inputVariables,
+        name,
+        return_type: returnType,
+        revision,
       };
       return ide[method](
         `custom_functions/${id || 'new'}`,

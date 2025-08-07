@@ -78,11 +78,11 @@ const uploadAppFunctions = async (
   const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
   return fetch(url, {
     agent: config.agent,
-    method: 'POST',
     body: form,
     headers: {
       Authorization: `Bearer ${fusionAuth.jwt()}`,
     },
+    method: 'POST',
   }).then(async (res) => {
     switch (res.status) {
       case 401:
@@ -105,14 +105,14 @@ const uploadAppFunctions = async (
         if (!config.skipCompile) {
           const compiledStatus = compiled ? 'ok' : 'error';
           logResult(
-            { status: compiledStatus, name: 'triggered' },
+            { name: 'triggered', status: compiledStatus },
             'Compilation',
           );
         }
 
         return {
-          success: true,
           message: 'Your functions are published to your application.',
+          success: true,
         };
       }
       case 409: {
@@ -124,8 +124,8 @@ const uploadAppFunctions = async (
         deleted.forEach((result) => logResult(result, 'Delete:'));
 
         return {
-          success: false,
           message: message || '409 Conflict',
+          success: false,
         };
       }
 

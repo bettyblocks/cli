@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import https, { AgentOptions } from 'https';
+import https, { type AgentOptions } from 'https';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
@@ -74,8 +74,8 @@ class Config {
       fs.writeJSONSync(
         this.globalConfigPath,
         {
-          auth: {},
           applicationMap: {},
+          auth: {},
         },
         { spaces: 2 },
       );
@@ -93,9 +93,9 @@ class Config {
   ): Promise<string> {
     const { applicationId } = (await prompts([
       {
-        type: 'text',
-        name: 'applicationId',
         message: `Please provide the UUID for '${identifier}' (${zone})`,
+        name: 'applicationId',
+        type: 'text',
       },
     ])) as { applicationId: string };
 
@@ -123,18 +123,18 @@ class Config {
 
   private static defaultConfig = (): LocalConfig =>
     ({
-      schemaUrl: 'https://raw.githubusercontent.com',
-      functionSchemaPath:
-        '/bettyblocks/json-schema/master/schemas/actions/function.json',
-      cacheDir: '.tmp/',
-      fusionAuthUrl: 'https://id{ZONEPOSTFIX}.bettyblocks.com',
-      builderApiUrl: '{HOST}/api/builder',
+      agentOptions: undefined,
       blockstoreApiUrl:
         'https://my{ZONEPOSTFIX}.bettyblocks.com/block-store-api',
+      builderApiUrl: '{HOST}/api/builder',
+      cacheDir: '.tmp/',
       domain: 'bettyblocks.com',
-      agentOptions: undefined,
-      skipCompile: false,
+      functionSchemaPath:
+        '/bettyblocks/json-schema/master/schemas/actions/function.json',
+      fusionAuthUrl: 'https://id{ZONEPOSTFIX}.bettyblocks.com',
       includes: [],
+      schemaUrl: 'https://raw.githubusercontent.com',
+      skipCompile: false,
     }) as LocalConfig;
 
   /* instance */

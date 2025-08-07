@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import https, { AgentOptions } from 'https';
+import https, { type AgentOptions } from 'https';
 import path from 'path';
 
 export function setHttpsAgent(

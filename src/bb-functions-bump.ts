@@ -37,14 +37,14 @@ const collectBumpInput = async (): Promise<{
 
   const dirName = (
     await prompts({
-      type: 'select',
-      name: 'functionName',
-      message: 'Which function do you want to bump?',
       choices: Object.keys(functions).map((name) => ({
         title: functions[name],
         value: name,
       })),
       initial: 0,
+      message: 'Which function do you want to bump?',
+      name: 'functionName',
+      type: 'select',
     })
   ).functionName as string;
 
@@ -58,18 +58,18 @@ const collectBumpInput = async (): Promise<{
   const minorVersion = `${major}.${minor + 1}`;
 
   const { bumpMajor } = (await prompts({
-    type: 'toggle',
-    name: 'bumpMajor',
-    message: `To which version do you want to bump your function?`,
-    initial: false,
     active: majorVersion,
     inactive: minorVersion,
+    initial: false,
+    message: `To which version do you want to bump your function?`,
+    name: 'bumpMajor',
+    type: 'toggle',
   })) as { bumpMajor: boolean };
 
   return {
-    newVersion: bumpMajor ? majorVersion : minorVersion,
     currentVersion: `${major}.${minor}`,
     dirName,
+    newVersion: bumpMajor ? majorVersion : minorVersion,
   };
 };
 

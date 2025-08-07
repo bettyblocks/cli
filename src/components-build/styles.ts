@@ -32,12 +32,12 @@ export const readStyles: (
   const styleProgram = ts.createProgram(
     styleFiles.map((file) => `${srcDir}/${file}`),
     {
-      outDir: '.styles',
-      module: 1,
-      esModuleInterop: true,
       allowSyntheticDefaultImports: false,
-      target: 99,
+      esModuleInterop: true,
       listEmittedFiles: true,
+      module: 1,
+      outDir: '.styles',
+      target: 99,
     },
   );
 

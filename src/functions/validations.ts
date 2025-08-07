@@ -5,7 +5,7 @@ import path from 'path';
 
 import Config from './config';
 import {
-  FunctionDefinition,
+  type FunctionDefinition,
   functionDefinitions,
   isFunctionVersion,
 } from './functionDefinitions';
@@ -103,10 +103,10 @@ const validateSchema = (
   const status = errors.length ? 'error' : 'ok';
 
   return {
-    status,
-    path: definitionPath,
-    functionName: `${name}-${version}`,
     errors,
+    functionName: `${name}-${version}`,
+    path: definitionPath,
+    status,
   };
 };
 
@@ -137,10 +137,10 @@ class FunctionValidator {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return {
-        status: 'error',
-        path: functionPath,
-        functionName,
         errors: [new Error(message)],
+        functionName,
+        path: functionPath,
+        status: 'error',
       };
     }
   }

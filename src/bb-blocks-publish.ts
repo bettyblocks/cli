@@ -87,11 +87,11 @@ void (async (): Promise<void> => {
   } else {
     const results = (await prompts([
       {
-        type: 'multiselect',
-        name: 'selected',
-        message: 'Which blocks do you want to publish?',
         choices,
         instructions: false,
+        message: 'Which blocks do you want to publish?',
+        name: 'selected',
+        type: 'multiselect',
       },
     ])) as { selected: string[] };
     selected = results.selected;
@@ -111,8 +111,8 @@ void (async (): Promise<void> => {
           );
 
           const { valid, errorMessage } = await validateBlock({
-            blockFunctions,
             block,
+            blockFunctions,
             blockName: name,
           });
 

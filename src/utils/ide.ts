@@ -49,7 +49,7 @@ class IDE {
 
           options.headers['X-Csrf-Token'] = csrfToken;
         }
-        return { method, url, options };
+        return { method, options, url };
       },
       complete: (
         _parameters: WebheadRequestParameters,
@@ -143,15 +143,15 @@ class IDE {
         const config = fs.readJsonSync(this.configFile);
         const credentials = await prompts([
           {
-            type: 'text',
-            name: 'email',
-            message: 'Fill in your e-mail address',
             initial: config.email,
+            message: 'Fill in your e-mail address',
+            name: 'email',
+            type: 'text',
           },
           {
-            type: 'password',
-            name: 'password',
             message: 'Fill in your password',
+            name: 'password',
+            type: 'password',
           },
         ]);
 
@@ -180,9 +180,9 @@ class IDE {
       if (cassie2FA || fusionAuth2FA) {
         const { code } = await prompts([
           {
-            type: 'text',
-            name: 'code',
             message: 'Fill in your 2FA code',
+            name: 'code',
+            type: 'text',
           },
         ]);
 

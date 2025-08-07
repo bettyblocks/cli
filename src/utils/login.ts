@@ -29,15 +29,15 @@ const promptCredentials = async (): Promise<{
 
   const { email, password } = (await prompts([
     {
-      type: 'text',
-      name: 'email',
-      message: 'Fill in your e-mail address',
       initial: config.auth.email,
+      message: 'Fill in your e-mail address',
+      name: 'email',
+      type: 'text',
     },
     {
-      type: 'password',
-      name: 'password',
       message: 'Fill in your password',
+      name: 'password',
+      type: 'password',
     },
   ])) as { email: string; password: string };
 
@@ -76,12 +76,12 @@ class FusionAuth {
     const additionalHeaders = this.config.additionalHeaders();
     return fetch(`${this.config.fusionAuthUrl}/api/login`, {
       agent: this.config.agent,
-      method: 'POST',
       body: JSON.stringify({
         loginId: email,
         password,
       }),
       headers: { 'Content-Type': 'application/json', ...additionalHeaders },
+      method: 'POST',
     }).then(async (resp) => {
       if (resp.status === 242) {
         const { twoFactorId } = (await resp.json()) as LoginResponse;
@@ -103,20 +103,20 @@ class FusionAuth {
   async ensure2FA(twoFactorId: string): Promise<void> {
     const { code } = (await prompts([
       {
-        type: 'text',
-        name: 'code',
         message: 'Fill in your 2FA code',
+        name: 'code',
+        type: 'text',
       },
     ])) as { code: string };
 
     return fetch(`${this.config.fusionAuthUrl}/api/two-factor/login`, {
       agent: this.config.agent,
-      method: 'POST',
       body: JSON.stringify({
         code,
         twoFactorId,
       }),
       headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
     }).then(async (resp) => {
       if (resp.ok) {
         const { token } = (await resp.json()) as TwoFactorLoginResponse;

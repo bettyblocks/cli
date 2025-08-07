@@ -80,9 +80,9 @@ class FusionAuth {
   async complete2FA(twoFactorId: string): Promise<void> {
     const { code } = (await prompts([
       {
-        type: 'text',
-        name: 'code',
         message: 'Fill in your 2FA code (to upload code)',
+        name: 'code',
+        type: 'text',
       },
     ])) as { code: string };
 
@@ -119,8 +119,8 @@ class FusionAuth {
         Authorization: `Bearer ${this.jwt() || ''}`,
       },
       multiPartData: [
-        { name: 'file', file: zipFile },
-        { name: 'functions', contents: functionsJson },
+        { file: zipFile, name: 'file' },
+        { contents: functionsJson, name: 'functions' },
       ],
     });
 

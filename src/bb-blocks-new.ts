@@ -7,7 +7,6 @@ import { newBlockDefinition } from './blocks/blockDefinitions';
 
 const program = new Command();
 
-/* process arguments */
 program.usage('[block-name]').name('bb blocks new').parse(process.argv);
 
 const { args } = program;

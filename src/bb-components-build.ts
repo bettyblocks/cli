@@ -177,8 +177,8 @@ const readtsPrefabs: (isPartial?: boolean) => Promise<Prefab[]> = async (
       jsx: JsxEmit.React,
       listEmittedFiles: true,
       module: ModuleKind.CommonJS,
-      target: ScriptTarget.ESNext,
       outDir,
+      target: ScriptTarget.ESNext,
     },
   );
 
@@ -489,8 +489,8 @@ void (async (): Promise<void> => {
         const newStructure: BuildPrefabComponent = {
           ...rest,
           ...(styleReference ? { style: styleReference } : {}),
-          hash: hash(structure.options),
           descendants: descendants.map(buildStructure),
+          hash: hash(structure.options),
         };
 
         return newStructure;
