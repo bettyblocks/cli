@@ -16,7 +16,9 @@ test('Pass without interactions array', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).not.toThrow();
+  expect(() =>
+    validatePrefabs({ prefabs: [prefab], styles: {} }),
+  ).not.toThrow();
 });
 
 test('Pass when interactions is the empty list', (): void => {
@@ -28,7 +30,9 @@ test('Pass when interactions is the empty list', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).not.toThrow();
+  expect(() =>
+    validatePrefabs({ prefabs: [prefab], styles: {} }),
+  ).not.toThrow();
 });
 
 test('Throw when a prefab interaction does not define a name', (): void => {
@@ -40,7 +44,7 @@ test('Throw when a prefab interaction does not define a name', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].name" is required at prefab: Prefab`,
   );
 });
@@ -54,7 +58,7 @@ test('Throw when a prefab interaction does not define a ref', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].ref" is required at prefab: Prefab`,
   );
 });
@@ -78,7 +82,7 @@ test('Throw when a prefab interaction does not define a type', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].type" is required at prefab: Prefab`,
   );
 });
@@ -101,7 +105,7 @@ test('Throw when a prefab interaction does not define a sourceEvent', (): void =
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].sourceEvent" is required at prefab: Prefab`,
   );
 });
@@ -126,7 +130,7 @@ test('Throw when a prefab interaction type is not Global or Custom', (): void =>
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].type" must be one of [Global, Custom] at prefab: Prefab`,
   );
 });
@@ -140,7 +144,7 @@ test('Throw when a prefab interaction does not define a sourceComponentId', (): 
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].ref.sourceComponentId" is required at prefab: Prefab`,
   );
 });
@@ -165,7 +169,7 @@ test('Throw when a global prefab interaction does not define parameters', (): vo
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].parameters" is required at prefab: Prefab`,
   );
 });
@@ -190,7 +194,7 @@ test('Throw when a custom prefab interaction defines parameters', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].parameters" is not allowed at prefab: Prefab`,
   );
 });
@@ -216,7 +220,7 @@ test('Throw when a global prefab interaction parameter does not define a paramet
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].parameters[0].parameter" is required at prefab: Prefab`,
   );
 });
@@ -242,7 +246,7 @@ test('Throw when a global prefab interaction parameter does not define a name', 
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].parameters[0].name" is required at prefab: Prefab`,
   );
 });
@@ -273,7 +277,7 @@ test('Throw when a global prefab interaction parameter does not reference a comp
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].parameters[0].ref" is required at prefab: Prefab`,
   );
 });
@@ -305,7 +309,7 @@ test('Throw when a global prefab interaction parameter does not define a compone
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].parameters[0].ref.componentId" is required at prefab: Prefab`,
   );
 });
@@ -330,7 +334,7 @@ test('Throw when a custom prefab interaction defines targetOptionName', (): void
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "interactions[0].targetOptionName" is not allowed at prefab: Prefab`,
   );
 });

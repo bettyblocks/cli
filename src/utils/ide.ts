@@ -14,6 +14,13 @@ import FusionAuth from './fusionAuth';
 
 type NamedObject = Record<string, string | object>;
 
+interface RequestProps {
+  label?: string;
+  method: 'get' | 'post' | 'put';
+  options?: NamedObject;
+  requestPath: string;
+}
+
 class IDE {
   private configFile: string;
 
@@ -76,7 +83,11 @@ class IDE {
     requestPath: string,
     label?: string,
   ): Promise<string | object | null> {
-    return this.request('get', requestPath, undefined, label);
+    return this.request({
+      label,
+      method: 'get',
+      requestPath,
+    });
   }
 
   async post(
@@ -84,7 +95,12 @@ class IDE {
     options: NamedObject,
     label?: string,
   ): Promise<string | object | null> {
-    return this.request('post', requestPath, options, label);
+    return this.request({
+      label,
+      method: 'post',
+      options,
+      requestPath,
+    });
   }
 
   async put(
@@ -92,15 +108,20 @@ class IDE {
     options: NamedObject,
     label?: string,
   ): Promise<string | object | null> {
-    return this.request('put', requestPath, options, label);
+    return this.request({
+      label,
+      method: 'put',
+      options,
+      requestPath,
+    });
   }
 
-  private async request(
-    method: 'get' | 'post' | 'put',
-    requestPath: string,
-    options?: NamedObject,
-    label?: string,
-  ): Promise<string | object | null> {
+  private async request({
+    label,
+    method,
+    options,
+    requestPath,
+  }: RequestProps): Promise<string | object | null> {
     await this.ensureLogin();
 
     const spinner = label ? ora(label).start() : undefined;

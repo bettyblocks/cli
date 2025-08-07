@@ -227,7 +227,7 @@ test('it does not throw when a old style reference is defined and no procoder st
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('it does throw when a component uses a style but has no styleDefinition by type', (): void => {
@@ -270,7 +270,7 @@ test('it does throw when a component uses a style but has no styleDefinition by 
 
   let actualError: Error | undefined;
   try {
-    validatePrefabs(prefabs, groupedStyles);
+    validatePrefabs({ prefabs, styles: groupedStyles });
   } catch (error) {
     actualError = error as Error;
   }
@@ -319,7 +319,7 @@ test('it does throw when a component uses a style but has no styleDefinition by 
 
   let actualError: Error | undefined;
   try {
-    validatePrefabs(prefabs, groupedStyles);
+    validatePrefabs({ prefabs, styles: groupedStyles });
   } catch (error) {
     actualError = error as Error;
   }
@@ -371,7 +371,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
 
   let actualError: Error | undefined;
   try {
-    validatePrefabs(prefabs, groupedStyles);
+    validatePrefabs({ prefabs, styles: groupedStyles });
   } catch (error) {
     actualError = error as Error;
   }
@@ -423,7 +423,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
 
   let actualError: Error | undefined;
   try {
-    validatePrefabs(prefabs, groupedStyles);
+    validatePrefabs({ prefabs, styles: groupedStyles });
   } catch (error) {
     actualError = error as Error;
   }
@@ -475,7 +475,7 @@ test('it does throw when a component uses a style but the overwrite does not mat
 
   let actualError: Error | undefined;
   try {
-    validatePrefabs(prefabs, groupedStyles);
+    validatePrefabs({ prefabs, styles: groupedStyles });
   } catch (error) {
     actualError = error as Error;
   }

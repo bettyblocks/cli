@@ -4,14 +4,26 @@ import uploadBlob, {
   type BlockBlobUploadResponseExtended,
 } from '../utils/uploadBlob';
 
-export const upload = async (
-  objects: string,
-  fileName: string,
-  bucketName: string,
-  blobContentType: string,
-): Promise<BlockBlobUploadResponseExtended> => {
+interface UploadProps {
+  blobContentType: string;
+  bucketName: string;
+  fileName: string;
+  objects: string;
+}
+
+export const upload = async ({
+  blobContentType,
+  bucketName,
+  fileName,
+  objects,
+}: UploadProps): Promise<BlockBlobUploadResponseExtended> => {
   try {
-    return await uploadBlob(bucketName, fileName, objects, blobContentType);
+    return await uploadBlob({
+      blobContainerName: bucketName,
+      blobContent: objects,
+      blobContentType,
+      blobName: fileName,
+    });
   } catch (error) {
     const defaultMessage =
       'There was an error trying to publish your component set';
@@ -32,15 +44,20 @@ export const upload = async (
   }
 };
 
-export const publish = async (
-  fileName: string,
-  bucketName: string,
-  objects: string,
-  blobContentType: string,
-): Promise<BlockBlobUploadResponseExtended> => {
+export const publish = async ({
+  blobContentType,
+  bucketName,
+  fileName,
+  objects,
+}: UploadProps): Promise<BlockBlobUploadResponseExtended> => {
   console.log(`Publishing ${fileName}.`);
 
-  return upload(objects, fileName, bucketName, blobContentType);
+  return upload({
+    blobContentType,
+    bucketName,
+    fileName,
+    objects,
+  });
 };
 
 export const validateBucketName = (name: string): void => {

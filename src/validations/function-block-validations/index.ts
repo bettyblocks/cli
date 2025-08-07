@@ -13,7 +13,8 @@ import {
 
 const workingDir = process.cwd();
 
-export const validateBlockConfig = ({ functions }: Block) => !!functions.length;
+export const validateBlockConfig = ({ functions }: Block): boolean =>
+  !!functions.length;
 
 const validateBlockName = (name: string): boolean => {
   const kebabCaseRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -36,7 +37,9 @@ export const validateBlockDependencies = (
   return { invalidDependencies: [], valid: true };
 };
 
-const validateBlockFunctions = async (blockFunctions: FunctionDefinition[]) => {
+const validateBlockFunctions = async (
+  blockFunctions: FunctionDefinition[],
+): Promise<{ valid: boolean }> => {
   const baseFunctionsPath = path.join(workingDir, 'functions');
   const config = new Config();
   const validator = new FunctionValidator(config, baseFunctionsPath);
@@ -78,7 +81,7 @@ export const getErrorMessage = ({
   validBlockDependencies: boolean;
   validBlockName: boolean;
   invalidDependencies: string[];
-}) => {
+}): string => {
   if (!validBlockName) {
     return `${blockName} is not valid as it should be kebab case`;
   }
@@ -108,7 +111,7 @@ export const validateBlock = async ({
   block: Block;
   blockFunctions: FunctionDefinition[];
   blockName: string;
-}) => {
+}): Promise<{ errorMessage: string; valid: boolean }> => {
   const { valid: validFunctions } =
     await validateBlockFunctions(blockFunctions);
   const { valid: validBlockDependencies, invalidDependencies } =

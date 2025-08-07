@@ -20,6 +20,28 @@ import { linkedPartialSchema } from './linkedPartial';
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
 
+interface WrapperSchemaProps {
+  styles: GroupedStyles;
+  componentStyleMap?: ComponentStyleMap;
+  availableComponentNames?: string[];
+  prefabType?: PrefabTypes;
+}
+
+interface ComponentSchemaProps {
+  styles: GroupedStyles;
+  componentStyleMap?: ComponentStyleMap;
+  availableComponentNames?: string[];
+  styleType?: keyof StyleValidator;
+  prefabType?: PrefabTypes;
+}
+
+interface ValidateComponentProps {
+  styles: GroupedStyles;
+  componentStyleMap?: ComponentStyleMap;
+  availableComponentNames?: string[];
+  prefabType?: PrefabTypes;
+}
+
 const shadows = [
   'none',
   '0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12)',
@@ -99,12 +121,12 @@ const partialSchema = (): Joi.ObjectSchema =>
     partialId: Joi.string().allow('').required(),
   });
 
-const wrapperSchema = (
-  styles: GroupedStyles,
-  componentStyleMap?: ComponentStyleMap,
-  availableComponentNames?: string[],
-  prefabType?: PrefabTypes,
-): Joi.ObjectSchema =>
+const wrapperSchema = ({
+  styles,
+  componentStyleMap,
+  availableComponentNames,
+  prefabType,
+}: WrapperSchemaProps): Joi.ObjectSchema =>
   Joi.object({
     type: Joi.string().valid('WRAPPER').required(),
     label: Joi.string(),
@@ -115,12 +137,12 @@ const wrapperSchema = (
     descendants: Joi.array()
       .items(
         Joi.custom(
-          validateComponent(
+          validateComponent({
             styles,
             componentStyleMap,
             availableComponentNames,
             prefabType,
-          ),
+          }),
         ),
       )
       .required(),
@@ -134,7 +156,7 @@ const validateComponentStyle =
       name: string;
       overwrite: StyleDefinitionState[];
     };
-  }) => {
+  }): typeof prefabObject => {
     const { name: componentName, style } = prefabObject;
 
     if (deprecatedStylesFlag || typeof style === 'undefined') {
@@ -236,7 +258,9 @@ const optionEventRecord = Joi.object({
   ),
 });
 
-const optionTemplatesSchema = (availableComponentNames?: string[]) =>
+const optionTemplatesSchema = (
+  availableComponentNames?: string[],
+): Joi.ObjectSchema =>
   Joi.object({
     addChild: Joi.object({
       condition: Joi.object({
@@ -249,13 +273,13 @@ const optionTemplatesSchema = (availableComponentNames?: string[]) =>
     }),
   });
 
-const componentSchema = (
-  styles: GroupedStyles,
-  componentStyleMap?: ComponentStyleMap,
-  availableComponentNames?: string[],
-  styleType?: keyof StyleValidator,
-  prefabType?: PrefabTypes,
-): Joi.ObjectSchema => {
+const componentSchema = ({
+  styles,
+  componentStyleMap,
+  availableComponentNames,
+  styleType,
+  prefabType,
+}: ComponentSchemaProps): Joi.ObjectSchema => {
   const canValidateOldStyle = styleType && styleValidator[styleType];
   const deprecatedStyleSchema = Joi.object({
     name: Joi.string().max(255).alphanum(),
@@ -283,12 +307,12 @@ const componentSchema = (
     descendants: Joi.array()
       .items(
         Joi.custom(
-          validateComponent(
+          validateComponent({
             styles,
             componentStyleMap,
             availableComponentNames,
             prefabType,
-          ),
+          }),
         ),
       )
       .required(),
@@ -366,12 +390,12 @@ const findCategoryMemberDuplicates = (
 };
 
 export const validateComponent =
-  (
-    styles: GroupedStyles,
-    componentStyleMap?: ComponentStyleMap,
-    availableComponentNames?: string[],
-    prefabType?: PrefabTypes,
-  ) =>
+  ({
+    styles,
+    componentStyleMap,
+    availableComponentNames,
+    prefabType,
+  }: ValidateComponentProps) =>
   (component: PrefabReference): Prefab | unknown => {
     if (component.type === 'PARTIAL') {
       if (prefabType === 'partial') {
@@ -390,12 +414,12 @@ export const validateComponent =
         );
       }
     } else if (component.type === 'WRAPPER') {
-      const { error } = wrapperSchema(
+      const { error } = wrapperSchema({
         styles,
         componentStyleMap,
         availableComponentNames,
         prefabType,
-      ).validate(component);
+      }).validate(component);
       const { optionCategories = [], options } = component;
 
       findDuplicates(options, 'option key', 'key');
@@ -416,13 +440,13 @@ export const validateComponent =
         componentStyleMap[name] &&
         componentStyleMap[name].styleType;
 
-      const { error } = componentSchema(
+      const { error } = componentSchema({
         styles,
         componentStyleMap,
         availableComponentNames,
-        styleType as keyof StyleValidator,
+        styleType,
         prefabType,
-      ).validate(component);
+      }).validate(component);
 
       findDuplicates(options, 'option key', 'key');
       findCategoryMemberDuplicates(optionCategories, 'component');

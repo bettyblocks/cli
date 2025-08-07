@@ -6,14 +6,30 @@ import FusionAuth from '../utils/login';
 const GET_DEV_BLOCKS = '/blocks/my-dev-blocks';
 const POST_RELEASE_BLOCKS = '/blocks/release';
 
-const sendBlockstoreRequest = async (
-  urlPath: string,
-  method: string,
-  body: RequestInit['body'],
-  config: Config,
-  fusionAuth: FusionAuth,
-  applicationId: string,
-): Promise<Response> => {
+interface SendBlockstoreRequestProps {
+  urlPath: string;
+  method: string;
+  body: RequestInit['body'];
+  config: Config;
+  fusionAuth: FusionAuth;
+  applicationId: string;
+}
+
+interface ReleaseBlocksInBlockstoreProps {
+  blockIds: string[];
+  config: Config;
+  fusionAuth: FusionAuth;
+  applicationId: string;
+}
+
+const sendBlockstoreRequest = async ({
+  urlPath,
+  method,
+  body,
+  config,
+  fusionAuth,
+  applicationId,
+}: SendBlockstoreRequestProps): Promise<Response> => {
   const url = `${config.blockstoreApiUrl}${urlPath}`;
   return fetch(url, {
     agent: config.agent,
@@ -25,17 +41,17 @@ const sendBlockstoreRequest = async (
       'content-type': 'application/json',
     },
     method,
-  }).then(async (res) => {
+  }).then(async (res: Response) => {
     if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();
-      return sendBlockstoreRequest(
-        urlPath,
-        method,
+      return sendBlockstoreRequest({
+        applicationId,
         body,
         config,
         fusionAuth,
-        applicationId,
-      );
+        method,
+        urlPath,
+      });
     }
 
     return res;
@@ -47,33 +63,34 @@ const fetchAllDevBlocks = async (
   fusionAuth: FusionAuth,
   applicationId: string,
 ): Promise<Response> =>
-  sendBlockstoreRequest(
-    GET_DEV_BLOCKS,
-    'GET',
-    undefined,
+  sendBlockstoreRequest({
+    applicationId,
+    body: undefined,
     config,
     fusionAuth,
-    applicationId,
-  );
+    method: 'GET',
+    urlPath: GET_DEV_BLOCKS,
+  });
 
-const releaseBlocksInBlockstore = async (
-  blockIds: string[],
-  config: Config,
-  fusionAuth: FusionAuth,
-  applicationId: string,
-): Promise<boolean> => {
-  const response = await sendBlockstoreRequest(
-    POST_RELEASE_BLOCKS,
-    'POST',
-    JSON.stringify({ block_ids: blockIds }),
+const releaseBlocksInBlockstore = async ({
+  blockIds,
+  config,
+  fusionAuth,
+  applicationId,
+}: ReleaseBlocksInBlockstoreProps): Promise<boolean> => {
+  const response = await sendBlockstoreRequest({
+    applicationId,
+    body: JSON.stringify({ block_ids: blockIds }),
     config,
     fusionAuth,
-    applicationId,
-  );
+    method: 'POST',
+    urlPath: POST_RELEASE_BLOCKS,
+  });
+
   if (!response.ok) {
     await response
       .text()
-      .then((text) =>
+      .then((text: string) =>
         console.error(`Failed to release blocks in Blockstore: ${text}`),
       );
     return false;
@@ -103,12 +120,12 @@ const releaseBlocks = async ({
     blockIdsToBeReleased = (await res.json()) as string[];
   }
 
-  return releaseBlocksInBlockstore(
-    blockIdsToBeReleased,
+  return releaseBlocksInBlockstore({
+    applicationId,
+    blockIds: blockIdsToBeReleased,
     config,
     fusionAuth,
-    applicationId,
-  );
+  });
 };
 
 export default releaseBlocks;

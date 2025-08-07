@@ -54,12 +54,12 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
             .map((m) => `${m.slice(15, -2)}:string`)
             .join(' ');
 
-          groomed = await resolveMissingFunction(
+          groomed = await resolveMissingFunction({
+            defaultInputVariables,
             groomed,
             metaData,
             name,
-            defaultInputVariables,
-          );
+          });
         }
 
         return groomed;

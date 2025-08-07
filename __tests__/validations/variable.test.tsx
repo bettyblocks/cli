@@ -11,7 +11,9 @@ test('Pass without variables array', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).not.toThrow();
+  expect(() =>
+    validatePrefabs({ prefabs: [prefab], styles: {} }),
+  ).not.toThrow();
 });
 
 test('Pass when variables array is the empty list', (): void => {
@@ -23,7 +25,9 @@ test('Pass when variables array is the empty list', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).not.toThrow();
+  expect(() =>
+    validatePrefabs({ prefabs: [prefab], styles: {} }),
+  ).not.toThrow();
 });
 
 test('Throw when variable kind is unsupported', (): void => {
@@ -44,7 +48,7 @@ test('Throw when variable kind is unsupported', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "variables[0].kind" must be one of [construct, object, string, integer] at prefab: Prefab`,
   );
 });
@@ -68,7 +72,7 @@ test('Throw when construct variable does not have a modelId', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "variables[0].options.modelId" is required at prefab: Prefab`,
   );
 });
@@ -84,7 +88,7 @@ test('Throw when construct variable does not have a name', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "variables[0].name" is required at prefab: Prefab`,
   );
 });
@@ -108,7 +112,7 @@ test('Throw when construct variable does not have a ref', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "variables[0].options.ref" is required at prefab: Prefab`,
   );
 });
@@ -133,7 +137,7 @@ test('Throw when construct variable does not have a id ref', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "variables[0].ref.id" is required at prefab: Prefab`,
   );
 });
@@ -160,7 +164,7 @@ test('Throw when construct variable does not have a customModelId ref', (): void
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).toThrow(
+  expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
     `Property: "variables[0].options.ref.customModelId" is required at prefab: Prefab`,
   );
 });
@@ -187,7 +191,9 @@ test('Pass for valid construct variable', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).not.toThrow();
+  expect(() =>
+    validatePrefabs({ prefabs: [prefab], styles: {} }),
+  ).not.toThrow();
 });
 
 test('Pass when using a string variable', (): void => {
@@ -208,7 +214,9 @@ test('Pass when using a string variable', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).not.toThrow();
+  expect(() =>
+    validatePrefabs({ prefabs: [prefab], styles: {} }),
+  ).not.toThrow();
 });
 
 test('Pass when using a object variable', (): void => {
@@ -232,5 +240,7 @@ test('Pass when using a object variable', (): void => {
     structure: [],
   } as Prefab;
 
-  expect(() => validatePrefabs([prefab], {})).not.toThrow();
+  expect(() =>
+    validatePrefabs({ prefabs: [prefab], styles: {} }),
+  ).not.toThrow();
 });

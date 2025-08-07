@@ -19,14 +19,21 @@ export interface CustomFunction {
   revision: number;
 }
 
+interface ResolveMissingFunctionProps {
+  defaultInputVariables?: string;
+  groomed: MetaData;
+  metaData: MetaData;
+  name: string;
+}
+
 export type CustomFunctions = CustomFunction[];
 
-const resolveMissingFunction = async (
-  groomed: MetaData,
-  metaData: MetaData,
-  name: string,
-  defaultInputVariables?: string,
-): Promise<MetaData> => {
+const resolveMissingFunction = async ({
+  defaultInputVariables,
+  groomed,
+  metaData,
+  name,
+}: ResolveMissingFunctionProps): Promise<MetaData> => {
   const { replace } = (await prompts({
     active: 'replace',
     inactive: 'add',

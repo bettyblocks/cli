@@ -43,12 +43,12 @@ test('returns 2 blocks', async (): Promise<void> => {
 test('creating a package.json', async (): Promise<void> => {
   const packageJson = JSON.stringify(
     {
-      name: 'test',
-      version: '1.0.0',
-      private: 'true',
       dependencies: {
         lodash: '^4.17.21',
       },
+      name: 'test',
+      private: 'true',
+      version: '1.0.0',
     },
     null,
     2,

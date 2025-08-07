@@ -15,6 +15,13 @@ import type {
 } from '@azure/storage-blob/src/generated/src/models';
 import chalk from 'chalk';
 
+interface UploadBlobProps {
+  blobContainerName: string;
+  blobName: string;
+  blobContent: string;
+  blobContentType: string;
+}
+
 const { AZURE_BLOB_ACCOUNT, AZURE_BLOB_ACCOUNT_KEY } = process.env;
 
 if (!AZURE_BLOB_ACCOUNT) {
@@ -70,11 +77,10 @@ const getBlockURL = async (
   try {
     await url.create(Aborter.none, { access: 'blob' });
   } catch (error) {
-    const { statusCode }: RestError = error;
+    const { statusCode } = error as RestError;
 
     if (statusCode !== 409) {
-      // eslint-disable-next-line @typescript-eslint/no-throw-literal
-      throw chalk.red(error);
+      throw new Error(chalk.red(error));
     }
   }
 
@@ -95,12 +101,12 @@ const upload = (
     },
   });
 
-export default async (
-  blobContainerName: string,
-  blobName: string,
-  blobContent: string,
-  blobContentType: string,
-): Promise<BlockBlobUploadResponseExtended> => {
+export default async ({
+  blobContainerName,
+  blobName,
+  blobContent,
+  blobContentType,
+}: UploadBlobProps): Promise<BlockBlobUploadResponseExtended> => {
   const serviceURL = getServiceUrl();
   await setCorsRules(serviceURL);
   const containerURL = getContainerURL(serviceURL, blobContainerName);

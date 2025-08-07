@@ -75,7 +75,7 @@ test('Throw when one of the prefabs is invalid', (): void => {
     },
   ] as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 
 test("Don't throw when all prefabs are valid", (): void => {
@@ -88,7 +88,7 @@ test("Don't throw when all prefabs are valid", (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Throw when one of the prefabs options is invalid', (): void => {
@@ -115,7 +115,7 @@ test('Throw when one of the prefabs options is invalid', (): void => {
     },
   ] as unknown as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 
 test('Throw when type partial has descendants', (): void => {
@@ -146,7 +146,7 @@ test('Throw when type partial has descendants', (): void => {
     },
   ] as unknown as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 test('Throw when type partial has name', (): void => {
   const prefabs = [
@@ -176,7 +176,7 @@ test('Throw when type partial has name', (): void => {
     },
   ] as unknown as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 test('Throw when type partial has options', (): void => {
   const prefabs = [
@@ -206,7 +206,7 @@ test('Throw when type partial has options', (): void => {
     },
   ] as unknown as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 test('Throw when type component has partialId', (): void => {
   const prefabs: Prefab[] = [
@@ -251,7 +251,7 @@ test('Throw when type component has partialId', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 
 test('Does not throw when partial object is within the structure', (): void => {
@@ -269,7 +269,7 @@ test('Does not throw when partial object is within the structure', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Does not throw when wrapper object is within the structure', (): void => {
@@ -288,7 +288,7 @@ test('Does not throw when wrapper object is within the structure', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Does not throw when nesting wrapper objects', (): void => {
@@ -313,7 +313,7 @@ test('Does not throw when nesting wrapper objects', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Does not throw when component option categories with condition', (): void => {
@@ -367,7 +367,7 @@ test('Does not throw when component option categories with condition', (): void 
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Does not throw when component option categories are valid', (): void => {
@@ -403,7 +403,7 @@ test('Does not throw when component option categories are valid', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Does not throw when wrapper option categories are valid', (): void => {
@@ -434,7 +434,7 @@ test('Does not throw when wrapper option categories are valid', (): void => {
     },
   ] as unknown as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Throws when component option category has no label', (): void => {
@@ -461,7 +461,7 @@ test('Throws when component option category has no label', (): void => {
     },
   ] as unknown as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs({ prefabs, styles: {} }));
 });
 
 test('Throws when component option category has no entries', (): void => {
@@ -488,7 +488,7 @@ test('Throws when component option category has no entries', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs({ prefabs, styles: {} }));
 });
 
 test('Throws when component option category members has no entries', (): void => {
@@ -515,7 +515,7 @@ test('Throws when component option category members has no entries', (): void =>
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {}));
+  expect(() => validatePrefabs({ prefabs, styles: {} }));
 });
 
 test('Does not throw when button prefabs style override options are valid', (): void => {
@@ -573,7 +573,11 @@ test('Does not throw when button prefabs style override options are valid', (): 
   ];
 
   expect(() =>
-    validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }),
+    validatePrefabs({
+      prefabs,
+      styles: {},
+      componentStyleMap: { Button: { styleType: 'BUTTON' } },
+    }),
   ).not.toThrow();
 });
 
@@ -607,7 +611,11 @@ test('Throw when one of the prefabs style override string options is invalid', (
   ] as unknown as Prefab[];
 
   expect(() =>
-    validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }),
+    validatePrefabs({
+      prefabs,
+      styles: {},
+      componentStyleMap: { Button: { styleType: 'BUTTON' } },
+    }),
   );
 });
 
@@ -641,7 +649,11 @@ test('Throw when one of the prefabs style override array options is invalid', ()
   ];
 
   expect(() =>
-    validatePrefabs(prefabs, {}, { Button: { styleType: 'BUTTON' } }),
+    validatePrefabs({
+      prefabs,
+      styles: {},
+      componentStyleMap: { Button: { styleType: 'BUTTON' } },
+    }),
   );
 });
 
@@ -671,7 +683,7 @@ test('Throw when style name is non-alphanumeric', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 
 test('Dont throw when prefab component has a ref', (): void => {
@@ -700,7 +712,7 @@ test('Dont throw when prefab component has a ref', (): void => {
     },
   ];
 
-  validatePrefabs(prefabs, {});
+  validatePrefabs({ prefabs, styles: {} });
   expect(true).toBe(true);
 });
 
@@ -730,7 +742,7 @@ test('Dont throw when prefab component option has a ref', (): void => {
     },
   ];
 
-  validatePrefabs(prefabs, {});
+  validatePrefabs({ prefabs, styles: {} });
   expect(true).toBe(true);
 });
 
@@ -757,7 +769,7 @@ test('Throw when the prefabs option type is not referring to one the correct typ
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 
 test('Throw when two options with the same key are being used', (): void => {
@@ -789,7 +801,7 @@ test('Throw when two options with the same key are being used', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 
 test('Does not throw when valid partial Prefab', (): void => {
@@ -815,7 +827,15 @@ test('Does not throw when valid partial Prefab', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {}, {}, [], 'partial')).not.toThrow();
+  expect(() =>
+    validatePrefabs({
+      prefabs,
+      styles: {},
+      componentStyleMap: {},
+      availableComponentNames: [],
+      prefabType: 'partial',
+    }),
+  ).not.toThrow();
 });
 
 test('Throw when partialcomponent in partial Prefab', (): void => {
@@ -833,7 +853,15 @@ test('Throw when partialcomponent in partial Prefab', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {}, {}, [], 'partial')).toThrow();
+  expect(() =>
+    validatePrefabs({
+      prefabs,
+      styles: {},
+      componentStyleMap: {},
+      availableComponentNames: [],
+      prefabType: 'partial',
+    }),
+  ).toThrow();
 });
 
 test('Throw when type key in partial Prefab', (): void => {
@@ -859,7 +887,15 @@ test('Throw when type key in partial Prefab', (): void => {
       ],
     },
   ];
-  expect(() => validatePrefabs(prefabs, {}, {}, [], 'partial')).toThrow();
+  expect(() =>
+    validatePrefabs({
+      prefabs,
+      styles: {},
+      componentStyleMap: {},
+      availableComponentNames: [],
+      prefabType: 'partial',
+    }),
+  ).toThrow();
 });
 
 test("throws an error when a reserved keyword is used 'PARTIAL'", (): void => {
@@ -918,7 +954,7 @@ test('Throw when one of the prefabs configuration options is invalid', (): void 
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 
 test('Success when the reconfigure configuration options of the prefabs are valid', (): void => {
@@ -991,7 +1027,7 @@ test('Success when the reconfigure configuration options of the prefabs are vali
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Does not throw when wrapper option has showOnDrop', (): void => {
@@ -1036,7 +1072,7 @@ test('Does not throw when wrapper option has showOnDrop', (): void => {
     },
   ] as unknown as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Success when the optionRefs of the prefabs are valid', (): void => {
@@ -1067,7 +1103,7 @@ test('Success when the optionRefs of the prefabs are valid', (): void => {
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Throws error when value is an empty string in variable option', (): void => {
@@ -1093,7 +1129,7 @@ test('Throws error when value is an empty string in variable option', (): void =
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).toThrow();
 });
 
 test('Does not throw when wrapper option has a optionRef', (): void => {
@@ -1148,7 +1184,7 @@ test('Does not throw when wrapper option has a optionRef', (): void => {
     },
   ] as unknown as Prefab[];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Success when value is an array with empty string in variable option', (): void => {
@@ -1174,7 +1210,7 @@ test('Success when value is an array with empty string in variable option', (): 
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
 
 test('Success when adding createActionInputVariable in the option configuration of an ACTION_JS_INPUT', (): void => {
@@ -1207,5 +1243,5 @@ test('Success when adding createActionInputVariable in the option configuration 
     },
   ];
 
-  expect(() => validatePrefabs(prefabs, {})).not.toThrow();
+  expect(() => validatePrefabs({ prefabs, styles: {} })).not.toThrow();
 });
