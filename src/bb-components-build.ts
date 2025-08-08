@@ -9,6 +9,7 @@ import {
   readFileSync,
   remove,
 } from 'fs-extra';
+import ora from 'ora';
 import path from 'path';
 import ts, { JsxEmit, ModuleKind, ScriptTarget } from 'typescript';
 
@@ -347,6 +348,8 @@ void (async (): Promise<void> => {
     await checkUpdateAvailableCLI();
   }
 
+  const buildStart = ora(`Building component set...`).start();
+
   try {
     const [
       styles,
@@ -632,6 +635,8 @@ void (async (): Promise<void> => {
     if (pagePrefabs.length === 0 && existingPath && buildAll) {
       await remove(`${distDir}/pagePrefabs.json`);
     }
+
+    buildStart.succeed();
 
     console.info(chalk.green('Success, the component set has been built'));
   } catch (error) {
