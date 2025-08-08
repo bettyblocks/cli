@@ -7,9 +7,7 @@ import {
   functionDirs,
 } from './functionDefinitions';
 
-interface ICONS {
-  [key: string]: { name: string; color: string };
-}
+type ICONS = Record<string, { name: string; color: string }>;
 
 const check = chalk.green(`✔`);
 

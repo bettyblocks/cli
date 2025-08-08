@@ -1,6 +1,3 @@
-/* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
-/* npm dependencies */
-
 import { spawn } from 'child_process';
 import fs from 'fs-extra';
 import ora from 'ora';
@@ -8,27 +5,22 @@ import os from 'os';
 import path from 'path';
 import vm from 'vm';
 
-/* internal dependencies */
-
 import IDE from '../utils/ide';
 import Config from './config';
-
 import {
-  MetaData,
-  NamedObject,
+  type MetaData,
+  type NamedObject,
   resolveMissingFunction,
   storeCustomFunctions,
 } from './publishFunctions';
 
-/* execute command */
-
 const workingDir = process.cwd();
 
-type Action = {
+interface Action {
   id: string;
   description: string;
   use_new_runtime: boolean;
-};
+}
 
 type Actions = Action[];
 
@@ -49,9 +41,8 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
   const metaData = fs.readJsonSync(functionsJsonFile);
 
   const groomedMetaData = await Object.keys(customFunctions).reduce(
-    async (promise: Promise<MetaData>, name: string): Promise<MetaData> => {
-      return promise.then(async (groomed) => {
-        // eslint-disable-next-line no-param-reassign
+    async (promise: Promise<MetaData>, name: string): Promise<MetaData> =>
+      promise.then(async (groomed) => {
         groomed[name] = metaData[name];
 
         if (!groomed[name]) {
@@ -59,22 +50,20 @@ const groomMetaData = async (config: Config): Promise<MetaData> => {
             .toString()
             .match(/await context\((["'])(.*?)\1\)/g);
 
-          const defaultInputVariables = (matches || [])
+          const defaultInputVariables = (matches ?? [])
             .map((m) => `${m.slice(15, -2)}:string`)
             .join(' ');
 
-          // eslint-disable-next-line no-param-reassign
-          groomed = await resolveMissingFunction(
+          groomed = await resolveMissingFunction({
+            defaultInputVariables,
             groomed,
             metaData,
             name,
-            defaultInputVariables,
-          );
+          });
         }
 
         return groomed;
-      });
-    },
+      }),
     Promise.resolve({} as MetaData),
   );
 
@@ -96,7 +85,7 @@ const publishFunctions = async (
 
   await ide.post(
     `custom_functions/${revision}`,
-    { multiPartData: [{ name: 'code', file: customJsFile }] },
+    { multiPartData: [{ file: customJsFile, name: 'code' }] },
     `Uploading "${revision}.js" ...`,
   );
 
@@ -165,7 +154,6 @@ const publishCustomFunctions = (
       console.log('Done.');
     })
     .catch((err: NodeJS.ErrnoException) => {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       console.log(`${err}\nAbort.`);
       process.exit();
     });

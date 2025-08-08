@@ -1,22 +1,22 @@
 import AdmZip from 'adm-zip';
-import camelCase from 'lodash/camelCase';
-import startCase from 'lodash/startCase';
 import fs from 'fs-extra';
 import glob from 'glob';
-import path from 'path';
 import { concat } from 'lodash';
+import camelCase from 'lodash/camelCase';
+import startCase from 'lodash/startCase';
+import path from 'path';
 
-type Schema = {
+interface Schema {
   label: string;
   [other: string]: unknown;
-};
+}
 
-export type FunctionDefinition = {
+export interface FunctionDefinition {
   name: string;
   version: string;
   path: string;
   schema: Schema;
-};
+}
 
 /* @doc functionDefinitionPath
   Expands the function dir with `function.json`.
@@ -100,12 +100,11 @@ const functionDefinition = (
   try {
     return {
       name,
-      version,
       path: filePath,
       schema,
+      version,
     } as FunctionDefinition;
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not load json from ${filePath}: ${err}`);
   }
 };
@@ -117,19 +116,18 @@ const functionDefinition = (
 const functionDefinitions = (
   functionsDir: string,
   includeNonversioned = false,
-): FunctionDefinition[] => {
-  return functionDirs(functionsDir, includeNonversioned).map((functionDir) =>
+): FunctionDefinition[] =>
+  functionDirs(functionsDir, includeNonversioned).map((functionDir) =>
     functionDefinition(functionDir, functionsDir),
   );
-};
 
 const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
   const updatedDefinitions = definitions.map(({ name, version, schema }) => ({
     name,
     version,
     ...schema,
-    options: JSON.stringify(schema.options || []),
-    paths: JSON.stringify(schema.paths || {}),
+    options: JSON.stringify(schema.options ?? []),
+    paths: JSON.stringify(schema.paths ?? {}),
   }));
 
   return JSON.stringify(updatedDefinitions);
@@ -153,13 +151,10 @@ const newFunctionDefinition = (
     fs.writeJSONSync(
       functionDefinitionPath(functionDir),
       {
-        description: 'Description',
-        label: startCase(functionName),
         category: 'Misc',
-        icon: {
-          name: 'ActionsIcon',
-          color: 'Orange',
-        },
+        description: 'Description',
+        icon: { color: 'Orange', name: 'ActionsIcon' },
+        label: startCase(functionName),
         options: [],
         yields: 'NONE',
       },
@@ -171,7 +166,6 @@ const newFunctionDefinition = (
       `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
     );
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not initialize new function ${functionDir}: ${err}`);
   }
 };
@@ -269,7 +263,7 @@ const zipFunctionDefinitions = (
   zip.addFile('index.js', Buffer.from(generateIndex(functionsPath)));
   zip.addLocalFolder(functionsPath, functionsPath.replace(cwd, ''));
 
-  (includes || []).forEach((include) => {
+  (includes ?? []).forEach((include) => {
     zip.addLocalFolder(path.join(cwd, include), include);
   });
 
@@ -279,10 +273,10 @@ const zipFunctionDefinitions = (
 };
 
 export {
-  functionDirs,
-  functionDefinitionPath,
   functionDefinition,
+  functionDefinitionPath,
   functionDefinitions,
+  functionDirs,
   generateIndex,
   isFunctionDefinition,
   isFunctionVersion,

@@ -17,7 +17,7 @@
     }[options.type || 'Title1'];
     return <Tag className={classes.root}>{options.content}</Tag>;
   })(),
-  styles: B => t => {
+  styles: (B) => (t) => {
     const style = new B.Styling(t);
     return {
       root: {

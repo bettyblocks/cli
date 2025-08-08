@@ -1,7 +1,3 @@
-function unknownEvent({
-  event,
-}: {
-  event: unknown;
-}): number {
-	return 1;
+function unknownEvent({ event }: { event: unknown }): number {
+  return 1;
 }

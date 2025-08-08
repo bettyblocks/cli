@@ -1,24 +1,17 @@
-/* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument */
-/* npm dependencies */
-
-import fs from 'fs-extra';
-
-import path from 'path';
-import program from 'commander';
-
-/* internal dependencies */
-
 import chalk from 'chalk';
+import { Command } from 'commander';
+import fs from 'fs-extra';
+import path from 'path';
+
+import Config from './functions/config';
 import publishAppFunctions from './functions/publishAppFunctions';
 import publishCustomFunctions from './functions/publishCustomFunctions';
-
 import {
   FunctionValidator,
   logValidationResult,
 } from './functions/validations';
-import Config from './functions/config';
 
-/* process arguments */
+const program = new Command();
 
 program
   .name('bb functions publish')
@@ -31,9 +24,7 @@ program
   )
   .parse(process.argv);
 
-const { host, skip, bump, skipCompile } = program;
-
-/* execute command */
+const { host, skip, bump, skipCompile } = program.opts();
 
 const workingDir = process.cwd();
 
@@ -41,7 +32,7 @@ const baseFunctionsPath = path.join(workingDir, 'functions');
 
 const config = new Config();
 
-const validateFunctions = async () => {
+const validateFunctions = async (): Promise<{ valid: boolean }> => {
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
 
@@ -69,7 +60,6 @@ const validateFunctions = async () => {
   return { valid };
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     const { valid } = await validateFunctions();

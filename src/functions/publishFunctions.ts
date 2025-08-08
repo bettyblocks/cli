@@ -1,38 +1,46 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access */
 import prompts from 'prompts';
+
 import IDE from '../utils/ide';
 
 export type NamedObject = Record<string, string | object>;
 
-export type MetaData = {
-  [name: string]: {
+export type MetaData = Record<
+  string,
+  {
     replace?: string;
     returnType: string;
     inputVariables: NamedObject;
-  };
-};
+  }
+>;
 
-export type CustomFunction = {
+export interface CustomFunction {
   id: string;
   name: string;
   revision: number;
-};
+}
+
+interface ResolveMissingFunctionProps {
+  defaultInputVariables?: string;
+  groomed: MetaData;
+  metaData: MetaData;
+  name: string;
+}
 
 export type CustomFunctions = CustomFunction[];
 
-const resolveMissingFunction = async (
-  groomed: MetaData,
-  metaData: MetaData,
-  name: string,
-  defaultInputVariables?: string,
-): Promise<MetaData> => {
+const resolveMissingFunction = async ({
+  defaultInputVariables,
+  groomed,
+  metaData,
+  name,
+}: ResolveMissingFunctionProps): Promise<MetaData> => {
   const { replace } = (await prompts({
-    type: 'toggle',
-    name: 'replace',
-    message: `Function "${name}" is missing. What do you want to do?`,
-    initial: false,
     active: 'replace',
     inactive: 'add',
+    initial: false,
+    message: `Function "${name}" is missing. What do you want to do?`,
+    name: 'replace',
+    type: 'toggle',
   })) as { replace: boolean };
 
   if (replace) {
@@ -41,66 +49,63 @@ const resolveMissingFunction = async (
 
     if (choices.length === 1) {
       const confirm = await prompts({
-        type: 'confirm',
-        name: 'value',
-        message: `Replace "${choices[0]}"?`,
         initial: true,
+        message: `Replace "${choices[0]}"?`,
+        name: 'value',
+        type: 'confirm',
       });
       if (confirm.value) [replacedFunction] = choices;
       else throw new Error('Abort.');
     } else {
       replacedFunction = (
         await prompts({
-          type: 'select',
-          name: 'value',
-          message: 'Replace',
           choices: choices.map((key) => ({ title: key, value: key })),
           initial: 0,
+          message: 'Replace',
+          name: 'value',
+          type: 'select',
         })
       ).value;
     }
 
-    // eslint-disable-next-line no-param-reassign
     groomed[name] = metaData[replacedFunction];
-    // eslint-disable-next-line no-param-reassign
+
     groomed[name].replace = replacedFunction;
-    // eslint-disable-next-line no-param-reassign
+
     delete metaData[replacedFunction];
   } else {
     const { returnType, inputVariables } = await prompts([
       {
-        type: 'select',
-        name: 'returnType',
-        message: `What is the return type of the function?`,
         choices: [
           { title: 'string', value: 'string' },
           { title: 'integer', value: 'integer' },
           { title: 'boolean', value: 'boolean' },
         ],
         initial: 0,
+        message: `What is the return type of the function?`,
+        name: 'returnType',
+        type: 'select',
       } as prompts.PromptObject,
       {
-        type: 'text',
-        name: 'inputVariables',
-        message: 'What are the input variables? (`name:type name:type ...`)',
         initial: defaultInputVariables,
+        message: 'What are the input variables? (`name:type name:type ...`)',
+        name: 'inputVariables',
+        type: 'text',
       } as prompts.PromptObject,
     ]);
 
-    // eslint-disable-next-line no-param-reassign
     groomed[name] = {
-      returnType,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       inputVariables: inputVariables
         .split(/(\s|,)/)
         .reduce((variables: NamedObject, variable: string): NamedObject => {
           if (variable.length) {
             const [varName, varType] = variable.split(':');
-            // eslint-disable-next-line no-param-reassign
+
             variables[varName] = varType;
           }
           return variables;
         }, {} as NamedObject),
+      returnType,
     };
   }
 
@@ -129,20 +134,19 @@ const storeCustomFunctions = async (
     async (promise: Promise<string | object | null>, name: string) => {
       await promise;
       const { replace, returnType, inputVariables } = metaData[name];
-      const id = ids[replace || name];
+      const id = ids[replace ?? name];
       const method = id ? 'put' : 'post';
       const action = id ? 'Updating' : 'Creating';
       const params = {
-        name,
-        revision,
-        return_type: returnType,
         input_variables: inputVariables,
+        name,
+        return_type: returnType,
+        revision,
       };
       return ide[method](
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         `custom_functions/${id || 'new'}`,
         { json: { record: params } },
-        `${action} custom function "${replace || name}" ...`,
+        `${action} custom function "${replace ?? name}" ...`,
       );
     },
     Promise.resolve(null),

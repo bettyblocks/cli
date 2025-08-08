@@ -1,15 +1,15 @@
 /* npm dependencies */
 import chalk from 'chalk';
-import program, { CommanderStatic } from 'commander';
-import { pathExists, outputFile } from 'fs-extra';
+import { Command } from 'commander';
+import { outputFile, pathExists } from 'fs-extra';
 
-/* internal dependencies */
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
-/* process arguments */
+const program = new Command();
+
 program.usage('[name]').name('bb interactions generate').parse(process.argv);
 
-const { args }: CommanderStatic = program;
+const { args } = program;
 
 if (args.length === 0) {
   program.help();
@@ -18,7 +18,7 @@ if (args.length === 0) {
 const name: string = args[0];
 
 /* generate file */
-// eslint-disable-next-line no-void
+
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   if (name.includes(' ')) {
