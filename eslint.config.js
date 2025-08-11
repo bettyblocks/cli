@@ -7,21 +7,7 @@ import tseslint from 'typescript-eslint';
 export default [
   { files: ['**/*.{js,mjs,cjs,ts}'] },
   {
-    ignores: [
-      '**/eslint.config.js',
-      '**/dist/',
-      '**/graphql/',
-      '**/node_modules/',
-      '**/src/types/generated.ts',
-      '**/templates/@runtime',
-      '**/tests/compiler/generator/store.test',
-      '**/tests/compiler/generator/components.test',
-      '**/tests/compiler/generator/isolate.test',
-      '**/tests/compiler/generator/dataQueries.test/dataQueries.js',
-      '**/tests/compiler/generator/displayLogic.test',
-      '**/tests/mocks/generated.ts',
-      '**/tmp/',
-    ],
+    ignores: ['**/eslint.config.js', '**/dist/', '**/node_modules/', '**/tmp/'],
   },
   {
     languageOptions: {

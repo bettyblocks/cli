@@ -27,7 +27,7 @@
         "jsonschema": "^1.4.0",
         "lodash": "^4.17.21",
         "minimatch": "10.0.3",
-        "minimist": "^1.2.5",
+        "minimist": "1.2.8",
         "node-fetch": "3.3.2",
         "ora": "8.2.0",
         "prismjs": "1.30.0",
