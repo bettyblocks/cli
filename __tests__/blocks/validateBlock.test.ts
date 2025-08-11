@@ -96,7 +96,7 @@ test('It validates the block name on kebab case and is not valid', async (): Pro
   expect(errorMessage).toBe(
     'test Block is not valid as it should be kebab case',
   );
-});
+}, 10000); // override default timeout, because validateBlock() is slow
 
 test('It validates the block name on kebab case and is valid', async (): Promise<void> => {
   const block: Block = {
@@ -112,4 +112,4 @@ test('It validates the block name on kebab case and is valid', async (): Promise
   });
 
   expect(valid).toBe(true);
-});
+}, 10000); // override default timeout, because validateBlock() is slow

@@ -11,12 +11,12 @@
         "@babel/traverse": "7.28.0",
         "@babel/types": "7.28.2",
         "@betty-blocks/component-sdk": "^1.91.3",
-        "@types/adm-zip": "^0.4.33",
+        "@types/adm-zip": "0.5.7",
         "@types/hapi__joi": "^16.0.0",
         "@types/prompts": "^2.0.14",
         "@types/react": "^16.9.9",
         "@types/serve-handler": "^6.1.0",
-        "adm-zip": "^0.5.3",
+        "adm-zip": "0.5.16",
         "case": "^1.6.3",
         "chalk": "^5.5.0",
         "commander": "^14.0.0",
@@ -46,8 +46,8 @@
         "@semantic-release/changelog": "^6.0.1",
         "@semantic-release/git": "^10.0.1",
         "@types/app-root-path": "^1.2.4",
-        "@types/babel__generator": "^7.6.3",
-        "@types/babel__traverse": "^7.0.7",
+        "@types/babel__generator": "7.27.0",
+        "@types/babel__traverse": "7.28.0",
         "@types/bun": "^1.2.19",
         "@types/fs-extra": "^8.0.0",
         "@types/glob": "^7.2.0",
@@ -252,7 +252,7 @@
 
     "@standard-schema/spec": ["@standard-schema/spec@1.0.0", "", {}, "sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA=="],
 
-    "@types/adm-zip": ["@types/adm-zip@0.4.34", "", { "dependencies": { "@types/node": "*" } }, "sha512-8ToYLLAYhkRfcmmljrKi22gT2pqu7hGMDtORP1emwIEGmgUTZOsaDjzWFzW5N2frcFRz/50CWt4zA1CxJ73pmQ=="],
+    "@types/adm-zip": ["@types/adm-zip@0.5.7", "", { "dependencies": { "@types/node": "*" } }, "sha512-DNEs/QvmyRLurdQPChqq0Md4zGvPwHerAJYWk9l2jCbD1VPpnzRJorOdiq4zsw09NFbYnhfsoEhWtxIzXpn2yw=="],
 
     "@types/app-root-path": ["@types/app-root-path@1.2.8", "", {}, "sha512-l12miuN6JXAi3yuADZNhRKbyN7IIyaUP9hFVZ/BbHhWYpBkHLbOaX2WkQoXGJyAgMcP9iZ0S9+tz/FN40VrwWQ=="],
 
