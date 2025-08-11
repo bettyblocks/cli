@@ -1,11 +1,12 @@
-import { test, expect } from 'bun:test';
+import { expect, test } from 'bun:test';
+
+import type { Block } from '../../src/blocks/blockDefinitions';
 import {
-  validateBlockDependencies,
   getErrorMessage,
-  validateBlockConfig,
   validateBlock,
+  validateBlockConfig,
+  validateBlockDependencies,
 } from '../../src/validations/function-block-validations';
-import { Block } from '../../src/blocks/blockDefinitions';
 
 test('It validates invalid block dependencies', (): void => {
   const { valid, invalidDependencies } = validateBlockDependencies([
@@ -26,11 +27,11 @@ test('It validates valid block dependencies', (): void => {
 
 test('It returns an error for invalid functions', (): void => {
   const errorMessage = getErrorMessage({
-    validFunctions: false,
-    validBlockDependencies: true,
-    invalidDependencies: [],
     blockName: 'test-block',
+    invalidDependencies: [],
+    validBlockDependencies: true,
     validBlockName: true,
+    validFunctions: false,
   });
 
   expect(errorMessage).toBe('One or more functions are not valid');
@@ -38,11 +39,11 @@ test('It returns an error for invalid functions', (): void => {
 
 test('It returns an error for invalid block dependencies', (): void => {
   const errorMessage = getErrorMessage({
-    validFunctions: true,
-    validBlockDependencies: false,
-    invalidDependencies: ['moment'],
     blockName: 'test-block',
+    invalidDependencies: ['moment'],
+    validBlockDependencies: false,
     validBlockName: true,
+    validFunctions: true,
   });
 
   expect(errorMessage).toBe('The following dependencies are not valid: moment');
@@ -50,11 +51,11 @@ test('It returns an error for invalid block dependencies', (): void => {
 
 test('It returns an error for invalid block dependencies without package specification', (): void => {
   const errorMessage = getErrorMessage({
-    validFunctions: true,
-    validBlockDependencies: false,
-    invalidDependencies: [],
     blockName: 'test-block',
+    invalidDependencies: [],
+    validBlockDependencies: false,
     validBlockName: true,
+    validFunctions: true,
   });
 
   expect(errorMessage).toBe('One of the block dependencies is not valid');
@@ -62,8 +63,8 @@ test('It returns an error for invalid block dependencies without package specifi
 
 test('It validates if the there is a function defined', (): void => {
   const block: Block = {
-    functions: ['./functions/function.js'],
     dependencies: ['lodash'],
+    functions: ['./functions/function.js'],
     includes: [],
   };
   expect(validateBlockConfig(block)).toEqual(true);
@@ -71,8 +72,8 @@ test('It validates if the there is a function defined', (): void => {
 
 test('It validates if the there is no function defined', (): void => {
   const block: Block = {
-    functions: [],
     dependencies: ['lodash'],
+    functions: [],
     includes: [],
   };
   expect(validateBlockConfig(block)).toEqual(false);
@@ -80,8 +81,8 @@ test('It validates if the there is no function defined', (): void => {
 
 test('It validates the block name on kebab case and is not valid', async (): Promise<void> => {
   const block: Block = {
-    functions: ['sayHello 1.0'],
     dependencies: ['lodash'],
+    functions: ['sayHello 1.0'],
     includes: [],
   };
 
@@ -99,8 +100,8 @@ test('It validates the block name on kebab case and is not valid', async (): Pro
 
 test('It validates the block name on kebab case and is valid', async (): Promise<void> => {
   const block: Block = {
-    functions: ['sayHello 1.0'],
     dependencies: ['lodash'],
+    functions: ['sayHello 1.0'],
     includes: [],
   };
 

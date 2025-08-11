@@ -1,7 +1,7 @@
-import { test, expect } from 'bun:test';
+import { expect, test } from 'bun:test';
 
 import { buildReferenceStyle, buildStyle } from '../../src/components-build';
-import {
+import type {
   BuildStyle,
   BuildStyleDefinition,
   StyleDefinition,
@@ -22,16 +22,16 @@ test('it build a styleReference for the componentPrefab backwards compatible', (
 test('it build a styleReference for the componentPrefab for states', (): void => {
   const overwrite: StyleDefinitionContentOverwrites[] = [
     {
-      name: 'basis',
       content: {
         backgroundColor: { type: 'STATIC', value: 'Red' },
       },
+      name: 'basis',
     },
     {
-      name: 'hover',
       content: {
         backgroundColor: { type: 'STATIC', value: 'Blue' },
       },
+      name: 'hover',
     },
   ];
 
@@ -53,26 +53,26 @@ test('it build a styleReference for the componentPrefab for states', (): void =>
 
 test('it build a style ', (): void => {
   const style: StyleDefinition = {
-    name: 'Filled',
-    type: 'Button',
     basis: { backgroundColor: { type: 'STATIC', value: 'Red' } },
+    name: 'Filled',
     states: [
       {
-        name: 'hover',
         content: {
           backgroundColor: { type: 'STATIC', value: 'Blue' },
         },
+        name: 'hover',
       },
     ],
+    type: 'Button',
   };
 
   const expected: BuildStyleDefinition = {
-    name: 'Filled',
-    type: 'Button',
     content: {
       basis: { backgroundColor: { type: 'STATIC', value: 'Red' } },
       hover: { backgroundColor: { type: 'STATIC', value: 'Blue' } },
     },
+    name: 'Filled',
+    type: 'Button',
   };
 
   expect(buildStyle(style)).toEqual(expected);

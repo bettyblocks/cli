@@ -1,10 +1,9 @@
-import { test, expect } from 'bun:test';
-// @ts-ignore - stripVTControlCharacters exists in Node 16.17+ but types may not be updated
-import { stripVTControlCharacters } from 'util';
+import { expect, test } from 'bun:test';
 
-import { Prefab, PrefabAction } from '../../src/types';
+import type { Prefab, PrefabAction } from '../../src/types';
 import { EVENT_KIND } from '../../src/validations/constants';
 import validatePrefabs from '../../src/validations/prefab';
+import { stripVTControlCharacters } from 'src/utils/stripVTControlCharacters';
 
 test('Pass without actions array', (): void => {
   const prefab = {
@@ -21,9 +20,9 @@ test('Pass without actions array', (): void => {
 
 test('Pass when actions is empty list', (): void => {
   const prefab = {
+    actions: [],
     category: 'CONTENT',
     icon: 'TitleIcon',
-    actions: [],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -35,9 +34,9 @@ test('Pass when actions is empty list', (): void => {
 
 test('Throw when action has no name', (): void => {
   const prefab = {
+    actions: [{} as PrefabAction],
     category: 'CONTENT',
     icon: 'TitleIcon',
-    actions: [{} as PrefabAction],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -47,9 +46,9 @@ test('Throw when action has no name', (): void => {
 
 test('Throw when action has no useNewRuntime', (): void => {
   const prefab = {
+    actions: [{ name: 'foo' } as PrefabAction],
     category: 'CONTENT',
     icon: 'TitleIcon',
-    actions: [{ name: 'foo' } as PrefabAction],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -61,14 +60,14 @@ test('Throw when action has no useNewRuntime', (): void => {
 
 test('Throw when useNewRuntime is not a boolean', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
         name: 'foo',
         useNewRuntime: '1',
       } as unknown as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -80,9 +79,9 @@ test('Throw when useNewRuntime is not a boolean', (): void => {
 
 test('Throw when action has no ref', (): void => {
   const prefab = {
+    actions: [{ name: 'foo', useNewRuntime: true } as PrefabAction],
     category: 'CONTENT',
     icon: 'TitleIcon',
-    actions: [{ name: 'foo', useNewRuntime: true } as PrefabAction],
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -94,15 +93,15 @@ test('Throw when action has no ref', (): void => {
 
 test('Throw when action has no id inside ref', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
         name: 'foo',
-        useNewRuntime: true,
         ref: { endpointId: 'bar' },
+        useNewRuntime: true,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -114,15 +113,15 @@ test('Throw when action has no id inside ref', (): void => {
 
 test('Throw when action has no endpointId inside ref', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
         name: 'foo',
-        useNewRuntime: false,
         ref: { id: 'bar' },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -134,16 +133,8 @@ test('Throw when action has no endpointId inside ref', (): void => {
 
 test('Pass when actions contains an event of a kind supported by the old runtime', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-          endpointId: 'bar',
-        },
-        useNewRuntime: false,
         events: [
           {
             kind: 'create',
@@ -152,8 +143,16 @@ test('Pass when actions contains an event of a kind supported by the old runtime
             kind: 'send_mail',
           },
         ],
+        name: 'action_1',
+        ref: {
+          endpointId: 'bar',
+          id: 'foo',
+        },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -165,22 +164,22 @@ test('Pass when actions contains an event of a kind supported by the old runtime
 
 test('Pass when actions contains an event of a kind supported by the new runtime', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-        },
-        useNewRuntime: true,
         events: [
           {
             kind: 'authenticate_user',
           },
         ],
+        name: 'action_1',
+        ref: {
+          id: 'foo',
+        },
+        useNewRuntime: true,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -192,16 +191,8 @@ test('Pass when actions contains an event of a kind supported by the new runtime
 
 test('Throw when actions contains an event of an unsupported kind', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-          endpointId: 'bar',
-        },
-        useNewRuntime: false,
         events: [
           {
             kind: 'authenticate_user',
@@ -210,8 +201,16 @@ test('Throw when actions contains an event of an unsupported kind', (): void => 
             kind: 'send_mail',
           },
         ],
+        name: 'action_1',
+        ref: {
+          endpointId: 'bar',
+          id: 'foo',
+        },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -225,23 +224,12 @@ test('Throw when actions contains an event of an unsupported kind', (): void => 
 
 test('Pass when a update event has options', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-          endpointId: 'bar',
-        },
-        useNewRuntime: false,
         events: [
           {
             kind: 'update',
             options: {
-              ref: {
-                object: '#objectVariableId',
-              },
               assign: [
                 {
                   leftHandSide: '#propertyId',
@@ -250,11 +238,22 @@ test('Pass when a update event has options', (): void => {
                   },
                 },
               ],
+              ref: {
+                object: '#objectVariableId',
+              },
             },
           },
         ],
+        name: 'action_1',
+        ref: {
+          endpointId: 'bar',
+          id: 'foo',
+        },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -266,24 +265,12 @@ test('Pass when a update event has options', (): void => {
 
 test('Pass when create event has valid options', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-          endpointId: 'bar',
-        },
-        useNewRuntime: false,
         events: [
           {
             kind: 'create',
             options: {
-              modelId: '#modelId',
-              ref: {
-                customModel: '#customModelId',
-              },
               assign: [
                 {
                   leftHandSide: '#propertyId',
@@ -292,11 +279,23 @@ test('Pass when create event has valid options', (): void => {
                   },
                 },
               ],
+              modelId: '#modelId',
+              ref: {
+                customModel: '#customModelId',
+              },
             },
           },
         ],
+        name: 'action_1',
+        ref: {
+          endpointId: 'bar',
+          id: 'foo',
+        },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -308,16 +307,8 @@ test('Pass when create event has valid options', (): void => {
 
 test('Pass when a delete event has valid options', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-          endpointId: 'bar',
-        },
-        useNewRuntime: false,
         events: [
           {
             kind: 'delete',
@@ -328,8 +319,16 @@ test('Pass when a delete event has valid options', (): void => {
             },
           },
         ],
+        name: 'action_1',
+        ref: {
+          endpointId: 'bar',
+          id: 'foo',
+        },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -341,35 +340,35 @@ test('Pass when a delete event has valid options', (): void => {
 
 test('Pass when a authenticate_user event has valid options', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'Login user action',
-        ref: {
-          id: '#loginActionId',
-        },
-        options: {
-          ref: {
-            result: '#jwt',
-          },
-        },
-        useNewRuntime: true,
         events: [
           {
             kind: 'authenticate_user',
             options: {
               authenticationProfileId: '',
               ref: {
-                username: '#usernameVariableId',
-                password: '#passwordVariableId',
                 jwtAs: '#jwt',
+                password: '#passwordVariableId',
+                username: '#usernameVariableId',
               },
             },
           },
         ],
+        name: 'Login user action',
+        options: {
+          ref: {
+            result: '#jwt',
+          },
+        },
+        ref: {
+          id: '#loginActionId',
+        },
+        useNewRuntime: true,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -381,23 +380,23 @@ test('Pass when a authenticate_user event has valid options', (): void => {
 
 test('Pass when a update event has no options', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-          endpointId: 'bar',
-        },
-        useNewRuntime: false,
         events: [
           {
             kind: 'update',
           },
         ],
+        name: 'action_1',
+        ref: {
+          endpointId: 'bar',
+          id: 'foo',
+        },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -409,23 +408,12 @@ test('Pass when a update event has no options', (): void => {
 
 test('Throw when a assign event has options', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-          endpointId: 'bar',
-        },
-        useNewRuntime: false,
         events: [
           {
             kind: 'assign',
             options: {
-              ref: {
-                object: '#customModelId',
-              },
               assign: [
                 {
                   leftHandSide: '#propertyId',
@@ -434,11 +422,22 @@ test('Throw when a assign event has options', (): void => {
                   },
                 },
               ],
+              ref: {
+                object: '#customModelId',
+              },
             },
           },
         ],
+        name: 'action_1',
+        ref: {
+          endpointId: 'bar',
+          id: 'foo',
+        },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -450,16 +449,8 @@ test('Throw when a assign event has options', (): void => {
 
 test('Pass when actions array contains a valid action object', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
-        name: 'action_1',
-        ref: {
-          id: 'foo',
-          endpointId: 'bar',
-        },
-        useNewRuntime: false,
         events: [
           {
             kind: 'create',
@@ -468,8 +459,16 @@ test('Pass when actions array contains a valid action object', (): void => {
             kind: 'send_mail',
           },
         ],
+        name: 'action_1',
+        ref: {
+          endpointId: 'bar',
+          id: 'foo',
+        },
+        useNewRuntime: false,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -481,8 +480,6 @@ test('Pass when actions array contains a valid action object', (): void => {
 
 test('Pass when action object does not contain any events', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
         name: 'action_1',
@@ -492,6 +489,8 @@ test('Pass when action object does not contain any events', (): void => {
         useNewRuntime: true,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [],
   } as Prefab;
@@ -503,8 +502,6 @@ test('Pass when action object does not contain any events', (): void => {
 
 test('Throw when component option has a value and a ref object with a value', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
     actions: [
       {
         name: 'action_1',
@@ -514,26 +511,28 @@ test('Throw when component option has a value and a ref object with a value', ()
         useNewRuntime: true,
       } as PrefabAction,
     ],
+    category: 'CONTENT',
+    icon: 'TitleIcon',
     name: 'Prefab',
     structure: [
       {
-        type: 'COMPONENT',
+        descendants: [],
         name: 'HelloWorld',
         options: [
           {
-            label: 'Action',
+            configuration: {
+              apiVersion: 'v1',
+            },
             key: 'actionId',
-            value: '',
+            label: 'Action',
             ref: {
               value: 'foo',
             },
             type: 'ACTION',
-            configuration: {
-              apiVersion: 'v1',
-            },
+            value: '',
           },
         ],
-        descendants: [],
+        type: 'COMPONENT',
       },
     ],
   } as Prefab;
@@ -549,7 +548,7 @@ test('Throw when component option has a value and a ref object with a value', ()
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });
 
 test('Pass when component option has a value and no ref', (): void => {
@@ -559,19 +558,19 @@ test('Pass when component option has a value and no ref', (): void => {
     name: 'Prefab',
     structure: [
       {
+        descendants: [],
         name: 'HelloWorld',
         options: [
           {
-            label: 'Action',
-            key: 'actionId',
-            value: '',
-            type: 'ACTION',
             configuration: {
               apiVersion: 'v1',
             },
+            key: 'actionId',
+            label: 'Action',
+            type: 'ACTION',
+            value: '',
           },
         ],
-        descendants: [],
       },
     ],
   } as Prefab;
@@ -588,21 +587,21 @@ test('Pass when component option has a ref and no value', (): void => {
     name: 'Prefab',
     structure: [
       {
+        descendants: [],
         name: 'HelloWorld',
         options: [
           {
-            label: 'Action',
+            configuration: {
+              apiVersion: 'v1',
+            },
             key: 'actionId',
+            label: 'Action',
             ref: {
               value: 'foo',
             },
             type: 'ACTION',
-            configuration: {
-              apiVersion: 'v1',
-            },
           },
         ],
-        descendants: [],
       },
     ],
   } as Prefab;
@@ -619,18 +618,18 @@ test('Throw when component option has a ref when type is not ACTION', (): void =
     name: 'Prefab',
     structure: [
       {
+        descendants: [],
         name: 'HelloWorld',
         options: [
           {
-            type: 'TEXT',
-            label: 'Title',
             key: 'title',
+            label: 'Title',
             ref: {
               value: 'foo',
             },
+            type: 'TEXT',
           },
         ],
-        descendants: [],
       },
     ],
   } as Prefab;
@@ -646,7 +645,7 @@ test('Throw when component option has a ref when type is not ACTION', (): void =
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });
 
 test('Throw when component option has a ref object without a value', (): void => {
@@ -656,19 +655,19 @@ test('Throw when component option has a ref object without a value', (): void =>
     name: 'Prefab',
     structure: [
       {
+        descendants: [],
         name: 'HelloWorld',
         options: [
           {
-            label: 'Action',
-            key: 'actionId',
-            ref: {},
-            type: 'ACTION',
             configuration: {
               apiVersion: 'v1',
             },
+            key: 'actionId',
+            label: 'Action',
+            ref: {},
+            type: 'ACTION',
           },
         ],
-        descendants: [],
       },
     ],
   } as unknown as Prefab;
@@ -684,7 +683,7 @@ test('Throw when component option has a ref object without a value', (): void =>
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });
 
 test('Throw when component option has neither ref nor value', (): void => {
@@ -694,18 +693,18 @@ test('Throw when component option has neither ref nor value', (): void => {
     name: 'Prefab',
     structure: [
       {
+        descendants: [],
         name: 'HelloWorld',
         options: [
           {
-            label: 'Action',
-            key: 'actionId',
-            type: 'ACTION',
             configuration: {
               apiVersion: 'v1',
             },
+            key: 'actionId',
+            label: 'Action',
+            type: 'ACTION',
           },
         ],
-        descendants: [],
       },
     ],
   } as unknown as Prefab;
@@ -721,33 +720,11 @@ test('Throw when component option has neither ref nor value', (): void => {
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });
 
 test('Throw when multiple action reference the same id', (): void => {
   const prefab = {
-    category: 'CONTENT',
-    icon: 'TitleIcon',
-    name: 'Prefab',
-    structure: [
-      {
-        name: 'HelloWorld',
-        options: [
-          {
-            label: 'Action',
-            key: 'actionId',
-            ref: {
-              value: 'foo',
-            },
-            type: 'ACTION',
-            configuration: {
-              apiVersion: 'v1',
-            },
-          },
-        ],
-        descendants: [],
-      },
-    ],
     actions: [
       {
         name: 'action_1',
@@ -762,6 +739,24 @@ test('Throw when multiple action reference the same id', (): void => {
           id: 'foo',
         },
         useNewRuntime: true,
+      },
+    ],
+    category: 'CONTENT',
+    descendants: [],
+    icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [
+      {
+        name: 'HelloWorld',
+        options: [
+          {
+            configuration: { apiVersion: 'v1' },
+            key: 'actionId',
+            label: 'Action',
+            ref: { value: 'foo' },
+            type: 'ACTION',
+          },
+        ],
       },
     ],
   } as unknown as Prefab;
