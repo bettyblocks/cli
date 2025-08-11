@@ -72,6 +72,7 @@ const resolveMissingFunction = async ({
 
     groomed[name].replace = replacedFunction;
 
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete metaData[replacedFunction];
   } else {
     const { returnType, inputVariables } = await prompts([

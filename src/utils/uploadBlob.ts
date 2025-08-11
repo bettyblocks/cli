@@ -9,10 +9,6 @@ import {
   SharedKeyCredential,
   StorageURL,
 } from '@azure/storage-blob';
-import type {
-  BlockBlobUploadResponse,
-  ServiceSetPropertiesResponse,
-} from '@azure/storage-blob/src/generated/src/models';
 import chalk from 'chalk';
 
 interface UploadBlobProps {
@@ -31,6 +27,29 @@ if (!AZURE_BLOB_ACCOUNT) {
 if (!AZURE_BLOB_ACCOUNT_KEY) {
   throw new Error(chalk.red('\n$AZURE_BLOB_ACCOUNT_KEY is required\n'));
 }
+
+interface SetCorsRulesProps {
+  clientRequestId?: string;
+  date?: Date;
+  errorCode?: string;
+  requestId?: string;
+  version?: string;
+}
+
+interface BlockBlobUploadResponse {
+  clientRequestId?: string;
+  contentMD5?: Uint8Array;
+  date?: Date;
+  encryptionKeySha256?: string;
+  encryptionScope?: string;
+  errorCode?: string;
+  eTag?: string;
+  isServerEncrypted?: boolean;
+  lastModified?: Date;
+  requestId?: string;
+  version?: string;
+}
+
 export interface BlockBlobUploadResponseExtended
   extends BlockBlobUploadResponse {
   url: string;
@@ -49,9 +68,7 @@ const getServiceUrl = (): ServiceURL => {
   return new ServiceURL(url, pipeline);
 };
 
-const setCorsRules = (
-  serviceURL: ServiceURL,
-): Promise<ServiceSetPropertiesResponse> =>
+const setCorsRules = (serviceURL: ServiceURL): Promise<SetCorsRulesProps> =>
   serviceURL.setProperties(Aborter.none, {
     cors: [
       {

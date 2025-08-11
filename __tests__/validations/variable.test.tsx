@@ -1,6 +1,6 @@
-import { test, expect } from 'bun:test';
+import { expect, test } from 'bun:test';
 
-import { Prefab, PrefabVariable } from '../../src/types';
+import type { Prefab, PrefabVariable } from '../../src/types';
 import validatePrefabs from '../../src/validations/prefab';
 
 test('Pass without variables array', (): void => {
@@ -20,9 +20,9 @@ test('Pass when variables array is the empty list', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
-    variables: [],
     name: 'Prefab',
     structure: [],
+    variables: [],
   } as Prefab;
 
   expect(() =>
@@ -34,18 +34,18 @@ test('Throw when variable kind is unsupported', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       {
-        name: 'foo',
         kind: 'collection',
+        name: 'foo',
         ref: {
           endpointId: '#endpointId',
           id: '#variableId',
         },
       } as unknown as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
@@ -57,19 +57,19 @@ test('Throw when construct variable does not have a modelId', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       {
         kind: 'construct',
         name: 'foo',
+        options: {},
         ref: {
           endpointId: '#endpointId',
           id: '#variableId',
         },
-        options: {},
       } as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
@@ -81,11 +81,11 @@ test('Throw when construct variable does not have a name', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       { kind: 'construct', options: { modelId: '' } } as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
@@ -97,19 +97,19 @@ test('Throw when construct variable does not have a ref', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       {
         kind: 'construct',
         name: 'foo',
+        options: { modelId: '' },
         ref: {
           endpointId: '#endpointId',
           id: '#variableId',
         },
-        options: { modelId: '' },
       } as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
@@ -121,20 +121,20 @@ test('Throw when construct variable does not have a id ref', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       {
         kind: 'construct',
         name: 'foo',
-        ref: {
-          endpointId: '#endpointId',
-        },
         options: {
           modelId: '',
         },
+        ref: {
+          endpointId: '#endpointId',
+        },
       } as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
@@ -146,22 +146,22 @@ test('Throw when construct variable does not have a customModelId ref', (): void
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       {
         kind: 'construct',
         name: 'foo',
-        ref: {
-          id: '#variableId',
-          endpointId: '#endpointId',
-        },
         options: {
           modelId: '',
           ref: {},
         },
+        ref: {
+          endpointId: '#endpointId',
+          id: '#variableId',
+        },
       } as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() => validatePrefabs({ prefabs: [prefab], styles: {} })).toThrow(
@@ -173,22 +173,22 @@ test('Pass for valid construct variable', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       {
         kind: 'construct',
         name: 'foo',
-        ref: {
-          id: '#variableId',
-          endpointId: '#endpointId',
-        },
         options: {
           modelId: '',
           ref: { customModelId: 'baz' },
         },
+        ref: {
+          endpointId: '#endpointId',
+          id: '#variableId',
+        },
       } as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() =>
@@ -200,18 +200,18 @@ test('Pass when using a string variable', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       {
         kind: 'string',
         name: 'password',
         ref: {
-          id: '#passwordVariableId',
           actionId: '#loginActionId',
+          id: '#passwordVariableId',
         },
       } as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() =>
@@ -223,21 +223,21 @@ test('Pass when using a object variable', (): void => {
   const prefab = {
     category: 'CONTENT',
     icon: 'TitleIcon',
+    name: 'Prefab',
+    structure: [],
     variables: [
       {
         kind: 'object',
         name: 'form_object',
-        ref: {
-          id: '#objectVariableId',
-          endpointId: '#endpointId',
-        },
         options: {
           modelId: '',
         },
+        ref: {
+          endpointId: '#endpointId',
+          id: '#objectVariableId',
+        },
       } as PrefabVariable,
     ],
-    name: 'Prefab',
-    structure: [],
   } as Prefab;
 
   expect(() =>

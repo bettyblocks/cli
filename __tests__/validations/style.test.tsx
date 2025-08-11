@@ -1,38 +1,38 @@
-import { test, expect } from 'bun:test';
-// @ts-ignore - stripVTControlCharacters exists in Node 16.17+ but types may not be updated
-import { stripVTControlCharacters } from 'util';
+import { expect, test } from 'bun:test';
 
-import { Prefab, PrefabReference, StyleDefinition } from '../../src/types';
-import validateStyles from '../../src/validations/styles';
+import { stripVTControlCharacters } from 'src/utils/stripVTControlCharacters';
+
+import type { Prefab, PrefabReference, StyleDefinition } from '../../src/types';
 import validatePrefabs from '../../src/validations/prefab';
+import validateStyles from '../../src/validations/styles';
 
 test('Throw when duplicate style', (): void => {
   const styles: StyleDefinition[] = [
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
       basis: { color: { type: 'STATIC', value: 'a' } },
+      name: 'MyCustomStylo',
       states: [
         {
-          name: 'disabled',
           content: {
             borderStyle: 'none',
           },
+          name: 'disabled',
         },
       ],
+      type: 'BUTTON',
     },
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
       basis: { color: { type: 'STATIC', value: 'b' } },
+      name: 'MyCustomStylo',
       states: [
         {
-          name: 'hover',
           content: {
             borderStyle: 'none',
           },
+          name: 'hover',
         },
       ],
+      type: 'BUTTON',
     },
   ];
 
@@ -42,10 +42,10 @@ test('Throw when duplicate style', (): void => {
 test('Throw when empty css content for basis', (): void => {
   const styles: StyleDefinition[] = [
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
       basis: {},
+      name: 'MyCustomStylo',
       states: [],
+      type: 'BUTTON',
     },
   ];
 
@@ -55,17 +55,17 @@ test('Throw when empty css content for basis', (): void => {
 test('Throw when empty css content for state', (): void => {
   const styles: StyleDefinition[] = [
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
       basis: {
         borderStyle: 'none',
       },
+      name: 'MyCustomStylo',
       states: [
         {
-          name: 'disabled',
           content: {},
+          name: 'disabled',
         },
       ],
+      type: 'BUTTON',
     },
   ];
 
@@ -75,34 +75,34 @@ test('Throw when empty css content for state', (): void => {
 test('Throw when duplicate stateName', (): void => {
   const styles: StyleDefinition[] = [
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
       basis: {
         borderStyle: 'none',
       },
+      name: 'MyCustomStylo',
       states: [
         {
-          name: 'disabled',
           content: {
             borderStyle: 'none',
           },
+          name: 'disabled',
         },
         {
-          name: 'disabled',
           content: {
+            borderColor: {
+              type: 'STATIC',
+              value: 'Red',
+            },
             borderRadius: ['0.25rem'],
             borderStyle: 'none',
             color: {
               type: 'THEME_COLOR',
               value: 'white',
             },
-            borderColor: {
-              type: 'STATIC',
-              value: 'Red',
-            },
           },
+          name: 'disabled',
         },
       ],
+      type: 'BUTTON',
     },
   ];
 
@@ -112,12 +112,12 @@ test('Throw when duplicate stateName', (): void => {
 test('Throw when unsupported css property in basis', (): void => {
   const styles = [
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
       basis: {
         unsupportedColor: 'yeet',
       },
+      name: 'MyCustomStylo',
       states: [],
+      type: 'BUTTON',
     },
   ];
 
@@ -129,19 +129,19 @@ test('Throw when unsupported css property in basis', (): void => {
 test('Throw when unsupported css property in states', (): void => {
   const styles = [
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
       basis: {
         borderStyle: 'none',
       },
+      name: 'MyCustomStylo',
       states: [
         {
-          name: 'disabled',
           content: {
             unsupportedColor: 'yeet',
           },
+          name: 'disabled',
         },
       ],
+      type: 'BUTTON',
     },
   ];
 
@@ -153,19 +153,19 @@ test('Throw when unsupported css property in states', (): void => {
 test('it throws when the type does not exist as a component', (): void => {
   const styles: StyleDefinition[] = [
     {
-      type: 'BUTTON_NEXT_GEN',
-      name: 'MyCustomStylo',
       basis: {
         borderStyle: 'none',
       },
+      name: 'MyCustomStylo',
       states: [
         {
-          name: 'disabled',
           content: {
             borderStyle: 'none',
           },
+          name: 'disabled',
         },
       ],
+      type: 'BUTTON_NEXT_GEN',
     },
   ];
 
@@ -175,34 +175,34 @@ test('it throws when the type does not exist as a component', (): void => {
 test("Don't throw when all styles are valid", (): void => {
   const styles: StyleDefinition[] = [
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo2',
       basis: {
         borderStyle: 'none',
       },
+      name: 'MyCustomStylo2',
       states: [
         {
-          name: 'disabled',
           content: {
             borderStyle: 'none',
           },
+          name: 'disabled',
         },
       ],
+      type: 'BUTTON',
     },
     {
-      type: 'BUTTON',
-      name: 'MyCustomStylo',
       basis: {
         borderStyle: 'none',
       },
+      name: 'MyCustomStylo',
       states: [
         {
-          name: 'disabled',
           content: {
             borderStyle: 'none',
           },
+          name: 'disabled',
         },
       ],
+      type: 'BUTTON',
     },
   ];
 
@@ -211,18 +211,18 @@ test("Don't throw when all styles are valid", (): void => {
 
 test('it does not throw when a old style reference is defined and no procoder styles are available', (): void => {
   const prefabReference: PrefabReference = {
-    type: 'COMPONENT',
-    name: 'Button',
     descendants: [],
+    name: 'Button',
     options: [],
     style: { name: 'Outline' },
+    type: 'COMPONENT',
   };
 
   const prefabs: Prefab[] = [
     {
-      name: 'ShinyButton',
-      icon: 'ButtonIcon',
       category: 'Content',
+      icon: 'ButtonIcon',
+      name: 'ShinyButton',
       structure: [prefabReference],
     },
   ];
@@ -232,33 +232,33 @@ test('it does not throw when a old style reference is defined and no procoder st
 
 test('it does throw when a component uses a style but has no styleDefinition by type', (): void => {
   const style: StyleDefinition = {
-    type: 'Magic',
-    name: 'Filled',
     basis: {
       borderStyle: 'none',
     },
+    name: 'Filled',
     states: [
       {
-        name: 'disabled',
         content: {
           borderStyle: 'none',
         },
+        name: 'disabled',
       },
     ],
+    type: 'Magic',
   };
   const prefabReference: PrefabReference = {
-    type: 'COMPONENT',
-    name: 'Button',
     descendants: [],
+    name: 'Button',
     options: [],
     style: { name: 'Filled' },
+    type: 'COMPONENT',
   };
 
   const prefabs: Prefab[] = [
     {
-      name: 'ShinyButton',
-      icon: 'ButtonIcon',
       category: 'Content',
+      icon: 'ButtonIcon',
+      name: 'ShinyButton',
       structure: [prefabReference],
     },
   ];
@@ -276,38 +276,38 @@ test('it does throw when a component uses a style but has no styleDefinition by 
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });
 
 test('it does throw when a component uses a style but has no styleDefinition by name', (): void => {
   const style: StyleDefinition = {
-    type: 'Button',
-    name: 'yeep',
     basis: {
       borderStyle: 'none',
     },
+    name: 'yeep',
     states: [
       {
-        name: 'disabled',
         content: {
           borderStyle: 'none',
         },
+        name: 'disabled',
       },
     ],
+    type: 'Button',
   };
   const prefabReference: PrefabReference = {
-    type: 'COMPONENT',
-    name: 'Button',
     descendants: [],
+    name: 'Button',
     options: [],
     style: { name: 'Filled' },
+    type: 'COMPONENT',
   };
 
   const prefabs: Prefab[] = [
     {
-      name: 'ShinyButton',
-      icon: 'ButtonIcon',
       category: 'Content',
+      icon: 'ButtonIcon',
+      name: 'ShinyButton',
       structure: [prefabReference],
     },
   ];
@@ -325,41 +325,41 @@ test('it does throw when a component uses a style but has no styleDefinition by 
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });
 
 test('it does throw when a component uses a style but the overwrite does not match the StyleDefinition for basis', (): void => {
   const style: StyleDefinition = {
-    type: 'Button',
-    name: 'Filled',
     basis: {
       borderStyle: 'none',
     },
+    name: 'Filled',
     states: [
       {
-        name: 'disabled',
         content: {
           borderStyle: 'none',
         },
+        name: 'disabled',
       },
     ],
+    type: 'Button',
   };
   const prefabReference: PrefabReference = {
-    type: 'COMPONENT',
-    name: 'Button',
     descendants: [],
+    name: 'Button',
     options: [],
     style: {
       name: 'Filled',
-      overwrite: [{ name: 'basis', content: { borderWidth: ['1rem'] } }],
+      overwrite: [{ content: { borderWidth: ['1rem'] }, name: 'basis' }],
     },
+    type: 'COMPONENT',
   };
 
   const prefabs: Prefab[] = [
     {
-      name: 'ShinyButton',
-      icon: 'ButtonIcon',
       category: 'Content',
+      icon: 'ButtonIcon',
+      name: 'ShinyButton',
       structure: [prefabReference],
     },
   ];
@@ -377,41 +377,41 @@ test('it does throw when a component uses a style but the overwrite does not mat
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });
 
 test('it does throw when a component uses a style but the overwrite does not match the StyleDefinition for state key object', (): void => {
   const style: StyleDefinition = {
-    type: 'Button',
-    name: 'Filled',
     basis: {
       borderStyle: 'none',
     },
+    name: 'Filled',
     states: [
       {
-        name: 'disabled',
         content: {
           borderStyle: 'none',
         },
+        name: 'disabled',
       },
     ],
+    type: 'Button',
   };
   const prefabReference: PrefabReference = {
-    type: 'COMPONENT',
-    name: 'Button',
     descendants: [],
+    name: 'Button',
     options: [],
     style: {
       name: 'Filled',
-      overwrite: [{ name: 'disabled', content: { borderWidth: ['1rem'] } }],
+      overwrite: [{ content: { borderWidth: ['1rem'] }, name: 'disabled' }],
     },
+    type: 'COMPONENT',
   };
 
   const prefabs: Prefab[] = [
     {
-      name: 'ShinyButton',
-      icon: 'ButtonIcon',
       category: 'Content',
+      icon: 'ButtonIcon',
+      name: 'ShinyButton',
       structure: [prefabReference],
     },
   ];
@@ -429,41 +429,41 @@ test('it does throw when a component uses a style but the overwrite does not mat
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });
 
 test('it does throw when a component uses a style but the overwrite does not match the StyleDefinition for state key', (): void => {
   const style: StyleDefinition = {
-    type: 'Button',
-    name: 'Filled',
     basis: {
       borderStyle: 'none',
     },
+    name: 'Filled',
     states: [
       {
-        name: 'disabled',
         content: {
           borderStyle: 'none',
         },
+        name: 'disabled',
       },
     ],
+    type: 'Button',
   };
   const prefabReference: PrefabReference = {
-    type: 'COMPONENT',
-    name: 'Button',
     descendants: [],
+    name: 'Button',
     options: [],
     style: {
       name: 'Filled',
-      overwrite: [{ name: 'hover', content: { borderWidth: ['1rem'] } }],
+      overwrite: [{ content: { borderWidth: ['1rem'] }, name: 'hover' }],
     },
+    type: 'COMPONENT',
   };
 
   const prefabs: Prefab[] = [
     {
-      name: 'ShinyButton',
-      icon: 'ButtonIcon',
       category: 'Content',
+      icon: 'ButtonIcon',
+      name: 'ShinyButton',
       structure: [prefabReference],
     },
   ];
@@ -481,5 +481,5 @@ test('it does throw when a component uses a style but the overwrite does not mat
   }
 
   expect(actualError).toBeDefined();
-  expect(stripVTControlCharacters(actualError!.message)).toBe(expectedMessage);
+  expect(stripVTControlCharacters(actualError?.message)).toBe(expectedMessage);
 });

@@ -10,6 +10,7 @@
         "@babel/parser": "7.28.0",
         "@babel/traverse": "7.28.0",
         "@babel/types": "7.28.2",
+        "@betty-blocks/component-sdk": "^1.91.3",
         "@types/adm-zip": "^0.4.33",
         "@types/hapi__joi": "^16.0.0",
         "@types/prompts": "^2.0.14",
@@ -100,6 +101,8 @@
     "@babel/traverse": ["@babel/traverse@7.28.0", "", { "dependencies": { "@babel/code-frame": "^7.27.1", "@babel/generator": "^7.28.0", "@babel/helper-globals": "^7.28.0", "@babel/parser": "^7.28.0", "@babel/template": "^7.27.2", "@babel/types": "^7.28.0", "debug": "^4.3.1" } }, "sha512-mGe7UK5wWyh0bKRfupsUchrQGqvDbZDbKJw+kcRGSmdHVYrv+ltd0pnpDTVpiTqnaBru9iEvA8pz8W46v0Amwg=="],
 
     "@babel/types": ["@babel/types@7.28.2", "", { "dependencies": { "@babel/helper-string-parser": "^7.27.1", "@babel/helper-validator-identifier": "^7.27.1" } }, "sha512-ruv7Ae4J5dUYULmeXw1gmb7rYRz57OWCPM57pHojnLq/3Z1CK2lNSLTCVjxVk1F/TZHwOZZrOWi0ur95BbLxNQ=="],
+
+    "@betty-blocks/component-sdk": ["@betty-blocks/component-sdk@1.91.4", "", {}, "sha512-L9R3rEa1+QPwzMmxmMPXlOwGaALlfyvqhpqkW5SFnuYpMeWY3zADWXhWopXyPSZ/8+r7R/p56yuiX3YNzHnHuw=="],
 
     "@colors/colors": ["@colors/colors@1.5.0", "", {}, "sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ=="],
 

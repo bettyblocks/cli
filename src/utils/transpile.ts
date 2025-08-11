@@ -6,6 +6,8 @@ import { type File, stringLiteral } from '@babel/types';
 const generateInnerCode = (ast: File, keys: string[]): void => {
   traverse(ast, {
     ObjectProperty(path) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       if (keys.includes(path.node.key.name)) {
         const value: string = generate(path.node.value).code;
 

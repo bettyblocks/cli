@@ -53,6 +53,7 @@
     "@babel/parser": "7.28.0",
     "@babel/traverse": "7.28.0",
     "@babel/types": "7.28.2",
+    "@betty-blocks/component-sdk": "^1.91.3",
     "@types/adm-zip": "^0.4.33",
     "@types/hapi__joi": "^16.0.0",
     "@types/prompts": "^2.0.14",
