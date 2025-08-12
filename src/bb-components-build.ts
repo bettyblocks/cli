@@ -648,20 +648,15 @@ void (async (): Promise<void> => {
       'file' in error &&
       'message' in error
     ) {
-      const { name, file, message } = error as {
-        name: string;
-        file: string;
-        message: string;
-      };
-      console.error(chalk.red(`\n${name} in ${file}: ${message}\n`));
-    } else if (error instanceof Error) {
-      console.error(chalk.red(`\nError: ${error.message}\n`));
-    } else {
-      console.error(chalk.red('\nAn unknown error occurred:\n'));
-      console.error(error);
+      const { name, file, message } = error;
+      throw new Error(`${name} in ${file}: ${message}`);
     }
 
-    process.exit(1);
+    if (error instanceof Error) {
+      throw new Error(`Error: ${error.message}`);
+    }
+
+    throw new Error(`An unknown error occurred: ${error}`);
   }
   console.info(`Total time: ${(Date.now() - startTime) / 1000} seconds`);
 })();

@@ -153,9 +153,8 @@ const publishCustomFunctions = (
     .then(() => {
       console.log('Done.');
     })
-    .catch((err: NodeJS.ErrnoException) => {
-      console.log(`${err}\nAbort.`);
-      process.exit();
+    .catch((error: NodeJS.ErrnoException) => {
+      throw new Error(`${error}\nAbort.`);
     });
 };
 

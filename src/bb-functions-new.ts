@@ -19,13 +19,13 @@ if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     newFunctionDefinition(functionsDir, inputFunctionName);
 
     console.log(`functions/${inputFunctionName} created`);
-  } catch (err) {
-    console.log(
-      `functions/${inputFunctionName} could not be created. Error: ${err}`,
+  } catch (error) {
+    throw new Error(
+      `functions/${inputFunctionName} could not be created. Error: ${error}`,
     );
   }
 } else {
-  console.log(
+  throw new Error(
     `${workingDir} doesn't seem to be a functions project.\nPlease make sure you're in the root of the project.`,
   );
 }

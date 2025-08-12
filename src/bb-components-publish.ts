@@ -37,6 +37,8 @@ const read = async (fileName: string): Promise<void> => {
         ),
       );
     }
+
+    throw new Error(`Unknown error occurred: ${error}`);
   }
 };
 

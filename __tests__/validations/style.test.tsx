@@ -1,6 +1,5 @@
+import { stripVTControlCharacters } from '__tests__/utils';
 import { expect, test } from 'bun:test';
-
-import { stripVTControlCharacters } from 'src/utils/stripVTControlCharacters';
 
 import type { Prefab, PrefabReference, StyleDefinition } from '../../src/types';
 import validatePrefabs from '../../src/validations/prefab';

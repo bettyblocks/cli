@@ -40,7 +40,7 @@ const readJS = async (fileName: string): Promise<string> => {
       );
     }
 
-    throw new Error('Unknown error occurred');
+    throw new Error(`Unknown error occurred: ${error}`);
   }
 };
 

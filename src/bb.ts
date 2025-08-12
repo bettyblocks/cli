@@ -1,3 +1,5 @@
+#!/usr/bin/env bun
+
 import chalk from 'chalk';
 import { Command } from 'commander';
 

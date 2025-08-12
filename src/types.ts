@@ -174,7 +174,7 @@ export type BuildStyleOverwrite =
   | BuildStyleDefinitionContentOverwrites;
 
 export interface BuildStyle {
-  name?: string; // TODO: make this required
+  name?: string;
   overwrite?: BuildStyleOverwrite;
 }
 

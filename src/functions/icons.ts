@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import fs from 'fs-extra';
+import ora from 'ora';
 
 import {
   functionDefinition,
@@ -12,9 +13,7 @@ type ICONS = Record<string, { name: string; color: string }>;
 const check = chalk.green(`✔`);
 
 const convert = (functionsPath: string): void => {
-  const { log } = console;
-
-  log('Checking for function icons to convert ...');
+  const checkStart = ora('Checking for function icons to convert ...').start();
 
   functionDirs(functionsPath, true).forEach((functionPath) => {
     const definition = functionDefinition(functionPath, functionsPath);
@@ -49,17 +48,17 @@ const convert = (functionsPath: string): void => {
         },
       );
 
-      log(
+      console.log(
         `${check} Converted: ${fn} => ${JSON.stringify(
           definition.schema.icon,
         )}`,
       );
     } else {
-      log(`${check} Skipped: ${fn}`);
+      console.log(`${check} Skipped: ${fn}`);
     }
   });
 
-  log('Done.');
+  checkStart.succeed('Done.');
 };
 
 export { convert };

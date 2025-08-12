@@ -50,8 +50,7 @@ class IDE {
         { csrfToken }: AnyObject,
       ) => {
         if (method !== 'GET' && csrfToken) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          options.headers ?? (options.headers = {});
+          options.headers ??= {};
 
           options.headers['X-Csrf-Token'] = csrfToken;
         }

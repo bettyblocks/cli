@@ -46,7 +46,6 @@ serveComponentSet(options, hasOfflineFlag).then(
     console.info(chalk.green(`Serving the component set at ${url}`));
   },
   (error) => {
-    console.error(chalk.red(`\n${error}\n`));
-    process.exit(1);
+    throw new Error(`Error: ${error}`);
   },
 );

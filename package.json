@@ -4,6 +4,7 @@
   "description": "A Betty Blocks CLI",
   "module": "./src/bb.ts",
   "type": "module",
+  "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "https://github.com/bettyblocks/cli"
@@ -26,16 +27,21 @@
     "@commitlint/prompt-cli": "^15.0.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
+    "@types/adm-zip": "0.5.7",
     "@types/app-root-path": "^1.2.4",
     "@types/babel__generator": "7.27.0",
     "@types/babel__traverse": "7.28.0",
     "@types/bun": "^1.2.19",
     "@types/fs-extra": "^8.0.0",
     "@types/glob": "^7.2.0",
+    "@types/hapi__joi": "^16.0.0",
     "@types/lodash": "^4.14.176",
     "@types/minimatch": "^6.0.0",
     "@types/promise-sequential": "^1.1.0",
+    "@types/prompts": "^2.0.14",
+    "@types/react": "^16.9.9",
     "@types/semver": "^7.3.9",
+    "@types/serve-handler": "^6.1.0",
     "app-root-path": "^2.2.1",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
@@ -54,11 +60,6 @@
     "@babel/traverse": "7.28.0",
     "@babel/types": "7.28.2",
     "@betty-blocks/component-sdk": "^1.91.3",
-    "@types/adm-zip": "0.5.7",
-    "@types/hapi__joi": "^16.0.0",
-    "@types/prompts": "^2.0.14",
-    "@types/react": "^16.9.9",
-    "@types/serve-handler": "^6.1.0",
     "adm-zip": "0.5.16",
     "case": "^1.6.3",
     "chalk": "^5.5.0",
@@ -81,9 +82,6 @@
     "serve-handler": "6.1.6",
     "tsconfig-paths": "^3.9.0",
     "webhead": "^1.1.3"
-  },
-  "optionalDependencies": {
-    "isolated-vm": "^4.0.0"
   },
   "bin": {
     "bb": "./src/bb.ts"
