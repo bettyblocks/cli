@@ -1,7 +1,8 @@
 import fs from 'fs-extra';
 import glob from 'glob';
-import { pick } from 'lodash';
 import path from 'path';
+
+import { pick } from '../utils/pick';
 
 export interface Block {
   dependencies: string[];

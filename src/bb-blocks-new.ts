@@ -1,6 +1,6 @@
+import { kebab } from 'case';
 import { Command } from 'commander';
 import fs from 'fs-extra';
-import kebabCase from 'lodash/kebabCase';
 import path from 'path';
 
 import { newBlockDefinition } from './blocks/blockDefinitions';
@@ -10,7 +10,7 @@ const program = new Command();
 program.usage('[block-name]').name('bb blocks new').parse(process.argv);
 
 const { args } = program;
-const inputBlockName = kebabCase(args.join());
+const inputBlockName = kebab(args.join());
 
 const workingDir = process.cwd();
 if (fs.existsSync(path.join(workingDir, '.app-functions'))) {

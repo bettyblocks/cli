@@ -21,7 +21,6 @@
         "joi": "18.0.0",
         "jsdoc-api": "^7.1.0",
         "jsonschema": "^1.4.0",
-        "lodash": "^4.17.21",
         "minimatch": "10.0.3",
         "minimist": "1.2.8",
         "node-fetch": "3.3.2",
@@ -48,7 +47,6 @@
         "@types/fs-extra": "^8.0.0",
         "@types/glob": "^7.2.0",
         "@types/hapi__joi": "^16.0.0",
-        "@types/lodash": "^4.14.176",
         "@types/minimatch": "^6.0.0",
         "@types/promise-sequential": "^1.1.0",
         "@types/prompts": "^2.0.14",
@@ -274,8 +272,6 @@
     "@types/json5": ["@types/json5@0.0.29", "", {}, "sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ=="],
 
     "@types/linkify-it": ["@types/linkify-it@5.0.0", "", {}, "sha512-sVDA58zAw4eWAffKOaQH5/5j3XeayukzDk+ewSsnv3p4yJEZHCCzMDiZM8e0OUrRvmpGZ85jf4yDHkHsgBNr9Q=="],
-
-    "@types/lodash": ["@types/lodash@4.17.20", "", {}, "sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA=="],
 
     "@types/markdown-it": ["@types/markdown-it@14.1.2", "", { "dependencies": { "@types/linkify-it": "^5", "@types/mdurl": "^2" } }, "sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog=="],
 

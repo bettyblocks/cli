@@ -10,7 +10,7 @@ import {
 
 test('It validates invalid block dependencies', (): void => {
   const { valid, invalidDependencies } = validateBlockDependencies([
-    'lodash',
+    'case',
     'moment',
   ]);
 
@@ -19,7 +19,7 @@ test('It validates invalid block dependencies', (): void => {
 });
 
 test('It validates valid block dependencies', (): void => {
-  const { valid, invalidDependencies } = validateBlockDependencies(['lodash']);
+  const { valid, invalidDependencies } = validateBlockDependencies(['case']);
 
   expect(valid).toBe(true);
   expect(invalidDependencies.join()).toEqual('');
@@ -63,7 +63,7 @@ test('It returns an error for invalid block dependencies without package specifi
 
 test('It validates if the there is a function defined', (): void => {
   const block: Block = {
-    dependencies: ['lodash'],
+    dependencies: ['case'],
     functions: ['./functions/function.js'],
     includes: [],
   };
@@ -72,7 +72,7 @@ test('It validates if the there is a function defined', (): void => {
 
 test('It validates if the there is no function defined', (): void => {
   const block: Block = {
-    dependencies: ['lodash'],
+    dependencies: ['case'],
     functions: [],
     includes: [],
   };
@@ -81,7 +81,7 @@ test('It validates if the there is no function defined', (): void => {
 
 test('It validates the block name on kebab case and is not valid', async (): Promise<void> => {
   const block: Block = {
-    dependencies: ['lodash'],
+    dependencies: ['case'],
     functions: ['sayHello 1.0'],
     includes: [],
   };
@@ -100,7 +100,7 @@ test('It validates the block name on kebab case and is not valid', async (): Pro
 
 test('It validates the block name on kebab case and is valid', async (): Promise<void> => {
   const block: Block = {
-    dependencies: ['lodash'],
+    dependencies: ['case'],
     functions: ['sayHello 1.0'],
     includes: [],
   };

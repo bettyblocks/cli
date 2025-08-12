@@ -1,9 +1,7 @@
 import AdmZip from 'adm-zip';
+import { camel, title } from 'case';
 import fs from 'fs-extra';
 import glob from 'glob';
-import { concat } from 'lodash';
-import camelCase from 'lodash/camelCase';
-import startCase from 'lodash/startCase';
 import path from 'path';
 
 interface Schema {
@@ -88,10 +86,10 @@ const functionDefinition = (
   let version = '';
 
   if (isFunctionVersion(functionPath, functionsDir)) {
-    name = camelCase(path.basename(path.dirname(functionPath)));
+    name = camel(path.basename(path.dirname(functionPath)));
     version = path.basename(functionPath);
   } else {
-    name = camelCase(path.basename(functionPath));
+    name = camel(path.basename(functionPath));
   }
 
   const filePath = functionDefinitionPath(functionPath);
@@ -154,7 +152,7 @@ const newFunctionDefinition = (
         category: 'Misc',
         description: 'Description',
         icon: { color: 'Orange', name: 'ActionsIcon' },
-        label: startCase(functionName),
+        label: title(functionName),
         options: [],
         yields: 'NONE',
       },
@@ -171,7 +169,7 @@ const newFunctionDefinition = (
 };
 
 const toVariableName = ({ name, version }: FunctionDefinition): string =>
-  `${camelCase(name)}_${version.replace('.', '_')}`;
+  `${camel(name)}_${version.replace('.', '_')}`;
 
 /* @doc importFunctions
   Returns an array of strings, each item being an imported function:
@@ -213,7 +211,7 @@ const whitelistedFunctions = (
 ): FunctionDefinition[] =>
   whitelist.map((whitelisted) => {
     const definition = definitions.find(
-      (def) => concat(def.name, def.version).join(' ') === whitelisted,
+      (def) => [def.name, def.version].join(' ') === whitelisted,
     );
     if (!definition)
       throw new Error(

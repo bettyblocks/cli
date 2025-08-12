@@ -44,7 +44,7 @@ test('creating a package.json', async (): Promise<void> => {
   const packageJson = JSON.stringify(
     {
       dependencies: {
-        lodash: '^4.17.21',
+        case: '^1.6.3',
       },
       name: 'test',
       private: 'true',
@@ -55,6 +55,6 @@ test('creating a package.json', async (): Promise<void> => {
   );
 
   expect(
-    createPackageJson('test', '__tests__/blocks/rootPackage.json', ['lodash']),
+    createPackageJson('test', '__tests__/blocks/rootPackage.json', ['case']),
   ).toBe(packageJson);
 });
