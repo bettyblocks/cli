@@ -1,11 +1,11 @@
+import { expect, test } from 'bun:test';
 import fs from 'fs-extra';
-import { test, expect } from 'bun:test';
 import path from 'path';
 
 import {
   functionDefinition,
-  functionDefinitions,
   functionDefinitionPath,
+  functionDefinitions,
   generateIndex,
   isFunctionDefinition,
   isFunctionVersion,

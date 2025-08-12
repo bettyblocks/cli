@@ -99,17 +99,17 @@ test('Throw when one of the prefabs options is invalid', (): void => {
       name: 'Component Name',
       structure: [
         {
+          descendants: [],
           name: 'something',
           options: [
             {
-              value: '',
-              label: 'something',
-              key: 'something',
-              type: 'TEXT',
               invalid: ' ',
+              key: 'something',
+              label: 'something',
+              type: 'TEXT',
+              value: '',
             },
           ],
-          descendants: [],
         },
       ],
     },

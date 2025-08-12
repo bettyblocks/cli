@@ -1,17 +1,37 @@
-import { test, expect } from 'bun:test';
+import { expect, test } from 'bun:test';
 
-import { checkOptionCategoryReferences } from '../../src/utils/validation';
 import type { Prefab } from '../../src/types';
+import { checkOptionCategoryReferences } from '../../src/utils/validation';
 
 test('Throws when option category references do not match an option', (): void => {
   const prefabs = [
     {
-      name: 'Component name',
-      icon: 'TitleIcon',
       category: 'CONTENT',
+      icon: 'TitleIcon',
+      name: 'Component name',
       structure: [
         {
-          type: 'WRAPPER',
+          descendants: [
+            {
+              descendants: [],
+              name: 'Text',
+              optionCategories: [{ label: 'Category 1', members: ['foo'] }],
+              options: [
+                {
+                  key: 'option1',
+                  label: 'something',
+                  ref: {
+                    id: '#textOption',
+                  },
+                  type: 'TEXT',
+                  value: '',
+                },
+              ],
+              ref: {
+                id: '#textComponent',
+              },
+            },
+          ],
           optionCategories: [{ label: 'Category 2', members: ['foo'] }],
           options: [
             {
@@ -25,27 +45,7 @@ test('Throws when option category references do not match an option', (): void =
               },
             },
           ],
-          descendants: [
-            {
-              ref: {
-                id: '#textComponent',
-              },
-              name: 'Text',
-              optionCategories: [{ label: 'Category 1', members: ['foo'] }],
-              options: [
-                {
-                  ref: {
-                    id: '#textOption',
-                  },
-                  value: '',
-                  label: 'something',
-                  key: 'option1',
-                  type: 'TEXT',
-                },
-              ],
-              descendants: [],
-            },
-          ],
+          type: 'WRAPPER',
         },
       ],
     },

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { test, expect } from 'bun:test';
+import { expect, test } from 'bun:test';
 
 import toCompatibility from '../src/components/compatibility';
 
@@ -33,9 +32,9 @@ test('extract compatibility for simple button with custom trigger and function',
   const compatibility = toCompatibility(code);
 
   expect(compatibility).toEqual({
-    triggers: ['CustomTrigger'],
     functions: ['CustomFunction'],
     interactions: {},
+    triggers: ['CustomTrigger'],
   });
 });
 
@@ -130,9 +129,9 @@ test('extract compatibility for complex button with multiple triggers and functi
   const compatibility = toCompatibility(code);
 
   expect(compatibility).toEqual({
-    triggers: ['CustomTrigger1', 'CustomTrigger2', 'CustomTrigger3'],
     functions: ['CustomFunction1', 'CustomFunction2', 'CustomFunction3'],
     interactions: {},
+    triggers: ['CustomTrigger1', 'CustomTrigger2', 'CustomTrigger3'],
   });
 });
 
@@ -179,6 +178,8 @@ test('extract compatibility for simple button with custom trigger with changing 
   const compatibility = toCompatibility(code);
 
   expect(compatibility).toEqual({
+    functions: [],
+    interactions: {},
     triggers: [
       'CustomTrigger1',
       'CustomTrigger2',
@@ -188,8 +189,6 @@ test('extract compatibility for simple button with custom trigger with changing 
       'CustomTrigger6',
       'CustomTrigger7',
     ],
-    functions: [],
-    interactions: {},
   });
 });
 
@@ -221,14 +220,14 @@ test('extract compatibility for simple button with custom inline triggers', (): 
   const compatibility = toCompatibility(code);
 
   expect(compatibility).toEqual({
+    functions: [],
+    interactions: {},
     triggers: [
       'CustomTrigger1',
       'CustomTrigger2',
       'CustomTrigger3',
       'CustomTrigger4',
     ],
-    functions: [],
-    interactions: {},
   });
 });
 
@@ -319,18 +318,6 @@ test('compatibility galore', (): void => {
   const compatibility = toCompatibility(code);
 
   expect(compatibility).toEqual({
-    triggers: [
-      'CustomTrigger1',
-      'CustomTrigger2',
-      'CustomTrigger3',
-      'CustomTrigger4',
-      'CustomTrigger5',
-      'CustomTrigger6',
-      'CustomTrigger7',
-      'CustomTrigger8',
-      'CustomTrigger9',
-      'CustomTrigger10',
-    ],
     functions: [
       'CustomFunction1',
       'CustomFunction2',
@@ -352,5 +339,17 @@ test('compatibility galore', (): void => {
         returnType: ['Void'],
       },
     },
+    triggers: [
+      'CustomTrigger1',
+      'CustomTrigger2',
+      'CustomTrigger3',
+      'CustomTrigger4',
+      'CustomTrigger5',
+      'CustomTrigger6',
+      'CustomTrigger7',
+      'CustomTrigger8',
+      'CustomTrigger9',
+      'CustomTrigger10',
+    ],
   });
 });

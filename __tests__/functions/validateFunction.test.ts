@@ -1,23 +1,16 @@
-import { test, expect } from 'bun:test';
-import path from 'path';
+import { expect, test } from 'bun:test';
 import { Validator } from 'jsonschema';
+import path from 'path';
+
 import { functionDefinition } from '../../src/functions/functionDefinitions';
 import { validateSchema } from '../../src/functions/validations';
 
 const schema = {
   $id: '/schema/actions/function.json',
-  title: 'Function',
   properties: {
-    label: {
-      type: 'string',
-    },
     icon: {
-      type: 'object',
       additionalProperties: false,
       properties: {
-        name: {
-          type: 'string',
-        },
         color: {
           enum: [
             'Yellow',
@@ -30,11 +23,19 @@ const schema = {
             'Grey',
           ],
         },
+        name: {
+          type: 'string',
+        },
       },
       required: ['name', 'color'],
+      type: 'object',
+    },
+    label: {
+      type: 'string',
     },
   },
   required: ['label'],
+  title: 'Function',
 };
 
 const validator = new Validator();
@@ -44,11 +45,11 @@ test('load in entire schema for validator', async (): Promise<void> => {
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
-      label: 'Create',
       icon: {
-        name: 'ChatIcon',
         color: 'Teal',
+        name: 'ChatIcon',
       },
+      label: 'Create',
     },
   };
 
@@ -95,8 +96,8 @@ test('invalidate schemas that do not have valid values for properties', async ()
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
-      label: 'Create',
       icon: 'RandomIcon',
+      label: 'Create',
     },
   };
 

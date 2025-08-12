@@ -1,6 +1,7 @@
+import { afterEach, expect, test } from 'bun:test';
 import fs from 'fs-extra';
-import { test, expect, afterEach } from 'bun:test';
 import path from 'path';
+
 import {
   blockDefinitionPath,
   blockDefinitions,

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import { test, expect } from 'bun:test';
+import { expect, test } from 'bun:test';
 
 import toCompatibility from '../src/interactions/compatibility';
 import { InteractionOptionType } from '../src/types';
@@ -43,9 +42,9 @@ test('extract compatibility for: ({ event, price, quantity }: { event: Event, pr
 `,
     name: 'subtotal',
     parameters: {
+      event: InteractionOptionType.Event,
       price: InteractionOptionType.Number,
       quantity: InteractionOptionType.Number,
-      event: InteractionOptionType.Event,
     },
     type: InteractionOptionType.Number,
   });
@@ -71,13 +70,13 @@ test('add compatibility for unknown type', (): void => {
 test('fail extraction when passing no interaction', (): void => {
   expect(() => toCompatibility('__tests__/assets/empty.ts')).toThrow(
     expect.objectContaining({
-      name: 'RangeError',
       message: `
     expected expression of the kind
       function empty({ event, argument }: { event: Event, argument: ArgumentType }): ReturnType {
         // body
       }
     `,
+      name: 'RangeError',
     }),
   );
 });
@@ -85,13 +84,13 @@ test('fail extraction when passing no interaction', (): void => {
 test('fail when passing an arrow function instead of a function', (): void => {
   expect(() => toCompatibility('__tests__/assets/arrow.ts')).toThrow(
     expect.objectContaining({
-      name: 'RangeError',
       message: `
     expected expression of the kind
       function arrow({ event, argument }: { event: Event, argument: ArgumentType }): ReturnType {
         // body
       }
     `,
+      name: 'RangeError',
     }),
   );
 });
@@ -99,8 +98,8 @@ test('fail when passing an arrow function instead of a function', (): void => {
 test('fail extraction when passing incompatible type for: subtotal({ event, price }: { event: Event, price: PriceType }): number => number', (): void => {
   expect(() => toCompatibility('__tests__/assets/incompatibleType.ts')).toThrow(
     expect.objectContaining({
-      name: 'TypeError',
       message: 'unsupported type for: price',
+      name: 'TypeError',
     }),
   );
 });
@@ -108,8 +107,8 @@ test('fail extraction when passing incompatible type for: subtotal({ event, pric
 test('fail extraction with multiple function statements', (): void => {
   expect(() => toCompatibility('__tests__/assets/multiple.ts')).toThrow(
     expect.objectContaining({
-      name: 'RangeError',
       message: 'file contains multiple statements',
+      name: 'RangeError',
     }),
   );
 });
