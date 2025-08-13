@@ -10,7 +10,6 @@ const availableCommands: CommandBB[] = [
   'blocks',
   'components',
   'functions',
-  'interactions',
   'bundle',
   'help',
 ];
@@ -23,7 +22,6 @@ program
   .command('components [cmd]', 'manage your component sets')
   .command('blocks [cmd]', 'manage your blocks')
   .command('functions [cmd]', 'manage your custom functions')
-  .command('interactions [cmd]', 'manage your interactions')
   .command('bundle [cmd]', 'manage your vendor bundle')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandBB)) {

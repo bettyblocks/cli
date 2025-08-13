@@ -34,8 +34,6 @@ export type CommandFunctions =
 
 export type CommandBlocks = 'publish' | 'release' | 'new';
 
-export type CommandInteractions = 'generate';
-
 export type CommandBundle = 'init';
 
 export type DefaultCategory =
