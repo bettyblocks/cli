@@ -34,7 +34,9 @@ export const findDuplicates = <
   type: string,
   structure: K,
 ): void => {
-  list.reduce((acc: Set<string>, item: T): Set<string> => {
+  const seen = new Set<string>();
+
+  for (const item of list) {
     let value;
 
     try {
@@ -46,7 +48,7 @@ export const findDuplicates = <
     if (typeof value === 'string') {
       const valueLower = value.toLowerCase();
 
-      if (acc.has(valueLower)) {
+      if (seen.has(valueLower)) {
         throw new Error(
           chalk.red(
             `\nThe name "${valueLower}" is used for multiple ${type}s\n`,
@@ -54,11 +56,9 @@ export const findDuplicates = <
         );
       }
 
-      acc.add(valueLower);
+      seen.add(valueLower);
     }
-
-    return acc;
-  }, new Set());
+  }
 };
 
 const checkComponentReferenceNames =
