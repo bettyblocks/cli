@@ -1,3 +1,18 @@
+# [25.109.0-beta.1](https://github.com/bettyblocks/cli/compare/v25.108.0...v25.109.0-beta.1) (2025-08-14)
+
+
+### Bug Fixes
+
+* component build working with bun ([6b58157](https://github.com/bettyblocks/cli/commit/6b581573cc338c95cda7308b29d233ea79a7dcd5))
+* refactors and corrects test assertions ([eb947ef](https://github.com/bettyblocks/cli/commit/eb947efd000726434fc83f248522bfc12e1eb69e))
+
+
+### Features
+
+* remove deprecated cli command and update deps /n/n BREAKING CHANGE: now requires bun instead of yarn and the deprecated commands are removed ([680956c](https://github.com/bettyblocks/cli/commit/680956c49aed6ee30fe887d180b72e7a79bfa287))
+* remove deprecated cli command and update deps /n/n BREAKING CHANGE: now requires bun instead of yarn and the deprecated commands are removed ([cf7b7ef](https://github.com/bettyblocks/cli/commit/cf7b7ef574be1d818b72148612c51aa3a6b7c6f9))
+* use bun and update typescript ([229b0bc](https://github.com/bettyblocks/cli/commit/229b0bc4f4eb5d737c201aacd5ab0a46bd765776))
+
 # [25.108.0](https://github.com/bettyblocks/cli/compare/v25.107.0...v25.108.0) (2025-07-22)
 
 
