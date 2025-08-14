@@ -2,7 +2,7 @@
   "name": "@betty-blocks/cli",
   "version": "26.0.0-beta.1",
   "description": "A Betty Blocks CLI",
-  "module": "./src/bb.ts",
+  "module": "./build/src/bb.js",
   "type": "module",
   "license": "UNLICENSED",
   "repository": {
@@ -82,7 +82,7 @@
     "webhead": "^1.1.3"
   },
   "bin": {
-    "bb": "./src/bb.ts"
+    "bb": "./build/src/bb.js"
   },
   "resolutions": {
     "@types/react": "^16.9.9"
