@@ -33,7 +33,7 @@ test('returns 2 blocks', async (): Promise<void> => {
   fs.emptyDirSync(supportDir);
   const newBlocks = ['test', 'block'];
 
-  newBlocks.map((block) => newBlockDefinition(supportDir, block));
+  newBlocks.forEach((block) => newBlockDefinition(supportDir, block));
 
   const blocks = blockDefinitions(supportDir);
   const numberOfBlocks = blocks.length;
