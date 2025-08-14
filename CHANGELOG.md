@@ -1,3 +1,10 @@
+# [26.0.0-beta.3](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.2...v26.0.0-beta.3) (2025-08-14)
+
+
+### Bug Fixes
+
+* trigger changelog ([8c66b57](https://github.com/bettyblocks/cli/commit/8c66b5752b37b0c4b56785e14900af231c0338af))
+
 # [26.0.0-beta.2](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.1...v26.0.0-beta.2) (2025-08-14)
 
 
