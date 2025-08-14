@@ -1,3 +1,15 @@
+# [26.0.0-beta.1](https://github.com/bettyblocks/cli/compare/v25.109.0-beta.1...v26.0.0-beta.1) (2025-08-14)
+
+
+### Features
+
+* remove deprecated cli command and update deps ([88b4a9e](https://github.com/bettyblocks/cli/commit/88b4a9ec3f03e3bc7b9ac68a9e1c5e40d2f18081))
+
+
+### BREAKING CHANGES
+
+* now requires bun instead of yarn and the deprecated commands are removed
+
 # [25.109.0-beta.1](https://github.com/bettyblocks/cli/compare/v25.108.0...v25.109.0-beta.1) (2025-08-14)
 
 
