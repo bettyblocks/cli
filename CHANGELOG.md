@@ -1,3 +1,20 @@
+# [26.0.0-beta.2](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.1...v26.0.0-beta.2) (2025-08-14)
+
+
+### Bug Fixes
+
+* set entry point to js file ([5c7296e](https://github.com/bettyblocks/cli/commit/5c7296e37d0e8ffc8291a77d65bc52c12581bcf5))
+
+
+### Features
+
+* remove deprecated cli command and update deps ([51db858](https://github.com/bettyblocks/cli/commit/51db85884163e87968b5ccde27a6fff6f4d667d8))
+
+
+### BREAKING CHANGES
+
+* now requires bun instead of yarn and the deprecated commands are removed
+
 # [26.0.0-beta.1](https://github.com/bettyblocks/cli/compare/v25.109.0-beta.1...v26.0.0-beta.1) (2025-08-14)
 
 
