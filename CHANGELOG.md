@@ -1,3 +1,10 @@
+# [26.0.0-beta.13](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.12...v26.0.0-beta.13) (2025-08-15)
+
+
+### Bug Fixes
+
+* add tsnode as dependency ([2a1e791](https://github.com/bettyblocks/cli/commit/2a1e791596d705edd6bc7aa8fb2f5ea651d18e79))
+
 # [26.0.0-beta.12](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.11...v26.0.0-beta.12) (2025-08-15)
 
 
