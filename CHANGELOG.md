@@ -1,3 +1,11 @@
+# [26.0.0-beta.7](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.6...v26.0.0-beta.7) (2025-08-15)
+
+
+### Bug Fixes
+
+* include types in deps ([9abfcb9](https://github.com/bettyblocks/cli/commit/9abfcb91a43cd242ec8b7e769605e42c32dca6bd))
+* revert last change ([3725898](https://github.com/bettyblocks/cli/commit/37258989495a5df262dbeacd17297b41aaf3575c))
+
 # [26.0.0-beta.6](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.5...v26.0.0-beta.6) (2025-08-15)
 
 
