@@ -1,6 +1,6 @@
 {
   "name": "@betty-blocks/cli",
-  "version": "26.0.0-beta.9",
+  "version": "26.0.0-beta.10",
   "description": "A Betty Blocks CLI",
   "module": "./build/src/bb.js",
   "type": "module",

@@ -1,3 +1,10 @@
+# [26.0.0-beta.10](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.9...v26.0.0-beta.10) (2025-08-15)
+
+
+### Bug Fixes
+
+* use old tsconfig and transpile ([41cb981](https://github.com/bettyblocks/cli/commit/41cb981d0dce94ee4728518b31b8fc5c3441ec5a))
+
 # [26.0.0-beta.9](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.8...v26.0.0-beta.9) (2025-08-15)
 
 
