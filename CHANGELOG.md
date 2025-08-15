@@ -1,3 +1,10 @@
+# [26.0.0-beta.9](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.8...v26.0.0-beta.9) (2025-08-15)
+
+
+### Bug Fixes
+
+* set deps ([77d1e0a](https://github.com/bettyblocks/cli/commit/77d1e0a32ba986abc638ca6cd62db3bc8fea3dbc))
+
 # [26.0.0-beta.8](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.7...v26.0.0-beta.8) (2025-08-15)
 
 
