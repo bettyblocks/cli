@@ -36,6 +36,17 @@ To update the CLI without optional dependencies (isolated-vm)
 $ npm update -g @betty-blocks/cli --no-optional
 ```
 
+## Local development
+
+Make sure you run bun version `1.2.19` or higher: 
+`bun --version`
+
+To install dependencies, run:
+
+```bash
+bun install
+```
+
 ## Introduction
 
 Welcome to the GitHub repository for the Betty Blocks command-line interface (CLI).

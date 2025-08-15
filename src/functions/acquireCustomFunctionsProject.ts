@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-// eslint-disable-next-line consistent-return
 const acquireCustomFunctionsProject = (dir: string): string => {
   const expected = ['functions.json', 'package.json', 'src'];
   const intersection = fs

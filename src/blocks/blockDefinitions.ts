@@ -1,7 +1,8 @@
 import fs from 'fs-extra';
-import path from 'path';
 import glob from 'glob';
-import { pick } from 'lodash';
+import path from 'path';
+
+import { pick } from '../utils/pick';
 
 export interface Block {
   dependencies: string[];
@@ -10,7 +11,7 @@ export interface Block {
 }
 
 interface RootPackageJson {
-  dependencies: { [key: string]: string };
+  dependencies: Record<string, string>;
 }
 
 /* @doc createPackageJson
@@ -27,10 +28,10 @@ const createPackageJson = (
   );
   const packageJson = JSON.stringify(
     {
-      name,
-      version: '1.0.0',
-      private: 'true',
       dependencies: rootDependencies,
+      name,
+      private: 'true',
+      version: '1.0.0',
     },
     null,
     2,
@@ -42,22 +43,20 @@ const createPackageJson = (
 /* @doc functionDirs
   Returns a list of blocks.
 */
-const blockFiles = (blockDir: string): string[] => {
-  return glob
+const blockFiles = (blockDir: string): string[] =>
+  glob
     .sync(path.join(blockDir, '*.json').replace(/\\/g, '/'))
     .reduce((blocks, blockDefinition) => {
       blocks.push(blockDefinition);
       return blocks;
     }, [] as string[]);
-};
 
 /* @doc blockDefinitions
   Returns an array containing all block definitions
   inside the given blocksDir.
 */
-const blockDefinitions = (blocksDir: string): string[] => {
-  return blockFiles(blocksDir).map((blocks) => blocks);
-};
+const blockDefinitions = (blocksDir: string): string[] =>
+  blockFiles(blocksDir).map((blocks) => blocks);
 
 /* @doc blockDefinitionPath
   Expands the block dir with a json file with the given blockname.
@@ -87,14 +86,13 @@ const newBlockDefinition = (blocksDir: string, blockName: string): string => {
     );
     return `blocks/${blockName}.json created`;
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not initialize new block ${blocksDir}: ${err}`);
   }
 };
 
 export {
-  blockDefinitions,
   blockDefinitionPath,
+  blockDefinitions,
   createPackageJson,
   newBlockDefinition,
 };

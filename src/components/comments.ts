@@ -1,8 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument */
-import * as ts from 'typescript';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import * as jsdoc from 'jsdoc-api';
+import { explainSync } from 'jsdoc-api';
+import {
+  type CommentRange,
+  factory,
+  getLeadingCommentRanges,
+  getTrailingCommentRanges,
+  type Node,
+  type ObjectLiteralElementLike,
+  SyntaxKind,
+} from 'typescript';
 
 /**
  * Retrieves the JSDoc-style comments associated with a specific AST node.
@@ -10,22 +15,27 @@ import * as jsdoc from 'jsdoc-api';
  * Based on ts.getJSDocCommentRanges() from the compiler.
  * https://github.com/microsoft/TypeScript/blob/v3.0.3/src/compiler/utilities.ts#L924
  */
-function getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] {
-  const commentRanges: ts.CommentRange[] = [];
+const getJSDocCommentRanges = (node: Node, text: string): CommentRange[] => {
+  const commentRanges: CommentRange[] = [];
+  const {
+    Parameter,
+    TypeParameter,
+    FunctionExpression,
+    ArrowFunction,
+    ParenthesizedExpression,
+  } = SyntaxKind;
   switch (node.kind) {
-    case ts.SyntaxKind.Parameter:
-    case ts.SyntaxKind.TypeParameter:
-    case ts.SyntaxKind.FunctionExpression:
-    case ts.SyntaxKind.ArrowFunction:
-    case ts.SyntaxKind.ParenthesizedExpression:
-      commentRanges.push(
-        ...(ts.getTrailingCommentRanges(text, node.pos) || []),
-      );
+    case Parameter:
+    case TypeParameter:
+    case FunctionExpression:
+    case ArrowFunction:
+    case ParenthesizedExpression:
+      commentRanges.push(...(getTrailingCommentRanges(text, node.pos) ?? []));
       break;
     default:
       break;
   }
-  commentRanges.push(...(ts.getLeadingCommentRanges(text, node.pos) || []));
+  commentRanges.push(...(getLeadingCommentRanges(text, node.pos) ?? []));
   // True if the comment starts with '/**' but not if it is '/**/'
   return commentRanges.filter(
     (comment) =>
@@ -35,11 +45,12 @@ function getJSDocCommentRanges(node: ts.Node, text: string): ts.CommentRange[] {
         0x2a /* ts.CharacterCodes.asterisk */ &&
       text.charCodeAt(comment.pos + 3) !== 0x2f /* ts.CharacterCodes.slash */,
   );
-}
-export function walkCompilerAstAndFindComments(
-  node: ts.Node,
+};
+
+export const walkCompilerAstAndFindComments = (
+  node: Node,
   foundComments: object[],
-): void {
+): void => {
   // The TypeScript AST doesn't store code comments directly.  If you want to find *every* comment,
   // you would need to rescan the SourceFile tokens similar to how tsutils.forEachComment() works:
   // https://github.com/ajafff/tsutils/blob/v3.0.0/util/util.ts#L453
@@ -52,11 +63,11 @@ export function walkCompilerAstAndFindComments(
 
   // Find "/** */" style comments associated with this node.
   // Note that this reinvokes the compiler's scanner -- the result is not cached.
-  const comments: ts.CommentRange[] = getJSDocCommentRanges(node, buffer);
+  const comments: CommentRange[] = getJSDocCommentRanges(node, buffer);
 
   comments.forEach((c) => {
     const source = buffer.slice(c.pos, c.end);
-    const comment = jsdoc.explainSync({ source });
+    const comment = explainSync({ source });
     const [{ name, params, returns }] = comment;
 
     const parameters = params.reduce(
@@ -68,9 +79,8 @@ export function walkCompilerAstAndFindComments(
     );
 
     const returnType = returns.reduce(
-      (acc: string[], curr: { type: { names: string[] } }) => {
-        return acc.concat(curr.type.names);
-      },
+      (acc: string[], curr: { type: { names: string[] } }) =>
+        acc.concat(curr.type.names),
       [],
     );
 
@@ -84,25 +94,36 @@ export function walkCompilerAstAndFindComments(
   return node.forEachChild((child) =>
     walkCompilerAstAndFindComments(child, foundComments),
   );
-}
+};
 
-function createParams(params: object): ts.ObjectLiteralElementLike[] {
+const createParams = (params: object): ObjectLiteralElementLike[] => {
+  const {
+    createArrayLiteralExpression,
+    createStringLiteral,
+    createObjectLiteralExpression,
+    createPropertyAssignment,
+  } = factory;
   return Object.entries(params).map(([key, value]) => {
     const result = Array.isArray(value)
-      ? ts.createArrayLiteral(value.map((n) => ts.createStringLiteral(n)))
-      : ts.createObjectLiteral(createParams(value));
-    return ts.createPropertyAssignment(ts.createStringLiteral(key), result);
+      ? createArrayLiteralExpression(value.map((n) => createStringLiteral(n)))
+      : createObjectLiteralExpression(createParams(value));
+    return createPropertyAssignment(createStringLiteral(key), result);
   });
-}
+};
 
-export function createLiteralObjectExpression(
+export const createLiteralObjectExpression = (
   params: object[],
-): ts.ObjectLiteralElementLike[] {
+): ObjectLiteralElementLike[] => {
+  const {
+    createStringLiteral,
+    createObjectLiteralExpression,
+    createPropertyAssignment,
+  } = factory;
   return params.map((param) => {
     const [[key, value]] = Object.entries(param);
-    return ts.createPropertyAssignment(
-      ts.createStringLiteral(key),
-      ts.createObjectLiteral(createParams(value)),
+    return createPropertyAssignment(
+      createStringLiteral(key),
+      createObjectLiteralExpression(createParams(value)),
     );
   });
-}
+};

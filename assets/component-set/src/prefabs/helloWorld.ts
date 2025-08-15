@@ -1,13 +1,12 @@
-import * as React from 'react';
 import {
-  component,
-  prefab,
-  variable,
-  Icon,
-  font,
   buttongroup,
   color,
+  component,
+  font,
+  Icon,
+  prefab,
   ThemeColor,
+  variable,
 } from '@betty-blocks/component-sdk';
 import { showOn } from '../utils';
 
@@ -43,6 +42,6 @@ const options = {
   }),
 };
 
-export default prefab('Hello World', attributes, null, [
+export default prefab('Hello World', attributes, undefined, [
   component('HelloWorld', { options }, []),
 ]);

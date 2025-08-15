@@ -1,16 +1,10 @@
-/* npm dependencies */
-
-import program from 'commander';
-
-/* internal dependencies */
+import { Command } from 'commander';
 
 import type { CommandBlocks } from './types';
 
-/* setup */
-
 const availableCommands: CommandBlocks[] = ['publish', 'release', 'new'];
 
-/* process arguments */
+const program = new Command();
 
 program
   .usage(`<${availableCommands.join('|')}>`)

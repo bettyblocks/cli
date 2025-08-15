@@ -1,27 +1,27 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import fs from 'fs-extra';
-import path from 'path';
-import program from 'commander';
-import prompts from 'prompts';
 import AdmZip from 'adm-zip';
 import chalk from 'chalk';
+import { Command } from 'commander';
+import fs from 'fs-extra';
+import path from 'path';
+import prompts from 'prompts';
 
 import {
-  Block,
+  type Block,
   blockDefinitions,
   createPackageJson,
 } from './blocks/blockDefinitions';
+import publishBlocks from './blocks/publishBlocks';
 import {
   functionDefinitions,
   generateIndex,
   whitelistedFunctions,
 } from './functions/functionDefinitions';
-import publishBlocks from './blocks/publishBlocks';
-
 import {
-  validateBlockConfig,
   validateBlock,
+  validateBlockConfig,
 } from './validations/function-block-validations';
+
+const program = new Command();
 
 program.option('--all').name('bb blocks publish').parse(process.argv);
 
@@ -32,7 +32,7 @@ const blocks = blockDefinitions(baseBlocksPath);
 const createBlockZip = (
   name: string,
   { functions, includes, dependencies }: Block,
-) => {
+): string => {
   const zip = new AdmZip();
   const tmpDir = '.tmp';
   const zipFilePath = path.join(tmpDir, `${name}.zip`);
@@ -68,12 +68,11 @@ const createBlockZip = (
     zip.writeZip(zipFilePath);
 
     return zipFilePath;
-  } catch ({ message }) {
-    return console.error(message);
+  } catch (error) {
+    throw new Error(`in ${name}: ${error}`);
   }
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   const choices = blocks.map((block) => ({
     title: path.basename(block, '.json'),
@@ -88,20 +87,18 @@ void (async (): Promise<void> => {
   } else {
     const results = (await prompts([
       {
-        type: 'multiselect',
-        name: 'selected',
-        message: 'Which blocks do you want to publish?',
         choices,
         instructions: false,
+        message: 'Which blocks do you want to publish?',
+        name: 'selected',
+        type: 'multiselect',
       },
     ])) as { selected: string[] };
-    selected = results.selected;
+    ({ selected } = results);
   }
 
   selected.forEach((jsonFile) => {
-    // eslint-disable-next-line no-void
     void (async (): Promise<void> => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const block: Block = fs.readJsonSync(jsonFile);
       const name = path.basename(jsonFile, '.json');
       if (validateBlockConfig(block)) {
@@ -114,8 +111,8 @@ void (async (): Promise<void> => {
           );
 
           const { valid, errorMessage } = await validateBlock({
-            blockFunctions,
             block,
+            blockFunctions,
             blockName: name,
           });
 
@@ -125,8 +122,8 @@ void (async (): Promise<void> => {
           } else {
             throw Error(chalk.red(`\n${errorMessage}\n`));
           }
-        } catch ({ message }) {
-          console.error(message);
+        } catch (error) {
+          throw new Error(`in ${name}: ${error}`);
         }
       } else {
         console.error(chalk.red(`\nFunctions can not be empty\n`));

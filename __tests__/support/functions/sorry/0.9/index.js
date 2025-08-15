@@ -5,9 +5,9 @@ const sayHello = async ({ name }) => {
     throw new Error('Ooops. Something went wrong.');
   } else {
     return {
-      greet: join(['Hello', name], ', ')
+      greet: join(['Hello', name], ', '),
     };
   }
-}
+};
 
 export default sayHello;

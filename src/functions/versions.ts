@@ -1,6 +1,6 @@
+import { kebab } from 'case';
 import chalk from 'chalk';
 import fs from 'fs-extra';
-import kebabCase from 'lodash/kebabCase';
 import path from 'path';
 
 import {
@@ -14,7 +14,11 @@ const check = chalk.green(`✔`);
 const cross = chalk.red(`✖`);
 
 const migrate = (functionsPath: string, verbose = false): void => {
-  const log = (msg: string) => verbose && console.log(msg);
+  const log = (msg: string): void => {
+    if (verbose) {
+      console.log(msg);
+    }
+  };
 
   log('Checking for unversioned functions ...');
 
@@ -23,7 +27,7 @@ const migrate = (functionsPath: string, verbose = false): void => {
     const { name } = definition;
 
     let { version } = definition;
-    let postfix = kebabCase(name);
+    let postfix = kebab(name);
 
     if (isFunctionVersion(functionPath, functionsPath)) {
       postfix = `-${version}`;
@@ -43,14 +47,14 @@ const migrate = (functionsPath: string, verbose = false): void => {
         );
 
         const tmpDir = '.tmp';
-        const tempDir = path.join(tmpDir, `${kebabCase(name)}-${version}`);
-        const targetDir = path.join(functionsPath, kebabCase(name));
+        const tempDir = path.join(tmpDir, `${kebab(name)}-${version}`);
+        const targetDir = path.join(functionsPath, kebab(name));
 
         fs.ensureDirSync(tmpDir);
         fs.renameSync(functionPath, tempDir);
         fs.mkdirSync(targetDir);
         fs.moveSync(tempDir, path.join(targetDir, version));
-      } catch (err) {
+      } catch {
         log(`${cross} Failed to version: ${name}`);
         return;
       }

@@ -1,20 +1,25 @@
-/* eslint-disable no-param-reassign,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment */
-
 import fs from 'fs-extra';
 import ora from 'ora';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
 import Webhead, {
-  AnyObject,
-  WebheadInstance,
-  WebheadRequestParameters,
+  type AnyObject,
+  type WebheadInstance,
+  type WebheadRequestParameters,
 } from 'webhead';
 
-import FusionAuth from './fusionAuth';
 import Config from '../functions/config';
+import FusionAuth from './fusionAuth';
 
 type NamedObject = Record<string, string | object>;
+
+interface RequestProps {
+  label?: string;
+  method: 'get' | 'post' | 'put';
+  options?: NamedObject;
+  requestPath: string;
+}
 
 class IDE {
   private configFile: string;
@@ -40,18 +45,16 @@ class IDE {
     }
 
     this.webhead = Webhead({
-      jarFile: this.configFile,
       beforeSend: (
         { method, url, options }: WebheadRequestParameters,
         { csrfToken }: AnyObject,
       ) => {
         if (method !== 'GET' && csrfToken) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-          options.headers || (options.headers = {});
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          options.headers ??= {};
+
           options.headers['X-Csrf-Token'] = csrfToken;
         }
-        return { method, url, options };
+        return { method, options, url };
       },
       complete: (
         _parameters: WebheadRequestParameters,
@@ -66,6 +69,7 @@ class IDE {
           }
         }
       },
+      jarFile: this.configFile,
     });
 
     this.fusionAuth = new FusionAuth(
@@ -78,7 +82,11 @@ class IDE {
     requestPath: string,
     label?: string,
   ): Promise<string | object | null> {
-    return this.request('get', requestPath, undefined, label);
+    return this.request({
+      label,
+      method: 'get',
+      requestPath,
+    });
   }
 
   async post(
@@ -86,7 +94,12 @@ class IDE {
     options: NamedObject,
     label?: string,
   ): Promise<string | object | null> {
-    return this.request('post', requestPath, options, label);
+    return this.request({
+      label,
+      method: 'post',
+      options,
+      requestPath,
+    });
   }
 
   async put(
@@ -94,15 +107,20 @@ class IDE {
     options: NamedObject,
     label?: string,
   ): Promise<string | object | null> {
-    return this.request('put', requestPath, options, label);
+    return this.request({
+      label,
+      method: 'put',
+      options,
+      requestPath,
+    });
   }
 
-  private async request(
-    method: 'get' | 'post' | 'put',
-    requestPath: string,
-    options?: NamedObject,
-    label?: string,
-  ): Promise<string | object | null> {
+  private async request({
+    label,
+    method,
+    options,
+    requestPath,
+  }: RequestProps): Promise<string | object | null> {
     await this.ensureLogin();
 
     const spinner = label ? ora(label).start() : undefined;
@@ -116,8 +134,7 @@ class IDE {
       spinner[statusCode.toString().match(/^2/) ? 'succeed' : 'fail']();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return this.webhead.json() || this.webhead.text();
+    return this.webhead.json() ?? this.webhead.text();
   }
 
   private async relogin(): Promise<void> {
@@ -146,20 +163,19 @@ class IDE {
         const config = fs.readJsonSync(this.configFile);
         const credentials = await prompts([
           {
-            type: 'text',
-            name: 'email',
-            message: 'Fill in your e-mail address',
             initial: config.email,
+            message: 'Fill in your e-mail address',
+            name: 'email',
+            type: 'text',
           },
           {
-            type: 'password',
-            name: 'password',
             message: 'Fill in your password',
+            name: 'password',
+            type: 'password',
           },
         ]);
 
-        email = credentials.email;
-        password = credentials.password;
+        ({ email, password } = credentials);
 
         config.email = email;
         fs.writeFileSync(this.configFile, JSON.stringify(config, null, 2));
@@ -183,9 +199,9 @@ class IDE {
       if (cassie2FA || fusionAuth2FA) {
         const { code } = await prompts([
           {
-            type: 'text',
-            name: 'code',
             message: 'Fill in your 2FA code',
+            name: 'code',
+            type: 'text',
           },
         ]);
 

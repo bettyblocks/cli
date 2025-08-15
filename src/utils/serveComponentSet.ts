@@ -1,16 +1,17 @@
+import { existsSync, readFileSync } from 'fs';
 import {
   createServer as createHttpServer,
   IncomingMessage,
   ServerResponse,
 } from 'http';
-import { createServer as createHttpsServer, ServerOptions } from 'https';
-import { existsSync, readFileSync } from 'fs';
+import { createServer as createHttpsServer, type ServerOptions } from 'https';
 import handler from 'serve-handler';
-import { checkUpdateAvailableCLI } from './checkUpdateAvailable';
-import { ServeOptions } from '../types';
 
-const serveComponentSet = (options: ServeOptions): Promise<void> => {
-  return new Promise<void>((resolve, reject): void => {
+import type { ServeOptions } from '../types';
+import { checkUpdateAvailableCLI } from './checkUpdateAvailable';
+
+const serveComponentSet = (options: ServeOptions): Promise<void> =>
+  new Promise<void>((resolve, reject): void => {
     const serverOptions: ServerOptions = {};
     const createServer = options.ssl ? createHttpsServer : createHttpServer;
 
@@ -32,10 +33,8 @@ const serveComponentSet = (options: ServeOptions): Promise<void> => {
       request: ServerResponse,
     ): Promise<void> =>
       handler(response, request, {
-        public: `${options.rootDir}/dist`,
         headers: [
           {
-            source: '**/*.@(json)',
             headers: [
               {
                 key: 'Access-Control-Allow-Origin',
@@ -46,17 +45,18 @@ const serveComponentSet = (options: ServeOptions): Promise<void> => {
                 value: 'no-cache ',
               },
             ],
+            source: '**/*.@(json)',
           },
         ],
+        public: `${options.rootDir}/dist`,
       });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     createServer(serverOptions, listener)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      .on('error', (error) => reject(error.message))
+      .on('error', (error: string | undefined) => reject(new Error(error)))
       .listen(options.port, options.host, () => resolve());
   });
-};
 
 export default async (
   options: ServeOptions,

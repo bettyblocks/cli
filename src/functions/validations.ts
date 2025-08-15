@@ -1,26 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/restrict-template-expressions */
+import chalk from 'chalk';
+import { ValidationError, Validator, ValidatorResult } from 'jsonschema';
 import fetch from 'node-fetch';
 import path from 'path';
-import chalk from 'chalk';
-import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
+import Config from './config';
 import {
-  FunctionDefinition,
+  type FunctionDefinition,
   functionDefinitions,
   isFunctionVersion,
 } from './functionDefinitions';
-import Config from './config';
 
-export type Schema = {
+export interface Schema {
   $id: string;
-};
+}
 
-export type ValidationResult = {
+export interface ValidationResult {
   path: string;
   status: string;
   functionName?: string;
   errors: ValidationError[] | Error[];
-};
+}
 
 const fetchRemoteSchema = async (
   schemaUrl: string,
@@ -64,9 +63,9 @@ const validateFunctionDefinition = (
   validator: Validator,
   definition: object,
 ): ValidatorResult => {
-  const functionSchemaId = Object.keys(validator.schemas).find((k) => {
-    return k.match(/function\.json$/);
-  });
+  const functionSchemaId = Object.keys(validator.schemas).find((k) =>
+    k.match(/function\.json$/),
+  );
 
   if (!functionSchemaId) {
     throw new Error(`Cannot find Function schema Id, ${functionSchemaId}`);
@@ -104,10 +103,10 @@ const validateSchema = (
   const status = errors.length ? 'error' : 'ok';
 
   return {
-    status,
-    path: definitionPath,
-    functionName: `${name}-${version}`,
     errors,
+    functionName: `${name}-${version}`,
+    path: definitionPath,
+    status,
   };
 };
 
@@ -138,10 +137,10 @@ class FunctionValidator {
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return {
-        status: 'error',
-        path: functionPath,
-        functionName,
         errors: [new Error(message)],
+        functionName,
+        path: functionPath,
+        status: 'error',
       };
     }
   }
@@ -151,12 +150,12 @@ class FunctionValidator {
     blockFunctions?: FunctionDefinition[],
   ): Promise<ValidationResult[]> {
     const definitions = functionDefinitions(this.functionsDir, true);
-    const functions = blockFunctions || definitions;
+    const functions = blockFunctions ?? definitions;
     const validations: ValidationResult[] = [];
     functions.forEach((definition) => {
       const preleadingPath = path.join(
         this.functionsDir,
-        functionName || '',
+        functionName ?? '',
         path.sep,
       );
       if (definition.path.indexOf(preleadingPath) === 0) {
@@ -180,13 +179,13 @@ const logValidationResult = ({
   } else {
     const msg = chalk.red(`${errors}`);
     const mark = chalk.red(`✖`);
-    console.log(`${mark} Validate: ${functionName || functionPath}\n\t${msg}`);
+    console.log(`${mark} Validate: ${functionName ?? functionPath}\n\t${msg}`);
   }
 };
 
 export {
   FunctionValidator,
   functionValidator,
-  validateSchema,
   logValidationResult,
+  validateSchema,
 };

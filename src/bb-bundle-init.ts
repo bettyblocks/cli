@@ -1,26 +1,25 @@
 /* npm dependencies */
-
-import program, { CommanderStatic } from 'commander';
-import { existsSync, copy, moveSync } from 'fs-extra';
 import chalk from 'chalk';
+import { Command } from 'commander';
+import { copy, existsSync, moveSync } from 'fs-extra';
 import path from 'path';
 
-/* internal dependencies */
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
-/* process arguments */
+const program = new Command();
 
-program.usage('[path]').name('bb bundle init').parse(process.argv);
+program
+  .argument('<path>', 'path where to initialize the bundle')
+  .name('bb bundle init')
+  .parse(process.argv);
 
-const { args }: CommanderStatic = program;
+const { args } = program;
 
 if (args.length === 0) {
   program.help();
 }
 
 const dest: string = args[0];
-
-/* execute command */
 
 if (existsSync(dest)) {
   throw Error(
@@ -30,7 +29,6 @@ if (existsSync(dest)) {
   );
 }
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
@@ -39,12 +37,13 @@ void (async (): Promise<void> => {
     console.log(
       chalk.green(`Bundle succesfully initialized in directory '${dest}'.`),
     );
-  } catch ({ message }) {
-    throw Error(
-      chalk.red(
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `\nCould not initialize bundle in directory ${dest}: ${message}.\n`,
-      ),
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      throw Error(
+        chalk.red(
+          `\nCould not initialize bundle in directory ${dest}: ${error.message}.\n`,
+        ),
+      );
+    }
   }
 })();

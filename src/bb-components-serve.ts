@@ -1,14 +1,13 @@
-/* npm dependencies */
-
 import chalk from 'chalk';
-import program from 'commander';
+import { Command } from 'commander';
+
+import type { ServeOptions } from './types';
 import { parseDir, parsePort } from './utils/arguments';
 import serveComponentSet from './utils/serveComponentSet';
-import { ServeOptions } from './types';
 
-/* internal dependencies */
+const program = new Command();
 
-/* process arguments */
+const programOpts = program.opts();
 
 program
   .usage('[path]')
@@ -16,8 +15,8 @@ program
   .option(
     '-p, --port [port]',
     'Port to listen on.',
-    (value: string) => parsePort(value, 5001),
-    5001,
+    (value: string) => parsePort(value, 5002),
+    5002,
   )
   .option('--host [host]', 'Host to listen on.', 'localhost')
   .option('--ssl', 'Serve using HTTPS.', false)
@@ -27,12 +26,12 @@ program
   .parse(process.argv);
 
 const options: ServeOptions = {
+  host: programOpts.host as string,
+  port: programOpts.port as number,
   rootDir: parseDir(program.args),
-  port: program.port as number,
-  host: program.host as string,
-  ssl: program.ssl as boolean,
-  sslKey: program.sslKey as string,
-  sslCert: program.sslCert as string,
+  ssl: programOpts.ssl as boolean,
+  sslCert: programOpts.sslCert as string,
+  sslKey: programOpts.sslKey as string,
 };
 
 const arg = process.argv.slice(2);
@@ -47,8 +46,6 @@ serveComponentSet(options, hasOfflineFlag).then(
     console.info(chalk.green(`Serving the component set at ${url}`));
   },
   (error) => {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    console.error(chalk.red(`\n${error}\n`));
-    process.exit(1);
+    throw new Error(`Error: ${error}`);
   },
 );

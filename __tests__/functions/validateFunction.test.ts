@@ -1,25 +1,16 @@
-import test, { ExecutionContext } from 'ava';
-import path from 'path';
+import { expect, test } from 'bun:test';
 import { Validator } from 'jsonschema';
+import path from 'path';
+
 import { functionDefinition } from '../../src/functions/functionDefinitions';
 import { validateSchema } from '../../src/functions/validations';
 
-type Context = ExecutionContext<unknown>;
-
 const schema = {
   $id: '/schema/actions/function.json',
-  title: 'Function',
   properties: {
-    label: {
-      type: 'string',
-    },
     icon: {
-      type: 'object',
       additionalProperties: false,
       properties: {
-        name: {
-          type: 'string',
-        },
         color: {
           enum: [
             'Yellow',
@@ -32,35 +23,43 @@ const schema = {
             'Grey',
           ],
         },
+        name: {
+          type: 'string',
+        },
       },
       required: ['name', 'color'],
+      type: 'object',
+    },
+    label: {
+      type: 'string',
     },
   },
   required: ['label'],
+  title: 'Function',
 };
 
 const validator = new Validator();
 validator.addSchema(schema, schema.$id);
 
-test('load in entire schema for validator', async (t: Context): Promise<void> => {
+test('load in entire schema for validator', async (): Promise<void> => {
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
-      label: 'Create',
       icon: {
-        name: 'ChatIcon',
         color: 'Teal',
+        name: 'ChatIcon',
       },
+      label: 'Create',
     },
   };
 
   const { status, errors } = await validateSchema(definition, validator);
 
-  t.is(status, 'ok');
-  t.is(errors.length, 0);
+  expect(status).toBe('ok');
+  expect(errors.length).toBe(0);
 });
 
-test('validate templates', async (t: Context): Promise<void> => {
+test('validate templates', async (): Promise<void> => {
   const functionPath = path.join(
     process.cwd(),
     'assets/app-functions/templates',
@@ -74,10 +73,10 @@ test('validate templates', async (t: Context): Promise<void> => {
 
   const { status } = await validateSchema(functionJson, validator);
 
-  t.is(status, 'ok');
+  expect(status).toBe('ok');
 });
 
-test('invalidate empty schemas', async (t: Context): Promise<void> => {
+test('invalidate empty schemas', async (): Promise<void> => {
   const {
     status,
     errors: [{ message }],
@@ -89,16 +88,16 @@ test('invalidate empty schemas', async (t: Context): Promise<void> => {
     validator,
   );
 
-  t.is(status, 'error');
-  t.is(message, 'requires property "label"');
+  expect(status).toBe('error');
+  expect(message).toBe('requires property "label"');
 });
 
-test('invalidate schemas that do not have valid values for properties', async (t: Context): Promise<void> => {
+test('invalidate schemas that do not have valid values for properties', async (): Promise<void> => {
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
-      label: 'Create',
       icon: 'RandomIcon',
+      label: 'Create',
     },
   };
 
@@ -107,6 +106,6 @@ test('invalidate schemas that do not have valid values for properties', async (t
     errors: [{ message }],
   } = await validateSchema(definition, validator);
 
-  t.is(status, 'error');
-  t.is(message, 'is not of a type(s) object');
+  expect(status).toBe('error');
+  expect(message, 'is not of a type(s) object');
 });
