@@ -13,8 +13,7 @@
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext",
-    "verbatimModuleSyntax": true,
-    "typeRoots": ["./node_modules/@types"]
+    "verbatimModuleSyntax": true
   },
   "exclude": ["node_modules"]
 }
