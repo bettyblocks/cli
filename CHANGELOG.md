@@ -1,3 +1,10 @@
+# [26.0.0-beta.5](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.4...v26.0.0-beta.5) (2025-08-15)
+
+
+### Bug Fixes
+
+* include type deps in deps ([da135b5](https://github.com/bettyblocks/cli/commit/da135b5c7dc46a717822449626da68d745055006))
+
 # [26.0.0-beta.4](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.3...v26.0.0-beta.4) (2025-08-15)
 
 
