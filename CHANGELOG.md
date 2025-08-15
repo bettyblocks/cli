@@ -1,3 +1,10 @@
+# [26.0.0-beta.14](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.13...v26.0.0-beta.14) (2025-08-15)
+
+
+### Bug Fixes
+
+* set type deps as deps ([1d4ef0a](https://github.com/bettyblocks/cli/commit/1d4ef0a1e788b55c43c059ecc4fcc73ea7299fa4))
+
 # [26.0.0-beta.13](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.12...v26.0.0-beta.13) (2025-08-15)
 
 
