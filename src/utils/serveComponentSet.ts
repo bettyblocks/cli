@@ -51,8 +51,10 @@ const serveComponentSet = (options: ServeOptions): Promise<void> =>
         public: `${options.rootDir}/dist`,
       });
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     createServer(serverOptions, listener)
-      .on('error', (error) => reject(new Error(error)))
+      .on('error', (error: string | undefined) => reject(new Error(error)))
       .listen(options.port, options.host, () => resolve());
   });
 
