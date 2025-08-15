@@ -1,3 +1,10 @@
+# [26.0.0-beta.8](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.7...v26.0.0-beta.8) (2025-08-15)
+
+
+### Bug Fixes
+
+* change shebang from bun to node ([902e1f7](https://github.com/bettyblocks/cli/commit/902e1f73aeab725b57aff064ea704a5f993e0eb1))
+
 # [26.0.0-beta.7](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.6...v26.0.0-beta.7) (2025-08-15)
 
 
