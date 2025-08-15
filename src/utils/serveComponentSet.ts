@@ -52,7 +52,7 @@ const serveComponentSet = (options: ServeOptions): Promise<void> =>
       });
 
     createServer(serverOptions, listener)
-      .on('error', (error) => reject(error))
+      .on('error', (error) => reject(new Error(error)))
       .listen(options.port, options.host, () => resolve());
   });
 
