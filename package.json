@@ -10,7 +10,7 @@
     "url": "https://github.com/bettyblocks/cli"
   },
   "scripts": {
-    "build": "bun run build.ts",
+    "build": "tsc",
     "typecheck": "tsc",
     "lint:check": "eslint ./src ./__tests__",
     "lint": "eslint ./src ./__tests__ --fix",
@@ -84,7 +84,8 @@
     "bb": "./build/src/bb.js"
   },
   "resolutions": {
-    "@types/react": "^16.9.9"
+    "@types/react": "^16.9.9",
+    "@types/minimatch": "5.1.2"
   },
   "files": [
     "assets/",
