@@ -1,3 +1,10 @@
+# [26.0.0-beta.11](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.10...v26.0.0-beta.11) (2025-08-15)
+
+
+### Bug Fixes
+
+* set source code in build directory ([a05e4db](https://github.com/bettyblocks/cli/commit/a05e4db9420944ffe4ebea3fb9ae152df81bc317))
+
 # [26.0.0-beta.10](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.9...v26.0.0-beta.10) (2025-08-15)
 
 
