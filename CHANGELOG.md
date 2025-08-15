@@ -1,3 +1,10 @@
+# [26.0.0-beta.4](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.3...v26.0.0-beta.4) (2025-08-15)
+
+
+### Bug Fixes
+
+* add types from nodemodules ([b27a80c](https://github.com/bettyblocks/cli/commit/b27a80c58b9f76829b3de02818632ad62417098f))
+
 # [26.0.0-beta.3](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.2...v26.0.0-beta.3) (2025-08-14)
 
 
