@@ -10,7 +10,7 @@
     "url": "https://github.com/bettyblocks/cli"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "typecheck": "tsc",
     "lint:check": "eslint ./src ./__tests__",
     "lint": "eslint ./src ./__tests__ --fix",
