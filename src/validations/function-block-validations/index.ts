@@ -2,10 +2,9 @@ import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
 
-import { type Block } from 'src/blocks/blockDefinitions';
-import { type FunctionDefinition } from 'src/functions/functionDefinitions';
-
+import { type Block } from '../../blocks/blockDefinitions';
 import Config from '../../functions/config';
+import { type FunctionDefinition } from '../../functions/functionDefinitions';
 import {
   FunctionValidator,
   logValidationResult,
