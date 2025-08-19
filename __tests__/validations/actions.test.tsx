@@ -1,9 +1,9 @@
-import { stripVTControlCharacters } from '__tests__/utils';
 import { expect, test } from 'bun:test';
 
 import type { Prefab, PrefabAction } from '../../src/types';
 import { EVENT_KIND } from '../../src/validations/constants';
 import validatePrefabs from '../../src/validations/prefab';
+import { stripVTControlCharacters } from '../utils';
 
 test('Pass without actions array', (): void => {
   const prefab = {

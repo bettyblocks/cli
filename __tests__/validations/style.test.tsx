@@ -1,9 +1,9 @@
-import { stripVTControlCharacters } from '__tests__/utils';
 import { expect, test } from 'bun:test';
 
 import type { Prefab, PrefabReference, StyleDefinition } from '../../src/types';
 import validatePrefabs from '../../src/validations/prefab';
 import validateStyles from '../../src/validations/styles';
+import { stripVTControlCharacters } from '../utils';
 
 test('Throw when duplicate style', (): void => {
   const styles: StyleDefinition[] = [
