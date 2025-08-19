@@ -1,3 +1,10 @@
+# [26.0.0-beta.15](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.14...v26.0.0-beta.15) (2025-08-19)
+
+
+### Bug Fixes
+
+* use updated tsconfig settings ([a2abb2a](https://github.com/bettyblocks/cli/commit/a2abb2a30a5ffa1a1f8f81744dd04e9d4107aaaa))
+
 # [26.0.0-beta.14](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.13...v26.0.0-beta.14) (2025-08-15)
 
 
