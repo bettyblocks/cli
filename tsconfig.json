@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
     "allowJs": true,
     "lib": ["ESNext"],
+    "rootDir": "./src",
+    "outDir": "./build",
     "module": "ESNext",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
@@ -13,7 +14,9 @@
     "strict": true,
     "target": "ESNext",
     "verbatimModuleSyntax": true,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types"],
+    "sourceMap": true
   },
+  "include": ["src/**/*", "__tests__/**/*"],
   "exclude": ["node_modules"]
 }
