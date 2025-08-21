@@ -1,3 +1,10 @@
+# [26.0.0-beta.18](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.17...v26.0.0-beta.18) (2025-08-21)
+
+
+### Bug Fixes
+
+* revert shebang change ([dd1f9ab](https://github.com/bettyblocks/cli/commit/dd1f9ab4c5f5ae45488f2c916fdd4013c45dbb29))
+
 # [26.0.0-beta.17](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.16...v26.0.0-beta.17) (2025-08-21)
 
 
