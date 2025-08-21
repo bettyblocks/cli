@@ -1,24 +1,16 @@
-/* eslint-disable camelcase */
-/* npm dependencies */
-
-import path from 'path';
+import chalk from 'chalk';
+import FormData from 'form-data';
 import fs from 'fs-extra';
 import fetch from 'node-fetch';
-import FormData from 'form-data';
+import path from 'path';
 
-/* internal dependencies */
-
-import chalk from 'chalk';
+import Config from '../functions/config';
 import {
   functionDefinitions,
   stringifyDefinitions,
   whitelistedFunctions,
 } from '../functions/functionDefinitions';
 import FusionAuth from '../utils/login';
-
-import Config from '../functions/config';
-
-/* execute command */
 
 const workingDir = process.cwd();
 
@@ -44,14 +36,13 @@ const uploadBlock = async (
 
   return fetch(url, {
     agent: config.agent,
-    method: 'POST',
     body: form,
     headers: {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      Authorization: `Bearer ${fusionAuth.jwt()}`,
-      ApplicationId: applicationId,
       Accept: 'application/json',
+      ApplicationId: applicationId,
+      Authorization: `Bearer ${fusionAuth.jwt()}`,
     },
+    method: 'POST',
   }).then(async (res) => {
     if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();

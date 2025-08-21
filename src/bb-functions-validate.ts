@@ -1,19 +1,15 @@
-/* npm dependencies */
-
 import chalk from 'chalk';
+import { Command } from 'commander';
 import path from 'path';
-import program from 'commander';
 
-/* internal dependencies */
-
+import Config from './functions/config';
 import {
   FunctionValidator,
   logValidationResult,
 } from './functions/validations';
 
-import Config from './functions/config';
+const program = new Command();
 
-/* process arguments */
 program
   .usage('[function-name]')
   .name('bb functions validate')
@@ -22,14 +18,13 @@ program
 const {
   args: [inputFunctionName],
 } = program;
-/* execute command */
 
 const workingDir = process.cwd();
 const baseFunctionsPath = path.join(workingDir, 'functions');
 
 const config = new Config();
 
-const validateFunctions = async () => {
+const validateFunctions = async (): Promise<void> => {
   const validator = new FunctionValidator(config, baseFunctionsPath);
   await validator.initSchema();
 
@@ -55,5 +50,4 @@ const validateFunctions = async () => {
   }
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => validateFunctions())();

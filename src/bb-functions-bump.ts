@@ -1,9 +1,12 @@
-import path from 'path';
-import fs from 'fs-extra';
-import program from 'commander';
-import prompts from 'prompts';
 import chalk from 'chalk';
+import { Command } from 'commander';
+import fs from 'fs-extra';
+import path from 'path';
+import prompts from 'prompts';
+
 import { functionDefinitions } from './functions/functionDefinitions';
+
+const program = new Command();
 
 program.name('bb functions bump');
 
@@ -18,12 +21,12 @@ const collectBumpInput = async (): Promise<{
   currentVersion: string;
   dirName: string;
 }> => {
-  const functionDir = (functionPath: string) =>
+  const functionDir = (functionPath: string): string =>
     path.basename(path.dirname(path.dirname(functionPath)));
 
   const versionedFunctions = functionDefinitions(baseFunctionsPath);
 
-  const functions = versionedFunctions.reduce<{ [key: string]: string }>(
+  const functions = versionedFunctions.reduce<Record<string, string>>(
     (acc, { schema: { label }, path: functionPath }) => {
       const name = functionDir(functionPath);
       acc[name] = label;
@@ -34,14 +37,14 @@ const collectBumpInput = async (): Promise<{
 
   const dirName = (
     await prompts({
-      type: 'select',
-      name: 'functionName',
-      message: 'Which function do you want to bump?',
       choices: Object.keys(functions).map((name) => ({
         title: functions[name],
         value: name,
       })),
       initial: 0,
+      message: 'Which function do you want to bump?',
+      name: 'functionName',
+      type: 'select',
     })
   ).functionName as string;
 
@@ -55,22 +58,21 @@ const collectBumpInput = async (): Promise<{
   const minorVersion = `${major}.${minor + 1}`;
 
   const { bumpMajor } = (await prompts({
-    type: 'toggle',
-    name: 'bumpMajor',
-    message: `To which version do you want to bump your function?`,
-    initial: false,
     active: majorVersion,
     inactive: minorVersion,
+    initial: false,
+    message: `To which version do you want to bump your function?`,
+    name: 'bumpMajor',
+    type: 'toggle',
   })) as { bumpMajor: boolean };
 
   return {
-    newVersion: bumpMajor ? majorVersion : minorVersion,
     currentVersion: `${major}.${minor}`,
     dirName,
+    newVersion: bumpMajor ? majorVersion : minorVersion,
   };
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   const { dirName, newVersion, currentVersion } = await collectBumpInput();
   const sourceDir = path.join(workingDir, 'functions', dirName, currentVersion);

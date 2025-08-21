@@ -1,9 +1,11 @@
-import program from 'commander';
-import path from 'path';
+import { Command } from 'commander';
 import fs from 'fs-extra';
+import path from 'path';
+
 import { newFunctionDefinition } from './functions/functionDefinitions';
 
-/* process arguments */
+const program = new Command();
+
 program.usage('[function-name]').name('bb functions new').parse(process.argv);
 
 const {
@@ -17,14 +19,13 @@ if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     newFunctionDefinition(functionsDir, inputFunctionName);
 
     console.log(`functions/${inputFunctionName} created`);
-  } catch (err) {
-    console.log(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `functions/${inputFunctionName} could not be created. Error: ${err}`,
+  } catch (error) {
+    throw new Error(
+      `functions/${inputFunctionName} could not be created. Error: ${error}`,
     );
   }
 } else {
-  console.log(
+  throw new Error(
     `${workingDir} doesn't seem to be a functions project.\nPlease make sure you're in the root of the project.`,
   );
 }

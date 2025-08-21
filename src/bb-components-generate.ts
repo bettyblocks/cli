@@ -1,15 +1,18 @@
 /* npm dependencies */
-
-import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { pathExists, outputFile, outputFileSync } from 'fs-extra';
+import { Command } from 'commander';
+import { outputFile, outputFileSync, pathExists } from 'fs-extra';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
-/* process arguments */
 
-program.usage('[name]').name('bb components generate').parse(process.argv);
+const program = new Command();
 
-const { args }: CommanderStatic = program;
+program
+  .argument('<name>', 'name of the component')
+  .name('bb components generate')
+  .parse(process.argv);
+
+const { args } = program;
 
 if (args.length === 0) {
   program.help();
@@ -51,7 +54,6 @@ export interface Configuration {
 }
 `;
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   if (!/^[a-z][a-z0-9]*$/i.test(name)) {

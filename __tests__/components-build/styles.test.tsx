@@ -1,16 +1,14 @@
-import test, { ExecutionContext } from 'ava';
-
-type Context = ExecutionContext<unknown>;
+import { expect, test } from 'bun:test';
 
 import { buildReferenceStyle, buildStyle } from '../../src/components-build';
-import {
+import type {
   BuildStyle,
   BuildStyleDefinition,
   StyleDefinition,
   StyleDefinitionContentOverwrites,
 } from '../../src/types';
 
-test('it build a styleReference for the componentPrefab backwards compatible', (t: Context): void => {
+test('it build a styleReference for the componentPrefab backwards compatible', (): void => {
   const style = {
     name: 'Filled',
     overwrite: {
@@ -18,22 +16,22 @@ test('it build a styleReference for the componentPrefab backwards compatible', (
     },
   };
 
-  t.deepEqual(buildReferenceStyle(style), style);
+  expect(buildReferenceStyle(style)).toEqual(style);
 });
 
-test('it build a styleReference for the componentPrefab for states', (t: Context): void => {
+test('it build a styleReference for the componentPrefab for states', (): void => {
   const overwrite: StyleDefinitionContentOverwrites[] = [
     {
-      name: 'basis',
       content: {
         backgroundColor: { type: 'STATIC', value: 'Red' },
       },
+      name: 'basis',
     },
     {
-      name: 'hover',
       content: {
         backgroundColor: { type: 'STATIC', value: 'Blue' },
       },
+      name: 'hover',
     },
   ];
 
@@ -50,32 +48,32 @@ test('it build a styleReference for the componentPrefab for states', (t: Context
     },
   };
 
-  t.deepEqual(buildReferenceStyle(style), expected);
+  expect(buildReferenceStyle(style)).toEqual(expected);
 });
 
-test('it build a style ', (t: Context): void => {
+test('it build a style ', (): void => {
   const style: StyleDefinition = {
-    name: 'Filled',
-    type: 'Button',
     basis: { backgroundColor: { type: 'STATIC', value: 'Red' } },
+    name: 'Filled',
     states: [
       {
-        name: 'hover',
         content: {
           backgroundColor: { type: 'STATIC', value: 'Blue' },
         },
+        name: 'hover',
       },
     ],
+    type: 'Button',
   };
 
   const expected: BuildStyleDefinition = {
-    name: 'Filled',
-    type: 'Button',
     content: {
       basis: { backgroundColor: { type: 'STATIC', value: 'Red' } },
       hover: { backgroundColor: { type: 'STATIC', value: 'Blue' } },
     },
+    name: 'Filled',
+    type: 'Button',
   };
 
-  t.deepEqual(buildStyle(style), expected);
+  expect(buildStyle(style)).toEqual(expected);
 });

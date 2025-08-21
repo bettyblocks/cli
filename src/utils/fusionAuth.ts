@@ -2,24 +2,27 @@ import fs from 'fs-extra';
 import os from 'os';
 import path from 'path';
 import prompts from 'prompts';
-import Webhead, { WebheadInstance, WebheadRequestOptions } from 'webhead';
+import Webhead, {
+  type WebheadInstance,
+  type WebheadRequestOptions,
+} from 'webhead';
 
 import Config from '../functions/config';
 
-type LoginResponse = {
+interface LoginResponse {
   token: string;
   refreshToken: string;
   twoFactorId: string;
-};
+}
 
-type TwoFactorLoginResponse = {
+interface TwoFactorLoginResponse {
   token: string;
   refreshToken: string;
-};
+}
 
-type UserResponse = {
+interface UserResponse {
   user: object;
-};
+}
 
 class FusionAuth {
   private configFile: string;
@@ -44,7 +47,7 @@ class FusionAuth {
   async ensureLogin(): Promise<void> {
     const response = await this.get<UserResponse>('/api/user', {
       headers: {
-        Authorization: `Bearer ${this.jwt() || ''}`,
+        Authorization: `Bearer ${this.jwt() ?? ''}`,
       },
     });
 
@@ -77,9 +80,9 @@ class FusionAuth {
   async complete2FA(twoFactorId: string): Promise<void> {
     const { code } = (await prompts([
       {
-        type: 'text',
-        name: 'code',
         message: 'Fill in your 2FA code (to upload code)',
+        name: 'code',
+        type: 'text',
       },
     ])) as { code: string };
 
@@ -108,16 +111,16 @@ class FusionAuth {
     await this.ensureLogin();
     const applicationId = await config.applicationId();
     const url = `${config.builderApiUrl}/artifacts/actions/${
-      applicationId || ''
+      applicationId ?? ''
     }/functions`;
 
     const { statusCode } = await this.webhead.post(url, {
       headers: {
-        Authorization: `Bearer ${this.jwt() || ''}`,
+        Authorization: `Bearer ${this.jwt() ?? ''}`,
       },
       multiPartData: [
-        { name: 'file', file: zipFile },
-        { name: 'functions', contents: functionsJson },
+        { file: zipFile, name: 'file' },
+        { contents: functionsJson, name: 'functions' },
       ],
     });
 
@@ -141,8 +144,8 @@ class FusionAuth {
       await this.webhead.get(this.config.fusionAuthUrl);
     }
     await this.webhead[method](urlPath, options);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return this.webhead.json() || this.webhead.text();
+
+    return this.webhead.json() ?? this.webhead.text();
   }
 
   private storeTokens(jwt: string, refreshToken: string): void {
@@ -153,12 +156,10 @@ class FusionAuth {
     let jwt;
 
     if (fs.pathExistsSync(this.configFile)) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-      jwt = fs.readJsonSync(this.configFile).jwt;
+      ({ jwt } = fs.readJsonSync(this.configFile));
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return jwt || null;
+    return jwt ?? null;
   }
 }
 

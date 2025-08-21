@@ -1,37 +1,27 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
-/* npm dependencies */
-
-import program from 'commander';
 import chalk from 'chalk';
+import { Command } from 'commander';
 
-/* internal dependencies */
-
-import { CommandBB } from './types';
-
-/* setup */
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/no-unsafe-assignment
-const { version }: { version: string } = require('../package.json');
+import pkg from '../package.json';
+import { type CommandBB } from './types';
 
 const availableCommands: CommandBB[] = [
   'blocks',
   'components',
   'functions',
-  'interactions',
   'bundle',
   'help',
 ];
 
-/* process arguments */
+const program = new Command();
 
 program
   .description('Betty Blocks CLI')
-  .version(version, '-v, --version')
+  .version(pkg.version, '-v, --version')
   .command('components [cmd]', 'manage your component sets')
   .command('blocks [cmd]', 'manage your blocks')
   .command('functions [cmd]', 'manage your custom functions')
-  .command('interactions [cmd]', 'manage your interactions')
   .command('bundle [cmd]', 'manage your vendor bundle')
   .on('command:*', ([command]: string[]): void => {
     if (!availableCommands.includes(command as CommandBB)) {

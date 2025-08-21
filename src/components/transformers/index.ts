@@ -1,10 +1,10 @@
 import {
-  CustomTransformerFactory,
+  type CustomTransformerFactory,
   flattenDiagnosticMessageText,
   JsxEmit,
   ScriptTarget,
-  SourceFile,
-  TransformerFactory,
+  type SourceFile,
+  type TransformerFactory,
   transpileModule,
 } from 'typescript';
 
@@ -36,7 +36,7 @@ export const transpile = (
     diagnostics.forEach((diagnostic) => {
       if (diagnostic.file) {
         const { line, character } =
-          diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start || 0);
+          diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start ?? 0);
         messageText += ` ${diagnostic.file.fileName} (${line + 1},${
           character + 1
         })`;
