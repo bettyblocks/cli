@@ -1,3 +1,10 @@
+# [26.0.0-beta.17](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.16...v26.0.0-beta.17) (2025-08-21)
+
+
+### Bug Fixes
+
+* updates shebang to node ([6e54f67](https://github.com/bettyblocks/cli/commit/6e54f67f3368f874601580131a3d84016e684ea5))
+
 # [26.0.0-beta.16](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.15...v26.0.0-beta.16) (2025-08-19)
 
 
