@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "build": "npx webpack --config webpack.config.js"
-  },
-  "dependencies": {
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
-  }
-}

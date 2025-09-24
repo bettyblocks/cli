@@ -1,5 +1,3 @@
-/* npm dependencies */
-
 import { spawn } from 'child_process';
 import { Command } from 'commander';
 import fs from 'fs-extra';
@@ -7,13 +5,10 @@ import os from 'os';
 import path from 'path';
 
 import acquireCustomFunctionsProject from './functions/acquireCustomFunctionsProject';
-import rootDir from './utils/rootDir';
 
 const program = new Command();
 
 program.name('bb functions build').parse(process.argv);
-
-/* execute command */
 
 const workingDir = process.cwd();
 const identifier = acquireCustomFunctionsProject(workingDir);
@@ -23,27 +18,18 @@ console.log(
 );
 
 new Promise((resolve): void => {
-  const packerDir = path.join(rootDir(), 'assets', 'functions', 'packer');
   const buildDir = path.join(os.tmpdir(), identifier);
   const sourceSrc = path.join(workingDir, 'src');
   const targetSrc = path.join(buildDir, 'src');
   const sourcePackage = path.join(workingDir, 'package.json');
   const targetPackage = path.join(buildDir, 'package.json');
-  const sourceConfig = path.join(workingDir, 'webpack.config.js');
-  const targetConfig = path.join(buildDir, 'webpack.config.js');
-
-  if (!fs.pathExistsSync(sourceConfig)) {
-    fs.copySync(path.join(packerDir, 'webpack.config.js'), sourceConfig);
-  }
 
   fs.emptyDir(buildDir, (err: NodeJS.ErrnoException | null) => {
     if (err) {
       console.log(`${err.message}. Abort.`);
     }
 
-    fs.copySync(packerDir, buildDir);
     fs.copySync(sourceSrc, targetSrc);
-    fs.copySync(sourceConfig, targetConfig);
 
     const sourceJson = fs.readJsonSync(sourcePackage);
     const targetJson = fs.readJsonSync(targetPackage);
