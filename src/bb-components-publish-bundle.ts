@@ -5,7 +5,7 @@ import { readFileSync } from 'fs';
 import {
   publish,
   validateBucketName,
-} from './functions/bb-components-functions';
+} from './components/bb-components-functions';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 const program = new Command();

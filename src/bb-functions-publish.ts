@@ -1,11 +1,9 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
-import fs from 'fs-extra';
 import path from 'path';
 
 import Config from './functions/config';
 import publishAppFunctions from './functions/publishAppFunctions';
-import publishCustomFunctions from './functions/publishCustomFunctions';
 import {
   FunctionValidator,
   logValidationResult,
@@ -15,16 +13,10 @@ const program = new Command();
 
 program
   .name('bb functions publish')
-  .option('-b, --bump', 'Bump the revision number.')
-  .option('-s, --skip', 'Skip building the custom functions bundle.')
   .option('--skip-compile', 'Skip the compilation of the application.')
-  .option(
-    '-h, --host <host>',
-    'Set hostname to publish to. Defaults to <identifier>.bettyblocks.com',
-  )
   .parse(process.argv);
 
-const { host, skip, bump, skipCompile } = program.opts();
+const { skipCompile } = program.opts();
 
 const workingDir = process.cwd();
 
@@ -61,13 +53,9 @@ const validateFunctions = async (): Promise<{ valid: boolean }> => {
 };
 
 void (async (): Promise<void> => {
-  if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
-    const { valid } = await validateFunctions();
+  const { valid } = await validateFunctions();
 
-    if (valid) {
-      await publishAppFunctions({ skipCompile });
-    }
-  } else {
-    publishCustomFunctions(host, bump, skip);
+  if (valid) {
+    await publishAppFunctions({ skipCompile });
   }
 })();

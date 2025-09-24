@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import { pathExists, readJSON } from 'fs-extra';
 
-import { publish } from './functions/bb-components-functions';
+import { publish } from './components/bb-components-functions';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
 
 const program = new Command();
