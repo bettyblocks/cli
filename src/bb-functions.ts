@@ -19,7 +19,6 @@ const program = new Command();
 program
   .usage(`<${availableCommands.join('|')}>`)
   .name('bb functions')
-  .command('build', 'build functions bundle file of current working directory')
   .command('bump', 'increase the major/minor version of a specific function')
   .command('init [identifier]', 'initialize functions project')
   .command('login', 'login using the same credentials as the IDE')
