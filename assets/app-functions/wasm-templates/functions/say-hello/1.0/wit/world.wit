@@ -1,0 +1,13 @@
+package betty-blocks:sayhello@1.0.0;
+
+interface sayhello {
+    record output {
+        %greet: string
+    }
+
+    sayhello: func(name: string) -> result<output, string>;
+}
+
+world main {
+    export sayhello;
+}
