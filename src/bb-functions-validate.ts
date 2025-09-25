@@ -11,8 +11,8 @@ import {
 const program = new Command();
 
 program
-  .usage('[function-name]')
   .name('bb functions validate')
+  .argument('[function-name]', 'Name of the function to validate')
   .parse(process.argv);
 
 const {

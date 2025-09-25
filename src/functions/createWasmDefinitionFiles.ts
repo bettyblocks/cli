@@ -1,79 +1,79 @@
 import fs from 'fs-extra';
 import path from 'path';
 
-const createlibRsFile = (
-  functionDir: string,
-  functionDefName: string,
-): void => {
+const snakeCase = (string: string): string =>
+  string.replace(/-./g, (x) => `_${x.toLowerCase()[1]}`).toLowerCase();
+
+const createlibRsFile = (functionDir: string, functionName: string): void => {
+  const functionDefName = snakeCase(functionName);
   fs.mkdirpSync(path.join(functionDir, 'src'));
   fs.writeFileSync(
     path.join(functionDir, 'src', 'lib.rs'),
-    `
-    use crate::exports::betty_blocks::${functionDefName}::${functionDefName}::{Guest, Output};
+    `use crate::exports::betty_blocks::${functionDefName}::${functionDefName}::{Guest, Output};
 
-    wit_bindgen::generate!({ generate_all });
+wit_bindgen::generate!({ generate_all });
 
-    struct Component;
+struct Component;
 
-    impl Guest for Component {
-        fn ${functionDefName}(name: String) -> Result<Output, String> {
-            if name == "oops" {
-                Err("Ooops. Something went wrong.".to_string())
-            } else {
-                Ok(Output {
-                    greet: format!("Hello, {}", name),
-                })
-            }
+impl Guest for Component {
+    fn ${functionDefName}(name: String) -> Result<Output, String> {
+        if name == "oops" {
+            Err("Ooops. Something went wrong.".to_string())
+        } else {
+            Ok(Output {
+                greet: format!("Hello, {}", name),
+            })
         }
     }
+}
 
-    export! {Component}
+export! {Component}
     `,
   );
 };
 
 const createWorldWitFile = (
   functionDir: string,
-  functionDefName: string,
+  functionName: string,
 ): void => {
+  const lowercasedFunctionName = functionName.toLowerCase();
   fs.mkdirpSync(path.join(functionDir, 'wit'));
   fs.writeFileSync(
     path.join(functionDir, 'wit', 'world.wit'),
-    `
-    package betty-blocks:${functionDefName}@1.0.0;
+    `package betty-blocks:${lowercasedFunctionName}@1.0.0;
 
-    interface ${functionDefName} {
-        record output {
-            %greet: string
-        }
-
-        ${functionDefName}: func(name: string) -> result<output, string>;
+interface ${lowercasedFunctionName} {
+    record output {
+        %greet: string
     }
 
-    world main {
-        export ${functionDefName};
-    }
+    ${lowercasedFunctionName}: func(name: string) -> result<output, string>;
+}
+
+world main {
+    export ${lowercasedFunctionName};
+}
     `,
   );
 };
 
 const createCargoTomlFile = (
   functionDir: string,
-  functionDefName: string,
+  functionName: string,
 ): void => {
+  const functionDefName = snakeCase(functionName);
   fs.writeFileSync(
     path.join(functionDir, 'Cargo.toml'),
-    `
-    [package]
-    name = "${functionDefName}"
-    version = "1.0.0"
-    edition = "2024"
+    `[package]
+name = "${functionDefName}"
+version = "1.0.0"
+edition = "2024"
 
-    [lib]
-    crate-type = ["cdylib"]
+[lib]
+crate-type = ["cdylib"]
 
-    [dependencies]
-    wit-bindgen = "0.42.0"
+[dependencies]
+wit-bindgen = "0.42.0"
     `,
   );
 };

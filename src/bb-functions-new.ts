@@ -6,7 +6,10 @@ import { newFunctionDefinition } from './functions/functionDefinitions';
 
 const program = new Command();
 
-program.usage('[function-name]').name('bb functions new').parse(process.argv);
+program
+  .argument('<function-name>', 'Name of the new function')
+  .name('bb functions new')
+  .parse(process.argv);
 
 const {
   args: [inputFunctionName],
@@ -20,7 +23,7 @@ const isWasmFunctionProject = fs.existsSync(
   path.join(workingDir, '.wasm-functions'),
 );
 
-if (!isJsFunctionPorject || !isWasmFunctionProject) {
+if (!isJsFunctionPorject && !isWasmFunctionProject) {
   throw new Error(
     `${workingDir} doesn't seem to be a functions project.\nPlease make sure you're in the root of the project.`,
   );
@@ -28,7 +31,7 @@ if (!isJsFunctionPorject || !isWasmFunctionProject) {
 
 try {
   const functionsDir = path.join(workingDir, 'functions');
-  newFunctionDefinition(functionsDir, inputFunctionName);
+  newFunctionDefinition(functionsDir, inputFunctionName, isWasmFunctionProject);
 
   console.log(`functions/${inputFunctionName} created`);
 } catch (error) {

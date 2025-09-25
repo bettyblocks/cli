@@ -31,8 +31,11 @@ const functionDefinitionPath = (functionPath: string): string =>
 /* @doc functionImplementationPath
   Expands the function dir with `index.js`.
 */
-const functionImplementationPath = (functionPath: string): string =>
+const jsFunctionImplementationPath = (functionPath: string): string =>
   path.join(functionPath, 'index.js');
+
+const wasmFunctionImplementationPath = (functionPath: string): string =>
+  path.join(functionPath, 'wit', 'world.wit');
 
 /* @doc isFunctionDefinition
   Checks the given functions dir for a file named function.json.
@@ -58,7 +61,8 @@ const isFunctionVersion = (
   Returns true if the file exists.
 */
 const isFunction = (functionPath: string): boolean =>
-  fs.pathExistsSync(functionImplementationPath(functionPath));
+  fs.pathExistsSync(jsFunctionImplementationPath(functionPath)) ||
+  fs.pathExistsSync(wasmFunctionImplementationPath(functionPath));
 
 /* @doc functionDirs
   Returns a list of directories inside the given functionsDir that have a function.json and index.js.
@@ -69,7 +73,7 @@ const functionDirs = (
 ): string[] =>
   glob
     .sync(path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'))
-    .reduce((dirs, functionDefinition) => {
+    .reduce<string[]>((dirs, functionDefinition) => {
       const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
       if (
         isFunction(dir) &&
@@ -78,7 +82,7 @@ const functionDirs = (
         dirs.push(dir);
       }
       return dirs;
-    }, [] as string[]);
+    }, []);
 
 /* @doc functionDefinition
   Reads the function.json from the given directory.
@@ -99,7 +103,7 @@ const functionDefinition = (
   }
 
   const filePath = functionDefinitionPath(functionPath);
-  const schema = fs.readJSONSync(filePath) as Schema;
+  const schema = fs.readJSONSync(filePath);
 
   try {
     return {
@@ -107,7 +111,7 @@ const functionDefinition = (
       path: filePath,
       schema,
       version,
-    } as FunctionDefinition;
+    };
   } catch (err) {
     throw new Error(`could not load json from ${filePath}: ${err}`);
   }
@@ -144,12 +148,8 @@ const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
 const newFunctionDefinition = (
   functionsDir: string,
   functionName: string,
-  isWasmFunctionProject = false,
+  isWasmFunctionProject: boolean,
 ): void => {
-  const functionDefName = functionName.replace(
-    /-./g,
-    (x) => x.toUpperCase()[1],
-  );
   const functionDir = path.join(functionsDir, functionName, '1.0');
   try {
     fs.mkdirpSync(functionDir);
@@ -167,9 +167,9 @@ const newFunctionDefinition = (
     );
 
     if (isWasmFunctionProject) {
-      createNewWasmFunction(functionDir, functionName, functionDefName);
+      createNewWasmFunction(functionDir, functionName);
     } else {
-      createNewJsFunction(functionDir, functionDefName);
+      createNewJsFunction(functionDir, functionName);
     }
   } catch (err) {
     throw new Error(`could not initialize new function ${functionDir}: ${err}`);
@@ -178,8 +178,12 @@ const newFunctionDefinition = (
 
 const createNewJsFunction = (
   functionDir: string,
-  functionDefName: string,
+  functionName: string,
 ): void => {
+  const functionDefName = functionName.replace(
+    /-./g,
+    (x) => x.toUpperCase()[1],
+  );
   fs.writeFileSync(
     path.join(functionDir, 'index.js'),
     `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
@@ -189,11 +193,10 @@ const createNewJsFunction = (
 const createNewWasmFunction = (
   functionDir: string,
   functionName: string,
-  functionDefName: string,
 ): void => {
-  createlibRsFile(functionDir, functionDefName);
-  createWorldWitFile(functionDir, functionDefName);
-  createCargoTomlFile(functionDir, functionDefName);
+  createlibRsFile(functionDir, functionName);
+  createWorldWitFile(functionDir, functionName);
+  createCargoTomlFile(functionDir, functionName);
 };
 
 const toVariableName = ({ name, version }: FunctionDefinition): string =>
