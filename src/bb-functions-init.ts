@@ -7,9 +7,20 @@ import rootDir from './utils/rootDir';
 
 const program = new Command();
 
-program.usage('[identifier]').name('bb functions init').parse(process.argv);
+program
+  .usage('[identifier]')
+  .name('bb functions init')
+  .option(
+    '-t, --type [type]',
+    'Specify the type of functions project to initialize. E.g., "wasm" or "js".',
+    'js',
+  )
+  .parse(process.argv);
 
 const { args } = program;
+const {
+  options: { type },
+} = program.opts();
 
 if (args.length !== 1) {
   console.log(
@@ -22,23 +33,21 @@ const [identifier] = args;
 const workingDir = process.cwd();
 const targetDir = path.join(workingDir, identifier);
 
-fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
-  if (err && err.code === 'ENOENT') {
-    const sourceDir = path.join(
-      rootDir(),
-      'assets',
-      'app-functions',
-      'templates',
-    );
-    fs.copySync(sourceDir, targetDir);
+if (!fs.existsSync(targetDir)) {
+  console.log(`The directory "${targetDir}" already exists. Abort.`);
+  process.exit(1);
+}
 
-    console.log(`Initialized functions project in ${targetDir}.
-You can use "bb functions" to publish it:
+let sourceDir = path.join(rootDir(), 'assets', 'app-functions', 'js-template');
+if (type === 'wasm') {
+  sourceDir = path.join(rootDir(), 'assets', 'app-functions', 'wasm-template');
+}
 
-    cd ${identifier}
-    bb functions publish
-`);
-  } else {
-    console.log(`The directory "${targetDir}" already exists. Abort.`);
-  }
-});
+fs.copySync(sourceDir, targetDir);
+
+console.log(`Initialized functions project in ${targetDir}.
+    You can use "bb functions" to publish it:
+
+        cd ${identifier}
+        bb functions publish
+    `);

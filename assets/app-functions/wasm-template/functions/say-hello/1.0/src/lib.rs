@@ -2,9 +2,9 @@ use crate::exports::betty_blocks::sayhello::sayhello::{Guest, Output};
 
 wit_bindgen::generate!({ generate_all });
 
-struct SayHello;
+struct Component;
 
-impl Guest for SayHello {
+impl Guest for Component {
     fn sayhello(name: String) -> Result<Output, String> {
         if name == "oops" {
             Err("Ooops. Something went wrong.".to_string())
@@ -16,4 +16,4 @@ impl Guest for SayHello {
     }
 }
 
-export! {SayHello}
+export! {Component}

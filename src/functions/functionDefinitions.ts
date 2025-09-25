@@ -4,6 +4,12 @@ import fs from 'fs-extra';
 import glob from 'glob';
 import path from 'path';
 
+import {
+  createCargoTomlFile,
+  createlibRsFile,
+  createWorldWitFile,
+} from './createWasmDefinitionFiles';
+
 interface Schema {
   label: string;
   [other: string]: unknown;
@@ -138,6 +144,7 @@ const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
 const newFunctionDefinition = (
   functionsDir: string,
   functionName: string,
+  isWasmFunctionProject = false,
 ): void => {
   const functionDefName = functionName.replace(
     /-./g,
@@ -159,13 +166,34 @@ const newFunctionDefinition = (
       { spaces: 2 },
     );
 
-    fs.writeFileSync(
-      path.join(functionDir, 'index.js'),
-      `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
-    );
+    if (isWasmFunctionProject) {
+      createNewWasmFunction(functionDir, functionName, functionDefName);
+    } else {
+      createNewJsFunction(functionDir, functionDefName);
+    }
   } catch (err) {
     throw new Error(`could not initialize new function ${functionDir}: ${err}`);
   }
+};
+
+const createNewJsFunction = (
+  functionDir: string,
+  functionDefName: string,
+): void => {
+  fs.writeFileSync(
+    path.join(functionDir, 'index.js'),
+    `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
+  );
+};
+
+const createNewWasmFunction = (
+  functionDir: string,
+  functionName: string,
+  functionDefName: string,
+): void => {
+  createlibRsFile(functionDir, functionDefName);
+  createWorldWitFile(functionDir, functionDefName);
+  createCargoTomlFile(functionDir, functionDefName);
 };
 
 const toVariableName = ({ name, version }: FunctionDefinition): string =>

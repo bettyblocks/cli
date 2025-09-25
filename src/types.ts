@@ -20,17 +20,13 @@ export type CommandComponents =
   | 'publish-bundle';
 
 export type CommandFunctions =
+  | 'bump'
   | 'init'
   | 'login'
   | 'logout'
   | 'new'
-  | 'build'
   | 'publish'
-  | 'validate'
-  | 'autoversion'
-  | 'convert-icons'
-  | 'bump'
-  | 'test';
+  | 'validate';
 
 export type CommandBlocks = 'publish' | 'release' | 'new';
 

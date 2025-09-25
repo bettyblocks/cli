@@ -3,15 +3,13 @@ import { Command } from 'commander';
 import type { CommandFunctions } from './types';
 
 const availableCommands: CommandFunctions[] = [
+  'bump',
   'init',
   'login',
   'logout',
   'new',
-  'build',
   'publish',
   'validate',
-  'bump',
-  'test',
 ];
 
 const program = new Command();
@@ -26,8 +24,8 @@ program
   .command('new [function-name]', 'Initialize a new function')
   .command('publish', 'publish functions of current working directory')
   .command('validate', 'validate functions of current working directory')
-  .on('command:*', ([command]: string[]): void => {
-    if (!availableCommands.includes(command as CommandFunctions)) {
+  .on('command:*', ([command]: CommandFunctions[]): void => {
+    if (!availableCommands.includes(command)) {
       console.error('Invalid command: %s\n', command);
       program.outputHelp();
     }
