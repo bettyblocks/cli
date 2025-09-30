@@ -1,11 +1,9 @@
+import { snake } from 'case';
 import fs from 'fs-extra';
 import path from 'path';
 
-const snakeCase = (string: string): string =>
-  string.replace(/-./g, (x) => `_${x.toLowerCase()[1]}`).toLowerCase();
-
 const createlibRsFile = (functionDir: string, functionName: string): void => {
-  const functionDefName = snakeCase(functionName);
+  const functionDefName = snake(functionName);
   fs.mkdirpSync(path.join(functionDir, 'src'));
   fs.writeFileSync(
     path.join(functionDir, 'src', 'lib.rs'),
@@ -61,7 +59,7 @@ const createCargoTomlFile = (
   functionDir: string,
   functionName: string,
 ): void => {
-  const functionDefName = snakeCase(functionName);
+  const functionDefName = snake(functionName);
   fs.writeFileSync(
     path.join(functionDir, 'Cargo.toml'),
     `[package]
