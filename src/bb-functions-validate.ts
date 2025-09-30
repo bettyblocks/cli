@@ -30,7 +30,9 @@ const validateFunctions = async (): Promise<void> => {
 
   console.log(chalk.bold(`Validating functions in ${baseFunctionsPath}`));
 
-  const results = await validator.validateFunctions(inputFunctionName);
+  const results = await validator.validateFunctions({
+    functionName: inputFunctionName,
+  });
   results.forEach(logValidationResult);
 
   const valid = results.every((result) => result.status === 'ok');

@@ -46,7 +46,9 @@ const validateBlockFunctions = async (
 
   console.log(chalk.bold(`Validating functions in ${baseFunctionsPath}`));
 
-  const results = await validator.validateFunctions('', blockFunctions);
+  const results = await validator.validateFunctions({
+    blockFunctions,
+  });
   results.forEach(logValidationResult);
 
   const valid = results.every((result) => result.status === 'ok');
