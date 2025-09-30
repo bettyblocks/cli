@@ -301,6 +301,31 @@ const zipFunctionDefinitions = (
   return zipFilePath;
 };
 
+/* @doc getAllWasmFunctionsWithVersions
+  Scans the given functionsPath for all functions that contain a wasm implementation.
+  Returns an array of strings with function names and versions, e.g. ['my-function/1.0', 'my-function/2.0']
+*/
+export const getAllWasmFunctionsWithVersions = (
+  functionsPath: string,
+): string[] => {
+  if (!fs.existsSync(functionsPath)) {
+    return [];
+  }
+  return fs
+    .readdirSync(functionsPath, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .flatMap((dirent) => {
+      const functionDir = path.join(functionsPath, dirent.name);
+      if (!fs.existsSync(functionDir)) {
+        return [];
+      }
+      return fs
+        .readdirSync(functionDir, { withFileTypes: true })
+        .filter((subDirent) => subDirent.isDirectory())
+        .map((subDirent) => `${dirent.name}/${subDirent.name}`);
+    });
+};
+
 export {
   functionDefinition,
   functionDefinitionPath,

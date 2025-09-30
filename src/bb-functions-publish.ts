@@ -5,9 +5,9 @@ import path from 'path';
 import prompts from 'prompts';
 
 import Config from './functions/config';
+import { getAllWasmFunctionsWithVersions } from './functions/functionDefinitions';
 import publishAppFunctions from './functions/publishAppFunctions';
 import { publishWasmBlockStoreFunctions } from './functions/publishWasmBlockStoreFunctions';
-import { getAllWasmFunctionsWithVersions } from './functions/validateWasmProjectStructure';
 import {
   FunctionValidator,
   logValidationResult,
