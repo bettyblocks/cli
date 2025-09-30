@@ -59,10 +59,10 @@ test('load in entire schema for validator', async (): Promise<void> => {
   expect(errors.length).toBe(0);
 });
 
-test('validate templates', async (): Promise<void> => {
+test('validate js-templates', async (): Promise<void> => {
   const functionPath = path.join(
     process.cwd(),
-    'assets/app-functions/templates',
+    'assets/app-functions/js-template',
     'functions/say-hello/1.0',
   );
 
