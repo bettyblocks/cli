@@ -52,7 +52,7 @@ test('functionDefinition', async (): Promise<void> => {
 test('creating a new functionDefinition', async (): Promise<void> => {
   const tmpFunctionsDir = `tmpFunctions${Math.random().toString()}`;
   const tmpFunctionsPath = path.join(supportDir, tmpFunctionsDir);
-  newFunctionDefinition(tmpFunctionsPath, 'ciao-mondo');
+  newFunctionDefinition(tmpFunctionsPath, 'ciao-mondo', false);
 
   const functionPath = path.join(tmpFunctionsPath, 'ciao-mondo', '1.0');
   const { schema } = functionDefinition(functionPath, functionsPath);

@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import glob from 'glob';
+import { globSync } from 'glob';
 import path from 'path';
 
 import { pick } from '../utils/pick';
@@ -44,12 +44,13 @@ const createPackageJson = (
   Returns a list of blocks.
 */
 const blockFiles = (blockDir: string): string[] =>
-  glob
-    .sync(path.join(blockDir, '*.json').replace(/\\/g, '/'))
-    .reduce((blocks, blockDefinition) => {
+  globSync(path.join(blockDir, '*.json').replace(/\\/g, '/')).reduce<string[]>(
+    (blocks, blockDefinition) => {
       blocks.push(blockDefinition);
       return blocks;
-    }, [] as string[]);
+    },
+    [],
+  );
 
 /* @doc blockDefinitions
   Returns an array containing all block definitions

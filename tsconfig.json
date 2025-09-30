@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "lib": ["ESNext"],
-    "rootDir": "./src",
+    "rootDir": "./",
     "outDir": "./build",
     "module": "ESNext",
     "moduleDetection": "force",

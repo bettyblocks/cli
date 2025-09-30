@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
 import { camel, title } from 'case';
 import fs from 'fs-extra';
-import glob from 'glob';
+import { globSync } from 'glob';
 import path from 'path';
 
 import {
@@ -71,18 +71,18 @@ const functionDirs = (
   functionsDir: string,
   includeNonversioned = false,
 ): string[] =>
-  glob
-    .sync(path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'))
-    .reduce<string[]>((dirs, functionDefinition) => {
-      const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
-      if (
-        isFunction(dir) &&
-        (includeNonversioned || isFunctionVersion(dir, functionsDir))
-      ) {
-        dirs.push(dir);
-      }
-      return dirs;
-    }, []);
+  globSync(
+    path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'),
+  ).reduce<string[]>((dirs, functionDefinition) => {
+    const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
+    if (
+      isFunction(dir) &&
+      (includeNonversioned || isFunctionVersion(dir, functionsDir))
+    ) {
+      dirs.push(dir);
+    }
+    return dirs;
+  }, []);
 
 /* @doc functionDefinition
   Reads the function.json from the given directory.
