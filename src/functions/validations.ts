@@ -89,15 +89,10 @@ const forceVersion = (
 };
 
 const validateSchema = (
-  functionJson: object,
+  functionJson: FunctionDefinition,
   validator: Validator,
 ): ValidationResult => {
-  const {
-    name,
-    version,
-    path: definitionPath,
-    schema,
-  } = functionJson as FunctionDefinition;
+  const { name, version, path: definitionPath, schema } = functionJson;
 
   const { errors } = validateFunctionDefinition(validator, schema);
   const status = errors.length ? 'error' : 'ok';
