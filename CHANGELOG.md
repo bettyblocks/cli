@@ -1,3 +1,10 @@
+# [26.0.0-alpha.2](https://github.com/bettyblocks/cli/compare/v26.0.0-alpha.1...v26.0.0-alpha.2) (2025-10-01)
+
+
+### Reverts
+
+* Revert "feat: try out bun build" ([dac628d](https://github.com/bettyblocks/cli/commit/dac628d953b352c4e32d111e1c3aad188a745760))
+
 # [26.0.0-alpha.1](https://github.com/bettyblocks/cli/compare/v25.108.0...v26.0.0-alpha.1) (2025-09-30)
 
 
