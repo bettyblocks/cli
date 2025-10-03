@@ -91,10 +91,12 @@ const functionDirs = async (
   const glob = new Glob('**/function.json');
   const dirs: string[] = [];
 
-  for await (const functionDefinition of glob.scan(
+  for await (const functionDefinition of glob.scanSync(
     path.join(functionsDir).replace(/\\/g, '/'),
   )) {
-    const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
+    const dir = path
+      .dirname(path.join(functionsDir, functionDefinition))
+      .replace(/\//g, path.sep);
 
     if (
       isFunction(dir) &&
@@ -103,7 +105,6 @@ const functionDirs = async (
       dirs.push(dir);
     }
   }
-
   return dirs;
 };
 

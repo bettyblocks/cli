@@ -48,7 +48,7 @@ const blockFiles = async (blockDir: string): Promise<string[]> => {
   const matches: string[] = [];
 
   for await (const file of glob.scan(path.join(blockDir).replace(/\\/g, '/'))) {
-    matches.push(file);
+    matches.push(path.join(blockDir, file));
   }
 
   return matches;
