@@ -67,23 +67,6 @@ const isFunction = (functionPath: string): boolean =>
 /* @doc functionDirs
   Returns a list of directories inside the given functionsDir that have a function.json and index.js.
 */
-// const functionDirs = (
-//   functionsDir: string,
-//   includeNonversioned = false,
-// ): string[] =>
-//   globSync(
-//     path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'),
-//   ).reduce<string[]>((dirs, functionDefinition) => {
-//     const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
-//     if (
-//       isFunction(dir) &&
-//       (includeNonversioned || isFunctionVersion(dir, functionsDir))
-//     ) {
-//       dirs.push(dir);
-//     }
-//     return dirs;
-//   }, []);
-
 const functionDirs = async (
   functionsDir: string,
   includeNonversioned = false,
@@ -91,9 +74,13 @@ const functionDirs = async (
   const glob = new Glob('**/function.json');
   const dirs: string[] = [];
 
-  for await (const functionDefinition of glob.scanSync(
-    path.join(functionsDir).replace(/\\/g, '/'),
-  )) {
+  const functionsDirPath = functionsDir.replace(/\\/g, '/');
+
+  if (!fs.existsSync(functionsDirPath)) {
+    return [];
+  }
+
+  for await (const functionDefinition of glob.scanSync(functionsDirPath)) {
     const dir = path
       .dirname(path.join(functionsDir, functionDefinition))
       .replace(/\//g, path.sep);
