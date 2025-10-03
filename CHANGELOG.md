@@ -1,3 +1,10 @@
+# [26.0.0-alpha.3](https://github.com/bettyblocks/cli/compare/v26.0.0-alpha.2...v26.0.0-alpha.3) (2025-10-03)
+
+
+### Bug Fixes
+
+* split up validation function ([02fca16](https://github.com/bettyblocks/cli/commit/02fca16ba127f2314cdf8fa0fa42d56be9d1cf06))
+
 # [26.0.0-alpha.2](https://github.com/bettyblocks/cli/compare/v26.0.0-alpha.1...v26.0.0-alpha.2) (2025-10-01)
 
 
