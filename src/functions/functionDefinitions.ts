@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
+import { Glob } from 'bun';
 import { camel, title } from 'case';
 import fs from 'fs-extra';
-import { globSync } from 'glob';
 import path from 'path';
 
 import {
@@ -67,22 +67,45 @@ const isFunction = (functionPath: string): boolean =>
 /* @doc functionDirs
   Returns a list of directories inside the given functionsDir that have a function.json and index.js.
 */
-const functionDirs = (
+// const functionDirs = (
+//   functionsDir: string,
+//   includeNonversioned = false,
+// ): string[] =>
+//   globSync(
+//     path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'),
+//   ).reduce<string[]>((dirs, functionDefinition) => {
+//     const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
+//     if (
+//       isFunction(dir) &&
+//       (includeNonversioned || isFunctionVersion(dir, functionsDir))
+//     ) {
+//       dirs.push(dir);
+//     }
+//     return dirs;
+//   }, []);
+
+const functionDirs = async (
   functionsDir: string,
   includeNonversioned = false,
-): string[] =>
-  globSync(
-    path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'),
-  ).reduce<string[]>((dirs, functionDefinition) => {
+): Promise<string[]> => {
+  const glob = new Glob('**/function.json');
+  const dirs: string[] = [];
+
+  for await (const functionDefinition of glob.scan(
+    path.join(functionsDir).replace(/\\/g, '/'),
+  )) {
     const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
+
     if (
       isFunction(dir) &&
       (includeNonversioned || isFunctionVersion(dir, functionsDir))
     ) {
       dirs.push(dir);
     }
-    return dirs;
-  }, []);
+  }
+
+  return dirs;
+};
 
 /* @doc functionDefinition
   Reads the function.json from the given directory.
@@ -121,13 +144,19 @@ const functionDefinition = (
   Returns an object containing all function.json definitions
   inside the given functionsDir, indexed by function name.
 */
-const functionDefinitions = (
+const functionDefinitions = async (
   functionsDir: string,
   includeNonversioned = false,
-): FunctionDefinition[] =>
-  functionDirs(functionsDir, includeNonversioned).map((functionDir) =>
+): Promise<FunctionDefinition[]> => {
+  const functionDirectories = await functionDirs(
+    functionsDir,
+    includeNonversioned,
+  );
+
+  return functionDirectories.map((functionDir) =>
     functionDefinition(functionDir, functionsDir),
   );
+};
 
 const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
   const updatedDefinitions = definitions.map(({ name, version, schema }) => ({
@@ -255,8 +284,11 @@ const whitelistedFunctions = (
   Fetches all functions and re-exports them. 
   Returns the result as a Buffer. 
 */
-const generateIndex = (functionsPath: string, whitelist?: string[]): string => {
-  const definitions = functionDefinitions(functionsPath);
+const generateIndex = async (
+  functionsPath: string,
+  whitelist?: string[],
+): Promise<string> => {
+  const definitions = await functionDefinitions(functionsPath);
 
   const functions = whitelist
     ? whitelistedFunctions(definitions, whitelist)
@@ -277,10 +309,10 @@ const generateIndex = (functionsPath: string, whitelist?: string[]): string => {
   to the zip file. Generates an index.js and adds it to the zip file.
   Returns path to the zip file.
 */
-const zipFunctionDefinitions = (
+const zipFunctionDefinitions = async (
   functionsPath: string,
   includes?: string[],
-): string => {
+): Promise<string> => {
   const zip = new AdmZip();
   const tmpDir = '.tmp';
   const zipFilePath = path.join(tmpDir, 'app.zip');
@@ -289,7 +321,7 @@ const zipFunctionDefinitions = (
   fs.ensureDirSync(tmpDir);
 
   zip.addLocalFile(path.join(path.dirname(functionsPath), 'package.json'));
-  zip.addFile('index.js', Buffer.from(generateIndex(functionsPath)));
+  zip.addFile('index.js', Buffer.from(await generateIndex(functionsPath)));
   zip.addLocalFolder(functionsPath, functionsPath.replace(cwd, ''));
 
   (includes ?? []).forEach((include) => {

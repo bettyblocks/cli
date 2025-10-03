@@ -64,7 +64,7 @@ test('creating a new functionDefinition', async (): Promise<void> => {
 });
 
 test('functionDefinitions for a directory with functions', async (): Promise<void> => {
-  const [{ schema }] = functionDefinitions(functionsPath);
+  const [{ schema }] = await functionDefinitions(functionsPath);
   expect(schema).toMatchObject({
     label: 'Say Hello',
   });
@@ -72,13 +72,13 @@ test('functionDefinitions for a directory with functions', async (): Promise<voi
 
 test('functionDefinitions for a directory without functions', async (): Promise<void> => {
   const wrongFunctionsPath = supportDir;
-  expect(functionDefinitions(wrongFunctionsPath)).toEqual([]);
+  expect(await functionDefinitions(wrongFunctionsPath)).toEqual([]);
 });
 
 test('stringifying function definitions', async (): Promise<void> => {
   const expected =
     '[{"name":"sayHello","version":"1.0","description":"Say Hello to the world","label":"Say Hello","category":"Misc","icon":{"name":"ChatIcon","color":"Teal"},"options":"[{\\"meta\\":{\\"type\\":\\"Text\\"},\\"name\\":\\"name\\",\\"label\\":\\"Name\\",\\"info\\":\\"The name that\'s going to be used to say hello to the world!\\",\\"advanced\\":false,\\"configuration\\":{\\"placeholder\\":\\"Betty Blocks\\"}}]","yields":"NONE","paths":"{}"}]';
-  const definitions = functionDefinitions(functionsPath);
+  const definitions = await functionDefinitions(functionsPath);
   expect(stringifyDefinitions(definitions)).toEqual(expected);
 });
 
@@ -92,5 +92,5 @@ const fn = {
 export default fn;
 `;
 
-  expect(generateIndex(functionsPath)).toEqual(expected);
+  expect(await generateIndex(functionsPath)).toEqual(expected);
 });

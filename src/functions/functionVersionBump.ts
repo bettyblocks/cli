@@ -2,7 +2,10 @@ import fs from 'fs-extra';
 import path from 'path';
 import prompts from 'prompts';
 
-import { functionDefinitions } from './functionDefinitions';
+import {
+  type FunctionDefinition,
+  functionDefinitions,
+} from './functionDefinitions';
 
 const workingDir = process.cwd();
 const baseFunctionsPath = path.join(workingDir, 'functions');
@@ -12,19 +15,9 @@ export const collectBumpInput = async (): Promise<{
   currentVersion: string;
   dirName: string;
 }> => {
-  const functionDir = (functionPath: string): string =>
-    path.basename(path.dirname(path.dirname(functionPath)));
+  const versionedFunctions = await functionDefinitions(baseFunctionsPath);
 
-  const versionedFunctions = functionDefinitions(baseFunctionsPath);
-
-  const functions = versionedFunctions.reduce<Record<string, string>>(
-    (acc, { schema: { label }, path: functionPath }) => {
-      const name = functionDir(functionPath);
-      acc[name] = label;
-      return acc;
-    },
-    {},
-  );
+  const functions = allFunctions(versionedFunctions);
 
   const dirName = (
     await prompts({
@@ -39,11 +32,7 @@ export const collectBumpInput = async (): Promise<{
     })
   ).functionName;
 
-  const [[major, minor]] = versionedFunctions
-    .filter(({ path: functionPath }) => functionDir(functionPath) === dirName)
-    .sort(({ version: a }, { version: b }) => parseFloat(a) - parseFloat(b))
-    .slice(-1)
-    .map(({ version }) => version.split('.').map(Number));
+  const [major, minor] = majorAndMinorVersionBump(versionedFunctions, dirName);
 
   const majorVersion = `${major + 1}.0`;
   const minorVersion = `${major}.${minor + 1}`;
@@ -63,6 +52,32 @@ export const collectBumpInput = async (): Promise<{
     newVersion: bumpMajor ? majorVersion : minorVersion,
   };
 };
+
+const allFunctions = (
+  versionedFunctions: FunctionDefinition[],
+): Record<string, string> =>
+  versionedFunctions.reduce<Record<string, string>>(
+    (acc, { schema: { label }, path: functionPath }) => {
+      const name = functionDir(functionPath);
+      acc[name] = label;
+      return acc;
+    },
+    {},
+  );
+
+const majorAndMinorVersionBump = (
+  versionedFunctions: FunctionDefinition[],
+  dirName: string,
+): number[] =>
+  versionedFunctions
+    .filter(({ path: functionPath }) => functionDir(functionPath) === dirName)
+    .sort(({ version: a }, { version: b }) => parseFloat(a) - parseFloat(b))
+    .slice(-1)
+    .map(({ version }) => version.split('.').map(Number))
+    .flat();
+
+const functionDir = (functionPath: string): string =>
+  path.basename(path.dirname(path.dirname(functionPath)));
 
 interface ReplaceVersionInWitFileProps {
   currentVersion: string;

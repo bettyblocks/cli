@@ -202,7 +202,7 @@ class FunctionValidator {
     blockFunctions,
     isWasmFunctionProject = false,
   }: ValidateFunctionsProps): Promise<ValidationResult[]> {
-    const definitions = functionDefinitions(this.functionsDir, true);
+    const definitions = await functionDefinitions(this.functionsDir, true);
     const functions = blockFunctions ?? definitions;
     const validations: ValidationResult[] = [];
     functions.forEach((definition) => {
