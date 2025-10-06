@@ -1,5 +1,5 @@
+import { Glob } from 'bun';
 import fs from 'fs-extra';
-import { globSync } from 'glob';
 import path from 'path';
 
 import { pick } from '../utils/pick';
@@ -43,21 +43,25 @@ const createPackageJson = (
 /* @doc functionDirs
   Returns a list of blocks.
 */
-const blockFiles = (blockDir: string): string[] =>
-  globSync(path.join(blockDir, '*.json').replace(/\\/g, '/')).reduce<string[]>(
-    (blocks, blockDefinition) => {
-      blocks.push(blockDefinition);
-      return blocks;
-    },
-    [],
-  );
+const blockFiles = async (blockDir: string): Promise<string[]> => {
+  const glob = new Glob('*.json');
+  const matches: string[] = [];
+
+  for await (const file of glob.scan(path.join(blockDir).replace(/\\/g, '/'))) {
+    matches.push(path.join(blockDir, file));
+  }
+
+  return matches;
+};
 
 /* @doc blockDefinitions
   Returns an array containing all block definitions
   inside the given blocksDir.
 */
-const blockDefinitions = (blocksDir: string): string[] =>
-  blockFiles(blocksDir).map((blocks) => blocks);
+const blockDefinitions = async (blocksDir: string): Promise<string[]> => {
+  const files = await blockFiles(blocksDir);
+  return files.map((blocks) => blocks);
+};
 
 /* @doc blockDefinitionPath
   Expands the block dir with a json file with the given blockname.

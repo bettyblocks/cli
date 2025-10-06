@@ -27,12 +27,12 @@ program.option('--all').name('bb blocks publish').parse(process.argv);
 
 const workingDir = process.cwd();
 const baseBlocksPath = path.join(workingDir, 'blocks');
-const blocks = blockDefinitions(baseBlocksPath);
+const blocks = await blockDefinitions(baseBlocksPath);
 
-const createBlockZip = (
+const createBlockZip = async (
   name: string,
   { functions, includes, dependencies }: Block,
-): string => {
+): Promise<string> => {
   const zip = new AdmZip();
   const tmpDir = '.tmp';
   const zipFilePath = path.join(tmpDir, `${name}.zip`);
@@ -50,10 +50,10 @@ const createBlockZip = (
     );
     zip.addFile(
       'index.js',
-      Buffer.from(generateIndex(functionsDir, functions)),
+      Buffer.from(await generateIndex(functionsDir, functions)),
     );
 
-    const funcDefinitions = functionDefinitions(functionsDir);
+    const funcDefinitions = await functionDefinitions(functionsDir);
     const blockFunctions = whitelistedFunctions(funcDefinitions, functions);
 
     blockFunctions.forEach((blockFunction) => {
@@ -104,7 +104,7 @@ void (async (): Promise<void> => {
       if (validateBlockConfig(block)) {
         try {
           const functionsDir = path.join(workingDir, 'functions');
-          const funcDefinitions = functionDefinitions(functionsDir);
+          const funcDefinitions = await functionDefinitions(functionsDir);
           const blockFunctions = whitelistedFunctions(
             funcDefinitions,
             block.functions,
@@ -117,7 +117,7 @@ void (async (): Promise<void> => {
           });
 
           if (valid) {
-            const zip = createBlockZip(name, block);
+            const zip = await createBlockZip(name, block);
             if (zip) await publishBlocks(block.functions, zip);
           } else {
             throw Error(chalk.red(`\n${errorMessage}\n`));

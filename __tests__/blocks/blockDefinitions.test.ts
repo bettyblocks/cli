@@ -35,7 +35,7 @@ test('returns 2 blocks', async (): Promise<void> => {
 
   newBlocks.forEach((block) => newBlockDefinition(supportDir, block));
 
-  const blocks = blockDefinitions(supportDir);
+  const blocks = await blockDefinitions(supportDir);
   const numberOfBlocks = blocks.length;
 
   expect(numberOfBlocks).toBe(2);

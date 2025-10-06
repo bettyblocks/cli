@@ -134,9 +134,9 @@ const uploadAppFunctions = async (
 
 const publishFunctions = async (config: Config): Promise<void> => {
   const functionsDir = path.join(workingDir, 'functions');
-  const zipFile = zipFunctionDefinitions(functionsDir, config.includes);
+  const zipFile = await zipFunctionDefinitions(functionsDir, config.includes);
 
-  const functions = functionDefinitions(functionsDir);
+  const functions = await functionDefinitions(functionsDir);
   const functionsJson = stringifyDefinitions(functions);
 
   const { success, message } = await uploadAppFunctions(

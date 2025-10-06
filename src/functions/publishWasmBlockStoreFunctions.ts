@@ -128,7 +128,10 @@ const uploadBlock = async ({
     },
     method: 'POST',
   }).then(async (res) => {
-    if (res.status === 401 || res.status === 403) {
+    if (
+      (res.status === 401 || res.status === 403) &&
+      applicationId != 'native'
+    ) {
       await fusionAuth.ensureLogin();
       return uploadBlock({ blockName, config, file, functionJson });
     }

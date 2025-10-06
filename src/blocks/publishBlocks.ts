@@ -66,7 +66,7 @@ const createAndPublishFiles = async (
   zip: string,
 ): Promise<void> => {
   const functionsDir = path.join(workingDir, 'functions');
-  const funcDefinitions = functionDefinitions(functionsDir);
+  const funcDefinitions = await functionDefinitions(functionsDir);
   const blockFunctions = whitelistedFunctions(funcDefinitions, functions);
   const functionsJson = stringifyDefinitions(blockFunctions);
 
