@@ -1,3 +1,10 @@
+# [26.0.0-alpha.4](https://github.com/bettyblocks/cli/compare/v26.0.0-alpha.3...v26.0.0-alpha.4) (2025-10-06)
+
+
+### Bug Fixes
+
+* trigger ci ([48effdd](https://github.com/bettyblocks/cli/commit/48effdd913e67cca08796959c2b2af6e90b4f822))
+
 # [26.0.0-alpha.3](https://github.com/bettyblocks/cli/compare/v26.0.0-alpha.2...v26.0.0-alpha.3) (2025-10-03)
 
 
