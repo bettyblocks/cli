@@ -7,7 +7,10 @@ import { newBlockDefinition } from './blocks/blockDefinitions';
 
 const program = new Command();
 
-program.usage('[block-name]').name('bb blocks new').parse(process.argv);
+program
+  .argument('<block-name>', 'Name of the block to create')
+  .name('bb blocks new')
+  .parse(process.argv);
 
 const { args } = program;
 const inputBlockName = kebab(args.join());
