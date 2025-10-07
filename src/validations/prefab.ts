@@ -1,9 +1,9 @@
-/* eslint-disable no-use-before-define */
 // Array spread is done because of this issue: https://github.com/hapijs/joi/issues/1449#issuecomment-532576296
 
 import chalk from 'chalk';
 import Joi from 'joi';
-import { ComponentStyleMap, GroupedStyles, Prefab } from '../types';
+
+import type { ComponentStyleMap, GroupedStyles, Prefab } from '../types';
 import { findDuplicates } from '../utils/validation';
 import {
   ICONS,
@@ -16,14 +16,30 @@ import { validateComponent } from './prefab/component';
 import { interactionSchema } from './prefab/interaction';
 import { variableSchema } from './prefab/variable';
 
+interface ValidatePrefabProps extends SchemaProviderProps {
+  prefabs: Prefab[];
+  styles: GroupedStyles;
+  componentStyleMap?: ComponentStyleMap;
+  availableComponentNames?: string[];
+  prefabType?: PrefabTypes;
+}
+
+interface SchemaProviderProps {
+  styles: GroupedStyles;
+  componentStyleMap?: ComponentStyleMap;
+  availableComponentNames?: string[];
+  prefabType?: PrefabTypes;
+}
+
 export type PrefabTypes = 'partial' | 'page' | undefined;
-const schemaProvider = (
-  styles: GroupedStyles,
-  componentStyleMap?: ComponentStyleMap,
-  availableComponentNames?: string[],
-  prefabType?: PrefabTypes,
-): Joi.ObjectSchema => {
-  return Joi.object({
+
+const schemaProvider = ({
+  styles,
+  componentStyleMap,
+  availableComponentNames,
+  prefabType,
+}: SchemaProviderProps): Joi.ObjectSchema =>
+  Joi.object({
     name: Joi.string().required(),
     keywords: Joi.array(),
     icon: Joi.string()
@@ -45,34 +61,33 @@ const schemaProvider = (
     structure: Joi.array()
       .items(
         Joi.custom(
-          validateComponent(
+          validateComponent({
             styles,
             componentStyleMap,
             availableComponentNames,
             prefabType,
-          ),
+          }),
         ),
       )
       .required(),
     reconfigure: Joi.any(),
   });
-};
 
 const validate =
-  (
-    styles: GroupedStyles,
-    componentStyleMap?: ComponentStyleMap,
-    availableComponentNames?: string[],
-    prefabType?: PrefabTypes,
-  ) =>
+  ({
+    styles,
+    componentStyleMap,
+    availableComponentNames,
+    prefabType,
+  }: SchemaProviderProps) =>
   (prefab: Prefab): void => {
     const { actions, variables } = prefab;
-    const { error } = schemaProvider(
+    const { error } = schemaProvider({
       styles,
       componentStyleMap,
       availableComponentNames,
       prefabType,
-    ).validate(prefab);
+    }).validate(prefab);
 
     if (Array.isArray(actions)) {
       findDuplicates(actions, 'action', { ref: 'id' });
@@ -90,15 +105,20 @@ const validate =
     }
   };
 
-export default (
-  prefabs: Prefab[],
-  styles: GroupedStyles,
-  componentStyleMap?: ComponentStyleMap,
-  availableComponentNames?: string[],
-  prefabType?: PrefabTypes,
-): void => {
+export default ({
+  prefabs,
+  styles,
+  componentStyleMap,
+  availableComponentNames,
+  prefabType,
+}: ValidatePrefabProps): void => {
   prefabs.forEach(
-    validate(styles, componentStyleMap, availableComponentNames, prefabType),
+    validate({
+      styles,
+      componentStyleMap,
+      availableComponentNames,
+      prefabType,
+    }),
   );
 
   findDuplicates(prefabs, 'prefab', 'name');

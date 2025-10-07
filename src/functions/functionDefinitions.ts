@@ -1,22 +1,27 @@
 import AdmZip from 'adm-zip';
-import camelCase from 'lodash/camelCase';
-import startCase from 'lodash/startCase';
+import { Glob } from 'bun';
+import { camel, title } from 'case';
 import fs from 'fs-extra';
-import glob from 'glob';
 import path from 'path';
-import { concat } from 'lodash';
 
-type Schema = {
+import rootDir from '../utils/rootDir';
+import {
+  createCargoTomlFile,
+  createlibRsFile,
+  createWorldWitFile,
+} from './createWasmDefinitionFiles';
+
+interface Schema {
   label: string;
   [other: string]: unknown;
-};
+}
 
-export type FunctionDefinition = {
+export interface FunctionDefinition {
   name: string;
   version: string;
   path: string;
   schema: Schema;
-};
+}
 
 /* @doc functionDefinitionPath
   Expands the function dir with `function.json`.
@@ -27,8 +32,11 @@ const functionDefinitionPath = (functionPath: string): string =>
 /* @doc functionImplementationPath
   Expands the function dir with `index.js`.
 */
-const functionImplementationPath = (functionPath: string): string =>
+const jsFunctionImplementationPath = (functionPath: string): string =>
   path.join(functionPath, 'index.js');
+
+const wasmFunctionImplementationPath = (functionPath: string): string =>
+  path.join(functionPath, 'wit', 'world.wit');
 
 /* @doc isFunctionDefinition
   Checks the given functions dir for a file named function.json.
@@ -54,27 +62,44 @@ const isFunctionVersion = (
   Returns true if the file exists.
 */
 const isFunction = (functionPath: string): boolean =>
-  fs.pathExistsSync(functionImplementationPath(functionPath));
+  fs.pathExistsSync(jsFunctionImplementationPath(functionPath)) ||
+  fs.pathExistsSync(wasmFunctionImplementationPath(functionPath));
 
 /* @doc functionDirs
   Returns a list of directories inside the given functionsDir that have a function.json and index.js.
 */
-const functionDirs = (
+const functionDirs = async (
   functionsDir: string,
   includeNonversioned = false,
-): string[] =>
-  glob
-    .sync(path.join(functionsDir, '**', 'function.json').replace(/\\/g, '/'))
-    .reduce((dirs, functionDefinition) => {
-      const dir = path.dirname(functionDefinition).replace(/\//g, path.sep);
-      if (
-        isFunction(dir) &&
-        (includeNonversioned || isFunctionVersion(dir, functionsDir))
-      ) {
-        dirs.push(dir);
-      }
-      return dirs;
-    }, [] as string[]);
+  inputFunctionName?: string,
+): Promise<string[]> => {
+  const glob = new Glob('**/function.json');
+  const dirs: string[] = [];
+
+  const functionsDirPath = functionsDir.replace(/\\/g, '/');
+
+  if (!fs.existsSync(functionsDirPath)) {
+    return [];
+  }
+
+  for await (const functionDefinition of glob.scanSync(functionsDirPath)) {
+    const dir = path
+      .dirname(path.join(functionsDir, functionDefinition))
+      .replace(/\//g, path.sep);
+
+    if (inputFunctionName && !dir.includes(inputFunctionName)) {
+      continue;
+    }
+
+    if (
+      isFunction(dir) &&
+      (includeNonversioned || isFunctionVersion(dir, functionsDir))
+    ) {
+      dirs.push(dir);
+    }
+  }
+  return dirs;
+};
 
 /* @doc functionDefinition
   Reads the function.json from the given directory.
@@ -88,24 +113,23 @@ const functionDefinition = (
   let version = '';
 
   if (isFunctionVersion(functionPath, functionsDir)) {
-    name = camelCase(path.basename(path.dirname(functionPath)));
+    name = camel(path.basename(path.dirname(functionPath)));
     version = path.basename(functionPath);
   } else {
-    name = camelCase(path.basename(functionPath));
+    name = camel(path.basename(functionPath));
   }
 
   const filePath = functionDefinitionPath(functionPath);
-  const schema = fs.readJSONSync(filePath) as Schema;
+  const schema = fs.readJSONSync(filePath);
 
   try {
     return {
       name,
-      version,
       path: filePath,
       schema,
-    } as FunctionDefinition;
+      version,
+    };
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not load json from ${filePath}: ${err}`);
   }
 };
@@ -114,11 +138,18 @@ const functionDefinition = (
   Returns an object containing all function.json definitions
   inside the given functionsDir, indexed by function name.
 */
-const functionDefinitions = (
+const functionDefinitions = async (
   functionsDir: string,
   includeNonversioned = false,
-): FunctionDefinition[] => {
-  return functionDirs(functionsDir, includeNonversioned).map((functionDir) =>
+  inputFunctionName?: string,
+): Promise<FunctionDefinition[]> => {
+  const functionDirectories = await functionDirs(
+    functionsDir,
+    includeNonversioned,
+    inputFunctionName,
+  );
+
+  return functionDirectories.map((functionDir) =>
     functionDefinition(functionDir, functionsDir),
   );
 };
@@ -128,8 +159,8 @@ const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
     name,
     version,
     ...schema,
-    options: JSON.stringify(schema.options || []),
-    paths: JSON.stringify(schema.paths || {}),
+    options: JSON.stringify(schema.options ?? []),
+    paths: JSON.stringify(schema.paths ?? {}),
   }));
 
   return JSON.stringify(updatedDefinitions);
@@ -142,42 +173,72 @@ const stringifyDefinitions = (definitions: FunctionDefinition[]): string => {
 const newFunctionDefinition = (
   functionsDir: string,
   functionName: string,
+  isWasmFunctionProject: boolean,
 ): void => {
-  const functionDefName = functionName.replace(
-    /-./g,
-    (x) => x.toUpperCase()[1],
-  );
   const functionDir = path.join(functionsDir, functionName, '1.0');
   try {
     fs.mkdirpSync(functionDir);
     fs.writeJSONSync(
       functionDefinitionPath(functionDir),
       {
-        description: 'Description',
-        label: startCase(functionName),
         category: 'Misc',
-        icon: {
-          name: 'ActionsIcon',
-          color: 'Orange',
-        },
+        description: 'Description',
+        icon: { color: 'Orange', name: 'ActionsIcon' },
+        label: title(functionName),
         options: [],
         yields: 'NONE',
       },
       { spaces: 2 },
     );
 
-    fs.writeFileSync(
-      path.join(functionDir, 'index.js'),
-      `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
-    );
+    if (isWasmFunctionProject) {
+      createNewWasmFunction(functionDir, functionName);
+    } else {
+      createNewJsFunction(functionDir, functionName);
+    }
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not initialize new function ${functionDir}: ${err}`);
   }
 };
 
+const createNewJsFunction = (
+  functionDir: string,
+  functionName: string,
+): void => {
+  const functionDefName = functionName.replace(
+    /-./g,
+    (x) => x.toUpperCase()[1],
+  );
+  fs.writeFileSync(
+    path.join(functionDir, 'index.js'),
+    `const ${functionDefName} = async () => {\n\n}\n\nexport default ${functionDefName};`,
+  );
+};
+
+const createNewWasmFunction = (
+  functionDir: string,
+  functionName: string,
+): void => {
+  createlibRsFile(functionDir, functionName);
+  createWorldWitFile(functionDir, functionName);
+  createCargoTomlFile(functionDir, functionName);
+  fs.copySync(
+    path.join(
+      rootDir(),
+      'assets',
+      'app-functions',
+      'wasm-template',
+      'functions',
+      'say-hello',
+      '1.0',
+      'Justfile',
+    ),
+    path.join(functionDir, 'Justfile'),
+  );
+};
+
 const toVariableName = ({ name, version }: FunctionDefinition): string =>
-  `${camelCase(name)}_${version.replace('.', '_')}`;
+  `${camel(name)}_${version.replace('.', '_')}`;
 
 /* @doc importFunctions
   Returns an array of strings, each item being an imported function:
@@ -219,7 +280,7 @@ const whitelistedFunctions = (
 ): FunctionDefinition[] =>
   whitelist.map((whitelisted) => {
     const definition = definitions.find(
-      (def) => concat(def.name, def.version).join(' ') === whitelisted,
+      (def) => [def.name, def.version].join(' ') === whitelisted,
     );
     if (!definition)
       throw new Error(
@@ -232,8 +293,11 @@ const whitelistedFunctions = (
   Fetches all functions and re-exports them. 
   Returns the result as a Buffer. 
 */
-const generateIndex = (functionsPath: string, whitelist?: string[]): string => {
-  const definitions = functionDefinitions(functionsPath);
+const generateIndex = async (
+  functionsPath: string,
+  whitelist?: string[],
+): Promise<string> => {
+  const definitions = await functionDefinitions(functionsPath);
 
   const functions = whitelist
     ? whitelistedFunctions(definitions, whitelist)
@@ -254,10 +318,10 @@ const generateIndex = (functionsPath: string, whitelist?: string[]): string => {
   to the zip file. Generates an index.js and adds it to the zip file.
   Returns path to the zip file.
 */
-const zipFunctionDefinitions = (
+const zipFunctionDefinitions = async (
   functionsPath: string,
   includes?: string[],
-): string => {
+): Promise<string> => {
   const zip = new AdmZip();
   const tmpDir = '.tmp';
   const zipFilePath = path.join(tmpDir, 'app.zip');
@@ -266,10 +330,10 @@ const zipFunctionDefinitions = (
   fs.ensureDirSync(tmpDir);
 
   zip.addLocalFile(path.join(path.dirname(functionsPath), 'package.json'));
-  zip.addFile('index.js', Buffer.from(generateIndex(functionsPath)));
+  zip.addFile('index.js', Buffer.from(await generateIndex(functionsPath)));
   zip.addLocalFolder(functionsPath, functionsPath.replace(cwd, ''));
 
-  (includes || []).forEach((include) => {
+  (includes ?? []).forEach((include) => {
     zip.addLocalFolder(path.join(cwd, include), include);
   });
 
@@ -278,11 +342,36 @@ const zipFunctionDefinitions = (
   return zipFilePath;
 };
 
+/* @doc getAllWasmFunctionsWithVersions
+  Scans the given functionsPath for all functions that contain a wasm implementation.
+  Returns an array of strings with function names and versions, e.g. ['my-function/1.0', 'my-function/2.0']
+*/
+export const getAllWasmFunctionsWithVersions = (
+  functionsPath: string,
+): string[] => {
+  if (!fs.existsSync(functionsPath)) {
+    return [];
+  }
+  return fs
+    .readdirSync(functionsPath, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .flatMap((dirent) => {
+      const functionDir = path.join(functionsPath, dirent.name);
+      if (!fs.existsSync(functionDir)) {
+        return [];
+      }
+      return fs
+        .readdirSync(functionDir, { withFileTypes: true })
+        .filter((subDirent) => subDirent.isDirectory())
+        .map((subDirent) => `${dirent.name}/${subDirent.name}`);
+    });
+};
+
 export {
-  functionDirs,
-  functionDefinitionPath,
   functionDefinition,
+  functionDefinitionPath,
   functionDefinitions,
+  functionDirs,
   generateIndex,
   isFunctionDefinition,
   isFunctionVersion,

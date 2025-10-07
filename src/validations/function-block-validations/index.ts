@@ -1,17 +1,19 @@
+import chalk from 'chalk';
 import fs from 'fs-extra';
 import path from 'path';
-import { FunctionDefinition } from 'src/functions/functionDefinitions';
-import { Block } from 'src/blocks/blockDefinitions';
-import chalk from 'chalk';
+
+import { type Block } from '../../blocks/blockDefinitions';
+import Config from '../../functions/config';
+import { type FunctionDefinition } from '../../functions/functionDefinitions';
 import {
   FunctionValidator,
   logValidationResult,
 } from '../../functions/validations';
-import Config from '../../functions/config';
 
 const workingDir = process.cwd();
 
-export const validateBlockConfig = ({ functions }: Block) => !!functions.length;
+export const validateBlockConfig = ({ functions }: Block): boolean =>
+  !!functions.length;
 
 const validateBlockName = (name: string): boolean => {
   const kebabCaseRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -23,18 +25,20 @@ export const validateBlockDependencies = (
 ): { valid: boolean; invalidDependencies: string[] } => {
   const packageJson = fs.readJsonSync(
     path.join(workingDir, 'package.json'),
-  ) as { dependencies: { [key: string]: string } };
+  ) as { dependencies: Record<string, string> };
   const packageJsonDependencies = Object.keys(packageJson.dependencies);
   const invalidDependencies = dependencies.filter(
     (dependency) => !packageJsonDependencies.includes(dependency),
   );
   if (invalidDependencies.length) {
-    return { valid: false, invalidDependencies };
+    return { invalidDependencies, valid: false };
   }
-  return { valid: true, invalidDependencies: [] };
+  return { invalidDependencies: [], valid: true };
 };
 
-const validateBlockFunctions = async (blockFunctions: FunctionDefinition[]) => {
+const validateBlockFunctions = async (
+  blockFunctions: FunctionDefinition[],
+): Promise<{ valid: boolean }> => {
   const baseFunctionsPath = path.join(workingDir, 'functions');
   const config = new Config();
   const validator = new FunctionValidator(config, baseFunctionsPath);
@@ -42,7 +46,9 @@ const validateBlockFunctions = async (blockFunctions: FunctionDefinition[]) => {
 
   console.log(chalk.bold(`Validating functions in ${baseFunctionsPath}`));
 
-  const results = await validator.validateFunctions('', blockFunctions);
+  const results = await validator.validateFunctions({
+    blockFunctions,
+  });
   results.forEach(logValidationResult);
 
   const valid = results.every((result) => result.status === 'ok');
@@ -76,7 +82,7 @@ export const getErrorMessage = ({
   validBlockDependencies: boolean;
   validBlockName: boolean;
   invalidDependencies: string[];
-}) => {
+}): string => {
   if (!validBlockName) {
     return `${blockName} is not valid as it should be kebab case`;
   }
@@ -106,23 +112,22 @@ export const validateBlock = async ({
   block: Block;
   blockFunctions: FunctionDefinition[];
   blockName: string;
-}) => {
-  const { valid: validFunctions } = await validateBlockFunctions(
-    blockFunctions,
-  );
+}): Promise<{ errorMessage: string; valid: boolean }> => {
+  const { valid: validFunctions } =
+    await validateBlockFunctions(blockFunctions);
   const { valid: validBlockDependencies, invalidDependencies } =
     validateBlockDependencies(dependencies);
 
   const validBlockName = validateBlockName(blockName);
 
   return {
-    valid: validFunctions && validBlockDependencies && validBlockName,
     errorMessage: getErrorMessage({
-      validFunctions,
+      blockName,
+      invalidDependencies,
       validBlockDependencies,
       validBlockName,
-      invalidDependencies,
-      blockName,
+      validFunctions,
     }),
+    valid: validFunctions && validBlockDependencies && validBlockName,
   };
 };

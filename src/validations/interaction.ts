@@ -1,7 +1,7 @@
 import chalk from 'chalk';
-import Joi, { ObjectSchema, ValidationResult } from 'joi';
+import Joi, { type ObjectSchema, type ValidationResult } from 'joi';
 
-import { Interaction } from '../types';
+import type { Interaction } from '../types';
 import { findDuplicates } from '../utils/validation';
 
 const schema: ObjectSchema = Joi.object({

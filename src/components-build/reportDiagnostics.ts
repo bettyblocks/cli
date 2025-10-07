@@ -5,7 +5,7 @@ export const reportDiagnostics = (diagnostics: ts.Diagnostic[]): void => {
     let message = 'Error';
     if (diagnostic.file) {
       const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(
-        diagnostic.start || 0,
+        diagnostic.start ?? 0,
       );
       message += ` ${diagnostic.file.fileName} (${line + 1},${character + 1})`;
     }

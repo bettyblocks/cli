@@ -6,20 +6,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.18.2
-        uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          node-version: '14.18.2'
-      - run: npm install -g yarn
-      - run: yarn install --frozen-lockfile --ignore-optionals
+          bun-version: 1.2.19
+      - run: bun install --frozen-lockfile
       - name: Commit lint
-        run: yarn commitlint --from $(git rev-parse --short HEAD^1) --to $(git rev-parse --short HEAD^2)
+        run: bun commitlint --from $(git rev-parse --short HEAD^1) --to $(git rev-parse --short HEAD^2)
       - name: Run prettier
-        run: yarn prettier:write
+        run: bun run format:check
       - name: Run build
-        run: yarn build
+        run: bun run build
       - name: Run linting
-        run: yarn lint
+        run: bun run lint:check
       - name: Run tests
-        run: yarn test
+        run: bun run test

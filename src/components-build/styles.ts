@@ -1,20 +1,17 @@
+import { ensureDir, pathExists } from 'fs-extra';
 import path from 'path';
 import ts from 'typescript';
-import { pathExists, promises } from 'fs-extra';
 
-import {
-  StyleDefinition,
-  BuildStyleDefinition,
-  PrefabComponent,
+import type {
   BuildStyle,
-  StyleDefinitionContentOverwrites,
+  BuildStyleDefinition,
   BuildStyleDefinitionContentOverwrites,
+  PrefabComponent,
+  StyleDefinition,
+  StyleDefinitionContentOverwrites,
 } from '../types';
 import readFilesByType from '../utils/readFilesByType';
-
 import { reportDiagnostics } from './reportDiagnostics';
-
-const { mkdir } = promises;
 
 export const readStyles: (
   rootDir: string,
@@ -27,7 +24,7 @@ export const readStyles: (
   const exists: boolean = await pathExists(srcDir);
 
   if (!exists) {
-    await mkdir(srcDir, { recursive: true });
+    await ensureDir(srcDir);
   }
 
   const styleFiles: string[] = await readFilesByType(srcDir, 'ts');
@@ -35,12 +32,12 @@ export const readStyles: (
   const styleProgram = ts.createProgram(
     styleFiles.map((file) => `${srcDir}/${file}`),
     {
-      outDir: '.styles',
-      module: 1,
-      esModuleInterop: true,
       allowSyntheticDefaultImports: false,
-      target: 99,
+      esModuleInterop: true,
       listEmittedFiles: true,
+      module: 1,
+      outDir: '.styles',
+      target: 99,
     },
   );
 
@@ -76,20 +73,21 @@ export const readStyles: (
     process.exit(1);
   }
 
-  const styles: Array<Promise<StyleDefinition>> = (results.emittedFiles || [])
+  const styles: Promise<StyleDefinition>[] = (results.emittedFiles ?? [])
     .filter((filename) => /\.(\w+\/){1}\w+\.js/.test(filename))
-    .map((filename) => {
-      return new Promise((resolve) => {
-        import(`${absoluteRootDir}/${filename}`)
-          .then((style: { default: StyleDefinition }) => {
-            // JSON schema validation
-            resolve(style.default);
-          })
-          .catch((error: string) => {
-            throw new Error(`in ${filename}: ${error}`);
-          });
-      });
-    });
+    .map(
+      (filename) =>
+        new Promise((resolve) => {
+          import(`${absoluteRootDir}/${filename}`)
+            .then((style: { default: StyleDefinition }) => {
+              // JSON schema validation
+              resolve(style.default);
+            })
+            .catch((error: string) => {
+              throw new Error(`in ${filename}: ${error}`);
+            });
+        }),
+    );
 
   return Promise.all(styles);
 };
@@ -112,9 +110,7 @@ export const buildStyle = ({
 
 const isStyleDefinitionContentOverwrite = (
   overwrite: unknown | StyleDefinitionContentOverwrites[],
-): overwrite is StyleDefinitionContentOverwrites[] => {
-  return Array.isArray(overwrite);
-};
+): overwrite is StyleDefinitionContentOverwrites[] => Array.isArray(overwrite);
 
 export const buildReferenceStyle = (
   style: PrefabComponent['style'] | undefined,

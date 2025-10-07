@@ -1,30 +1,41 @@
-import program from 'commander';
-import path from 'path';
+import { Command } from 'commander';
 import fs from 'fs-extra';
+import path from 'path';
+
 import { newFunctionDefinition } from './functions/functionDefinitions';
 
-/* process arguments */
-program.usage('[function-name]').name('bb functions new').parse(process.argv);
+const program = new Command();
+
+program
+  .argument('<function-name>', 'Name of the new function')
+  .name('bb functions new')
+  .parse(process.argv);
 
 const {
   args: [inputFunctionName],
 } = program;
 
 const workingDir = process.cwd();
-if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
-  try {
-    const functionsDir = path.join(workingDir, 'functions');
-    newFunctionDefinition(functionsDir, inputFunctionName);
+const isJsFunctionPorject = fs.existsSync(
+  path.join(workingDir, '.app-functions'),
+);
+const isWasmFunctionProject = fs.existsSync(
+  path.join(workingDir, '.wasm-functions'),
+);
 
-    console.log(`functions/${inputFunctionName} created`);
-  } catch (err) {
-    console.log(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `functions/${inputFunctionName} could not be created. Error: ${err}`,
-    );
-  }
-} else {
-  console.log(
+if (!isJsFunctionPorject && !isWasmFunctionProject) {
+  throw new Error(
     `${workingDir} doesn't seem to be a functions project.\nPlease make sure you're in the root of the project.`,
+  );
+}
+
+try {
+  const functionsDir = path.join(workingDir, 'functions');
+  newFunctionDefinition(functionsDir, inputFunctionName, isWasmFunctionProject);
+
+  console.log(`functions/${inputFunctionName} created`);
+} catch (error) {
+  throw new Error(
+    `functions/${inputFunctionName} could not be created. Error: ${error}`,
   );
 }

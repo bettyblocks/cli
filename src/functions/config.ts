@@ -1,20 +1,21 @@
 import fs from 'fs-extra';
-import path from 'path';
+import https, { type AgentOptions } from 'https';
 import os from 'os';
+import path from 'path';
 import prompts from 'prompts';
-import https, { AgentOptions } from 'https';
+
 import { setHttpsAgent } from './utils';
 
-export type GlobalConfig = {
+export interface GlobalConfig {
   auth: {
     email: string;
     [key: string]: string | undefined;
   };
-  applicationMap: { [key: string]: string };
+  applicationMap: Record<string, string>;
   skipCompile?: boolean;
-};
+}
 
-export type LocalConfig = {
+export interface LocalConfig {
   schemaUrl: string;
   agentOptions?: AgentOptions;
   functionSchemaPath: string;
@@ -31,11 +32,11 @@ export type LocalConfig = {
   includes?: string[];
   tenantId?: string;
   agent?: https.Agent;
-};
+}
 
-export type CustomConfig = {
+export interface CustomConfig {
   skipCompile: boolean;
-};
+}
 
 class Config {
   /* static */
@@ -73,8 +74,8 @@ class Config {
       fs.writeJSONSync(
         this.globalConfigPath,
         {
-          auth: {},
           applicationMap: {},
+          auth: {},
         },
         { spaces: 2 },
       );
@@ -92,9 +93,9 @@ class Config {
   ): Promise<string> {
     const { applicationId } = (await prompts([
       {
-        type: 'text',
-        name: 'applicationId',
         message: `Please provide the UUID for '${identifier}' (${zone})`,
+        name: 'applicationId',
+        type: 'text',
       },
     ])) as { applicationId: string };
 
@@ -109,9 +110,7 @@ class Config {
   private static applicationIdKey = (
     identifier: string,
     zone: string,
-  ): string => {
-    return `${identifier}.${zone}`;
-  };
+  ): string => `${identifier}.${zone}`;
 
   private static readConfig = (): LocalConfig | undefined => {
     const cfgPath = Config.localConfigPath;
@@ -122,22 +121,21 @@ class Config {
     return {} as LocalConfig;
   };
 
-  private static defaultConfig = (): LocalConfig => {
-    return {
-      schemaUrl: 'https://raw.githubusercontent.com',
-      functionSchemaPath:
-        '/bettyblocks/json-schema/master/schemas/actions/function.json',
-      cacheDir: '.tmp/',
-      fusionAuthUrl: 'https://id{ZONEPOSTFIX}.bettyblocks.com',
-      builderApiUrl: '{HOST}/api/builder',
+  private static defaultConfig = (): LocalConfig =>
+    ({
+      agentOptions: undefined,
       blockstoreApiUrl:
         'https://my{ZONEPOSTFIX}.bettyblocks.com/block-store-api',
+      builderApiUrl: '{HOST}/api/builder',
+      cacheDir: '.tmp/',
       domain: 'bettyblocks.com',
-      agentOptions: undefined,
-      skipCompile: false,
+      functionSchemaPath:
+        '/bettyblocks/json-schema/master/schemas/actions/function.json',
+      fusionAuthUrl: 'https://id{ZONEPOSTFIX}.bettyblocks.com',
       includes: [],
-    } as LocalConfig;
-  };
+      schemaUrl: 'https://raw.githubusercontent.com',
+      skipCompile: false,
+    }) as LocalConfig;
 
   /* instance */
   private config: LocalConfig;
@@ -154,7 +152,7 @@ class Config {
     this.config = {
       ...Config.defaultConfig(),
       ...Config.readConfig(),
-      ...(config || {}),
+      ...(config ?? {}),
     };
   }
 
@@ -167,21 +165,17 @@ class Config {
   }
 
   get identifier(): string {
-    if (!this._identifier) {
-      this._identifier =
-        this.config.identifier || path.basename(process.cwd()).split('.')[0];
-    }
+    this._identifier ??=
+      this.config.identifier ?? path.basename(process.cwd()).split('.')[0];
 
     return this._identifier;
   }
 
   get zone(): string {
-    if (!this._zone) {
-      this._zone =
-        this.config.zone ||
-        path.basename(process.cwd()).split('.')[1] ||
-        'production';
-    }
+    this._zone ??=
+      this.config.zone ??
+      path.basename(process.cwd()).split('.')[1] ??
+      'production';
 
     return this._zone;
   }
@@ -194,9 +188,7 @@ class Config {
   }
 
   get host(): string {
-    if (!this._host) {
-      this._host = this.config.host || this.defaultHost();
-    }
+    this._host ??= this.config.host ?? this.defaultHost();
 
     return this._host;
   }
@@ -229,7 +221,7 @@ class Config {
     let tenantId = null;
 
     if (this.config.tenantId) {
-      tenantId = this.config.tenantId;
+      ({ tenantId } = this.config);
     } else {
       switch (this.zone) {
         case 'edge':
@@ -250,10 +242,8 @@ class Config {
   }
 
   async applicationId(): Promise<string | undefined> {
-    if (!this._applicationId) {
-      this._applicationId =
-        this.config.applicationId || (await this.fetchApplicationId());
-    }
+    this._applicationId ??=
+      this.config.applicationId ?? (await this.fetchApplicationId());
 
     return this._applicationId;
   }
@@ -289,7 +279,7 @@ class Config {
   }
 
   get includes(): string[] {
-    return this.config.includes || [];
+    return this.config.includes ?? [];
   }
 }
 

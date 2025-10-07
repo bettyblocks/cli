@@ -1,16 +1,13 @@
 /* npm dependencies */
 
-import program from 'commander';
 import chalk from 'chalk';
+import { Command } from 'commander';
 
-import { CommandBundle } from './types';
-
-/* internal dependencies */
-/* setup */
+import type { CommandBundle } from './types';
 
 const availableCommands: CommandBundle[] = ['init'];
 
-/* process arguments */
+const program = new Command();
 
 program
   .usage(`<${availableCommands.join('|')}>`)

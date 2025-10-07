@@ -1,6 +1,5 @@
 import path from 'path';
 
-const rootDir = (): string =>
-  path.join((process.mainModule as NodeModule).filename, '..', '..');
+const rootDir = (): string => path.join(Bun.main, '..', '..');
 
 export default rootDir;

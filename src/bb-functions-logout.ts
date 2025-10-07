@@ -1,8 +1,10 @@
-import program from 'commander';
+import { Command } from 'commander';
+
 import Config from './functions/config';
 import FusionAuth from './utils/login';
 
-/* process arguments */
+const program = new Command();
+
 program.name('bb functions logout').parse(process.argv);
 const config = new Config();
 const fusionAuth = new FusionAuth(config);

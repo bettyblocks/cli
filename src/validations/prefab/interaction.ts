@@ -1,4 +1,5 @@
 import Joi from 'joi';
+
 import { INTERACTION_TYPE } from '../constants';
 
 const parametersSchema = Joi.when('type', {

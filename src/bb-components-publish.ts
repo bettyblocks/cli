@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-assignment */
-/* npm dependencies */
-
-import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { readJSON, pathExists } from 'fs-extra';
+import { Command } from 'commander';
+import { pathExists, readJSON } from 'fs-extra';
+
+import { publish } from './components/bb-components-functions';
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
-import { publish } from './functions/bb-components-functions';
+
+const program = new Command();
 
 program
   .usage('[options] [path]')
@@ -13,7 +13,8 @@ program
   .option('-b, --bucket [name]', 'the component set name')
   .parse(process.argv);
 
-const { args, bucket: name }: CommanderStatic = program;
+const { args } = program;
+const name = program.opts().bucket;
 const distDir: string = args.length === 0 ? 'dist' : `${args[0]}/dist`;
 
 if (!name || typeof name !== 'string' || !name.length) {
@@ -24,20 +25,23 @@ const read = async (fileName: string): Promise<void> => {
   try {
     return await readJSON(`${distDir}/${fileName}`);
   } catch (error) {
-    const { code, message }: Error & { code: 'ENOENT' | string } = error;
+    if (error instanceof Error) {
+      const { message } = error;
 
-    throw new Error(
-      chalk.red(
-        [
-          'There was an error trying to publish your component set',
-          code === 'ENOENT' ? message : error,
-        ].join('\n'),
-      ),
-    );
+      throw new Error(
+        chalk.red(
+          [
+            'There was an error trying to publish your component set',
+            message,
+          ].join('\n'),
+        ),
+      );
+    }
+
+    throw new Error(`Unknown error occurred: ${error}`);
   }
 };
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   const files = ['prefabs.json', 'templates.json', 'interactions.json'];
@@ -53,7 +57,12 @@ void (async (): Promise<void> => {
   const [{ url }] = await Promise.all(
     files.map(async (fileName) => {
       const objects = await read(fileName);
-      return publish(fileName, name, JSON.stringify(objects), 'text/html');
+      return publish({
+        blobContentType: 'text/html',
+        bucketName: name,
+        fileName,
+        objects: JSON.stringify(objects),
+      });
     }),
   );
 

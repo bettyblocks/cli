@@ -1,26 +1,26 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/restrict-template-expressions */
+import chalk from 'chalk';
+import fs from 'fs-extra';
+import { ValidationError, Validator, ValidatorResult } from 'jsonschema';
 import fetch from 'node-fetch';
 import path from 'path';
-import chalk from 'chalk';
-import { Validator, ValidatorResult, ValidationError } from 'jsonschema';
 
+import Config from './config';
 import {
-  FunctionDefinition,
+  type FunctionDefinition,
   functionDefinitions,
   isFunctionVersion,
 } from './functionDefinitions';
-import Config from './config';
 
-export type Schema = {
+export interface Schema {
   $id: string;
-};
+}
 
-export type ValidationResult = {
+export interface ValidationResult {
   path: string;
   status: string;
   functionName?: string;
   errors: ValidationError[] | Error[];
-};
+}
 
 const fetchRemoteSchema = async (
   schemaUrl: string,
@@ -64,9 +64,9 @@ const validateFunctionDefinition = (
   validator: Validator,
   definition: object,
 ): ValidatorResult => {
-  const functionSchemaId = Object.keys(validator.schemas).find((k) => {
-    return k.match(/function\.json$/);
-  });
+  const functionSchemaId = Object.keys(validator.schemas).find((k) =>
+    k.match(/function\.json$/),
+  );
 
   if (!functionSchemaId) {
     throw new Error(`Cannot find Function schema Id, ${functionSchemaId}`);
@@ -90,26 +90,69 @@ const forceVersion = (
 };
 
 const validateSchema = (
-  functionJson: object,
+  functionJson: FunctionDefinition,
   validator: Validator,
 ): ValidationResult => {
-  const {
-    name,
-    version,
-    path: definitionPath,
-    schema,
-  } = functionJson as FunctionDefinition;
+  const { name, version, path: definitionPath, schema } = functionJson;
 
   const { errors } = validateFunctionDefinition(validator, schema);
   const status = errors.length ? 'error' : 'ok';
 
   return {
-    status,
-    path: definitionPath,
-    functionName: `${name}-${version}`,
     errors,
+    functionName: `${name}-${version}`,
+    path: definitionPath,
+    status,
   };
 };
+
+interface WasmValidationResult {
+  status: string;
+  errors: Error[];
+}
+
+const validateWasmProjectStructure = (
+  functionDir: string,
+): WasmValidationResult => {
+  const functionFiles = fs.readdirSync(functionDir, {
+    withFileTypes: true,
+  });
+  const hasWasmFile = functionFiles.some((file) => file.name.endsWith('.wasm'));
+  const errors: Error[] = [];
+  if (!hasWasmFile) {
+    errors.push(new Error(`Missing .wasm file in ${functionDir}`));
+  }
+
+  return {
+    errors,
+    status: errors.length ? 'error' : 'ok',
+  };
+};
+
+const mergeValidationResults = (
+  schemaResult: ValidationResult,
+  wasmResult: WasmValidationResult | null = null,
+): ValidationResult => {
+  if (!wasmResult) {
+    return schemaResult;
+  }
+
+  const mergedErrors = [...schemaResult.errors, ...wasmResult.errors];
+  const status = mergedErrors.length ? 'error' : 'ok';
+
+  return {
+    ...schemaResult,
+    errors: mergedErrors,
+    status,
+  };
+};
+
+interface ValidateFunctionsProps {
+  functionName?: string;
+  blockFunctions?: FunctionDefinition[];
+  isWasmFunctionProject?: boolean;
+  inputFunctionName?: string;
+}
 
 class FunctionValidator {
   private schemaValidator: Validator;
@@ -128,39 +171,56 @@ class FunctionValidator {
     await importSchema(this.schemaValidator, this.config);
   }
 
-  validateFunction(definition: FunctionDefinition): ValidationResult {
+  validateFunction(
+    definition: FunctionDefinition,
+    isWasmFunctionProject: boolean,
+  ): ValidationResult {
     const functionPath = definition.path;
     const functionName = functionPath;
 
     try {
       forceVersion(definition, this.functionsDir);
-      return validateSchema(definition, this.schemaValidator);
+      const validatedSchema = validateSchema(definition, this.schemaValidator);
+      let validatedWasmStructure = null;
+      if (isWasmFunctionProject) {
+        const functionDir = path.dirname(functionPath);
+        validatedWasmStructure = validateWasmProjectStructure(functionDir);
+      }
+      return mergeValidationResults(validatedSchema, validatedWasmStructure);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return {
-        status: 'error',
-        path: functionPath,
-        functionName,
         errors: [new Error(message)],
+        functionName,
+        path: functionPath,
+        status: 'error',
       };
     }
   }
 
-  async validateFunctions(
-    functionName?: string,
-    blockFunctions?: FunctionDefinition[],
-  ): Promise<ValidationResult[]> {
-    const definitions = functionDefinitions(this.functionsDir, true);
-    const functions = blockFunctions || definitions;
+  async validateFunctions({
+    functionName,
+    blockFunctions,
+    isWasmFunctionProject = false,
+    inputFunctionName,
+  }: ValidateFunctionsProps): Promise<ValidationResult[]> {
+    const definitions = await functionDefinitions(
+      this.functionsDir,
+      true,
+      inputFunctionName,
+    );
+    const functions = blockFunctions ?? definitions;
     const validations: ValidationResult[] = [];
     functions.forEach((definition) => {
       const preleadingPath = path.join(
         this.functionsDir,
-        functionName || '',
+        functionName ?? '',
         path.sep,
       );
       if (definition.path.indexOf(preleadingPath) === 0) {
-        validations.push(this.validateFunction(definition));
+        validations.push(
+          this.validateFunction(definition, isWasmFunctionProject),
+        );
       }
     });
 
@@ -178,15 +238,15 @@ const logValidationResult = ({
     const mark = chalk.green(`✔`);
     console.log(`${mark} Validate: ${functionName}`);
   } else {
-    const msg = chalk.red(`${errors}`);
+    const msg = chalk.red(`${errors.join('\n\t')}`);
     const mark = chalk.red(`✖`);
-    console.log(`${mark} Validate: ${functionName || functionPath}\n\t${msg}`);
+    console.log(`${mark} Validate: ${functionName ?? functionPath}\n\t${msg}`);
   }
 };
 
 export {
   FunctionValidator,
   functionValidator,
-  validateSchema,
   logValidationResult,
+  validateSchema,
 };

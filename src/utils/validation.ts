@@ -1,13 +1,16 @@
 import chalk from 'chalk';
 
-import { Component, Prefab, PrefabReference } from '../types';
+import type { Component, Prefab, PrefabReference } from '../types';
 
-function fromStructure<
+const fromStructure = <
   KString extends string & keyof T,
   KObject extends Record<string, K>,
   K extends KString | KObject,
   T extends object,
->(object: T, structure: K): string | void {
+>(
+  object: T,
+  structure: K,
+): string | undefined => {
   if (typeof structure === 'string') {
     const value = object[structure as KString];
 
@@ -19,7 +22,7 @@ function fromStructure<
   const [[k, v]] = Object.entries(structure);
 
   return fromStructure(object[k as KString] as unknown as T, v);
-}
+};
 
 export const findDuplicates = <
   KString extends string & keyof T,
@@ -31,7 +34,9 @@ export const findDuplicates = <
   type: string,
   structure: K,
 ): void => {
-  list.reduce((acc: Set<string>, item: T): Set<string> => {
+  const seen = new Set<string>();
+
+  for (const item of list) {
     let value;
 
     try {
@@ -43,7 +48,7 @@ export const findDuplicates = <
     if (typeof value === 'string') {
       const valueLower = value.toLowerCase();
 
-      if (acc.has(valueLower)) {
+      if (seen.has(valueLower)) {
         throw new Error(
           chalk.red(
             `\nThe name "${valueLower}" is used for multiple ${type}s\n`,
@@ -51,11 +56,9 @@ export const findDuplicates = <
         );
       }
 
-      acc.add(valueLower);
+      seen.add(valueLower);
     }
-
-    return acc;
-  }, new Set());
+  }
 };
 
 const checkComponentReferenceNames =
@@ -86,7 +89,7 @@ export const checkNameReferences = (
   prefabs: Prefab[],
   components: Component[],
 ): void => {
-  const componentNames: Set<string> = new Set(
+  const componentNames = new Set<string>(
     components.map(({ name }: Component): string => name),
   );
 
@@ -95,8 +98,8 @@ export const checkNameReferences = (
   });
 };
 
-export function checkOptionCategoryReferences(prefabs: Prefab[]): void {
-  function innerFn(structure: PrefabReference[], name: string): void {
+export const checkOptionCategoryReferences = (prefabs: Prefab[]): void => {
+  const innerFn = (structure: PrefabReference[], name: string): void => {
     structure.forEach((prefabReference) => {
       if (
         prefabReference.type === undefined ||
@@ -122,9 +125,9 @@ export function checkOptionCategoryReferences(prefabs: Prefab[]): void {
         innerFn(prefabReference.descendants, name);
       }
     });
-  }
+  };
 
   prefabs.forEach((prefab) => {
     innerFn(prefab.structure, prefab.name);
   });
-}
+};

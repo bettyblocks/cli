@@ -1,5 +1,8 @@
-import program from 'commander';
+import { Command } from 'commander';
+
 import releaseBlocks from './blocks/releaseBlocks';
+
+const program = new Command();
 
 program
   .usage('[options] [blockIds...]')
@@ -18,7 +21,6 @@ if (!all && !blockIds.length) {
   process.exit(1);
 }
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await releaseBlocks({ all, blockIds });
 })();

@@ -1,25 +1,19 @@
-import test, { ExecutionContext } from 'ava';
-import path from 'path';
+import { expect, test } from 'bun:test';
 import { Validator } from 'jsonschema';
-import { functionDefinition } from '../../src/functions/functionDefinitions';
-import { validateSchema } from '../../src/functions/validations';
+import path from 'path';
 
-type Context = ExecutionContext<unknown>;
+import {
+  type FunctionDefinition,
+  functionDefinition,
+} from '../../src/functions/functionDefinitions';
+import { validateSchema } from '../../src/functions/validations';
 
 const schema = {
   $id: '/schema/actions/function.json',
-  title: 'Function',
   properties: {
-    label: {
-      type: 'string',
-    },
     icon: {
-      type: 'object',
       additionalProperties: false,
       properties: {
-        name: {
-          type: 'string',
-        },
         color: {
           enum: [
             'Yellow',
@@ -32,38 +26,48 @@ const schema = {
             'Grey',
           ],
         },
+        name: {
+          type: 'string',
+        },
       },
       required: ['name', 'color'],
+      type: 'object',
+    },
+    label: {
+      type: 'string',
     },
   },
   required: ['label'],
+  title: 'Function',
 };
 
 const validator = new Validator();
 validator.addSchema(schema, schema.$id);
 
-test('load in entire schema for validator', async (t: Context): Promise<void> => {
+test('load in entire schema for validator', async (): Promise<void> => {
   const definition = {
+    name: 'Create',
     path: '/path/to/schema/actions/function.json',
     schema: {
-      label: 'Create',
       icon: {
-        name: 'ChatIcon',
         color: 'Teal',
+        name: 'ChatIcon',
       },
+      label: 'Create',
     },
-  };
+    version: '1.0',
+  } satisfies FunctionDefinition;
 
-  const { status, errors } = await validateSchema(definition, validator);
+  const { status, errors } = validateSchema(definition, validator);
 
-  t.is(status, 'ok');
-  t.is(errors.length, 0);
+  expect(status).toBe('ok');
+  expect(errors.length).toBe(0);
 });
 
-test('validate templates', async (t: Context): Promise<void> => {
+test('validate js-templates', async (): Promise<void> => {
   const functionPath = path.join(
     process.cwd(),
-    'assets/app-functions/templates',
+    'assets/app-functions/js-template',
     'functions/say-hello/1.0',
   );
 
@@ -72,41 +76,39 @@ test('validate templates', async (t: Context): Promise<void> => {
     path.join(process.cwd(), 'functions'),
   );
 
-  const { status } = await validateSchema(functionJson, validator);
+  const { status } = validateSchema(functionJson, validator);
 
-  t.is(status, 'ok');
+  expect(status).toBe('ok');
 });
 
-test('invalidate empty schemas', async (t: Context): Promise<void> => {
+test('invalidate empty schemas', async (): Promise<void> => {
+  const definition = {
+    path: '/path/to/schema/actions/function.json',
+    schema: {},
+  } as FunctionDefinition;
   const {
     status,
     errors: [{ message }],
-  } = await validateSchema(
-    {
-      path: '/path/to/schema/actions/function.json',
-      schema: {},
-    },
-    validator,
-  );
+  } = validateSchema(definition, validator);
 
-  t.is(status, 'error');
-  t.is(message, 'requires property "label"');
+  expect(status).toBe('error');
+  expect(message).toBe('requires property "label"');
 });
 
-test('invalidate schemas that do not have valid values for properties', async (t: Context): Promise<void> => {
+test('invalidate schemas that do not have valid values for properties', async (): Promise<void> => {
   const definition = {
     path: '/path/to/schema/actions/function.json',
     schema: {
-      label: 'Create',
       icon: 'RandomIcon',
+      label: 'Create',
     },
-  };
+  } as unknown as FunctionDefinition;
 
   const {
     status,
     errors: [{ message }],
-  } = await validateSchema(definition, validator);
+  } = validateSchema(definition, validator);
 
-  t.is(status, 'error');
-  t.is(message, 'is not of a type(s) object');
+  expect(status).toBe('error');
+  expect(message, 'is not of a type(s) object');
 });

@@ -1,0 +1,12 @@
+fetch_wit_deps: 
+  wkg wit fetch
+
+move_wasm_to_root: 
+  mv ./target/wasm32-wasip2/release/*.wasm .
+
+build: fetch_wit_deps
+  cargo build --release --target wasm32-wasip2
+  just move_wasm_to_root
+
+test: 
+  cargo test

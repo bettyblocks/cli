@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import Joi from 'joi';
-import { StyleDefinition, AllowedStateKeys } from '../types';
+
+import { AllowedStateKeys, type StyleDefinition } from '../types';
 
 const shadows = [
   'none',
@@ -89,7 +90,7 @@ const validateStyleType =
     );
   };
 
-const styleSchema = (componentNames: string[]) =>
+const styleSchema = (componentNames: string[]): Joi.ObjectSchema =>
   Joi.object({
     name: Joi.string().required(),
     type: Joi.string().required().custom(validateStyleType(componentNames)),
@@ -108,10 +109,13 @@ export const overwriteSchema = Joi.array()
   )
   .unique('name');
 
-const validateUnique = (a: StyleDefinition, b: StyleDefinition) =>
+const validateUnique = (a: StyleDefinition, b: StyleDefinition): boolean =>
   a.name === b.name && a.type === b.type;
 
-const validateAll = (styles: StyleDefinition[], componentNames: string[]) => {
+const validateAll = (
+  styles: StyleDefinition[],
+  componentNames: string[],
+): void => {
   const { error } = Joi.array()
     .items(styleSchema(componentNames))
     .unique(validateUnique)

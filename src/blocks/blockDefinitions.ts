@@ -1,7 +1,8 @@
+import { Glob } from 'bun';
 import fs from 'fs-extra';
 import path from 'path';
-import glob from 'glob';
-import { pick } from 'lodash';
+
+import { pick } from '../utils/pick';
 
 export interface Block {
   dependencies: string[];
@@ -10,7 +11,7 @@ export interface Block {
 }
 
 interface RootPackageJson {
-  dependencies: { [key: string]: string };
+  dependencies: Record<string, string>;
 }
 
 /* @doc createPackageJson
@@ -27,10 +28,10 @@ const createPackageJson = (
   );
   const packageJson = JSON.stringify(
     {
-      name,
-      version: '1.0.0',
-      private: 'true',
       dependencies: rootDependencies,
+      name,
+      private: 'true',
+      version: '1.0.0',
     },
     null,
     2,
@@ -42,21 +43,24 @@ const createPackageJson = (
 /* @doc functionDirs
   Returns a list of blocks.
 */
-const blockFiles = (blockDir: string): string[] => {
-  return glob
-    .sync(path.join(blockDir, '*.json').replace(/\\/g, '/'))
-    .reduce((blocks, blockDefinition) => {
-      blocks.push(blockDefinition);
-      return blocks;
-    }, [] as string[]);
+const blockFiles = async (blockDir: string): Promise<string[]> => {
+  const glob = new Glob('*.json');
+  const matches: string[] = [];
+
+  for await (const file of glob.scan(path.join(blockDir).replace(/\\/g, '/'))) {
+    matches.push(path.join(blockDir, file));
+  }
+
+  return matches;
 };
 
 /* @doc blockDefinitions
   Returns an array containing all block definitions
   inside the given blocksDir.
 */
-const blockDefinitions = (blocksDir: string): string[] => {
-  return blockFiles(blocksDir).map((blocks) => blocks);
+const blockDefinitions = async (blocksDir: string): Promise<string[]> => {
+  const files = await blockFiles(blocksDir);
+  return files.map((blocks) => blocks);
 };
 
 /* @doc blockDefinitionPath
@@ -87,14 +91,13 @@ const newBlockDefinition = (blocksDir: string, blockName: string): string => {
     );
     return `blocks/${blockName}.json created`;
   } catch (err) {
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`could not initialize new block ${blocksDir}: ${err}`);
   }
 };
 
 export {
-  blockDefinitions,
   blockDefinitionPath,
+  blockDefinitions,
   createPackageJson,
   newBlockDefinition,
 };

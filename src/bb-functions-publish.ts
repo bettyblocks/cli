@@ -1,83 +1,69 @@
-/* eslint-disable camelcase,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument */
-/* npm dependencies */
-
+import { Command } from 'commander';
 import fs from 'fs-extra';
-
 import path from 'path';
-import program from 'commander';
+import prompts from 'prompts';
 
-/* internal dependencies */
-
-import chalk from 'chalk';
+import { getAllWasmFunctionsWithVersions } from './functions/functionDefinitions';
 import publishAppFunctions from './functions/publishAppFunctions';
-import publishCustomFunctions from './functions/publishCustomFunctions';
+import { publishWasmBlockStoreFunctions } from './functions/publishWasmBlockStoreFunctions';
+import { validateFunctions } from './functions/validateFunctions';
 
-import {
-  FunctionValidator,
-  logValidationResult,
-} from './functions/validations';
-import Config from './functions/config';
-
-/* process arguments */
+const program = new Command();
 
 program
   .name('bb functions publish')
-  .option('-b, --bump', 'Bump the revision number.')
-  .option('-s, --skip', 'Skip building the custom functions bundle.')
   .option('--skip-compile', 'Skip the compilation of the application.')
   .option(
-    '-h, --host <host>',
-    'Set hostname to publish to. Defaults to <identifier>.bettyblocks.com',
+    '-a, --all',
+    'Publish all wasm functions, this only applies to wasm functions projects.',
   )
   .parse(process.argv);
 
-const { host, skip, bump, skipCompile } = program;
-
-/* execute command */
+const { skipCompile, all } = program.opts();
 
 const workingDir = process.cwd();
 
 const baseFunctionsPath = path.join(workingDir, 'functions');
 
-const config = new Config();
+const isWasmFunctionProject = fs.existsSync(
+  path.join(workingDir, '.wasm-functions'),
+);
 
-const validateFunctions = async () => {
-  const validator = new FunctionValidator(config, baseFunctionsPath);
-  await validator.initSchema();
+void (async (): Promise<void> => {
+  const { valid } = await validateFunctions(
+    isWasmFunctionProject,
+    baseFunctionsPath,
+  );
 
-  console.log(chalk.bold(`Validating functions in ${baseFunctionsPath}`));
-
-  const results = await validator.validateFunctions();
-  results.forEach(logValidationResult);
-
-  const valid = results.every((result) => result.status === 'ok');
-
-  if (valid) {
-    console.log(
-      `\n${chalk.green.underline(
-        `✔ All your functions are valid and ready to be published!`,
-      )}`,
-    );
-  } else {
-    console.log(
-      `\n${chalk.red.underline(
-        `✖ Certain functions in your project are invalid.`,
-      )}`,
-    );
+  if (!valid) {
+    process.exit(1);
   }
 
-  return { valid };
-};
+  if (isWasmFunctionProject) {
+    const functionNames = getAllWasmFunctionsWithVersions(baseFunctionsPath);
+    const choices = functionNames.map((name) => ({
+      title: name,
+      value: name,
+    }));
 
-// eslint-disable-next-line no-void
-void (async (): Promise<void> => {
-  if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
-    const { valid } = await validateFunctions();
-
-    if (valid) {
-      await publishAppFunctions({ skipCompile });
+    let selected: string[] = [];
+    if (all) {
+      selected = functionNames;
+    } else {
+      const results = (await prompts([
+        {
+          choices,
+          instructions: false,
+          message: 'Which wasm functions do you want to publish?',
+          name: 'selected',
+          type: 'multiselect',
+        },
+      ])) as { selected: string[] };
+      ({ selected } = results);
     }
+
+    await publishWasmBlockStoreFunctions(baseFunctionsPath, selected);
   } else {
-    publishCustomFunctions(host, bump, skip);
+    await publishAppFunctions({ skipCompile });
   }
 })();

@@ -1,11 +1,11 @@
-/* npm dependencies */
-
-import program, { CommanderStatic } from 'commander';
 import chalk from 'chalk';
-import { existsSync, copy, move } from 'fs-extra';
+import { Command } from 'commander';
+import { copy, existsSync, move } from 'fs-extra';
 import path from 'path';
 
 import { checkUpdateAvailableCLI } from './utils/checkUpdateAvailable';
+
+const program = new Command();
 
 const LIST = [
   'nodemon.json',
@@ -16,19 +16,19 @@ const LIST = [
   '.prettierignore',
   '.prettierrc.json',
 ];
-/* process arguments */
 
-program.usage('[path]').name('bb components create').parse(process.argv);
+program
+  .argument('<path>', 'path where to create the component set')
+  .name('bb components create')
+  .parse(process.argv);
 
-const { args }: CommanderStatic = program;
+const { args } = program;
 
 if (args.length === 0) {
   program.help();
 }
 
 const dest: string = args[0];
-
-/* execute command */
 
 if (existsSync(dest)) {
   throw Error(
@@ -38,7 +38,6 @@ if (existsSync(dest)) {
   );
 }
 
-// eslint-disable-next-line no-void
 void (async (): Promise<void> => {
   await checkUpdateAvailableCLI();
   try {
@@ -55,12 +54,13 @@ void (async (): Promise<void> => {
         `\nComponent set succesfully created in directory '${dest}'.\n`,
       ),
     );
-  } catch ({ message }) {
-    throw Error(
-      chalk.red(
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        `\nCould not create component set in directory ${dest}: ${message}.\n`,
-      ),
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      throw Error(
+        chalk.red(
+          `\nCould not create component set in directory ${dest}: ${error.message}.\n`,
+        ),
+      );
+    }
   }
 })();

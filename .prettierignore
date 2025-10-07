@@ -1,2 +1,6 @@
-# Build files
 build/
+node_modules/
+bun.lock
+CHANGELOG.md
+coverage
+README.md

@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import test, { ExecutionContext } from 'ava';
+import { expect, test } from 'bun:test';
 
 import toCompatibility from '../src/components/compatibility';
 
-type Context = ExecutionContext<unknown>;
-
-test('extract compatibility for simple button with custom trigger and function', (t: Context): void => {
+test('extract compatibility for simple button with custom trigger and function', (): void => {
   const code = `
 (() => ({
   name: 'Button',
@@ -34,14 +31,14 @@ test('extract compatibility for simple button with custom trigger and function',
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
-    triggers: ['CustomTrigger'],
+  expect(compatibility).toEqual({
     functions: ['CustomFunction'],
     interactions: {},
+    triggers: ['CustomTrigger'],
   });
 });
 
-test('extract compatibility for complex button with multiple triggers and functions', (t: Context): void => {
+test('extract compatibility for complex button with multiple triggers and functions', (): void => {
   const code = `
   (() => ({
     name: 'Button',
@@ -131,14 +128,14 @@ test('extract compatibility for complex button with multiple triggers and functi
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
-    triggers: ['CustomTrigger1', 'CustomTrigger2', 'CustomTrigger3'],
+  expect(compatibility).toEqual({
     functions: ['CustomFunction1', 'CustomFunction2', 'CustomFunction3'],
     interactions: {},
+    triggers: ['CustomTrigger1', 'CustomTrigger2', 'CustomTrigger3'],
   });
 });
 
-test('extract compatibility for simple button with custom trigger with changing input', (t: Context): void => {
+test('extract compatibility for simple button with custom trigger with changing input', (): void => {
   const code = `
 (() => ({
   name: 'Button',
@@ -180,7 +177,9 @@ test('extract compatibility for simple button with custom trigger with changing 
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
+  expect(compatibility).toEqual({
+    functions: [],
+    interactions: {},
     triggers: [
       'CustomTrigger1',
       'CustomTrigger2',
@@ -190,12 +189,10 @@ test('extract compatibility for simple button with custom trigger with changing 
       'CustomTrigger6',
       'CustomTrigger7',
     ],
-    functions: [],
-    interactions: {},
   });
 });
 
-test('extract compatibility for simple button with custom inline triggers', (t: Context): void => {
+test('extract compatibility for simple button with custom inline triggers', (): void => {
   const code = `
 (() => ({
   name: 'Button',
@@ -222,19 +219,19 @@ test('extract compatibility for simple button with custom inline triggers', (t: 
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
+  expect(compatibility).toEqual({
+    functions: [],
+    interactions: {},
     triggers: [
       'CustomTrigger1',
       'CustomTrigger2',
       'CustomTrigger3',
       'CustomTrigger4',
     ],
-    functions: [],
-    interactions: {},
   });
 });
 
-test('compatibility galore', (t: Context): void => {
+test('compatibility galore', (): void => {
   const code = `
 (() => ({
   name: 'Button',
@@ -320,19 +317,7 @@ test('compatibility galore', (t: Context): void => {
 
   const compatibility = toCompatibility(code);
 
-  t.deepEqual(compatibility, {
-    triggers: [
-      'CustomTrigger1',
-      'CustomTrigger2',
-      'CustomTrigger3',
-      'CustomTrigger4',
-      'CustomTrigger5',
-      'CustomTrigger6',
-      'CustomTrigger7',
-      'CustomTrigger8',
-      'CustomTrigger9',
-      'CustomTrigger10',
-    ],
+  expect(compatibility).toEqual({
     functions: [
       'CustomFunction1',
       'CustomFunction2',
@@ -354,5 +339,17 @@ test('compatibility galore', (t: Context): void => {
         returnType: ['Void'],
       },
     },
+    triggers: [
+      'CustomTrigger1',
+      'CustomTrigger2',
+      'CustomTrigger3',
+      'CustomTrigger4',
+      'CustomTrigger5',
+      'CustomTrigger6',
+      'CustomTrigger7',
+      'CustomTrigger8',
+      'CustomTrigger9',
+      'CustomTrigger10',
+    ],
   });
 });

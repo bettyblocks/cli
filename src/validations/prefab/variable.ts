@@ -1,4 +1,5 @@
 import Joi from 'joi';
+
 import { VARIABLE_KIND } from '../constants';
 
 export const variableKindSchema = Joi.when('kind', {

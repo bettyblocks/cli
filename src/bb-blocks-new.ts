@@ -1,14 +1,19 @@
-import program from 'commander';
-import path from 'path';
+import { kebab } from 'case';
+import { Command } from 'commander';
 import fs from 'fs-extra';
-import kebabCase from 'lodash/kebabCase';
+import path from 'path';
+
 import { newBlockDefinition } from './blocks/blockDefinitions';
 
-/* process arguments */
-program.usage('[block-name]').name('bb blocks new').parse(process.argv);
+const program = new Command();
+
+program
+  .argument('<block-name>', 'Name of the block to create')
+  .name('bb blocks new')
+  .parse(process.argv);
 
 const { args } = program;
-const inputBlockName = kebabCase(args.join());
+const inputBlockName = kebab(args.join());
 
 const workingDir = process.cwd();
 if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
@@ -17,7 +22,6 @@ if (fs.existsSync(path.join(workingDir, '.app-functions'))) {
     console.log(newBlockDefinition(blocksDir, inputBlockName));
   } catch (err) {
     console.log(
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       `blocks/${inputBlockName}.json could not be created. Error: ${err}`,
     );
   }

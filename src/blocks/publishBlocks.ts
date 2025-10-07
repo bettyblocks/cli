@@ -1,24 +1,14 @@
-/* eslint-disable camelcase */
-/* npm dependencies */
-
-import path from 'path';
-import fs from 'fs-extra';
-import fetch from 'node-fetch';
-import FormData from 'form-data';
-
-/* internal dependencies */
-
 import chalk from 'chalk';
+import fetch, { fileFromSync, FormData } from 'node-fetch';
+import path from 'path';
+
+import Config from '../functions/config';
 import {
   functionDefinitions,
   stringifyDefinitions,
   whitelistedFunctions,
 } from '../functions/functionDefinitions';
 import FusionAuth from '../utils/login';
-
-import Config from '../functions/config';
-
-/* execute command */
 
 const workingDir = process.cwd();
 
@@ -32,7 +22,7 @@ const uploadBlock = async (
   const form = new FormData();
   form.append('name', path.basename(blockDefinitionsFile, '.zip'));
   form.append('functions', functionsJson);
-  form.append('file', fs.createReadStream(blockDefinitionsFile));
+  form.append('file', fileFromSync(blockDefinitionsFile));
 
   const applicationId = await config.applicationId();
   if (!applicationId) {
@@ -44,14 +34,13 @@ const uploadBlock = async (
 
   return fetch(url, {
     agent: config.agent,
-    method: 'POST',
     body: form,
     headers: {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      Authorization: `Bearer ${fusionAuth.jwt()}`,
-      ApplicationId: applicationId,
       Accept: 'application/json',
+      ApplicationId: applicationId,
+      Authorization: `Bearer ${fusionAuth.jwt()}`,
     },
+    method: 'POST',
   }).then(async (res) => {
     if (res.status === 401 || res.status === 403) {
       await fusionAuth.ensureLogin();
@@ -77,7 +66,7 @@ const createAndPublishFiles = async (
   zip: string,
 ): Promise<void> => {
   const functionsDir = path.join(workingDir, 'functions');
-  const funcDefinitions = functionDefinitions(functionsDir);
+  const funcDefinitions = await functionDefinitions(functionsDir);
   const blockFunctions = whitelistedFunctions(funcDefinitions, functions);
   const functionsJson = stringifyDefinitions(blockFunctions);
 

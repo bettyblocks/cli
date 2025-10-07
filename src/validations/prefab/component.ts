@@ -1,18 +1,15 @@
-/* eslint-disable no-use-before-define */
-/* eslint-disable @typescript-eslint/no-use-before-define */
-
 import chalk from 'chalk';
 import Joi from 'joi';
 
-import {
-  Prefab,
-  ComponentStyleMap,
+import type {
   Component,
-  PrefabReference,
-  PrefabComponentOptionCategory,
+  ComponentStyleMap,
   GroupedStyles,
-  StyleDefinitionState,
+  Prefab,
+  PrefabComponentOptionCategory,
+  PrefabReference,
   StyleDefinitionContentKeys,
+  StyleDefinitionState,
 } from '../../types';
 import { findDuplicates } from '../../utils/validation';
 import { overwriteSchema } from '../styles';
@@ -22,6 +19,28 @@ import { linkedPartialSchema } from './linkedPartial';
 
 type StyleValidator = Record<Component['styleType'], Joi.ObjectSchema>;
 type PrefabTypes = 'partial' | 'page' | undefined;
+
+interface WrapperSchemaProps {
+  styles: GroupedStyles;
+  componentStyleMap?: ComponentStyleMap;
+  availableComponentNames?: string[];
+  prefabType?: PrefabTypes;
+}
+
+interface ComponentSchemaProps {
+  styles: GroupedStyles;
+  componentStyleMap?: ComponentStyleMap;
+  availableComponentNames?: string[];
+  styleType?: keyof StyleValidator;
+  prefabType?: PrefabTypes;
+}
+
+interface ValidateComponentProps {
+  styles: GroupedStyles;
+  componentStyleMap?: ComponentStyleMap;
+  availableComponentNames?: string[];
+  prefabType?: PrefabTypes;
+}
 
 const shadows = [
   'none',
@@ -93,23 +112,22 @@ const styleValidator: StyleValidator = {
   }),
 };
 
-const partialSchema = (): Joi.ObjectSchema => {
-  return Joi.object({
+const partialSchema = (): Joi.ObjectSchema =>
+  Joi.object({
     ref: Joi.object({
       id: Joi.string().required(),
     }),
     type: Joi.string().valid('PARTIAL').required(),
     partialId: Joi.string().allow('').required(),
   });
-};
 
-const wrapperSchema = (
-  styles: GroupedStyles,
-  componentStyleMap?: ComponentStyleMap,
-  availableComponentNames?: string[],
-  prefabType?: PrefabTypes,
-): Joi.ObjectSchema => {
-  return Joi.object({
+const wrapperSchema = ({
+  styles,
+  componentStyleMap,
+  availableComponentNames,
+  prefabType,
+}: WrapperSchemaProps): Joi.ObjectSchema =>
+  Joi.object({
     type: Joi.string().valid('WRAPPER').required(),
     label: Joi.string(),
     optionCategories: Joi.array().items(optionCategorySchema).min(1),
@@ -119,17 +137,16 @@ const wrapperSchema = (
     descendants: Joi.array()
       .items(
         Joi.custom(
-          validateComponent(
+          validateComponent({
             styles,
             componentStyleMap,
             availableComponentNames,
             prefabType,
-          ),
+          }),
         ),
       )
       .required(),
   });
-};
 
 const validateComponentStyle =
   (styles: GroupedStyles, deprecatedStylesFlag: boolean) =>
@@ -139,7 +156,7 @@ const validateComponentStyle =
       name: string;
       overwrite: StyleDefinitionState[];
     };
-  }) => {
+  }): typeof prefabObject => {
     const { name: componentName, style } = prefabObject;
 
     if (deprecatedStylesFlag || typeof style === 'undefined') {
@@ -181,7 +198,7 @@ const validateComponentStyle =
         );
       }
 
-      const validCssKeys = validCssObjectValues[stateName] || [];
+      const validCssKeys = validCssObjectValues[stateName] ?? [];
 
       Object.keys(content).forEach((cssKey) => {
         if (!validCssKeys.includes(cssKey)) {
@@ -241,12 +258,14 @@ const optionEventRecord = Joi.object({
   ),
 });
 
-const optionTemplatesSchema = (availableComponentNames?: string[]) =>
+const optionTemplatesSchema = (
+  availableComponentNames?: string[],
+): Joi.ObjectSchema =>
   Joi.object({
     addChild: Joi.object({
       condition: Joi.object({
         onlyShowWhenDroppedIn: Joi.string().valid(
-          ...(availableComponentNames || []),
+          ...(availableComponentNames ?? []),
         ),
       }),
       options: Joi.array().items(optionSchema).required(),
@@ -254,17 +273,17 @@ const optionTemplatesSchema = (availableComponentNames?: string[]) =>
     }),
   });
 
-const componentSchema = (
-  styles: GroupedStyles,
-  componentStyleMap?: ComponentStyleMap,
-  availableComponentNames?: string[],
-  styleType?: keyof StyleValidator,
-  prefabType?: PrefabTypes,
-): Joi.ObjectSchema => {
+const componentSchema = ({
+  styles,
+  componentStyleMap,
+  availableComponentNames,
+  styleType,
+  prefabType,
+}: ComponentSchemaProps): Joi.ObjectSchema => {
   const canValidateOldStyle = styleType && styleValidator[styleType];
   const deprecatedStyleSchema = Joi.object({
     name: Joi.string().max(255).alphanum(),
-    overwrite: canValidateOldStyle || Joi.any(),
+    overwrite: canValidateOldStyle ?? Joi.any(),
   });
 
   const styleSchema = Joi.object({
@@ -288,12 +307,12 @@ const componentSchema = (
     descendants: Joi.array()
       .items(
         Joi.custom(
-          validateComponent(
+          validateComponent({
             styles,
             componentStyleMap,
             availableComponentNames,
             prefabType,
-          ),
+          }),
         ),
       )
       .required(),
@@ -356,9 +375,10 @@ const findCategoryMemberDuplicates = (
   optionCategories: PrefabComponentOptionCategory[],
   componentType: string,
 ): void => {
-  const memberKeys = optionCategories.reduce<string[]>((acc, { members }) => {
-    return [...acc, ...members];
-  }, []);
+  const memberKeys = optionCategories.reduce<string[]>(
+    (acc, { members }) => [...acc, ...members],
+    [],
+  );
 
   if (memberKeys.length !== new Set(memberKeys).size) {
     throw new Error(
@@ -370,12 +390,12 @@ const findCategoryMemberDuplicates = (
 };
 
 export const validateComponent =
-  (
-    styles: GroupedStyles,
-    componentStyleMap?: ComponentStyleMap,
-    availableComponentNames?: string[],
-    prefabType?: PrefabTypes,
-  ) =>
+  ({
+    styles,
+    componentStyleMap,
+    availableComponentNames,
+    prefabType,
+  }: ValidateComponentProps) =>
   (component: PrefabReference): Prefab | unknown => {
     if (component.type === 'PARTIAL') {
       if (prefabType === 'partial') {
@@ -394,12 +414,12 @@ export const validateComponent =
         );
       }
     } else if (component.type === 'WRAPPER') {
-      const { error } = wrapperSchema(
+      const { error } = wrapperSchema({
         styles,
         componentStyleMap,
         availableComponentNames,
         prefabType,
-      ).validate(component);
+      }).validate(component);
       const { optionCategories = [], options } = component;
 
       findDuplicates(options, 'option key', 'key');
@@ -420,13 +440,13 @@ export const validateComponent =
         componentStyleMap[name] &&
         componentStyleMap[name].styleType;
 
-      const { error } = componentSchema(
+      const { error } = componentSchema({
         styles,
         componentStyleMap,
         availableComponentNames,
-        styleType as keyof StyleValidator,
+        styleType,
         prefabType,
-      ).validate(component);
+      }).validate(component);
 
       findDuplicates(options, 'option key', 'key');
       findCategoryMemberDuplicates(optionCategories, 'component');

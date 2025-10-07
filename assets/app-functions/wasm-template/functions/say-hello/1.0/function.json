@@ -1,0 +1,35 @@
+{
+  "label": "Say Hello",
+  "description": "Say Hello to the world",
+  "category": "Misc",
+  "icon": {
+    "name": "ChatIcon",
+    "color": "Teal"
+  },
+  "options": [
+    {
+      "meta": {
+        "type": "Text"
+      },
+      "name": "name",
+      "label": "Name",
+      "info": "The name that's going to be used to say hello to the world!",
+      "advanced": false,
+      "configuration": {
+        "placeholder": "Betty Blocks"
+      }
+    },
+    {
+      "meta": {
+        "type": "Output",
+        "output": {
+          "type": "Text"
+        }
+      },
+      "name": "greet",
+      "label": "As",
+      "info": "The resulting greet to the world."
+    }
+  ],
+  "yields": "NONE"
+}

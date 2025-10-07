@@ -1,46 +1,36 @@
-/* eslint-disable camelcase */
-/* npm dependencies */
-
-import path from 'path';
-import fs from 'fs-extra';
 import chalk from 'chalk';
-import fetch from 'node-fetch';
-import FormData from 'form-data';
-
-/* internal dependencies */
+import fetch, { fileFromSync, FormData } from 'node-fetch';
+import path from 'path';
 
 import FusionAuth from '../utils/login';
+import Config from './config';
 import {
   functionDefinitions,
   stringifyDefinitions,
   zipFunctionDefinitions,
 } from './functionDefinitions';
 
-import Config from './config';
-
-/* execute command */
-
 const workingDir = process.cwd();
 
-type FunctionResult = {
+interface FunctionResult {
   name: string;
   version?: string;
   status: 'ok' | 'error';
   id?: string;
   error?: string;
-};
+}
 
-type PublishResponse = {
+interface PublishResponse {
   created: FunctionResult[];
   updated: FunctionResult[];
   deleted: FunctionResult[];
   compiled: boolean;
   message?: string;
-};
+}
 
-type PublishOptions = {
+interface PublishOptions {
   skipCompile: boolean;
-};
+}
 
 export const logResult = (
   { status, name, version, error }: FunctionResult,
@@ -49,12 +39,12 @@ export const logResult = (
   const delimiter = version ? '-' : '';
   if (status === 'ok') {
     console.log(
-      `${chalk.green(`✔`)} ${operation} ${name}${delimiter}${version || ''}.`,
+      `${chalk.green(`✔`)} ${operation} ${name}${delimiter}${version ?? ''}.`,
     );
   } else {
     console.log(
       `${chalk.red(`✖`)} ${operation} ${name}${delimiter}${
-        version || ''
+        version ?? ''
       } failed. Errors: ${JSON.stringify(error)}.`,
     );
   }
@@ -70,7 +60,7 @@ const uploadAppFunctions = async (
   const form = new FormData();
   form.append('functions', functionsJson);
   form.append('options', JSON.stringify({ compile: !config.skipCompile }));
-  form.append('file', fs.createReadStream(functionDefinitionsFile));
+  form.append('file', fileFromSync(functionDefinitionsFile));
 
   const applicationId = await config.applicationId();
   if (!applicationId) {
@@ -81,12 +71,11 @@ const uploadAppFunctions = async (
   const url = `${config.builderApiUrl}/artifacts/actions/${applicationId}/functions`;
   return fetch(url, {
     agent: config.agent,
-    method: 'POST',
     body: form,
     headers: {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       Authorization: `Bearer ${fusionAuth.jwt()}`,
     },
+    method: 'POST',
   }).then(async (res) => {
     switch (res.status) {
       case 401:
@@ -109,14 +98,14 @@ const uploadAppFunctions = async (
         if (!config.skipCompile) {
           const compiledStatus = compiled ? 'ok' : 'error';
           logResult(
-            { status: compiledStatus, name: 'triggered' },
+            { name: 'triggered', status: compiledStatus },
             'Compilation',
           );
         }
 
         return {
-          success: true,
           message: 'Your functions are published to your application.',
+          success: true,
         };
       }
       case 409: {
@@ -128,8 +117,8 @@ const uploadAppFunctions = async (
         deleted.forEach((result) => logResult(result, 'Delete:'));
 
         return {
+          message: message ?? '409 Conflict',
           success: false,
-          message: message || '409 Conflict',
         };
       }
 
@@ -145,9 +134,9 @@ const uploadAppFunctions = async (
 
 const publishFunctions = async (config: Config): Promise<void> => {
   const functionsDir = path.join(workingDir, 'functions');
-  const zipFile = zipFunctionDefinitions(functionsDir, config.includes);
+  const zipFile = await zipFunctionDefinitions(functionsDir, config.includes);
 
-  const functions = functionDefinitions(functionsDir);
+  const functions = await functionDefinitions(functionsDir);
   const functionsJson = stringifyDefinitions(functions);
 
   const { success, message } = await uploadAppFunctions(
