@@ -151,6 +151,7 @@ interface ValidateFunctionsProps {
   functionName?: string;
   blockFunctions?: FunctionDefinition[];
   isWasmFunctionProject?: boolean;
+  inputFunctionName?: string;
 }
 
 class FunctionValidator {
@@ -201,8 +202,13 @@ class FunctionValidator {
     functionName,
     blockFunctions,
     isWasmFunctionProject = false,
+    inputFunctionName,
   }: ValidateFunctionsProps): Promise<ValidationResult[]> {
-    const definitions = await functionDefinitions(this.functionsDir, true);
+    const definitions = await functionDefinitions(
+      this.functionsDir,
+      true,
+      inputFunctionName,
+    );
     const functions = blockFunctions ?? definitions;
     const validations: ValidationResult[] = [];
     functions.forEach((definition) => {

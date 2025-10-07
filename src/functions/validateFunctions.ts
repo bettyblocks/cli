@@ -6,6 +6,7 @@ import { FunctionValidator, logValidationResult } from './validations';
 export const validateFunctions = async (
   isWasmFunctionProject: boolean,
   baseFunctionsPath: string,
+  inputFunctionName?: string,
 ): Promise<{ valid: boolean }> => {
   const config = new Config();
   const validator = new FunctionValidator(config, baseFunctionsPath);
@@ -13,7 +14,10 @@ export const validateFunctions = async (
 
   console.log(chalk.bold(`Validating functions in ${baseFunctionsPath}`));
 
-  const results = await validator.validateFunctions({ isWasmFunctionProject });
+  const results = await validator.validateFunctions({
+    inputFunctionName,
+    isWasmFunctionProject,
+  });
   results.forEach(logValidationResult);
 
   const valid = results.every((result) => result.status === 'ok');

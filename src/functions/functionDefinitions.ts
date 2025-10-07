@@ -4,6 +4,7 @@ import { camel, title } from 'case';
 import fs from 'fs-extra';
 import path from 'path';
 
+import rootDir from '../utils/rootDir';
 import {
   createCargoTomlFile,
   createlibRsFile,
@@ -70,6 +71,7 @@ const isFunction = (functionPath: string): boolean =>
 const functionDirs = async (
   functionsDir: string,
   includeNonversioned = false,
+  inputFunctionName?: string,
 ): Promise<string[]> => {
   const glob = new Glob('**/function.json');
   const dirs: string[] = [];
@@ -84,6 +86,10 @@ const functionDirs = async (
     const dir = path
       .dirname(path.join(functionsDir, functionDefinition))
       .replace(/\//g, path.sep);
+
+    if (inputFunctionName && !dir.includes(inputFunctionName)) {
+      continue;
+    }
 
     if (
       isFunction(dir) &&
@@ -135,10 +141,12 @@ const functionDefinition = (
 const functionDefinitions = async (
   functionsDir: string,
   includeNonversioned = false,
+  inputFunctionName?: string,
 ): Promise<FunctionDefinition[]> => {
   const functionDirectories = await functionDirs(
     functionsDir,
     includeNonversioned,
+    inputFunctionName,
   );
 
   return functionDirectories.map((functionDir) =>
@@ -214,6 +222,19 @@ const createNewWasmFunction = (
   createlibRsFile(functionDir, functionName);
   createWorldWitFile(functionDir, functionName);
   createCargoTomlFile(functionDir, functionName);
+  fs.copySync(
+    path.join(
+      rootDir(),
+      'assets',
+      'app-functions',
+      'wasm-template',
+      'functions',
+      'say-hello',
+      '1.0',
+      'Justfile',
+    ),
+    path.join(functionDir, 'Justfile'),
+  );
 };
 
 const toVariableName = ({ name, version }: FunctionDefinition): string =>
