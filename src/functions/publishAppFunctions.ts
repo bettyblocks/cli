@@ -1,7 +1,5 @@
 import chalk from 'chalk';
-import FormData from 'form-data';
-import fs from 'fs-extra';
-import fetch from 'node-fetch';
+import fetch, { fileFromSync, FormData } from 'node-fetch';
 import path from 'path';
 
 import FusionAuth from '../utils/login';
@@ -62,7 +60,7 @@ const uploadAppFunctions = async (
   const form = new FormData();
   form.append('functions', functionsJson);
   form.append('options', JSON.stringify({ compile: !config.skipCompile }));
-  form.append('file', fs.createReadStream(functionDefinitionsFile));
+  form.append('file', fileFromSync(functionDefinitionsFile));
 
   const applicationId = await config.applicationId();
   if (!applicationId) {
@@ -136,9 +134,9 @@ const uploadAppFunctions = async (
 
 const publishFunctions = async (config: Config): Promise<void> => {
   const functionsDir = path.join(workingDir, 'functions');
-  const zipFile = zipFunctionDefinitions(functionsDir, config.includes);
+  const zipFile = await zipFunctionDefinitions(functionsDir, config.includes);
 
-  const functions = functionDefinitions(functionsDir);
+  const functions = await functionDefinitions(functionsDir);
   const functionsJson = stringifyDefinitions(functions);
 
   const { success, message } = await uploadAppFunctions(

@@ -1,7 +1,5 @@
 import chalk from 'chalk';
-import FormData from 'form-data';
-import fs from 'fs-extra';
-import fetch from 'node-fetch';
+import fetch, { fileFromSync, FormData } from 'node-fetch';
 import path from 'path';
 
 import Config from '../functions/config';
@@ -24,7 +22,7 @@ const uploadBlock = async (
   const form = new FormData();
   form.append('name', path.basename(blockDefinitionsFile, '.zip'));
   form.append('functions', functionsJson);
-  form.append('file', fs.createReadStream(blockDefinitionsFile));
+  form.append('file', fileFromSync(blockDefinitionsFile));
 
   const applicationId = await config.applicationId();
   if (!applicationId) {
@@ -68,7 +66,7 @@ const createAndPublishFiles = async (
   zip: string,
 ): Promise<void> => {
   const functionsDir = path.join(workingDir, 'functions');
-  const funcDefinitions = functionDefinitions(functionsDir);
+  const funcDefinitions = await functionDefinitions(functionsDir);
   const blockFunctions = whitelistedFunctions(funcDefinitions, functions);
   const functionsJson = stringifyDefinitions(blockFunctions);
 

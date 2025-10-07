@@ -11,7 +11,7 @@ interface UploadProps {
   objects: string;
 }
 
-export const upload = async ({
+const upload = async ({
   blobContentType,
   bucketName,
   fileName,

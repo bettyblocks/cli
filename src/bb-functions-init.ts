@@ -1,4 +1,3 @@
-import chalk from 'chalk';
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
@@ -8,63 +7,37 @@ import rootDir from './utils/rootDir';
 const program = new Command();
 
 program
-  .usage('[identifier]')
   .name('bb functions init')
-  .option('-a, --app', 'Initialize an app functions project.')
+  .argument('<identifier>', 'the identifier (subdomain) of your application')
+  .option(
+    '-t, --type [type]',
+    'Specify the type of functions project to initialize. E.g., "wasm" or "js".',
+    'js',
+  )
   .parse(process.argv);
 
-const initAppFunctions = program.opts().app;
 const { args } = program;
-
-if (args.length !== 1) {
-  console.log(
-    chalk.red('Please provide the identifier (subdomain) of your application.'),
-  );
-  process.exit();
-}
+const options = program.opts();
 
 const [identifier] = args;
 const workingDir = process.cwd();
 const targetDir = path.join(workingDir, identifier);
 
-fs.access(targetDir, fs.constants.F_OK, (err: NodeJS.ErrnoException | null) => {
-  if (err && err.code === 'ENOENT') {
-    let type;
-    let actions;
-    let commands;
-    let sourceDir;
+if (fs.existsSync(targetDir)) {
+  console.log(`The directory "${targetDir}" already exists. Abort.`);
+  process.exit(1);
+}
 
-    if (initAppFunctions) {
-      type = 'app functions';
-      actions = 'publish';
-      commands = '';
-      sourceDir = path.join(rootDir(), 'assets', 'app-functions', 'templates');
-      fs.copySync(sourceDir, targetDir);
-    } else {
-      type = 'functions';
-      actions = 'build and/or publish';
-      commands = 'bb functions build\n    ';
-      sourceDir = path.join(rootDir(), 'assets', 'functions', 'templates');
-      fs.copySync(sourceDir, targetDir);
-      fs.copySync(
-        path.join(
-          rootDir(),
-          'assets',
-          'functions',
-          'packer',
-          'webpack.config.js',
-        ),
-        path.join(targetDir, 'webpack.config.js'),
-      );
-    }
+let sourceDir = path.join(rootDir(), 'assets', 'app-functions', 'js-template');
+if (options.type === 'wasm') {
+  sourceDir = path.join(rootDir(), 'assets', 'app-functions', 'wasm-template');
+}
 
-    console.log(`Initialized ${type} project in ${targetDir}.
-You can use "bb functions" to ${actions} it:
+fs.copySync(sourceDir, targetDir);
 
-    cd ${identifier}
-    ${commands}bb functions publish
-`);
-  } else {
-    console.log(`The directory "${targetDir}" already exists. Abort.`);
-  }
-});
+console.log(`Initialized functions project in ${targetDir}.
+    You can use "bb functions" to publish it:
+
+        cd ${identifier}
+        bb functions publish
+    `);

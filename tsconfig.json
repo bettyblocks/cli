@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "lib": ["ESNext"],
-    "rootDir": "./src",
+    "rootDir": "./",
     "outDir": "./build",
     "module": "ESNext",
     "moduleDetection": "force",
@@ -15,7 +15,8 @@
     "target": "ESNext",
     "verbatimModuleSyntax": true,
     "typeRoots": ["./node_modules/@types"],
-    "sourceMap": true
+    "sourceMap": true,
+    "declaration": true
   },
   "include": ["src/**/*", "__tests__/**/*"],
   "exclude": ["node_modules"]
