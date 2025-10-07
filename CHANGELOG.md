@@ -1,3 +1,10 @@
+# [26.0.0-beta.19](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.18...v26.0.0-beta.19) (2025-10-07)
+
+
+### Bug Fixes
+
+* deploy beta ([0c839ad](https://github.com/bettyblocks/cli/commit/0c839adf4467cddb2211c4ef9ceed4bacf0c7da3))
+
 # [26.0.0-beta.18](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.17...v26.0.0-beta.18) (2025-08-21)
 
 
