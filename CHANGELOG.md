@@ -1,3 +1,168 @@
+# [26.0.0-beta.19](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.18...v26.0.0-beta.19) (2025-10-07)
+
+
+### Bug Fixes
+
+* deploy beta ([0c839ad](https://github.com/bettyblocks/cli/commit/0c839adf4467cddb2211c4ef9ceed4bacf0c7da3))
+
+# [26.0.0-beta.18](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.17...v26.0.0-beta.18) (2025-08-21)
+
+
+### Bug Fixes
+
+* revert shebang change ([dd1f9ab](https://github.com/bettyblocks/cli/commit/dd1f9ab4c5f5ae45488f2c916fdd4013c45dbb29))
+
+# [26.0.0-beta.17](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.16...v26.0.0-beta.17) (2025-08-21)
+
+
+### Bug Fixes
+
+* updates shebang to node ([6e54f67](https://github.com/bettyblocks/cli/commit/6e54f67f3368f874601580131a3d84016e684ea5))
+
+# [26.0.0-beta.16](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.15...v26.0.0-beta.16) (2025-08-19)
+
+
+### Bug Fixes
+
+* add tsconfig build ([f6946c2](https://github.com/bettyblocks/cli/commit/f6946c2c1b733c5f5431b05f55ab81309780c946))
+
+# [26.0.0-beta.15](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.14...v26.0.0-beta.15) (2025-08-19)
+
+
+### Bug Fixes
+
+* use updated tsconfig settings ([a2abb2a](https://github.com/bettyblocks/cli/commit/a2abb2a30a5ffa1a1f8f81744dd04e9d4107aaaa))
+
+# [26.0.0-beta.14](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.13...v26.0.0-beta.14) (2025-08-15)
+
+
+### Bug Fixes
+
+* set type deps as deps ([1d4ef0a](https://github.com/bettyblocks/cli/commit/1d4ef0a1e788b55c43c059ecc4fcc73ea7299fa4))
+
+# [26.0.0-beta.13](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.12...v26.0.0-beta.13) (2025-08-15)
+
+
+### Bug Fixes
+
+* add tsnode as dependency ([2a1e791](https://github.com/bettyblocks/cli/commit/2a1e791596d705edd6bc7aa8fb2f5ea651d18e79))
+
+# [26.0.0-beta.12](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.11...v26.0.0-beta.12) (2025-08-15)
+
+
+### Bug Fixes
+
+* set types deps in dev deps ([223def3](https://github.com/bettyblocks/cli/commit/223def317714f2725ea77d6dfbaf0f78752ef76d))
+
+# [26.0.0-beta.11](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.10...v26.0.0-beta.11) (2025-08-15)
+
+
+### Bug Fixes
+
+* set source code in build directory ([a05e4db](https://github.com/bettyblocks/cli/commit/a05e4db9420944ffe4ebea3fb9ae152df81bc317))
+
+# [26.0.0-beta.10](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.9...v26.0.0-beta.10) (2025-08-15)
+
+
+### Bug Fixes
+
+* use old tsconfig and transpile ([41cb981](https://github.com/bettyblocks/cli/commit/41cb981d0dce94ee4728518b31b8fc5c3441ec5a))
+
+# [26.0.0-beta.9](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.8...v26.0.0-beta.9) (2025-08-15)
+
+
+### Bug Fixes
+
+* set deps ([77d1e0a](https://github.com/bettyblocks/cli/commit/77d1e0a32ba986abc638ca6cd62db3bc8fea3dbc))
+
+# [26.0.0-beta.8](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.7...v26.0.0-beta.8) (2025-08-15)
+
+
+### Bug Fixes
+
+* change shebang from bun to node ([902e1f7](https://github.com/bettyblocks/cli/commit/902e1f73aeab725b57aff064ea704a5f993e0eb1))
+
+# [26.0.0-beta.7](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.6...v26.0.0-beta.7) (2025-08-15)
+
+
+### Bug Fixes
+
+* include types in deps ([9abfcb9](https://github.com/bettyblocks/cli/commit/9abfcb91a43cd242ec8b7e769605e42c32dca6bd))
+* revert last change ([3725898](https://github.com/bettyblocks/cli/commit/37258989495a5df262dbeacd17297b41aaf3575c))
+
+# [26.0.0-beta.6](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.5...v26.0.0-beta.6) (2025-08-15)
+
+
+### Bug Fixes
+
+* include type deps in deps ([e9ec1cf](https://github.com/bettyblocks/cli/commit/e9ec1cf80cb84a7cc5a19da7e4e184af1eaf1748))
+* resolve linter ([fb73c52](https://github.com/bettyblocks/cli/commit/fb73c52a595fc72385899f97312f84ef894b7584))
+
+# [26.0.0-beta.5](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.4...v26.0.0-beta.5) (2025-08-15)
+
+
+### Bug Fixes
+
+* include type deps in deps ([da135b5](https://github.com/bettyblocks/cli/commit/da135b5c7dc46a717822449626da68d745055006))
+
+# [26.0.0-beta.4](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.3...v26.0.0-beta.4) (2025-08-15)
+
+
+### Bug Fixes
+
+* add types from nodemodules ([b27a80c](https://github.com/bettyblocks/cli/commit/b27a80c58b9f76829b3de02818632ad62417098f))
+
+# [26.0.0-beta.3](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.2...v26.0.0-beta.3) (2025-08-14)
+
+
+### Bug Fixes
+
+* trigger changelog ([8c66b57](https://github.com/bettyblocks/cli/commit/8c66b5752b37b0c4b56785e14900af231c0338af))
+
+# [26.0.0-beta.2](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.1...v26.0.0-beta.2) (2025-08-14)
+
+
+### Bug Fixes
+
+* set entry point to js file ([5c7296e](https://github.com/bettyblocks/cli/commit/5c7296e37d0e8ffc8291a77d65bc52c12581bcf5))
+
+
+### Features
+
+* remove deprecated cli command and update deps ([51db858](https://github.com/bettyblocks/cli/commit/51db85884163e87968b5ccde27a6fff6f4d667d8))
+
+
+### BREAKING CHANGES
+
+* now requires bun instead of yarn and the deprecated commands are removed
+
+# [26.0.0-beta.1](https://github.com/bettyblocks/cli/compare/v25.109.0-beta.1...v26.0.0-beta.1) (2025-08-14)
+
+
+### Features
+
+* remove deprecated cli command and update deps ([88b4a9e](https://github.com/bettyblocks/cli/commit/88b4a9ec3f03e3bc7b9ac68a9e1c5e40d2f18081))
+
+
+### BREAKING CHANGES
+
+* now requires bun instead of yarn and the deprecated commands are removed
+
+# [25.109.0-beta.1](https://github.com/bettyblocks/cli/compare/v25.108.0...v25.109.0-beta.1) (2025-08-14)
+
+
+### Bug Fixes
+
+* component build working with bun ([6b58157](https://github.com/bettyblocks/cli/commit/6b581573cc338c95cda7308b29d233ea79a7dcd5))
+* refactors and corrects test assertions ([eb947ef](https://github.com/bettyblocks/cli/commit/eb947efd000726434fc83f248522bfc12e1eb69e))
+
+
+### Features
+
+* remove deprecated cli command and update deps /n/n BREAKING CHANGE: now requires bun instead of yarn and the deprecated commands are removed ([680956c](https://github.com/bettyblocks/cli/commit/680956c49aed6ee30fe887d180b72e7a79bfa287))
+* remove deprecated cli command and update deps /n/n BREAKING CHANGE: now requires bun instead of yarn and the deprecated commands are removed ([cf7b7ef](https://github.com/bettyblocks/cli/commit/cf7b7ef574be1d818b72148612c51aa3a6b7c6f9))
+* use bun and update typescript ([229b0bc](https://github.com/bettyblocks/cli/commit/229b0bc4f4eb5d737c201aacd5ab0a46bd765776))
+
 # [25.108.0](https://github.com/bettyblocks/cli/compare/v25.107.0...v25.108.0) (2025-07-22)
 
 
