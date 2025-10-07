@@ -1,3 +1,19 @@
+# [26.0.0-beta.20](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.19...v26.0.0-beta.20) (2025-10-07)
+
+
+### Bug Fixes
+
+* split up validation function ([02fca16](https://github.com/bettyblocks/cli/commit/02fca16ba127f2314cdf8fa0fa42d56be9d1cf06))
+* wasm template and validate wasm with validate wasm command ([663eb0b](https://github.com/bettyblocks/cli/commit/663eb0b76939779eb1ae38c1bc38d15a2a789261))
+
+
+### Features
+
+* add wasm functions template ([4df3712](https://github.com/bettyblocks/cli/commit/4df3712388f763fe8b5bb0fe838cbebee9857fb7))
+* can init, add new and bump wasm functions ([7becd9b](https://github.com/bettyblocks/cli/commit/7becd9bcff59aa508cfcfc1893255e86c137d6c4))
+* publish wasm functions to blockstore ([9c1dd61](https://github.com/bettyblocks/cli/commit/9c1dd61f55d3ffbaccc8254cc834bde3d8de3009))
+* remove custom functions from cli ([159e827](https://github.com/bettyblocks/cli/commit/159e8275a44dfc8d96049ac6af810146acc72ae3))
+
 # [26.0.0-beta.19](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.18...v26.0.0-beta.19) (2025-10-07)
 
 
