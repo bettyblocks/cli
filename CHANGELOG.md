@@ -1,3 +1,68 @@
+# [26.0.0](https://github.com/bettyblocks/cli/compare/v25.108.0...v26.0.0) (2025-10-07)
+
+
+### Bug Fixes
+
+* add tsconfig build ([f6946c2](https://github.com/bettyblocks/cli/commit/f6946c2c1b733c5f5431b05f55ab81309780c946))
+* add tsnode as dependency ([2a1e791](https://github.com/bettyblocks/cli/commit/2a1e791596d705edd6bc7aa8fb2f5ea651d18e79))
+* add types from nodemodules ([b27a80c](https://github.com/bettyblocks/cli/commit/b27a80c58b9f76829b3de02818632ad62417098f))
+* change shebang from bun to node ([902e1f7](https://github.com/bettyblocks/cli/commit/902e1f73aeab725b57aff064ea704a5f993e0eb1))
+* component build working with bun ([6b58157](https://github.com/bettyblocks/cli/commit/6b581573cc338c95cda7308b29d233ea79a7dcd5))
+* deploy beta ([0c839ad](https://github.com/bettyblocks/cli/commit/0c839adf4467cddb2211c4ef9ceed4bacf0c7da3))
+* include type deps in deps ([da135b5](https://github.com/bettyblocks/cli/commit/da135b5c7dc46a717822449626da68d745055006))
+* include type deps in deps ([e9ec1cf](https://github.com/bettyblocks/cli/commit/e9ec1cf80cb84a7cc5a19da7e4e184af1eaf1748))
+* include types in deps ([9abfcb9](https://github.com/bettyblocks/cli/commit/9abfcb91a43cd242ec8b7e769605e42c32dca6bd))
+* refactors and corrects test assertions ([eb947ef](https://github.com/bettyblocks/cli/commit/eb947efd000726434fc83f248522bfc12e1eb69e))
+* resolve linter ([fb73c52](https://github.com/bettyblocks/cli/commit/fb73c52a595fc72385899f97312f84ef894b7584))
+* revert last change ([3725898](https://github.com/bettyblocks/cli/commit/37258989495a5df262dbeacd17297b41aaf3575c))
+* revert shebang change ([dd1f9ab](https://github.com/bettyblocks/cli/commit/dd1f9ab4c5f5ae45488f2c916fdd4013c45dbb29))
+* set deps ([77d1e0a](https://github.com/bettyblocks/cli/commit/77d1e0a32ba986abc638ca6cd62db3bc8fea3dbc))
+* set entry point to js file ([5c7296e](https://github.com/bettyblocks/cli/commit/5c7296e37d0e8ffc8291a77d65bc52c12581bcf5))
+* set source code in build directory ([a05e4db](https://github.com/bettyblocks/cli/commit/a05e4db9420944ffe4ebea3fb9ae152df81bc317))
+* set type deps as deps ([1d4ef0a](https://github.com/bettyblocks/cli/commit/1d4ef0a1e788b55c43c059ecc4fcc73ea7299fa4))
+* set types deps in dev deps ([223def3](https://github.com/bettyblocks/cli/commit/223def317714f2725ea77d6dfbaf0f78752ef76d))
+* split up validation function ([02fca16](https://github.com/bettyblocks/cli/commit/02fca16ba127f2314cdf8fa0fa42d56be9d1cf06))
+* trigger changelog ([8c66b57](https://github.com/bettyblocks/cli/commit/8c66b5752b37b0c4b56785e14900af231c0338af))
+* updates shebang to node ([6e54f67](https://github.com/bettyblocks/cli/commit/6e54f67f3368f874601580131a3d84016e684ea5))
+* use old tsconfig and transpile ([41cb981](https://github.com/bettyblocks/cli/commit/41cb981d0dce94ee4728518b31b8fc5c3441ec5a))
+* use updated tsconfig settings ([a2abb2a](https://github.com/bettyblocks/cli/commit/a2abb2a30a5ffa1a1f8f81744dd04e9d4107aaaa))
+* wasm template and validate wasm with validate wasm command ([663eb0b](https://github.com/bettyblocks/cli/commit/663eb0b76939779eb1ae38c1bc38d15a2a789261))
+
+
+### Features
+
+* add wasm functions template ([4df3712](https://github.com/bettyblocks/cli/commit/4df3712388f763fe8b5bb0fe838cbebee9857fb7))
+* can init, add new and bump wasm functions ([7becd9b](https://github.com/bettyblocks/cli/commit/7becd9bcff59aa508cfcfc1893255e86c137d6c4))
+* publish wasm functions to blockstore ([9c1dd61](https://github.com/bettyblocks/cli/commit/9c1dd61f55d3ffbaccc8254cc834bde3d8de3009))
+* remove custom functions from cli ([159e827](https://github.com/bettyblocks/cli/commit/159e8275a44dfc8d96049ac6af810146acc72ae3))
+* remove deprecated cli command and update deps ([88b4a9e](https://github.com/bettyblocks/cli/commit/88b4a9ec3f03e3bc7b9ac68a9e1c5e40d2f18081))
+* remove deprecated cli command and update deps ([51db858](https://github.com/bettyblocks/cli/commit/51db85884163e87968b5ccde27a6fff6f4d667d8))
+* remove deprecated cli command and update deps /n/n BREAKING CHANGE: now requires bun instead of yarn and the deprecated commands are removed ([680956c](https://github.com/bettyblocks/cli/commit/680956c49aed6ee30fe887d180b72e7a79bfa287))
+* remove deprecated cli command and update deps /n/n BREAKING CHANGE: now requires bun instead of yarn and the deprecated commands are removed ([cf7b7ef](https://github.com/bettyblocks/cli/commit/cf7b7ef574be1d818b72148612c51aa3a6b7c6f9))
+* use bun and update typescript ([229b0bc](https://github.com/bettyblocks/cli/commit/229b0bc4f4eb5d737c201aacd5ab0a46bd765776))
+
+
+### BREAKING CHANGES
+
+* now requires bun instead of yarn and the deprecated commands are removed
+* now requires bun instead of yarn and the deprecated commands are removed
+
+# [26.0.0-beta.20](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.19...v26.0.0-beta.20) (2025-10-07)
+
+
+### Bug Fixes
+
+* split up validation function ([02fca16](https://github.com/bettyblocks/cli/commit/02fca16ba127f2314cdf8fa0fa42d56be9d1cf06))
+* wasm template and validate wasm with validate wasm command ([663eb0b](https://github.com/bettyblocks/cli/commit/663eb0b76939779eb1ae38c1bc38d15a2a789261))
+
+
+### Features
+
+* add wasm functions template ([4df3712](https://github.com/bettyblocks/cli/commit/4df3712388f763fe8b5bb0fe838cbebee9857fb7))
+* can init, add new and bump wasm functions ([7becd9b](https://github.com/bettyblocks/cli/commit/7becd9bcff59aa508cfcfc1893255e86c137d6c4))
+* publish wasm functions to blockstore ([9c1dd61](https://github.com/bettyblocks/cli/commit/9c1dd61f55d3ffbaccc8254cc834bde3d8de3009))
+* remove custom functions from cli ([159e827](https://github.com/bettyblocks/cli/commit/159e8275a44dfc8d96049ac6af810146acc72ae3))
+
 # [26.0.0-beta.19](https://github.com/bettyblocks/cli/compare/v26.0.0-beta.18...v26.0.0-beta.19) (2025-10-07)
 
 
