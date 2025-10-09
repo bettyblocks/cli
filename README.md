@@ -2,11 +2,9 @@
 
 ## Prerequisites
 
-As of version `25.29.0`, you will need to install the [requirements for IsolatedVM](https://www.npmjs.com/package/isolated-vm#requirements) which basically include:
+As of version `26`, you will need to install the following requirements
 
-- make
-- g++
-- python
+* [bun](https://bun.com/)
 
 ## Installation
 
@@ -16,24 +14,12 @@ To install the CLI you will need [a recent version of Node.js](https://nodejs.or
 $ npm install -g @betty-blocks/cli
 ```
 
-To install the CLI without optional dependencies (isolated-vm)
-
-```bash
-$ npm install -g @betty-blocks/cli --no-optional
-```
-
 ## Update
 
 To update the CLI
 
 ```bash
 $ npm update -g @betty-blocks/cli
-```
-
-To update the CLI without optional dependencies (isolated-vm)
-
-```bash
-$ npm update -g @betty-blocks/cli --no-optional
 ```
 
 ## Local development
