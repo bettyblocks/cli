@@ -1,3 +1,10 @@
+## [26.0.1](https://github.com/bettyblocks/cli/compare/v26.0.0...v26.0.1) (2025-10-09)
+
+
+### Bug Fixes
+
+* remove isolated vm from readme ([943eb54](https://github.com/bettyblocks/cli/commit/943eb5458596b6d1053b3e3777a3aafd1d681e78))
+
 # [26.0.0](https://github.com/bettyblocks/cli/compare/v25.108.0...v26.0.0) (2025-10-07)
 
 
