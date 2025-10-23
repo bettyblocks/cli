@@ -3,6 +3,14 @@
 
 ### Bug Fixes
 
+* use camelcase from new package to match lodash behaviour ([c2d14c0](https://github.com/bettyblocks/cli/commit/c2d14c0d1a5103a6cede72f8ae1c3e828eb74ec5))
+* use camelcase from new package to match lodash behaviour ([3853f14](https://github.com/bettyblocks/cli/commit/3853f14cbe95cca3a971e877cf48616047f8b066))
+
+## [26.0.2-beta.1](https://github.com/bettyblocks/cli/compare/v26.0.1...v26.0.2-beta.1) (2025-10-23)
+
+
+### Bug Fixes
+
 * use camelcase from new package to match lodash behaviour ([d4a0cdd](https://github.com/bettyblocks/cli/commit/d4a0cddddc079318398efce82ecda473b769e4c3))
 
 ## [26.0.1](https://github.com/bettyblocks/cli/compare/v26.0.0...v26.0.1) (2025-10-09)
