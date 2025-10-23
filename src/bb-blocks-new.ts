@@ -1,4 +1,4 @@
-import { kebab } from 'case';
+import { kebabCase } from 'change-case';
 import { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
@@ -13,7 +13,7 @@ program
   .parse(process.argv);
 
 const { args } = program;
-const inputBlockName = kebab(args.join());
+const inputBlockName = kebabCase(args.join());
 
 const workingDir = process.cwd();
 if (fs.existsSync(path.join(workingDir, '.app-functions'))) {

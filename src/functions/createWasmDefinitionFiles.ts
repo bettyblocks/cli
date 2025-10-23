@@ -1,9 +1,9 @@
-import { snake } from 'case';
+import { snakeCase } from 'change-case';
 import fs from 'fs-extra';
 import path from 'path';
 
 const createlibRsFile = (functionDir: string, functionName: string): void => {
-  const functionDefName = snake(functionName);
+  const functionDefName = snakeCase(functionName);
   fs.mkdirpSync(path.join(functionDir, 'src'));
   fs.writeFileSync(
     path.join(functionDir, 'src', 'lib.rs'),
@@ -59,7 +59,7 @@ const createCargoTomlFile = (
   functionDir: string,
   functionName: string,
 ): void => {
-  const functionDefName = snake(functionName);
+  const functionDefName = snakeCase(functionName);
   fs.writeFileSync(
     path.join(functionDir, 'Cargo.toml'),
     `[package]

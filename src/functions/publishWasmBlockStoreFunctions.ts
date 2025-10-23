@@ -1,5 +1,5 @@
-import { camel } from 'case';
 import chalk from 'chalk';
+import { camelCase } from 'change-case';
 import fs from 'fs-extra';
 import fetch, { fileFromSync, FormData } from 'node-fetch';
 import path from 'path';
@@ -68,7 +68,7 @@ const getFunctionJsonFromDir = (functionDir: string): string | null => {
   const functionJsonPath = path.join(functionDir, 'function.json');
   if (fs.existsSync(functionJsonPath)) {
     const version = path.basename(functionDir);
-    const name = camel(path.basename(path.dirname(functionDir)));
+    const name = camelCase(path.basename(path.dirname(functionDir)));
     const json = {
       ...fs.readJsonSync(functionJsonPath),
       name,
