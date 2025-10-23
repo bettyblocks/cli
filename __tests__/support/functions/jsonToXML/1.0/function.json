@@ -1,0 +1,24 @@
+{
+  "description": "Convert JSON to XML",
+  "label": "json to xml",
+  "category": "Misc",
+  "icon": {
+    "name": "ChatIcon",
+    "color": "Teal"
+  },
+  "options": [
+    {
+      "meta": {
+        "type": "Text"
+      },
+      "name": "name",
+      "label": "Name",
+      "info": "The name of the XML root element.",
+      "advanced": false,
+      "configuration": {
+        "placeholder": "Betty Blocks"
+      }
+    }
+  ],
+  "yields": "NONE"
+}

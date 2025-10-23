@@ -1,6 +1,6 @@
 import AdmZip from 'adm-zip';
 import { Glob } from 'bun';
-import { camel, title } from 'case';
+import { camelCase, capitalCase } from 'change-case';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -113,10 +113,10 @@ const functionDefinition = (
   let version = '';
 
   if (isFunctionVersion(functionPath, functionsDir)) {
-    name = camel(path.basename(path.dirname(functionPath)));
+    name = camelCase(path.basename(path.dirname(functionPath)));
     version = path.basename(functionPath);
   } else {
-    name = camel(path.basename(functionPath));
+    name = camelCase(path.basename(functionPath));
   }
 
   const filePath = functionDefinitionPath(functionPath);
@@ -184,7 +184,7 @@ const newFunctionDefinition = (
         category: 'Misc',
         description: 'Description',
         icon: { color: 'Orange', name: 'ActionsIcon' },
-        label: title(functionName),
+        label: capitalCase(functionName),
         options: [],
         yields: 'NONE',
       },
@@ -238,7 +238,7 @@ const createNewWasmFunction = (
 };
 
 const toVariableName = ({ name, version }: FunctionDefinition): string =>
-  `${camel(name)}_${version.replace('.', '_')}`;
+  `${camelCase(name)}_${version.replace('.', '_')}`;
 
 /* @doc importFunctions
   Returns an array of strings, each item being an imported function:
