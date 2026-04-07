@@ -33,15 +33,6 @@ const publishWasmFunction = async (
   }
   const functionJson = getFunctionJsonFromDir(functionDir);
 
-  if (!functionJson) {
-    console.log(
-      chalk.yellow(
-        `! No function.json file found in ${functionDir}, skipping...`,
-      ),
-    );
-    return;
-  }
-
   const blockName = path.basename(path.dirname(functionPath));
 
   await uploadBlock({
@@ -64,11 +55,11 @@ const getWasmFileFromDir = (functionDir: string): File | null => {
   return null;
 };
 
-const getFunctionJsonFromDir = (functionDir: string): string | null => {
+const getFunctionJsonFromDir = (functionDir: string): string => {
   const functionJsonPath = path.join(functionDir, 'function.json');
+  const version = path.basename(functionDir);
+  const name = camelCase(path.basename(path.dirname(functionDir)));
   if (fs.existsSync(functionJsonPath)) {
-    const version = path.basename(functionDir);
-    const name = camelCase(path.basename(path.dirname(functionDir)));
     const json = {
       ...fs.readJsonSync(functionJsonPath),
       name,
@@ -76,7 +67,7 @@ const getFunctionJsonFromDir = (functionDir: string): string | null => {
     };
     return stringifyDefinition(json);
   }
-  return null;
+  return JSON.stringify([{ name, version }]);
 };
 
 const stringifyDefinition = (definition: Record<string, unknown>): string => {
