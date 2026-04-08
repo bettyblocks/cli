@@ -77,7 +77,7 @@ test('creating a new functionDefinition', async (): Promise<void> => {
 });
 
 test('functionDefinitions for a directory with functions', async (): Promise<void> => {
-  const [, { schema }] = await functionDefinitions(functionsPath);
+  const [{ schema }] = await functionDefinitions(functionsPath);
   expect(schema).toMatchObject({
     label: 'Say Hello',
   });
@@ -89,18 +89,18 @@ test('functionDefinitions for a directory without functions', async (): Promise<
 });
 
 test('stringifying function definitions', async (): Promise<void> => {
-  const expected = `[{"name":"jsonToXml","version":"1.0","description":"Convert JSON to XML","label":"json to xml","category":"Misc","icon":{"name":"ChatIcon","color":"Teal"},"options":"[{\\"meta\\":{\\"type\\":\\"Text\\"},\\"name\\":\\"name\\",\\"label\\":\\"Name\\",\\"info\\":\\"The name of the XML root element.\\",\\"advanced\\":false,\\"configuration\\":{\\"placeholder\\":\\"Betty Blocks\\"}}]","yields":"NONE","paths":"{}"},{"name":"sayHello","version":"1.0","description":"Say Hello to the world","label":"Say Hello","category":"Misc","icon":{"name":"ChatIcon","color":"Teal"},"options":"[{\\"meta\\":{\\"type\\":\\"Text\\"},\\"name\\":\\"name\\",\\"label\\":\\"Name\\",\\"info\\":\\"The name that's going to be used to say hello to the world!\\",\\"advanced\\":false,\\"configuration\\":{\\"placeholder\\":\\"Betty Blocks\\"}}]","yields":"NONE","paths":"{}"}]`;
+  const expected = `[{"name":"sayHello","version":"1.0","description":"Say Hello to the world","label":"Say Hello","category":"Misc","icon":{"name":"ChatIcon","color":"Teal"},"options":"[{\\"meta\\":{\\"type\\":\\"Text\\"},\\"name\\":\\"name\\",\\"label\\":\\"Name\\",\\"info\\":\\"The name that's going to be used to say hello to the world!\\",\\"advanced\\":false,\\"configuration\\":{\\"placeholder\\":\\"Betty Blocks\\"}}]","yields":"NONE","paths":"{}"},{"name":"jsonToXml","version":"1.0","description":"Convert JSON to XML","label":"json to xml","category":"Misc","icon":{"name":"ChatIcon","color":"Teal"},"options":"[{\\"meta\\":{\\"type\\":\\"Text\\"},\\"name\\":\\"name\\",\\"label\\":\\"Name\\",\\"info\\":\\"The name of the XML root element.\\",\\"advanced\\":false,\\"configuration\\":{\\"placeholder\\":\\"Betty Blocks\\"}}]","yields":"NONE","paths":"{}"}]`;
   const definitions = await functionDefinitions(functionsPath);
   expect(stringifyDefinitions(definitions)).toEqual(expected);
 });
 
 test('generating the package index.js', async (): Promise<void> => {
-  const expected = `import { default as jsonToXml_1_0 } from './functions/jsonToXML/1.0';
-import { default as sayHello_1_0 } from './functions/say-hello/1.0';
+  const expected = `import { default as sayHello_1_0 } from './functions/say-hello/1.0';
+import { default as jsonToXml_1_0 } from './functions/jsonToXML/1.0';
 
 const fn = {
-  "jsonToXml 1.0": jsonToXml_1_0,
   "sayHello 1.0": sayHello_1_0,
+  "jsonToXml 1.0": jsonToXml_1_0,
 };
 
 export default fn;
