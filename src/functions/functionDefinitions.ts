@@ -98,7 +98,7 @@ const functionDirs = async (
       dirs.push(dir);
     }
   }
-  return dirs;
+  return dirs.toSorted((a, b) => a.localeCompare(b));
 };
 
 /* @doc functionDefinition
