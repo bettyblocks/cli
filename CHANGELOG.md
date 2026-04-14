@@ -1,3 +1,15 @@
+# [26.1.0](https://github.com/bettyblocks/cli/compare/v26.0.2...v26.1.0) (2026-04-14)
+
+
+### Bug Fixes
+
+* make function definition order consistent ([7c118f5](https://github.com/bettyblocks/cli/commit/7c118f54cf6170fadf3f418a87ff64c74a0c86ad))
+
+
+### Features
+
+* add ability to push components with just the minimal data without the function json ([69b5357](https://github.com/bettyblocks/cli/commit/69b53572dbe838c591e2537f10d9cbc8a3a1b13a))
+
 ## [26.0.2](https://github.com/bettyblocks/cli/compare/v26.0.1...v26.0.2) (2025-10-23)
 
 
